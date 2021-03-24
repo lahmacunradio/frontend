@@ -1,0 +1,11 @@
+query showPage($slug: String!) {
+  shows(where: {slug: $slug}) {
+    id
+    Title
+    slug
+    Description
+    Showcover {
+      url
+    }
+  }
+}

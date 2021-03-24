@@ -1,0 +1,11 @@
+query Shows {  
+  shows {
+    id
+    Title
+    slug
+    Description
+    Showcover {
+      url
+    }
+  }
+}
