@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="flex-row sm:flex">
-      <div class="mb-4 sm:w-128 xsm:mr-4">
+      <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
         <a class="cursor-pointer" @click="shadowbox = !shadowbox">
           <img :src="arcsiShow.cover_image_url" alt="" class="rounded-md">
           <vue-shadow-box :media="[{ src: arcsiShow.cover_image_url, description: arcsiShow.name }]" :visibility="shadowbox" />
@@ -39,7 +39,6 @@ import 'vue-shadowbox/dist/vue-shadowbox.css'
 import { format } from 'date-fns'
 import { arcsiServerURL, mediaServerURL } from '~/constants'
 
-
 export default {
   components: {
     VueShadowBox
@@ -71,3 +70,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .show-image {
+      min-width: 300px;
+      max-width: 360px;
+  }
+</style>

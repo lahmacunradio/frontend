@@ -14,15 +14,24 @@ There's two seperate folders, `backend` and `frontend` You have to run `yarn ins
 
 The frontend of the application is built with Nuxt.js
 
+cd to frontend
+
+- `yarn` to install the modules
+
 - `yarn dev` to start it up for development
 
++ when deploying
 - `yarn build` to build it for production
 
 ### Backend
 
 The backend of the application is built with Strapi
 
-- `yarn build` to build the UI
+cd to backend
+
+- `yarn` to install the modules
+
+- `yarn build` to build the UI for the admin area
 
 - `yarn start` to start up the server
 
