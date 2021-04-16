@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { arcsiServerURL, newsURL } from '~/constants'
+import { arcsiServerURL, newsURL, contentApiURL } from '~/constants'
 
 export const state = () => ({
   arcsiShows: null,

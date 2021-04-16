@@ -42,3 +42,9 @@ h5 {
   font-size: 1.25rem;
   font-weight: bold;
 }
+
+a {
+  &:hover {
+    font-weight: 500;
+  }
+}
