@@ -3,9 +3,15 @@
     <div class="m-4 text-center title">
       <h1>Lahmacun Radio Home</h1>
     </div>
-    <section class="flex flex-row">
+    <section class="grid grid-cols-2 gap-8">
       <div>
         <h3>News</h3>
+        <div v-for="news in sortNews" :key="news.id">
+          <div class="mb-2">
+            <h5>{{ news.title.rendered }}</h5>
+            <div v-html="news.excerpt.rendered" />
+          </div>
+        </div>
       </div>
       <div>
         <h3>Schedule</h3>
@@ -26,6 +32,7 @@ export default {
   },
   data () {
     return {
+      newsLimit: 3
     }
   },
   apollo: {
@@ -36,6 +43,12 @@ export default {
     },
     arcsishows () {
       return this.$store.state.arcsiShows
+    },
+    sortNews () {
+      return [...this.newsListState].sort((a, b) => a.date - b.date)
+    },
+    newsListState () {
+      return this.newsLimit ? this.$store.state.newsList.slice(0, this.newsLimit) : this.$store.state.newsList
     }
   },
   methods: {
