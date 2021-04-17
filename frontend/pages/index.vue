@@ -56,10 +56,17 @@ export default {
     sortNews () {
       return [...this.newsListState].sort((a, b) => a.date - b.date)
     }
+  },
+  methods: {
   }
 
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+a {
+  &:hover {
+    font-weight: 500;
+  }
+}
 </style>
