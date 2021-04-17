@@ -5,16 +5,20 @@
     </div>
     <section class="grid grid-cols-2 gap-8">
       <div>
-        <h3>News</h3>
+        <nuxt-link to="news/">
+          <h3>News</h3>
+        </nuxt-link>
         <div v-for="news in sortNews" :key="news.id">
-          <news-block :news="news" />
+          <NewsBlock :news="news" />
         </div>
       </div>
       <div>
-        <h3>Schedule</h3>
+        <nuxt-link to="/news">
+          <h3>Schedule</h3>
+        </nuxt-link>
         <div v-for="show in sortShowsForSchedule" :key="show.id">
           <div>
-            <nuxt-link :to="'shows/' + show.archive_lahmastore_base_url">
+            <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}
             </nuxt-link>
             - {{ show.start }}
@@ -26,13 +30,8 @@
 </template>
 
 <script>
-import axios from 'axios'
-import NewsBlock from '../components/NewsBlock.vue'
-import { contentApiURL } from '~/constants'
-
 export default {
   components: {
-    NewsBlock
   },
   data () {
     return {
@@ -48,11 +47,11 @@ export default {
     sortShowsForSchedule () {
       return [...this.arcsishows].sort((a, b) => parseInt(a.start) - parseInt(b.start)).sort((a, b) => a.day - b.day)
     },
-    news () {
+    newsList () {
       return this.$store.state.newsList
     },
     newsListState () {
-      return this.newsLimit ? this.news.slice(0, this.newsLimit) : this.news
+      return this.newsLimit ? this.newsList.slice(0, this.newsLimit) : this.newsList
     },
     sortNews () {
       return [...this.newsListState].sort((a, b) => a.date - b.date)
