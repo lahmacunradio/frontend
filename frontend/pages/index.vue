@@ -16,14 +16,7 @@
         <nuxt-link to="/news">
           <h3>Schedule</h3>
         </nuxt-link>
-        <div v-for="show in sortShowsForSchedule" :key="show.id">
-          <div>
-            <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-              {{ show.name }}
-            </nuxt-link>
-            - {{ show.start }}
-          </div>
-        </div>
+        <ScheduleHome :shows="sortShowsForSchedule" />
       </div>
     </section>
   </div>
@@ -64,9 +57,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a {
-  &:hover {
-    font-weight: 500;
-  }
-}
+
 </style>
