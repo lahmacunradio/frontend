@@ -1,8 +1,10 @@
 <template>
   <div>
     <div v-for="(day, index) in showsByDate" :key="day.id" class="mb-2">
-      <div>
+      <div class="flex flex-row justify-between">
         <h5>{{ dayNames[day[0].day-1] }}</h5>
+        <span>{{ format(new Date(index === 0 ? todayDate :
+          tommorrow.setDate(tommorrow.getDate() + 1)) , 'MMMM dd.') }}</span>
       </div>
       <div v-for="show in day" :key="show.id">
         <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
@@ -15,6 +17,8 @@
 </template>
 
 <script>
+import { format } from 'date-fns'
+
 export default {
   props: {
     shows: {
@@ -24,6 +28,7 @@ export default {
   },
   data () {
     return {
+      format,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
     }
@@ -32,6 +37,12 @@ export default {
     getToday () {
       const d = new Date()
       return d.getDay()
+    },
+    todayDate () {
+      return new Date()
+    },
+    tommorrow () {
+      return new Date(new Date())
     }
   },
   mounted () {
@@ -41,6 +52,7 @@ export default {
     groupShowsByDay (shows) {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
+      const dayIndex = daybyMonday - 1
       for (let i = 0; i < 7; i++) {
         list.push([])
         shows.forEach((show) => {
@@ -50,8 +62,7 @@ export default {
           }
         })
       }
-      // TODO sorty by current day
-      this.showsByDate = list
+      this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
     }
   }
 
