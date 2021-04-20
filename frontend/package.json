@@ -16,11 +16,11 @@
     "@nuxtjs/apollo": "^4.0.0-rc19",
     "@nuxtjs/axios": "^5.12.5",
     "axios": "^0.21.1",
-    "date-fns": "^2.19.0",
+    "date-fns": "^2.21.1",
     "eslint": "^7.24.0",
     "fibers": "^5.0.0",
+    "graphql": "^15",
     "hls.js": "^1.0.1",
-    "graphql": "^15
     "nchan": "^1.0.10",
     "nuxt": "^2.15.3",
     "sass": "^1.32.0",
@@ -30,8 +30,8 @@
     "vue-shadowbox": "^0.1.3"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^4.0.3",
     "@nuxtjs/eslint-config": "^6.0.0",
+    "@nuxtjs/tailwindcss": "^4.0.3",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "autoprefixer": "^9",
     "postcss": "^8",
