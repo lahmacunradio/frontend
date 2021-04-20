@@ -3,21 +3,21 @@
     <div class="flex-row sm:flex">
       <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
         <a class="cursor-pointer" @click="shadowbox = !shadowbox">
-          <img :src="selectedArcsiShow.cover_image_url" alt="" class="rounded-md">
-          <vue-shadow-box :media="[{ src: selectedArcsiShow.cover_image_url, description: selectedArcsiShow.name }]" :visibility="shadowbox" />
+          <img :src="arcsiInfosBlock.cover_image_url" alt="" class="rounded-md">
+          <vue-shadow-box :media="[{ src: arcsiInfosBlock.cover_image_url, description: arcsiInfosBlock.name }]" :visibility="shadowbox" />
         </a>
       </div>
       <div class="mb-4">
-        <h3>{{ selectedArcsiShow.name }}</h3>
-        <div>{{ selectedArcsiShow.description }}</div>
+        <h3>{{ arcsiInfosBlock.name }}</h3>
+        <div>{{ arcsiInfosBlock.description }}</div>
       </div>
     </div>
     <div>
       <h3 class="pb-1 mb-4 text-center border-b border-current">
         Arcsived Shows
       </h3>
-      <div class="grid gap-4 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <div v-for="arcsi in selectedArcsiShow" :key="arcsi.id">
+      <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
           <div>
             <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md">
             <h5>
@@ -60,7 +60,13 @@ export default {
     arcsishows () {
       return this.$store.state.arcsiShows
     },
-    selectedArcsiShow () {
+    arcsiInfosBlock () {
+      if (this.arcsishows) {
+        return [...this.arcsishows].filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
+      }
+      return null
+    },
+    arcsiShowsList () {
       if (this.arcsishows) {
         const showslist = [...this.arcsishows].filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).find(e => true)
         return showslist.items.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))

@@ -3,7 +3,7 @@
     <div class="m-4 text-center title">
       <h1>Lahmacun Radio Home</h1>
     </div>
-    <section class="grid grid-cols-2 gap-8">
+    <section class="grid-cols-2 gap-16 md:grid">
       <div>
         <nuxt-link to="news/">
           <h3>News</h3>
@@ -13,17 +13,10 @@
         </div>
       </div>
       <div>
-        <nuxt-link to="/news">
+        <nuxt-link to="/shows">
           <h3>Schedule</h3>
         </nuxt-link>
-        <div v-for="show in sortShowsForSchedule" :key="show.id">
-          <div>
-            <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-              {{ show.name }}
-            </nuxt-link>
-            - {{ show.start }}
-          </div>
-        </div>
+        <ScheduleHome :shows="sortShowsForSchedule" />
       </div>
     </section>
   </div>
@@ -64,9 +57,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-a {
-  &:hover {
-    font-weight: 500;
-  }
+h1 {
+  margin-bottom: 2rem;
+}
+h3 {
+  margin-bottom: 1rem;
 }
 </style>
