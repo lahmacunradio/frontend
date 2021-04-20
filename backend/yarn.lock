@@ -7464,10 +7464,10 @@ no-case@^2.2.0:
   dependencies:
     lower-case "^1.1.1"
 
-node-addon-api@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-2.0.0.tgz#f9afb8d777a91525244b01775ea0ddbe1125483b"
-  integrity sha512-ASCL5U13as7HhOExbT6OlWJJUV/lLzL2voOSP1UVehpRD8FbSrSDjfScK/KwAvVTI5AS6r4VwbOMlIqtvRidnA==
+node-addon-api@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.1.0.tgz#98b21931557466c6729e51cb77cd39c965f42239"
+  integrity sha512-flmrDNB06LIl5lywUz7YlNGZH/5p0M7W28k8hzd9Lshtdh1wshD2Y+U4h9LD6KObOy1f+fEVdgprPrEymjM5uw==
 
 node-fetch@^1.0.1, node-fetch@^1.7.3:
   version "1.7.3"
@@ -9568,7 +9568,7 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
-sendmail@^1.2.0:
+sendmail@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/sendmail/-/sendmail-1.6.1.tgz#6be92fb4be70d1d9ad102030aeb1e737bd512159"
   integrity sha512-lIhvnjSi5e5jL8wA1GPP6j2QVlx6JOEfmdn0QIfmuJdmXYGmJ375kcOU0NSm/34J+nypm4sa1AXrYE5w3uNIIA==
@@ -9933,12 +9933,12 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-sqlite3@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-5.0.0.tgz#1bfef2151c6bc48a3ab1a6c126088bb8dd233566"
-  integrity sha512-rjvqHFUaSGnzxDy2AHCwhHy6Zp6MNJzCPGYju4kD8yi6bze4d1/zMTg6C7JI49b7/EM7jKMTvyfN/4ylBKdwfw==
+sqlite3@^5.0.2:
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-5.0.2.tgz#00924adcc001c17686e0a6643b6cbbc2d3965083"
+  integrity sha512-1SdTNo+BVU211Xj1csWa8lV6KM0CtucDwRyA0VHl91wEH1Mgh7RxUpI4rVvG7OhHrzCSGaVyW5g8vKvlrk9DJA==
   dependencies:
-    node-addon-api "2.0.0"
+    node-addon-api "^3.0.0"
     node-pre-gyp "^0.11.0"
   optionalDependencies:
     node-gyp "3.x"
@@ -10366,14 +10366,14 @@ strapi-plugin-documentation@3.5.4:
     strapi-helper-plugin "3.5.4"
     swagger-ui-dist "3.45.1"
 
-strapi-plugin-email@3.0.0-beta.19.3:
-  version "3.0.0-beta.19.3"
-  resolved "https://registry.yarnpkg.com/strapi-plugin-email/-/strapi-plugin-email-3.0.0-beta.19.3.tgz#87890a4e193eb987efd9b386407421d958a500af"
-  integrity sha512-5SXy2lcNDXaLBGhEJuJIU7o81LxfISEmnreXPCJFZwRSObkhRiFIyejYEH7MZ19BpnEtaG9kZMa37yKzdtWUSQ==
+strapi-plugin-email@3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/strapi-plugin-email/-/strapi-plugin-email-3.5.4.tgz#035e72e6c2c938fe283a9f810b7371fd31f330d3"
+  integrity sha512-wyXPHkSF2AKrSUd6dD8OoyjfbvZte6hDt2qMdcKfJJGlcHNmL13LFEQlWkh7JPfTPqVU+m14Xa2csYQvxqQDcA==
   dependencies:
-    lodash "^4.17.11"
-    strapi-provider-email-sendmail "3.0.0-beta.19.3"
-    strapi-utils "3.0.0-beta.19.3"
+    lodash "4.17.20"
+    strapi-provider-email-sendmail "3.5.4"
+    strapi-utils "3.5.4"
 
 strapi-plugin-graphql@3.0.0-beta.19.3:
   version "3.0.0-beta.19.3"
@@ -10450,13 +10450,13 @@ strapi-plugin-users-permissions@3.5.4:
     strapi-utils "3.5.4"
     uuid "^3.1.0"
 
-strapi-provider-email-sendmail@3.0.0-beta.19.3:
-  version "3.0.0-beta.19.3"
-  resolved "https://registry.yarnpkg.com/strapi-provider-email-sendmail/-/strapi-provider-email-sendmail-3.0.0-beta.19.3.tgz#615fbe932d71431cb0be9fbe458188186eebda73"
-  integrity sha512-KhjDvL66XbVlgWDjRLBjwYr0DMsD7GEVurohsPvJK5v9hxtdunXoIJQ+9vszTLhM9JSh34Z3oFiLlPXYPLzOYg==
+strapi-provider-email-sendmail@3.5.4:
+  version "3.5.4"
+  resolved "https://registry.yarnpkg.com/strapi-provider-email-sendmail/-/strapi-provider-email-sendmail-3.5.4.tgz#f21a7fbd965c0987868d2dc21ea317b4a55e77ee"
+  integrity sha512-2ti6EuopAjjerPnF1geyPuEearvJNXSN471PJavpF2Q45EdFvwMuMe8T35aSgQFQipcxwomI+GclEE67zXth3A==
   dependencies:
-    lodash "^4.17.11"
-    sendmail "^1.2.0"
+    sendmail "^1.6.1"
+    strapi-utils "3.5.4"
 
 strapi-provider-upload-local@3.0.0-beta.19.3:
   version "3.0.0-beta.19.3"
