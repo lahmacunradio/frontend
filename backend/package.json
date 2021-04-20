@@ -13,7 +13,7 @@
   "devDependencies": {},
   "dependencies": {
     "eslint": "^7.17.0",
-    "knex": "<0.20.0",
+    "knex": "<0.96.0",
     "slugify": "^1.4.6",
     "sqlite3": "^5.0.2",
     "strapi": "3.0.0-beta.19.4",
