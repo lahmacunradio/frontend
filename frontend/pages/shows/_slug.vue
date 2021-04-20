@@ -57,19 +57,21 @@ export default {
     }
   },
   computed: {
+
     arcsishows () {
       return this.$store.state.arcsiShows
     },
     arcsiInfosBlock () {
       if (this.arcsishows) {
-        return [...this.arcsishows].filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
+        const allShows = [...this.arcsishows]
+        return allShows.filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
       }
       return null
     },
     arcsiShowsList () {
       if (this.arcsishows) {
-        const showslist = [...this.arcsishows].filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).find(e => true)
-        return showslist.items.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        const showslist = [...this.arcsiInfosBlock.items]
+        return showslist.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
     }

@@ -8,10 +8,10 @@
       </div>
       <div class="dayshows">
         <div v-for="show in day" :key="show.id">
+          {{ removeSeconds(show.start) }}-{{ removeSeconds(show.end) }} -
           <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
             {{ show.name }}
           </nuxt-link>
-          - {{ removeSeconds(show.start) }}-{{ removeSeconds(show.end) }}
         </div>
       </div>
     </div>
