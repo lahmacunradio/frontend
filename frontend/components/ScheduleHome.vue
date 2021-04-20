@@ -1,16 +1,18 @@
 <template>
   <div>
     <div v-for="(day, index) in showsByDate" :key="day.id" class="mb-2">
-      <div class="flex flex-row justify-between">
-        <h5>{{ dayNames[day[0].day-1] }}</h5>
+      <div class="flex flex-row justify-between dayname">
+        <h4>{{ dayNames[day[0].day-1] }}</h4>
         <span>{{ format(new Date(index === 0 ? todayDate :
           tommorrow.setDate(tommorrow.getDate() + 1)) , 'MMMM dd.') }}</span>
       </div>
-      <div v-for="show in day" :key="show.id">
-        <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-          {{ show.name }}
-        </nuxt-link>
-        - {{ show.start }}
+      <div class="dayshows">
+        <div v-for="show in day" :key="show.id">
+          <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
+            {{ show.name }}
+          </nuxt-link>
+          - {{ removeSeconds(show.start) }}-{{ removeSeconds(show.end) }}
+        </div>
       </div>
     </div>
   </div>
@@ -71,6 +73,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.dayname {
+  border-bottom: 1px solid;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+.dayshows {
+  margin-bottom: 1rem;
+}
 a {
   &:hover {
     font-weight: 500;
