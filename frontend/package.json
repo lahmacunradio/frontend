@@ -21,7 +21,7 @@
     "eslint": "^7.24.0",
     "fibers": "^5.0.0",
     "graphql": "^15",
-    "hls.js": "^1.0.1",
+    "hls.js": "^1.0.2",
     "html-entities": "^2.3.2",
     "nchan": "^1.0.10",
     "nuxt": "^2.15.3",
