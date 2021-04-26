@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>News</h1>
-    <article class="grid grid-cols-3 gap-4">
+    <article class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8">
       <div v-for="news in sortNews" :key="news.id">
         <NewsBlock :news="news" />
       </div>

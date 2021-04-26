@@ -1,8 +1,12 @@
 <template>
   <div class="mb-2">
     <nuxt-link :to="'/news/' + news.slug">
-      <img :src="newsImage" :alt="news.title.rendered" class="mb-4 rounded-md">
-      <h5>{{ news.title.rendered }}</h5>
+      <div class="news-image">
+        <img :src="newsImage" :alt="news.title.rendered" class="mb-4 rounded-md">
+      </div>
+      <h5 class="py-4">
+        {{ htmlDecoder(news.title.rendered) }}
+      </h5>
     </nuxt-link>
     <div v-html="news.excerpt.rendered" />
   </div>
@@ -35,11 +39,24 @@ export default {
     async loadNewsImages (newsId) {
       const adress = `${contentApiURL}/media/${newsId}`
       const responseNews = await axios.get(adress)
-      // console.log(responseNews.data.media_details.sizes.medium.source_url)
       this.newsImage = responseNews.data.media_details.sizes.large.source_url
-      // return responseNews.data.media_details.sizes.medium.source_url
     }
   }
 }
 
 </script>
+
+<style lang="scss" scoped>
+.news-image {
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  display: flex;
+  align-content: center;
+  img {
+    min-height: 300px;
+    min-width: 300px;
+    object-fit: cover;
+  }
+}
+</style>

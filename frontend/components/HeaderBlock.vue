@@ -6,8 +6,8 @@
       </client-only>
     </div>
     <div class="flex items-center cursor-pointer" @click="$router.push('/')">
+      <img src="/img/lahmacun-logo.png" alt="" class="h-16 mr-4">
       <h1>Lahmacun Radio</h1>
-      <img src="/img/lahmacun-logo.png" alt="" class="h-16">
     </div>
   </header>
 </template>

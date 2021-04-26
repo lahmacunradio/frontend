@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { decode } from 'html-entities'
 
 export function romanize (num) {
   if (isNaN(num)) { return NaN }
@@ -30,6 +31,10 @@ export function truncate (text, limit = 200) {
   return text.slice(0, limit) + (limit < text.length ? '...' : '')
 }
 
+export function htmlDecoder (string) {
+  return decode(string)
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -41,7 +46,8 @@ if (!Vue.__my_mixin__) {
       scrollToRef,
       scrollToAnchor,
       removeSeconds,
-      truncate
+      truncate,
+      htmlDecoder
     }
   })
 }

@@ -1,7 +1,9 @@
 <template>
   <div class="container">
-    <div class="m-4 text-center title">
-      <h1>Lahmacun Radio Home</h1>
+    <div class="text-center title">
+      <h1 class="m-4">
+        Lahmacun Radio Home
+      </h1>
     </div>
     <section class="grid-cols-2 gap-16 md:grid">
       <div>
@@ -58,7 +60,6 @@ export default {
 
 <style lang="scss" scoped>
 h1 {
-  margin-bottom: 2rem;
 }
 h3 {
   margin-bottom: 1rem;

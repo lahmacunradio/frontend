@@ -9,8 +9,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 
   background-color: #d09cf8 !important;
@@ -25,20 +23,27 @@ body {
 h1 {
   font-size: 3rem;
   font-weight: bold;
+  line-height: 1.2em;
 }
 h2 {
   font-size: 2.5rem;
   font-weight: bold;
+  line-height: 1.2em;
+  margin: 1rem 0;
 }
 h3 {
   font-size: 2rem;
   font-weight: bold;
+  line-height: 1.2em;
+  margin: 1rem 0;
 }
 h4 {
   font-size: 1.5rem;
   font-weight: bold;
+  line-height: 1.4em;
 }
 h5 {
   font-size: 1.25rem;
   font-weight: bold;
+  line-height: 1.4em;
 }

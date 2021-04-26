@@ -1,6 +1,9 @@
 <template>
   <div class="mb-2">
-    <h2>{{ news.title.rendered }}</h2>
+    <h2>{{ htmlDecoder(news.title.rendered) }}</h2>
+    <p class="news-time mb-4">
+      {{ format(new Date(news.date), 'yyyy. MMMM dd.') }}
+    </p>
     <div class="grid grid-cols-2 gap-4">
       <img :src="newsImage" :alt="news.title.rendered" class="mb-4 rounded-md">
       <div v-html="news.content.rendered" />
@@ -10,6 +13,7 @@
 
 <script>
 import axios from 'axios'
+import { format } from 'date-fns'
 import { contentApiURL } from '~/constants'
 
 export default {
@@ -23,7 +27,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo.png'
+      newsImage: '/img/lahmacun-logo.png',
+      format
     }
   },
   computed: {

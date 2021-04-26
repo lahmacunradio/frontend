@@ -1,8 +1,8 @@
 {
   "name": "lahmacun",
   "version": "1.0.0",
-  "description": "A Strapi Frontend",
-  "author": "Daniel Phiri",
+  "description": "Lahmacun Radio Frontend",
+  "author": "Lahma team",
   "private": true,
   "scripts": {
     "dev": "nuxt",
@@ -22,6 +22,7 @@
     "fibers": "^5.0.0",
     "graphql": "^15",
     "hls.js": "^1.0.1",
+    "html-entities": "^2.3.2",
     "nchan": "^1.0.10",
     "nuxt": "^2.15.3",
     "sass": "^1.32.0",
