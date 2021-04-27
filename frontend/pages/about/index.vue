@@ -23,3 +23,15 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.container{
+  margin-bottom: 1rem;
+  line-height: 3;
+
+  span {
+    font-size: .875rem;
+  }
+}
+</style>
+
