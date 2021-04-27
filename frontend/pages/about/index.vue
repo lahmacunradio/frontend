@@ -1,7 +1,10 @@
 <template>
   <div class="container">
-    <h1>Anyád</h1>
+    <h1>{{ aboutUs.title.rendered }}</h1>
+    <span v-html="aboutUs.content.rendered">
+    </span>
   </div>
+
 </template>
 
 <script>
