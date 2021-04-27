@@ -8,7 +8,11 @@
       </li>
       <li>Photos</li>
       <li>Sponsors</li>
-      <li>About Us</li>
+      <li>
+        <NuxtLink to="/about/">
+          About Us
+        </NuxtLink>
+      </li>
       <li>Donate</li>
     </ul>
   </nav>
