@@ -11,3 +11,5 @@ export const mediaServerURL = 'https://media.lahmacun.hu/'
 export const contentApiURL = 'https://www.lahmacun.hu/wp-json/wp/v2'
 // wp limits the max number of pages, and better to have paginated querys, for now ok
 export const newsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/posts?categories=5&per_page=100'
+
+export const aboutUsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/pages/228'
