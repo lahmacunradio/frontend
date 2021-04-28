@@ -34,10 +34,8 @@
 
 <script>
 import VueShadowBox from 'vue-shadowbox'
-// You need to import the CSS only once
-import 'vue-shadowbox/dist/vue-shadowbox.css'
-import { format } from 'date-fns'
-import { arcsiServerURL, mediaServerURL } from '~/constants'
+import {format} from 'date-fns'
+import {mediaServerURL} from '~/constants'
 
 export default {
   components: {
@@ -54,22 +52,22 @@ export default {
   },
   head () {
     return {
+      title: this.arcsiInfosBlock.name
     }
   },
   computed: {
-
-    arcsishows () {
+    arcsiShows() {
       return this.$store.state.arcsiShows
     },
     arcsiInfosBlock () {
-      if (this.arcsishows) {
-        const allShows = [...this.arcsishows]
+      if (this.arcsiShows) {
+        const allShows = [...this.arcsiShows]
         return allShows.filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
       }
       return null
     },
     arcsiShowsList () {
-      if (this.arcsishows) {
+      if (this.arcsiShows) {
         const showslist = [...this.arcsiInfosBlock.items]
         return showslist.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }

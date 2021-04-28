@@ -6,7 +6,7 @@
     </p>
     <div class="grid grid-cols-2 gap-4">
       <img :src="newsImage" :alt="news.title.rendered" class="mb-4 rounded-md">
-      <div v-html="news.content.rendered" />
+      <div class="text-content news-text" v-html="news.content.rendered"/>
     </div>
   </div>
 </template>

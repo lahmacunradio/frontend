@@ -42,8 +42,29 @@ h4 {
   font-weight: bold;
   line-height: 1.4em;
 }
+
 h5 {
   font-size: 1.25rem;
   font-weight: bold;
   line-height: 1.4em;
+}
+
+.text-content {
+  p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Shadowbox tweaks */
+.box_overlay {
+  .box_content {
+    .box_image_desc {
+      margin-top: 0.5rem;
+    }
+
+    .box_image_count {
+      display: none;
+      visibility: hidden;
+    }
+  }
 }

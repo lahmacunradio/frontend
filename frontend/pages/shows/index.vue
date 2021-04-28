@@ -17,37 +17,36 @@
 import { mediaServerURL } from '~/constants'
 
 export default {
-  components: {
-  },
+  components: {},
 
-  data () {
+  data() {
     return {
-
       mediaServerURL
-
     }
   },
-
+  head() {
+    return {
+      title: 'Lahmacun Shows'
+    }
+  },
   computed: {
-    arcsishows () {
+    arcsiShows() {
       return this.$store.state.arcsiShows
     },
-    arcsiShowsList () {
-      if (this.arcsishows) {
-        const arcsiShowsList = [...this.arcsishows]
+    arcsiShowsList() {
+      if (this.arcsiShows) {
+        const arcsiShowsList = [...this.arcsiShows]
         return arcsiShowsList.filter((show) => {
-          if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          return true
+          return !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
         }).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
     },
     pastShowsList () {
-      if (this.arcsishows) {
-        const arcsiShowsList = [...this.arcsishows]
+      if (this.arcsiShows) {
+        const arcsiShowsList = [...this.arcsiShows]
         return arcsiShowsList.filter((show) => {
-          if (!show.active) { return true }
-          return false
+          return !show.active
         }).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null

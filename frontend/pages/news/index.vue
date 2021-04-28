@@ -12,17 +12,20 @@
 <script>
 
 export default {
-  components: {
+  components: {},
+  data() {
+    return {}
   },
-  data () {
+  head() {
     return {
+      title: 'Lahmacun News'
     }
   },
   computed: {
-    newsList () {
+    newsList() {
       return this.$store.state.newsList
     },
-    sortNews () {
+    sortNews() {
       return [...this.newsList].sort((a, b) => a.date - b.date)
     }
   }

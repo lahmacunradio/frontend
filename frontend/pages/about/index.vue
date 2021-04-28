@@ -4,7 +4,6 @@
     <span v-html="aboutUs.content.rendered">
     </span>
   </div>
-
 </template>
 
 <script>
@@ -34,4 +33,3 @@ export default {
   }
 }
 </style>
-
