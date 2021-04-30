@@ -42,7 +42,7 @@ export default {
     VueShadowBox
   },
 
-  data () {
+  data() {
     return {
       shadowbox: false,
       slug: this.$route.params.slug,

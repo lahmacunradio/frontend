@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <h1>{{ aboutUs.title.rendered }}</h1>
-    <span v-html="aboutUs.content.rendered">
-    </span>
+    <span v-html="aboutUs.content.rendered"/>
   </div>
 </template>
 
