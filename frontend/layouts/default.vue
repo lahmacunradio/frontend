@@ -1,6 +1,6 @@
 <template>
   <div>
-    <header-block />
+    <HeaderBlock />
     <head-navigation />
     <nuxt />
   </div>
