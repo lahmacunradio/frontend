@@ -25,7 +25,7 @@
     "html-entities": "^2.3.2",
     "nchan": "^1.0.10",
     "nuxt": "^2.15.3",
-    "sass": "^1.32.0",
+    "sass": "^1.32.12",
     "sass-loader": "^10.1.1",
     "store": "^2.0.12",
     "vue-marked": "^0.1.1",
