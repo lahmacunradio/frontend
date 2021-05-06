@@ -182,8 +182,8 @@ export default {
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
       showsURLList_lookup: [],
-      showsList_lookup: []
-
+      showsList_lookup: [],
+      arcsiShows: this.$store.state.arcsiShows
     }
   },
   computed: {
@@ -250,18 +250,19 @@ export default {
       }
     },
     show_url () {
-      /*
-            let try_url_from_show = showsURLList_lookup[this.np.now_playing.song.artist];
-            let live_show_url = showsURLList_lookup[this.np.live.streamer_name];
-            let default_url = homeServer;
-            // console.log( try_url_from_show );
-            // console.log( live_show_url );
-            if ( try_url_from_show == undefined && live_show_url == undefined ) //show not found
-                return default_url; // return default
-            else if (this.np.live.is_live) return live_show_url;
-            else return try_url_from_show; //return show URL
-            */
-      return ''
+      const arcsiShowsList = [...this.arcsiShows];
+      let this_show;
+      if (this.np.live.is_live) //live show
+        this_show = arcsiShowsList.find(show => show.name === this.np.live.streamer_name);
+      else //pre-recorded show
+        this_show = arcsiShowsList.find(show => show.name === this.np.now_playing.song.artist);
+      let url = "";
+      try {
+        url = this_show.archive_lahmastore_base_url;
+      } catch(error){ //Happens on the first call after page is loaded, not sure why...
+        //console.log("No show URL found."; 
+      }
+      return "/shows/" + url
     },
     show_art_url () {
       if (this.np.live.is_live) {
