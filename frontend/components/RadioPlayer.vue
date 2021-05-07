@@ -281,13 +281,11 @@ export default {
         const songArtistJSON = this.np.now_playing.song.artist
         const artworkJSON = this.np.now_playing.song.art // art work url in json
 
-        /**/
-
         if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
           const tryArtFromShow = this.showsList_lookup[songArtistJSON] // try to find show artwork url based on show title
           if (tryArtFromShow === undefined) { // show not found
             let artworkHistoryJSON = '';
-            (this.np.song_history).some(function (el) { // check song in history one by one; check by artist not by title!
+            (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
               if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
                 artworkHistoryJSON = el.song.art
                 return true
