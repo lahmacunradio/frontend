@@ -2,7 +2,7 @@
   <header class="container flex-row-reverse py-4 md:flex md:flex-row">
     <div>
       <client-only>
-        <RadioPlayer :show_album_art="true" :now_playing_uri="streamServer" />
+        <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
       </client-only>
     </div>
     <div class="flex items-center cursor-pointer" @click="$router.push('/')">
