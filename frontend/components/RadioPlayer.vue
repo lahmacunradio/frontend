@@ -49,7 +49,7 @@
             </div>
           </div>
 
-          <div v-if="show_album_art && np.now_playing.song.art" class="now-playing-art">
+          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
             <a class="cursor-pointer programimage" rel="playerimg" @click="shadowbox = !shadowbox">
               <div v-if="show_check == true" class="onair">On air</div>
               <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
@@ -135,8 +135,14 @@ export default {
     VueShadowBox
   },
   props: {
-    now_playing_uri: String,
-    show_album_art: Boolean
+    nowPlayingUri: {
+      type: String,
+      required: true
+    },
+    showAlbumArt: {
+      type: Boolean,
+      required: true
+    }
   },
   data () {
     return {
@@ -182,8 +188,8 @@ export default {
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
       showsURLList_lookup: [],
-      showsList_lookup: []
-
+      showsList_lookup: [],
+      arcsiShows: this.$store.state.arcsiShows
     }
   },
   computed: {
@@ -250,37 +256,36 @@ export default {
       }
     },
     show_url () {
-      /*
-            let try_url_from_show = showsURLList_lookup[this.np.now_playing.song.artist];
-            let live_show_url = showsURLList_lookup[this.np.live.streamer_name];
-            let default_url = homeServer;
-            // console.log( try_url_from_show );
-            // console.log( live_show_url );
-            if ( try_url_from_show == undefined && live_show_url == undefined ) //show not found
-                return default_url; // return default
-            else if (this.np.live.is_live) return live_show_url;
-            else return try_url_from_show; //return show URL
-            */
-      return ''
+      const arcsiShowsList = [...this.arcsiShows]
+      let this_show
+      if (this.np.live.is_live) // live show
+      { this_show = arcsiShowsList.find(show => show.name === this.np.live.streamer_name) } else // pre-recorded show
+      { this_show = arcsiShowsList.find(show => show.name === this.np.now_playing.song.artist) }
+      let url = ''
+      try {
+        url = this_show.archive_lahmastore_base_url
+      } catch (error) { // Happens on the first call after page is loaded, not sure why...
+        // console.log("No show URL found.";
+      }
+      return '/shows/' + url
     },
     show_art_url () {
       if (this.np.live.is_live) {
         const tryArtFromShow = this.showsList_lookup[this.np.live.streamer_name] // try to find show artwork url based on streamer name
-        if (tryArtFromShow === undefined) // show not found
-        { return this.default_art_url } // return default
+        if (tryArtFromShow === undefined) { // show not found
+          return this.default_art_url
+        } // return default
         else { return tryArtFromShow } // resturn show art work
       } else {
         const songTitleJSON = this.np.now_playing.song.title
         const songArtistJSON = this.np.now_playing.song.artist
         const artworkJSON = this.np.now_playing.song.art // art work url in json
 
-        /**/
-
         if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
           const tryArtFromShow = this.showsList_lookup[songArtistJSON] // try to find show artwork url based on show title
           if (tryArtFromShow === undefined) { // show not found
             let artworkHistoryJSON = '';
-            (this.np.song_history).some(function (el) { // check song in history one by one; check by artist not by title!
+            (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
               if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
                 artworkHistoryJSON = el.song.art
                 return true
@@ -387,7 +392,7 @@ export default {
       this.play()
     },
     checkNowPlaying () {
-      axios.get(this.now_playing_uri).then((response) => {
+      axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
         // Set a "default" current stream if none exists.
@@ -445,7 +450,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .radio-player-widget {
     .now-playing-details {
         display: flex;
@@ -508,13 +513,15 @@ export default {
     }
     i.material-icons {
         line-height: 1;
+        &.lg {
+          font-size: 2rem;
+        }
     }
     .radio-controls {
         display: flex;
         flex-direction: row;
         .radio-control-play-button {
             margin-right: 0.5em;
-            margin-top: 0.5em;
         }
         .radio-control-select-stream {
             flex: 1 1 auto;
@@ -607,17 +614,19 @@ a.programimage .onair {
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
     background: #d09cf8;
-    top: 50px;
+    top: 65px;
     z-index: 500;
-    padding-left: 6px;
+    padding-left: 3px;
+    line-height: 1;
 }
 
 #radio-player-controls.radio-controls-standalone > div {
     display: inline-block;
+    vertical-align: top;
 }
 
 .volumeshower {
-  margin: 11px 8px 0;
+  margin: 10px 5px 0;
   display: block;
   -moz-transform: translateY(-1px);
 }
@@ -628,7 +637,7 @@ a.programimage .onair {
 
 #radio-player-controls.radio-controls-standalone input.jp-volume-range {
     width: 200px;
-    height: 8px;
+    height: 4px;
 }
 
 /* volume control cursos */
