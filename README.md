@@ -1,39 +1,22 @@
-# Nuxt x Strapi
+# frontend
 
-## Description
+> Frontend for Lahmacun Radio 2021
 
-This a starter/template for a Strapi backend and a Nuxt frontend.
+## Build Setup
 
-![Demo](https://uca9d22cc187325f16dc39315bb6.previews.dropboxusercontent.com/p/thumb/AAttIwtZYb_xXl5Z-0Vfns1GKIprIs2H9yJIXPbcbaCiF2810apqPiQ9tkUWaYfdz31A7b_c7K7XswwNE-vN4_V3mZ570tw8ax9Jmg-tM-hlvPLdnrmcwiBAj0ry9qu1gHAPOQWXrxAo2Z-dA039DoePH0KkEnwBf7aRMopwGkTL498R7spG9sDWDM97mKAPhP7K3CA9oPEfQHs9OiW5tF9WujFhVFbMclyX1m3SxSp1FEnZ4cysRceMv9HvOQ85hyUIRNVjQx1aOLAWA3n5_uhaMCPAJ1c0WJgGyD0moPtCCzFBcek_Q34-hGy4A6RS7ncAxjQzXf4P4rqaiGRTmdNniJ4Abkn5nnFFWSUX8AY3yV1fnHanaV6esdDMKVH0_G8/p.png) 
+``` bash
+# install dependencies
+$ yarn install
 
-# Installation
+# serve with hot reload at localhost:3333
+$ yarn dev
 
-There's two seperate folders, `backend` and `frontend` You have to run `yarn install` in both individually for you to get them up and running.
+# build for production and launch server
+$ yarn build
+$ yarn start
 
-### Frontend
+# generate static project
+$ yarn generate
+```
 
-The frontend of the application is built with Nuxt.js
-
-cd to frontend
-
-- `yarn` to install the modules
-
-- `yarn dev` to start it up for development
-
-+ when deploying
-- `yarn build` to build it for production
-
-### Backend
-
-The backend of the application is built with Strapi
-
-cd to backend
-
-- `yarn` to install the modules
-
-- `yarn build` to build the UI for the admin area
-
-- `yarn start` to start up the server
-
-## Blog Post - Pending
-
+For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

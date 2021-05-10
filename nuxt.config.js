@@ -1,6 +1,5 @@
 
 export default {
-  mode: 'universal',
   components: true,
   server: {
     port: 3333, // default: 3000
@@ -54,16 +53,8 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    '@nuxtjs/apollo',
     '@nuxtjs/axios'
   ],
-  apollo: {
-    clientConfigs: {
-      default: {
-        httpEndpoint: 'http://localhost:1337/graphql'
-      }
-    }
-  },
   axios: {
     // proxyHeaders: false
   },
