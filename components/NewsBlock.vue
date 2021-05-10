@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { contentApiURL } from '~/constants'
 
 export default {
@@ -38,7 +37,7 @@ export default {
   methods: {
     async loadNewsImages (newsId) {
       const adress = `${contentApiURL}/media/${newsId}`
-      const responseNews = await axios.get(adress)
+      const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data.media_details.sizes.large.source_url
     }
   }

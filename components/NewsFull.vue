@@ -1,7 +1,7 @@
 <template>
   <div class="mb-2">
     <h2>{{ htmlDecoder(news.title.rendered) }}</h2>
-    <p class="news-time mb-4">
+    <p class="mb-4 news-time">
       {{ format(new Date(news.date), 'yyyy. MMMM dd.') }}
     </p>
     <div class="grid grid-cols-2 gap-4">
@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import { format } from 'date-fns'
 import { contentApiURL } from '~/constants'
 
@@ -39,7 +38,7 @@ export default {
   methods: {
     async loadNewsImages (newsId) {
       const adress = `${contentApiURL}/media/${newsId}`
-      const responseNews = await axios.get(adress)
+      const responseNews = await this.$axios.get(adress)
       // console.log(responseNews.data.media_details.sizes.medium.source_url)
       this.newsImage = responseNews.data.media_details.sizes.large.source_url
     }

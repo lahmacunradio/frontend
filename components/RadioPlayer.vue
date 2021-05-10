@@ -123,7 +123,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 import store from 'store'
 
 import VueShadowBox from 'vue-shadowbox'
@@ -392,7 +391,7 @@ export default {
       this.play()
     },
     checkNowPlaying () {
-      axios.get(this.nowPlayingUri).then((response) => {
+      this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
         // Set a "default" current stream if none exists.
