@@ -39,8 +39,7 @@ export default {
     async loadNewsImages (newsId) {
       const adress = `${contentApiURL}/media/${newsId}`
       const responseNews = await this.$axios.get(adress)
-      // console.log(responseNews.data.media_details.sizes.medium.source_url)
-      this.newsImage = responseNews.data.media_details.sizes.large.source_url
+      this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
     }
   }
 }
