@@ -35,6 +35,24 @@ export function htmlDecoder (string) {
   return decode(string)
 }
 
+export function slugify (str) {
+  str = str.replace(/^\s+|\s+$/g, '') // trim
+  str = str.toLowerCase()
+
+  // remove accents, swap ñ for n, etc
+  const from = 'àáäâèéëêìíïîòóöôùúüûñç·/_,:;'
+  const to = 'aaaaeeeeiiiioooouuuunc------'
+  for (let i = 0, l = from.length; i < l; i++) {
+    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i))
+  }
+
+  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
+    .replace(/\s+/g, '-') // collapse whitespace and replace by -
+    .replace(/-+/g, '-') // collapse dashes
+
+  return str
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -47,7 +65,8 @@ if (!Vue.__my_mixin__) {
       scrollToAnchor,
       removeSeconds,
       truncate,
-      htmlDecoder
+      htmlDecoder,
+      slugify
     }
   })
 }
