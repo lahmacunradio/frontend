@@ -188,7 +188,6 @@ export default {
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
       showsURLList_lookup: [],
       showsList_lookup: [],
-      arcsiShows: this.$store.state.arcsiShows
     }
   },
   computed: {
@@ -207,6 +206,16 @@ export default {
         })
       })
       return allStreams
+    },
+    arcsiList () {
+      return [...this.$store.state.arcsiShows]
+    },
+    currentShowArcsi () {
+      if (this.np.live.is_live) { // live show
+        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.live.streamer_name))
+      } else { // pre-recorded show
+        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.now_playing.song.artist))
+      }
     },
     time_percent () {
       const timePlayed = this.np.now_playing.elapsed
@@ -255,34 +264,20 @@ export default {
       }
     },
     show_url () {
-      const arcsiShowsList = [...this.arcsiShows]
-      let this_show
-      if (this.np.live.is_live) // live show
-      { this_show = arcsiShowsList.find(show => show.name === this.np.live.streamer_name) } else // pre-recorded show
-      { this_show = arcsiShowsList.find(show => show.name === this.np.now_playing.song.artist) }
-      let url = ''
-      try {
-        url = this_show.archive_lahmastore_base_url
-      } catch (error) { // Happens on the first call after page is loaded, not sure why...
-        // console.log("No show URL found.";
-      }
+      const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
       return '/shows/' + url
     },
     show_art_url () {
       if (this.np.live.is_live) {
-        const tryArtFromShow = this.showsList_lookup[this.np.live.streamer_name] // try to find show artwork url based on streamer name
-        if (tryArtFromShow === undefined) { // show not found
-          return this.default_art_url
-        } // return default
-        else { return tryArtFromShow } // resturn show art work
+        // check if this method is valid with streams
+        return this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
       } else {
         const songTitleJSON = this.np.now_playing.song.title
         const songArtistJSON = this.np.now_playing.song.artist
         const artworkJSON = this.np.now_playing.song.art // art work url in json
 
         if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
-          const tryArtFromShow = this.showsList_lookup[songArtistJSON] // try to find show artwork url based on show title
-          if (tryArtFromShow === undefined) { // show not found
+          if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
             let artworkHistoryJSON = '';
             (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
               if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
@@ -293,7 +288,9 @@ export default {
               }
             })
             if (artworkHistoryJSON !== '') { return artworkHistoryJSON } else { return this.default_art_url } // fallback to default art URL
-          } else { return tryArtFromShow } // return show art work
+          } else {
+            return this.currentShowArcsi.cover_image_url // return show art work
+          }
         } else { // it's a valid art work url by azuracast
           return artworkJSON
         }
