@@ -5,11 +5,16 @@
     </div>
     <!-- Make a listing component -->
     <vue-instant 
-      name="customName"
-      placeholder="custom placeholder"
+      :show-autocomplete='true'
+      v-model='value'
+      @input='changed'
+      :suggestion-attribute='suggestionAttribute'
+      :suggestions='suggestions'
+      name="searchName"
+      placeholder="search"
       type="google">
     </vue-instant>
-    <ShowsLister :shows="arcsiShowsList" />
+    <ShowsLister :shows='arcsiShowsList' />
     <div class="m-4 text-center title">
       <h1>Past Shows</h1>
     </div>
@@ -27,7 +32,10 @@ export default {
 
   data() {
     return {
-      mediaServerURL
+      mediaServerURL,
+      value: '',
+      suggestions: [],
+      suggestionAttribute: 'name',
     }
   },
   head() {
@@ -56,10 +64,12 @@ export default {
         }).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
+    },
+    changed () {
+      this.suggestions = this.arcsiShows.filter(show => show.name.toLowerCase().includes(this.value.toLowerCase()))
     }
   },
   mounted () {
-    // console.log(this.arcsiShows)
   },
   methods: {
   }
