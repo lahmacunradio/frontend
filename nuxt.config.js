@@ -40,7 +40,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/mixinCommonMethods'
+    '~/plugins/mixinCommonMethods',
+    '~/plugins/vue-instant',
   ],
   /*
   ** Nuxt.js dev-modules
