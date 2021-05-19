@@ -9,7 +9,7 @@
       <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
         <a class="cursor-pointer" @click="arcsiItemShadowbox = !arcsiItemShadowbox">
           <img :src="arcsiEpisode.image_url" alt="" class="rounded-md">
-          <vue-shadow-box :media="[{ src: arcsiEpisode.image_url, description: arcsiEpisode.name }]" :visibility="arcsiItemShadowbox" />
+          <Modal :media="arcsiEpisode.image_url" :title="arcsiEpisode.name" :description="arcsiEpisode.description" :visibility="arcsiItemShadowbox" />
         </a>
       </div>
       <div class="mb-4">
@@ -21,12 +21,10 @@
 </template>
 
 <script>
-import VueShadowBox from 'vue-shadowbox'
 import { arcsiItemBaseURL } from '~/constants'
 
 export default {
   components: {
-    VueShadowBox
   },
   data () {
     return {

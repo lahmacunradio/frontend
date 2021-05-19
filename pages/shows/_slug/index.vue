@@ -4,7 +4,7 @@
       <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
         <a class="cursor-pointer" @click="shadowbox = !shadowbox">
           <img :src="arcsiInfosBlock.cover_image_url" alt="" class="rounded-md">
-          <vue-shadow-box :media="[{ src: arcsiInfosBlock.cover_image_url, description: arcsiInfosBlock.name }]" :visibility="shadowbox" />
+          <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name" :description="arcsiInfosBlock.description" :visibility="shadowbox" />
         </a>
       </div>
       <div class="mb-4">
@@ -35,15 +35,10 @@
 </template>
 
 <script>
-import VueShadowBox from 'vue-shadowbox'
 import { format } from 'date-fns'
 import { mediaServerURL } from '~/constants'
 
 export default {
-  components: {
-    VueShadowBox
-  },
-
   data () {
     return {
       shadowbox: false,
