@@ -4,6 +4,11 @@
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
+    <vue-instant 
+      name="customName"
+      placeholder="custom placeholder"
+      type="google">
+    </vue-instant>
     <ShowsLister :shows="arcsiShowsList" />
     <div class="m-4 text-center title">
       <h1>Past Shows</h1>
@@ -15,6 +20,7 @@
 <script>
 
 import { mediaServerURL } from '~/constants'
+import 'vue-instant/dist/vue-instant.css'
 
 export default {
   components: {},
