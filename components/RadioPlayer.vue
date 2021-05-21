@@ -187,7 +187,7 @@ export default {
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
       showsURLList_lookup: [],
-      showsList_lookup: [],
+      showsList_lookup: []
     }
   },
   computed: {
