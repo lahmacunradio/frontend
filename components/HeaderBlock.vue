@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { streamServer } from '~/constants'
+
 export default {
 
   components: {
@@ -20,7 +22,7 @@ export default {
 
   data () {
     return {
-      streamServer: 'https://streaming.lahmacun.hu/api/nowplaying/1'
+      streamServer
     }
   },
   computed: {
