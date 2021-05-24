@@ -50,11 +50,11 @@
           </div>
 
           <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-            <a class="cursor-pointer programimage" rel="playerimg" @click="shadowbox = !shadowbox">
+            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
               <div v-if="show_check == true" class="onair">On air</div>
               <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
             </a>
-            <vue-shadow-box :media="[{ src: show_art_url, description: show_title }]" :visibility="shadowbox" />
+            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="now-playing-main">
@@ -125,13 +125,8 @@
 <script>
 import store from 'store'
 
-import VueShadowBox from 'vue-shadowbox'
-// You need to import the CSS only once
-import 'vue-shadowbox/dist/vue-shadowbox.css'
-
 export default {
   components: {
-    VueShadowBox
   },
   props: {
     nowPlayingUri: {
@@ -145,7 +140,7 @@ export default {
   },
   data () {
     return {
-      shadowbox: false,
+      streamModal: false,
       showVolumeSlider: false,
       np: {
         live: {
@@ -441,6 +436,9 @@ export default {
         seconds = '0' + seconds
       }
       return (hours !== '00' ? hours + ':' : '') + minutes + ':' + seconds
+    },
+    closeModal () {
+      this.streamModal = false
     }
   }
 }
@@ -448,6 +446,8 @@ export default {
 
 <style lang="scss" scoped>
 .radio-player-widget {
+    min-width: 300px;
+    width: 100%;
     .now-playing-details {
         display: flex;
         align-items: center;
@@ -479,6 +479,9 @@ export default {
                 text-overflow: clip;
                 /* white-space: normal; */
                 word-break: break-all;
+            }
+            a {
+              display: block;
             }
         }
         .time-display {
@@ -516,6 +519,7 @@ export default {
     .radio-controls {
         display: flex;
         flex-direction: row;
+        width: 100%;
         .radio-control-play-button {
             margin-right: 0.5em;
         }
@@ -540,24 +544,28 @@ export default {
   font-size: 1.1em;
 }
 
+@keyframes pulseonair {
+  from { opacity: 0; }
+  45% { opacity: 1; }
+  50% { opacity: 1; }
+  to { opacity: 0; }
+}
+
 a.programimage {
     width: 70px;
     height: 70px;
     display: block;
     overflow: hidden;
     position: relative;
-}
-
-a.programimage img {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    max-width: 70px;
-    max-height: 70px;
-}
-
-a.programimage .onair {
-  position: absolute;
+    img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        max-width: 70px;
+        max-height: 70px;
+    }
+    .onair {
+      position: absolute;
       bottom: 0;
       background: #da1313;
       padding: 0.2em;
@@ -567,40 +575,28 @@ a.programimage .onair {
       text-align: center;
       text-transform: uppercase;
       font-weight: 500;
-}
-
-@keyframes pulseonair {
-  from { opacity: 0; }
-  45% { opacity: 1; }
-  50% { opacity: 1; }
-  to { opacity: 0; }
-}
-
-a.programimage .onair {
-  animation-name: pulseonair;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
+      animation-name: pulseonair;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
 }
 
 .media-body {
     max-height: 70px;
     display: block;
-}
-
-.media-body h4,
-.media-body h5 {
-  text-overflow: initial;
-  overflow: unset;
-  cursor: default;
-  word-break: inherit;
-  text-transform: none;
-  white-space: normal;
-}
-
-.media-body h5 {
-    color: #585858 !important;
-    font-size: 0.9em;
-    text-transform: none;
+    h4, h5 {
+      text-overflow: initial;
+      overflow: unset;
+      cursor: default;
+      word-break: inherit;
+      text-transform: none;
+      white-space: normal;
+    }
+    h5 {
+      color: #585858 !important;
+      font-size: 0.9em;
+      text-transform: none;
+    }
 }
 
 .now-playing-main .media-body {
@@ -614,26 +610,23 @@ a.programimage .onair {
     z-index: 500;
     padding-left: 3px;
     line-height: 1;
-}
-
-#radio-player-controls.radio-controls-standalone > div {
-    display: inline-block;
-    vertical-align: top;
+    > div {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .radio-control-volume-slider {
+        width: 200px;
+    }
+    input.jp-volume-range {
+        width: 200px;
+        height: 4px;
+    }
 }
 
 .volumeshower {
   margin: 10px 5px 0;
   display: block;
   -moz-transform: translateY(-1px);
-}
-
-#radio-player-controls.radio-controls-standalone .radio-control-volume-slider {
-    width: 200px;
-}
-
-#radio-player-controls.radio-controls-standalone input.jp-volume-range {
-    width: 200px;
-    height: 4px;
 }
 
 /* volume control cursos */
@@ -716,16 +709,17 @@ a.programimage .onair {
     display:none;
 }
 
-.now-playing-title a i {
-  color: #8d769f;
-  -webkit-transition: 0.7s all linear;
-  -moz-transition: 0.7s all linear;
-  transition: 0.7s all linear;
-  transform: rotate(90deg);
-}
-
-.now-playing-title a:hover i {
-  color: black;
+.now-playing-title {
+  a i {
+    color: #8d769f;
+    -webkit-transition: 0.7s all linear;
+    -moz-transition: 0.7s all linear;
+    transition: 0.7s all linear;
+    transform: rotate(90deg);
+  }
+  a:hover i {
+    color: black;
+  }
 }
 
 /* Finish player overrides */
