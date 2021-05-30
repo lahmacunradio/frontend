@@ -1,18 +1,8 @@
 <template>
-  <div class="container">
-    <div class="text-center title">
-      <h1 class="m-4">
-        Lahmacun Radio Home
-      </h1>
-    </div>
+  <div class="">
     <section class="grid-cols-2 gap-16 md:grid">
       <div>
-        <nuxt-link to="news/">
-          <h3>News</h3>
-        </nuxt-link>
-        <div v-for="news in sortNews" :key="news.id">
-          <NewsBlock :news="news" />
-        </div>
+        <NewsHome :news="sortNews[newsStart]" @changenews="changenews" />
       </div>
       <div>
         <nuxt-link to="/shows">
@@ -26,14 +16,12 @@
 
 <script>
 export default {
-  components: {
-  },
+  layout: 'home',
   data () {
     return {
-      newsLimit: 3
+      newsLimit: 9,
+      newsStart: 0
     }
-  },
-  apollo: {
   },
   computed: {
     arcsishows () {
@@ -53,14 +41,19 @@ export default {
     }
   },
   methods: {
+    changenews () {
+      if (this.newsStart === this.newsLimit - 1) {
+        this.newsStart = 0
+      } else {
+        this.newsStart++
+      }
+    }
   }
 
 }
 </script>
 
 <style lang="scss" scoped>
-h1 {
-}
 h3 {
   margin-bottom: 1rem;
 }
