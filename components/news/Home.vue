@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-2">
+  <div class="w-full">
     <nuxt-link :to="'/news/' + news.slug">
       <div class="news-image">
         <img :src="newsImage" :alt="news.title.rendered" class="">
@@ -26,7 +26,7 @@
           </nuxt-link>
         </h5>
         <div v-html="news.excerpt.rendered" />
-        <div class="flex justify-end mb-4">
+        <div class="flex justify-end my-4">
           <div class="px-4 py-2 bg-gray-200 rounded-lg cursor-pointer more-button" @click="$emit('changenews')">
             Previous news <i class="fa fa-long-arrow-right" aria-hidden="true" />
           </div>

@@ -7,6 +7,14 @@
 
       <div class="now-playing-details">
         <div class="radio-controls">
+          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
+            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
+              <div v-if="show_check == true" class="onair">On air</div>
+              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
+            </a>
+            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
+          </div>
+
           <div class="play-volume-controls">
             <div v-if="is_playing" class="radio-control-play-button">
               <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
@@ -22,39 +30,31 @@
             <a href="#" class="text-secondary volumeshower" @mouseenter="showVolumeSlider = !showVolumeSlider">
               <i class="material-icons" aria-hidden="true">volume_down</i>
             </a>
-          </div>
 
-          <div v-show="showVolumeSlider" id="radio-player-controls" class="radio-controls-standalone volumecontrolos" @mouseleave="showVolumeSlider = !showVolumeSlider">
-            <div class="radio-control-mute-button">
-              <a href="#" class="text-secondary" :title="'mute_btn'" @click.prevent="volume = 0">
-                <i class="material-icons" aria-hidden="true">volume_mute</i>
-              </a>
+            <div v-show="showVolumeSlider" id="radio-player-controls" class="radio-controls-standalone volumecontrolos" @mouseleave="showVolumeSlider = !showVolumeSlider">
+              <div class="radio-control-mute-button">
+                <a href="#" class="text-secondary" :title="'mute_btn'" @click.prevent="volume = 0">
+                  <i class="material-icons" aria-hidden="true">volume_mute</i>
+                </a>
+              </div>
+              <div class="radio-control-volume-slider">
+                <input
+                  id="jp-volume-range"
+                  v-model="volume"
+                  type="range"
+                  :title="'volume_slider'"
+                  class="custom-range jp-volume-range"
+                  min="0"
+                  max="100"
+                  step="1"
+                >
+              </div>
+              <div class="radio-control-max-volume-button">
+                <a href="#" class="text-secondary" :title="'full_volume_btn'" @click.prevent="volume = 100">
+                  <i class="material-icons" aria-hidden="true">volume_up</i>
+                </a>
+              </div>
             </div>
-            <div class="radio-control-volume-slider">
-              <input
-                id="jp-volume-range"
-                v-model="volume"
-                type="range"
-                :title="'volume_slider'"
-                class="custom-range jp-volume-range"
-                min="0"
-                max="100"
-                step="1"
-              >
-            </div>
-            <div class="radio-control-max-volume-button">
-              <a href="#" class="text-secondary" :title="'full_volume_btn'" @click.prevent="volume = 100">
-                <i class="material-icons" aria-hidden="true">volume_up</i>
-              </a>
-            </div>
-          </div>
-
-          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-              <div v-if="show_check == true" class="onair">On air</div>
-              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
-            </a>
-            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="now-playing-main">
@@ -605,7 +605,7 @@ a.programimage {
 
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
-    background: #d09cf8;
+    background: white;
     top: 65px;
     z-index: 500;
     padding-left: 3px;
@@ -620,6 +620,7 @@ a.programimage {
     input.jp-volume-range {
         width: 200px;
         height: 4px;
+        @apply bg-gray-300;
     }
 }
 

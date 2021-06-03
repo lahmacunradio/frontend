@@ -1,13 +1,10 @@
 <template>
-  <div class="">
-    <section class="grid-cols-2 gap-16 md:grid">
+  <div>
+    <section class="grid-cols-2 mb-16 md:grid">
       <div>
         <NewsHome :news="sortNews[newsStart]" @changenews="changenews" />
       </div>
       <div>
-        <nuxt-link to="/shows">
-          <h3>Schedule</h3>
-        </nuxt-link>
         <ScheduleHome :shows="sortShowsForSchedule" />
       </div>
     </section>
