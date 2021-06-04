@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderBlock />
-    <nuxt />
+    <nuxt class="py-8" />
   </div>
 </template>
 
