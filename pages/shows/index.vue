@@ -4,9 +4,9 @@
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
-    <SearchInput
-      :suggestions='suggestions'
-      :suggestionAttribute='suggestionAttribute'
+    <AutoCompleteSearch
+      :items='arcsiShows'
+      suggestionAttribute='name'
     />
     <ShowsLister :shows='arcsiShowsList' />
     <div class="m-4 text-center title">
@@ -19,17 +19,12 @@
 <script>
 
 import { mediaServerURL } from '~/constants'
-import SearchInput from '~/components/SearchInput'
 
 export default {
-  components: { SearchInput },
-
   data () {
     return {
       mediaServerURL,
-      value: '',
-      suggestions: [{ id: '1', name: 'name1' }, { id: '2', name: 'name2' }],
-      suggestionAttribute: 'name'
+      value: ''
     }
   },
   head () {
