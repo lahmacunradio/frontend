@@ -4,6 +4,10 @@
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
+    <SearchInput
+      :suggestions='suggestions'
+      :suggestionAttribute='suggestionAttribute'
+    />
     <ShowsLister :shows='arcsiShowsList' />
     <div class="m-4 text-center title">
       <h1>Past Shows</h1>
@@ -15,28 +19,29 @@
 <script>
 
 import { mediaServerURL } from '~/constants'
+import SearchInput from '~/components/SearchInput'
 
 export default {
-  components: {},
+  components: { SearchInput },
 
-  data() {
+  data () {
     return {
       mediaServerURL,
       value: '',
-      suggestions: [],
-      suggestionAttribute: 'name',
+      suggestions: [{ id: '1', name: 'name1' }, { id: '2', name: 'name2' }],
+      suggestionAttribute: 'name'
     }
   },
-  head() {
+  head () {
     return {
       title: 'Lahmacun Shows'
     }
   },
   computed: {
-    arcsiShows() {
+    arcsiShows () {
       return this.$store.state.arcsiShows
     },
-    arcsiShowsList() {
+    arcsiShowsList () {
       if (this.arcsiShows) {
         const arcsiShowsList = [...this.arcsiShows]
         return arcsiShowsList.filter((show) => {
@@ -54,9 +59,9 @@ export default {
       }
       return null
     },
-    changed () {
-      this.suggestions = this.arcsiShows.filter(show => show.name.toLowerCase().includes(this.value.toLowerCase()))
-    }
+    // changed () {
+    //   this.suggestions = this.arcsiShows.filter(show => show.name.toLowerCase().includes(this.value.toLowerCase()))
+    // }
   },
   mounted () {
   },
