@@ -4,16 +4,6 @@
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
-    <vue-instant 
-      :show-autocomplete='true'
-      v-model='value'
-      @input='changed'
-      :suggestion-attribute='suggestionAttribute'
-      :suggestions='suggestions'
-      name="searchName"
-      placeholder="search"
-      type="google">
-    </vue-instant>
     <ShowsLister :shows='arcsiShowsList' />
     <div class="m-4 text-center title">
       <h1>Past Shows</h1>
@@ -25,7 +15,6 @@
 <script>
 
 import { mediaServerURL } from '~/constants'
-import 'vue-instant/dist/vue-instant.css'
 
 export default {
   components: {},
