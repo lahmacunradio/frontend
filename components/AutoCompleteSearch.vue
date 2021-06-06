@@ -1,16 +1,19 @@
 <template>
   <div>
     <TextInput v-model='value' />
-    <ul class='suggestions'>
+    <ul
+      class='suggestions'
+      v-show='value'
+    >
       <li
         v-for='(suggestion, i) in suggestions'
         :key='suggestionAttribute ? suggestion.id : suggestion + i'
         class='suggestion'
+        @click='onClick(suggestion)'
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
     </ul>
-    <p>{{value}}</p>
   </div>
 </template>
 
@@ -27,6 +30,10 @@ export default {
       default: null
     }
   },
+  model: {
+    prop: 'items',
+    event: 'change'
+  },
   data () {
     return {
       value: ''
@@ -34,7 +41,16 @@ export default {
   },
   computed: {
     suggestions () {
-      return [{ id: '1', name: 'name1' }, { id: '2', name: 'name2' }]
+      return this.items.filter(item => (
+        this.suggestionAttribute
+          ? item[this.suggestionAttribute].toLowerCase().includes(this.value.toLowerCase())
+          : item.toLowerCase().includes(this.value.toLowerCase())
+      ))
+    }
+  },
+  methods: {
+    onClick (item) {
+      this.$emit('change', item)
     }
   }
 }

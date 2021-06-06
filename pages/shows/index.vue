@@ -5,7 +5,7 @@
     </div>
     <!-- Make a listing component -->
     <AutoCompleteSearch
-      :items='arcsiShows'
+      v-model='arcsiShows'
       suggestionAttribute='name'
     />
     <ShowsLister :shows='arcsiShowsList' />
@@ -33,8 +33,13 @@ export default {
     }
   },
   computed: {
-    arcsiShows () {
-      return this.$store.state.arcsiShows
+    arcsiShows: {
+      get () {
+        return this.$store.state.arcsiShows
+      },
+      set (newValue) {
+        this.arcsiShows = [newValue]
+      }
     },
     arcsiShowsList () {
       if (this.arcsiShows) {
@@ -53,10 +58,7 @@ export default {
         }).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
-    },
-    // changed () {
-    //   this.suggestions = this.arcsiShows.filter(show => show.name.toLowerCase().includes(this.value.toLowerCase()))
-    // }
+    }
   },
   mounted () {
   },
