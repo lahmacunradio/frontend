@@ -1,5 +1,4 @@
-import axios from 'axios'
-import {arcsiServerURL, newsURL, aboutUsURL} from '~/constants'
+import { arcsiServerURL, newsURL, aboutUsURL } from '~/constants'
 
 export const state = () => ({
   arcsiShows: null,
@@ -9,11 +8,11 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit ({ state }, { req }) {
-    const responseArcsi = await axios.get(arcsiServerURL)
+    const responseArcsi = await this.$axios.get(arcsiServerURL)
     state.arcsiShows = responseArcsi.data
-    const responseNews = await axios.get(newsURL)
+    const responseNews = await this.$axios.get(newsURL)
     state.newsList = responseNews.data
-    const responseAboutUs = await axios.get(aboutUsURL)
+    const responseAboutUs = await this.$axios.get(aboutUsURL)
     state.aboutUs = responseAboutUs.data
   }
 }

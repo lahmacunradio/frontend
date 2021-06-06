@@ -4,7 +4,7 @@
       <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
         <a class="cursor-pointer" @click="shadowbox = !shadowbox">
           <img :src="arcsiInfosBlock.cover_image_url" alt="" class="rounded-md">
-          <vue-shadow-box :media="[{ src: arcsiInfosBlock.cover_image_url, description: arcsiInfosBlock.name }]" :visibility="shadowbox" />
+          <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name" :description="arcsiInfosBlock.description" :visibility="shadowbox" />
         </a>
       </div>
       <div class="mb-4">
@@ -19,10 +19,12 @@
       <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
           <div>
-            <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md">
-            <h5>
-              {{ arcsi.name }}
-            </h5>
+            <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md">
+              <h5>
+                {{ arcsi.name }}
+              </h5>
+            </NuxtLink>
             <small>Play date: {{ format(new Date(arcsi.play_date), 'yyyy. MMMM dd.') }}</small>
             <p>{{ arcsi.description }}</p>
           </div>
@@ -33,16 +35,11 @@
 </template>
 
 <script>
-import VueShadowBox from 'vue-shadowbox'
-import {format} from 'date-fns'
-import {mediaServerURL} from '~/constants'
+import { format } from 'date-fns'
+import { mediaServerURL } from '~/constants'
 
 export default {
-  components: {
-    VueShadowBox
-  },
-
-  data() {
+  data () {
     return {
       shadowbox: false,
       slug: this.$route.params.slug,
@@ -56,7 +53,7 @@ export default {
     }
   },
   computed: {
-    arcsiShows() {
+    arcsiShows () {
       return this.$store.state.arcsiShows
     },
     arcsiInfosBlock () {

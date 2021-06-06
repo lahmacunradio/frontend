@@ -50,11 +50,11 @@
           </div>
 
           <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-            <a class="cursor-pointer programimage" rel="playerimg" @click="shadowbox = !shadowbox">
+            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
               <div v-if="show_check == true" class="onair">On air</div>
               <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
             </a>
-            <vue-shadow-box :media="[{ src: show_art_url, description: show_title }]" :visibility="shadowbox" />
+            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="now-playing-main">
@@ -123,16 +123,10 @@
 </template>
 
 <script>
-import axios from 'axios'
 import store from 'store'
-
-import VueShadowBox from 'vue-shadowbox'
-// You need to import the CSS only once
-import 'vue-shadowbox/dist/vue-shadowbox.css'
 
 export default {
   components: {
-    VueShadowBox
   },
   props: {
     nowPlayingUri: {
@@ -146,7 +140,7 @@ export default {
   },
   data () {
     return {
-      shadowbox: false,
+      streamModal: false,
       showVolumeSlider: false,
       np: {
         live: {
@@ -188,8 +182,7 @@ export default {
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
       showsURLList_lookup: [],
-      showsList_lookup: [],
-      arcsiShows: this.$store.state.arcsiShows
+      showsList_lookup: []
     }
   },
   computed: {
@@ -208,6 +201,16 @@ export default {
         })
       })
       return allStreams
+    },
+    arcsiList () {
+      return [...this.$store.state.arcsiShows]
+    },
+    currentShowArcsi () {
+      if (this.np.live.is_live) { // live show
+        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.live.streamer_name))
+      } else { // pre-recorded show
+        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.now_playing.song.artist))
+      }
     },
     time_percent () {
       const timePlayed = this.np.now_playing.elapsed
@@ -256,34 +259,20 @@ export default {
       }
     },
     show_url () {
-      const arcsiShowsList = [...this.arcsiShows]
-      let this_show
-      if (this.np.live.is_live) // live show
-      { this_show = arcsiShowsList.find(show => show.name === this.np.live.streamer_name) } else // pre-recorded show
-      { this_show = arcsiShowsList.find(show => show.name === this.np.now_playing.song.artist) }
-      let url = ''
-      try {
-        url = this_show.archive_lahmastore_base_url
-      } catch (error) { // Happens on the first call after page is loaded, not sure why...
-        // console.log("No show URL found.";
-      }
+      const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
       return '/shows/' + url
     },
     show_art_url () {
       if (this.np.live.is_live) {
-        const tryArtFromShow = this.showsList_lookup[this.np.live.streamer_name] // try to find show artwork url based on streamer name
-        if (tryArtFromShow === undefined) { // show not found
-          return this.default_art_url
-        } // return default
-        else { return tryArtFromShow } // resturn show art work
+        // check if this method is valid with streams
+        return this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
       } else {
         const songTitleJSON = this.np.now_playing.song.title
         const songArtistJSON = this.np.now_playing.song.artist
         const artworkJSON = this.np.now_playing.song.art // art work url in json
 
         if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
-          const tryArtFromShow = this.showsList_lookup[songArtistJSON] // try to find show artwork url based on show title
-          if (tryArtFromShow === undefined) { // show not found
+          if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
             let artworkHistoryJSON = '';
             (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
               if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
@@ -294,7 +283,9 @@ export default {
               }
             })
             if (artworkHistoryJSON !== '') { return artworkHistoryJSON } else { return this.default_art_url } // fallback to default art URL
-          } else { return tryArtFromShow } // return show art work
+          } else {
+            return this.currentShowArcsi.cover_image_url // return show art work
+          }
         } else { // it's a valid art work url by azuracast
           return artworkJSON
         }
@@ -392,7 +383,7 @@ export default {
       this.play()
     },
     checkNowPlaying () {
-      axios.get(this.nowPlayingUri).then((response) => {
+      this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
         // Set a "default" current stream if none exists.
@@ -445,6 +436,9 @@ export default {
         seconds = '0' + seconds
       }
       return (hours !== '00' ? hours + ':' : '') + minutes + ':' + seconds
+    },
+    closeModal () {
+      this.streamModal = false
     }
   }
 }
@@ -452,6 +446,8 @@ export default {
 
 <style lang="scss" scoped>
 .radio-player-widget {
+    min-width: 300px;
+    width: 100%;
     .now-playing-details {
         display: flex;
         align-items: center;
@@ -483,6 +479,9 @@ export default {
                 text-overflow: clip;
                 /* white-space: normal; */
                 word-break: break-all;
+            }
+            a {
+              display: block;
             }
         }
         .time-display {
@@ -520,6 +519,7 @@ export default {
     .radio-controls {
         display: flex;
         flex-direction: row;
+        width: 100%;
         .radio-control-play-button {
             margin-right: 0.5em;
         }
@@ -544,24 +544,28 @@ export default {
   font-size: 1.1em;
 }
 
+@keyframes pulseonair {
+  from { opacity: 0; }
+  45% { opacity: 1; }
+  50% { opacity: 1; }
+  to { opacity: 0; }
+}
+
 a.programimage {
     width: 70px;
     height: 70px;
     display: block;
     overflow: hidden;
     position: relative;
-}
-
-a.programimage img {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    max-width: 70px;
-    max-height: 70px;
-}
-
-a.programimage .onair {
-  position: absolute;
+    img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        max-width: 70px;
+        max-height: 70px;
+    }
+    .onair {
+      position: absolute;
       bottom: 0;
       background: #da1313;
       padding: 0.2em;
@@ -571,40 +575,28 @@ a.programimage .onair {
       text-align: center;
       text-transform: uppercase;
       font-weight: 500;
-}
-
-@keyframes pulseonair {
-  from { opacity: 0; }
-  45% { opacity: 1; }
-  50% { opacity: 1; }
-  to { opacity: 0; }
-}
-
-a.programimage .onair {
-  animation-name: pulseonair;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
+      animation-name: pulseonair;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
 }
 
 .media-body {
     max-height: 70px;
     display: block;
-}
-
-.media-body h4,
-.media-body h5 {
-  text-overflow: initial;
-  overflow: unset;
-  cursor: default;
-  word-break: inherit;
-  text-transform: none;
-  white-space: normal;
-}
-
-.media-body h5 {
-    color: #585858 !important;
-    font-size: 0.9em;
-    text-transform: none;
+    h4, h5 {
+      text-overflow: initial;
+      overflow: unset;
+      cursor: default;
+      word-break: inherit;
+      text-transform: none;
+      white-space: normal;
+    }
+    h5 {
+      color: #585858 !important;
+      font-size: 0.9em;
+      text-transform: none;
+    }
 }
 
 .now-playing-main .media-body {
@@ -618,26 +610,23 @@ a.programimage .onair {
     z-index: 500;
     padding-left: 3px;
     line-height: 1;
-}
-
-#radio-player-controls.radio-controls-standalone > div {
-    display: inline-block;
-    vertical-align: top;
+    > div {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .radio-control-volume-slider {
+        width: 200px;
+    }
+    input.jp-volume-range {
+        width: 200px;
+        height: 4px;
+    }
 }
 
 .volumeshower {
   margin: 10px 5px 0;
   display: block;
   -moz-transform: translateY(-1px);
-}
-
-#radio-player-controls.radio-controls-standalone .radio-control-volume-slider {
-    width: 200px;
-}
-
-#radio-player-controls.radio-controls-standalone input.jp-volume-range {
-    width: 200px;
-    height: 4px;
 }
 
 /* volume control cursos */
@@ -720,16 +709,17 @@ a.programimage .onair {
     display:none;
 }
 
-.now-playing-title a i {
-  color: #8d769f;
-  -webkit-transition: 0.7s all linear;
-  -moz-transition: 0.7s all linear;
-  transition: 0.7s all linear;
-  transform: rotate(90deg);
-}
-
-.now-playing-title a:hover i {
-  color: black;
+.now-playing-title {
+  a i {
+    color: #8d769f;
+    -webkit-transition: 0.7s all linear;
+    -moz-transition: 0.7s all linear;
+    transition: 0.7s all linear;
+    transform: rotate(90deg);
+  }
+  a:hover i {
+    color: black;
+  }
 }
 
 /* Finish player overrides */
