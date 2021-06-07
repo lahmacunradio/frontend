@@ -4,7 +4,7 @@
       v-model='arcsiShows'
       suggestionAttribute='name'
     />
-    <div v-if='arcsiShowsList  > 0' >
+    <div v-if='arcsiShowsList.length  > 0' >
       <h1 class="m-4 text-center title">Lahmacun Shows</h1>
       <ShowsLister :shows='arcsiShowsList' />
     </div>
@@ -41,7 +41,7 @@ export default {
       return null
     },
     pastShowsList () {
-      if (this.arcsiShows.length > 0) {
+      if (this.arcsiShows) {
         return this.arcsiShows.filter(show => !show.active)
           .sort((a, b) => a.name.localeCompare(b.name))
       }
