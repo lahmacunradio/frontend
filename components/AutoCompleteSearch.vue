@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     onClick (item) {
-      this.$emit('change', item)
+      this.$emit('change', [item])
     }
   }
 }
