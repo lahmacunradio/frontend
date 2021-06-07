@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       mediaServerURL,
-      value: ''
+      arcsiShows: this.$store.state.arcsiShows
     }
   },
   head () {
@@ -33,36 +33,21 @@ export default {
     }
   },
   computed: {
-    arcsiShows: {
-      get () {
-        return this.$store.state.arcsiShows
-      },
-      set (newValue) {
-        this.arcsiShows = [newValue]
-      }
-    },
     arcsiShowsList () {
       if (this.arcsiShows) {
-        const arcsiShowsList = [...this.arcsiShows]
-        return arcsiShowsList.filter((show) => {
-          return !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
-        }).sort((a, b) => a.name.localeCompare(b.name))
+        return this.arcsiShows.filter(show => (
+          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
+        )).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
     },
     pastShowsList () {
       if (this.arcsiShows) {
-        const arcsiShowsList = [...this.arcsiShows]
-        return arcsiShowsList.filter((show) => {
-          return !show.active
-        }).sort((a, b) => a.name.localeCompare(b.name))
+        return this.arcsiShows.filter(show => !show.active)
+          .sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
     }
-  },
-  mounted () {
-  },
-  methods: {
   }
 }
 </script>
