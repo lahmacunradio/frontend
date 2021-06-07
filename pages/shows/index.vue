@@ -1,18 +1,17 @@
 <template>
   <div>
-    <div class="m-4 text-center title">
-      <h1>Lahmacun Shows</h1>
-    </div>
-    <!-- Make a listing component -->
     <AutoCompleteSearch
       v-model='arcsiShows'
       suggestionAttribute='name'
     />
-    <ShowsLister :shows='arcsiShowsList' />
-    <div class="m-4 text-center title">
-      <h1>Past Shows</h1>
+    <div v-if='arcsiShowsList  > 0' >
+      <h1 class="m-4 text-center title">Lahmacun Shows</h1>
+      <ShowsLister :shows='arcsiShowsList' />
     </div>
-    <ShowsLister :shows="pastShowsList" />
+    <div v-if='pastShowsList.length > 0'>
+      <h1 class="m-4 text-center title">Past Shows</h1>
+      <ShowsLister :shows="pastShowsList" />
+    </div>
   </div>
 </template>
 
@@ -42,7 +41,7 @@ export default {
       return null
     },
     pastShowsList () {
-      if (this.arcsiShows) {
+      if (this.arcsiShows.length > 0) {
         return this.arcsiShows.filter(show => !show.active)
           .sort((a, b) => a.name.localeCompare(b.name))
       }
