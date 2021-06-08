@@ -12,7 +12,7 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full m-auto">
-        <div v-for="show in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+        <div v-for="(show, index) in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
             On Air
@@ -32,7 +32,8 @@
         </div>
       </div>
     </div>
-    <div v-if="false" class="old-schedule">
+    <!-- OLD SCHEDULE BLOCK
+    <div class="old-schedule">
       <div v-for="(day, index) in showsByDate" :key="day.id" class="mb-2 scheduleblock">
         <div class="flex flex-row justify-between dayname">
           <h4>{{ dayNames[day[0].day-1] }}</h4>
@@ -55,6 +56,7 @@
         </div>
       </div>
     </div>
+    -->
   </div>
 </template>
 
@@ -231,6 +233,5 @@ a {
   70% { opacity: 1; }
   100% { opacity: 0.3; }
 }
-
 
 </style>
