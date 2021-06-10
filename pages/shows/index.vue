@@ -1,8 +1,9 @@
 <template>
   <div>
     <AutoCompleteSearch
-      v-model='arcsiShows'
+      :defaultItems="defaultArcsiShows"
       suggestionAttribute='name'
+      @update="onUpdate"
     />
     <div v-if='arcsiShowsList.length  > 0' >
       <h1 class="m-4 text-center title">Lahmacun Shows</h1>
@@ -23,6 +24,7 @@ export default {
   data () {
     return {
       mediaServerURL,
+      defaultArcsiShows: this.$store.state.arcsiShows,
       arcsiShows: this.$store.state.arcsiShows
     }
   },
@@ -46,6 +48,11 @@ export default {
           .sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
+    }
+  },
+  methods: {
+    onUpdate (result) {
+      this.arcsiShows = result
     }
   }
 }

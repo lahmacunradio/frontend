@@ -1,15 +1,19 @@
 <template>
   <div>
-    <TextInput v-model='value' />
+    <input
+      type="search"
+      v-model="value"
+      @keydown.enter="onEnter"
+    />
     <ul
-      class='suggestions'
-      v-show='value'
+      class="suggestions"
+      v-show="value"
     >
       <li
-        v-for='(suggestion, i) in suggestions'
-        :key='suggestionAttribute ? suggestion.id : suggestion + i'
-        class='suggestion'
-        @click='onClick(suggestion)'
+        v-for="(suggestion, i) in suggestions"
+        :key="suggestionAttribute ? suggestion.id : suggestion + i"
+        class="suggestion"
+        @click="onClick(suggestion)"
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
@@ -20,7 +24,7 @@
 <script>
 export default {
   props: {
-    items: {
+    defaultItems: {
       required: true,
       type: Array
     },
@@ -58,14 +62,21 @@ export default {
       return item.toLowerCase().includes(this.value.toLowerCase())
     },
     getSuggestions () {
-      return this.items.filter(item => (
+      return this.defaultItems.filter(item => (
         this.suggestionAttribute
           ? this.withAttribute(item)
           : this.withoutAttribute(item)
       ))
     },
+    emitResult (result) {
+      this.$emit('update', result)
+      this.value = ''
+    },
     onClick (item) {
-      this.$emit('change', [item])
+      this.emitResult([item])
+    },
+    onEnter () {
+      this.emitResult(this.suggestions)
     }
   }
 }
