@@ -84,7 +84,7 @@
               </div>
             </div>
 
-            <div v-if="time_display_played" class="time-display" style="display:none;">
+            <div v-if="time_display_played" class="time-display">
               <div class="time-display-played text-secondary">
                 {{ time_display_played }}
               </div>
@@ -447,6 +447,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import "/assets/css/variables";
 .radio-player-widget {
     min-width: 300px;
     width: 100%;
@@ -460,6 +461,8 @@ export default {
         .now-playing-main {
             flex: 1;
             min-width: 0;
+            position: relative;
+            max-height: 70px;
         }
         h4, h5 {
             margin: 0;
@@ -488,12 +491,19 @@ export default {
         }
         .time-display {
             font-size: 10px;
-            margin-top: .25rem;
             flex-direction: row;
             align-items: center;
             display: flex;
+            width: 200px;
+            height: 1.2rem;
+            position: absolute;
+            bottom: 0;
             .time-display-played {
                 margin-right: .5rem;
+                width: 2rem;
+            }
+            .progress {
+              @apply bg-gray-300;
             }
             .time-display-progress {
                 flex: 1 1 auto;
@@ -501,6 +511,8 @@ export default {
                     -webkit-transition: width 1s; /* Safari */
                     transition: width 1s;
                     transition-timing-function: linear;
+                    background: $lahma-pink;
+                    height: 0.5rem;
                 }
             }
             .time-display-total {
