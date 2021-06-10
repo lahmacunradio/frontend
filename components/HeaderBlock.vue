@@ -1,13 +1,20 @@
 <template>
-  <header class="container flex-row-reverse py-4 md:flex md:flex-row">
-    <div>
-      <client-only>
-        <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
-      </client-only>
+  <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
+    <div class="flex items-center">
+      <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
+        <img src="/img/lahmacun-logo.png" alt="" class="w-24">
+      </div>
+      <div class="mr-8">
+        <client-only>
+          <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
+        </client-only>
+      </div>
     </div>
-    <div class="flex items-center cursor-pointer" @click="$router.push('/')">
-      <img src="/img/lahmacun-logo.png" alt="" class="h-16 mr-4">
-      <h1>Lahmacun Radio</h1>
+    <HeadNavigation />
+    <div id="time">
+      <div class="currenttime">
+        {{ timestamp }}
+      </div>
     </div>
   </header>
 </template>
@@ -22,15 +29,25 @@ export default {
 
   data () {
     return {
-      streamServer
+      streamServer,
+      timestamp: ''
     }
   },
   computed: {
 
   },
+  created () {
+    setInterval(this.getNow, 1000)
+  },
+
   mounted () {
   },
   methods: {
+    getNow () {
+      const today = new Date()
+      const time = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0')
+      this.timestamp = time
+    }
 
   }
 }
@@ -40,5 +57,9 @@ export default {
   header {
       justify-content: space-between;
       align-content: center;
+  }
+  .currenttime {
+    font-size: 1.4rem;
+    font-weight: 600;
   }
 </style>

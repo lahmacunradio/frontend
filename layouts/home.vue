@@ -1,7 +1,8 @@
 <template>
   <div>
     <HeaderBlock />
-    <nuxt class="py-8" />
+    <nuxt />
+    <FooterHome />
   </div>
 </template>
 

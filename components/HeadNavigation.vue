@@ -1,18 +1,19 @@
 <template>
-  <nav class="container mb-4">
+  <nav class="">
     <ul>
-      <li>
-        <NuxtLink to="/shows/">
-          Shows
-        </NuxtLink>
-      </li>
-      <li>Photos</li>
-      <li>Sponsors</li>
       <li>
         <NuxtLink to="/about/">
           About Us
         </NuxtLink>
       </li>
+      <li>
+        <NuxtLink to="/shows/">
+          Shows
+        </NuxtLink>
+      </li>
+      <li>Archive</li>
+      <li>Gallery</li>
+      <li>Shop</li>
       <li>Donate</li>
     </ul>
   </nav>
@@ -20,14 +21,14 @@
 
 <style lang="scss" scoped>
   nav {
-      border-bottom: 1px solid grey;
-      font-size: 1.2rem;
+      font-size: 1rem;
       ul {
         padding:0;
         margin: 0;
         li {
             display: inline-block;
             margin-right: 1rem;
+            text-transform: uppercase;
         }
       }
   }

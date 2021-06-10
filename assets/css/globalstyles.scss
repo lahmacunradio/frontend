@@ -1,18 +1,21 @@
+@import "/assets/css/variables";
+
 *,*:before,*:after {
   box-sizing: border-box;
   margin: 0;
 }
 
+
 body {
-  font-family: 'Rubik', "Segoe UI","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-family: $lahma-type;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   box-sizing: border-box;
 
-  background-color: #d09cf8 !important;
-  color: #23282d;
+  background-color: $lahma-pink !important;
+  color: $black-color;
 }
 
 .container {
@@ -53,4 +56,8 @@ h5 {
   p {
     margin-bottom: 0.5rem;
   }
+}
+
+span.moresign {
+  display: none;
 }
