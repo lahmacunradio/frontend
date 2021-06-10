@@ -41,14 +41,29 @@ export default {
   },
   computed: {
     suggestions () {
-      return this.items.filter(item => (
-        this.suggestionAttribute
-          ? item[this.suggestionAttribute].toLowerCase().includes(this.value.toLowerCase())
-          : item.toLowerCase().includes(this.value.toLowerCase())
-      ))
+      return this.getSuggestions()
     }
   },
   methods: {
+    withAttribute (item) {
+      return (
+        item[this.suggestionAttribute]
+          .toLowerCase()
+          .includes(this.value.toLowerCase()) ||
+        item.description.toLowerCase()
+          .includes(this.value.toLowerCase())
+      )
+    },
+    withoutAttribute (item) {
+      return item.toLowerCase().includes(this.value.toLowerCase())
+    },
+    getSuggestions () {
+      return this.items.filter(item => (
+        this.suggestionAttribute
+          ? this.withAttribute(item)
+          : this.withoutAttribute(item)
+      ))
+    },
     onClick (item) {
       this.$emit('change', [item])
     }
