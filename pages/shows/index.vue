@@ -2,14 +2,15 @@
   <div>
     <AutoCompleteSearch
       :defaultItems="defaultArcsiShows"
-      suggestionAttribute='name'
+      suggestionAttribute="name"
+      :searchFields="searchFields"
       @update="onUpdate"
     />
-    <div v-if='arcsiShowsList.length  > 0' >
+    <div v-if="arcsiShowsList.length  > 0" >
       <h1 class="m-4 text-center title">Lahmacun Shows</h1>
       <ShowsLister :shows='arcsiShowsList' />
     </div>
-    <div v-if='pastShowsList.length > 0'>
+    <div v-if="pastShowsList.length > 0">
       <h1 class="m-4 text-center title">Past Shows</h1>
       <ShowsLister :shows="pastShowsList" />
     </div>
@@ -25,7 +26,8 @@ export default {
     return {
       mediaServerURL,
       defaultArcsiShows: this.$store.state.arcsiShows,
-      arcsiShows: this.$store.state.arcsiShows
+      arcsiShows: this.$store.state.arcsiShows,
+      searchFields: ['name', 'description']
     }
   },
   head () {
