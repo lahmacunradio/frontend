@@ -1,6 +1,8 @@
 <template>
   <div>
     <input
+      class="input"
+      :class="{'open': value}"
       type="search"
       v-model="value"
       @keydown.enter="onEnter"
@@ -83,3 +85,26 @@ export default {
   }
 }
 </script>
+<style scoped>
+  .input {
+    position: relative;
+    width: 350px;
+    height: 30px;
+    border-radius: 10px;
+    outline: none;
+    padding: 0 10px;
+  }
+  .open {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .suggestions {
+    position: absolute;
+    width: 350px;
+    height: max-content;
+    max-height: 200px;
+    overflow: scroll;
+    padding: 0 10px;
+    background: #ffffff;
+  }
+</style>
