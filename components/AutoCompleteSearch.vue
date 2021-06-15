@@ -54,14 +54,11 @@ export default {
   },
   methods: {
     withAttribute (item) {
-      return this.searchFields.some(field => item[field].toLowerCase().includes(this.value.toLowerCase()))
-      // return (
-      //   item[this.suggestionAttribute]
-      //     .toLowerCase()
-      //     .includes(this.value.toLowerCase()) ||
-      //   item.description.toLowerCase()
-      //     .includes(this.value.toLowerCase())
-      // )
+      return (
+        this.searchFields.some(field => (
+          item[field].toLowerCase().includes(this.value.toLowerCase()))
+        )
+      )
     },
     withoutAttribute (item) {
       return item.toLowerCase().includes(this.value.toLowerCase())
