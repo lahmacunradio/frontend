@@ -6,6 +6,8 @@
       type="search"
       v-model="value"
       @keydown.enter="onEnter"
+      @keydown.down="onDown"
+      @keydown.up="onUp"
     />
     <ul
       class="suggestions"
@@ -16,6 +18,7 @@
         :key="suggestionAttribute ? suggestion.id : suggestion + i"
         class="suggestion"
         @click="onClick(suggestion)"
+        :class="{ 'is-active': i === itemCounter }"
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
@@ -46,7 +49,8 @@ export default {
   },
   data () {
     return {
-      value: ''
+      value: '',
+      itemCounter: -1
     }
   },
   computed: {
@@ -74,13 +78,22 @@ export default {
     },
     emitResult (result) {
       this.$emit('update', result)
-      this.value = ''
     },
     onClick (item) {
       this.emitResult([item])
     },
     onEnter () {
-      this.emitResult(this.suggestions)
+      this.emitResult(this.itemCounter >= 0 ? [this.suggestions[this.itemCounter]] : this.suggestions)
+    },
+    onDown () {
+      if (this.itemCounter < this.suggestions.length) {
+        ++this.itemCounter
+      }
+    },
+    onUp () {
+      if (this.itemCounter > 0) {
+        --this.itemCounter
+      }
     }
   }
 }
@@ -106,5 +119,9 @@ export default {
     overflow: scroll;
     padding: 0 10px;
     background: #ffffff;
+    border-radius: 0 0 10px 10px;
+  }
+  .is-active {
+    background: #7f828b;
   }
 </style>
