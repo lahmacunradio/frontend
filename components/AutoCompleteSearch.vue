@@ -2,16 +2,17 @@
   <div>
     <input
       class="input"
-      :class="{'open': value}"
+      :class="{'open': isOpen}"
       type="search"
       v-model="value"
+      @input="onChange"
       @keydown.enter="onEnter"
       @keydown.down="onDown"
       @keydown.up="onUp"
     />
     <ul
       class="suggestions"
-      v-show="value"
+      v-show="isOpen"
     >
       <li
         v-for="(suggestion, i) in suggestions"
@@ -50,12 +51,9 @@ export default {
   data () {
     return {
       value: '',
-      itemCounter: -1
-    }
-  },
-  computed: {
-    suggestions () {
-      return this.getSuggestions()
+      itemCounter: -1,
+      isOpen: false,
+      suggestions: []
     }
   },
   methods: {
@@ -70,20 +68,28 @@ export default {
       return item.toLowerCase().includes(this.value.toLowerCase())
     },
     getSuggestions () {
-      return this.defaultItems.filter(item => (
+      this.suggestions = this.defaultItems.filter(item => (
         this.suggestionAttribute
           ? this.withAttribute(item)
           : this.withoutAttribute(item)
       ))
     },
     emitResult (result) {
+      this.isOpen = false
       this.$emit('update', result)
     },
     onClick (item) {
+      this.value = this.suggestionAttribute ? item[this.suggestionAttribute] : item
       this.emitResult([item])
     },
     onEnter () {
-      this.emitResult(this.itemCounter >= 0 ? [this.suggestions[this.itemCounter]] : this.suggestions)
+      this.emitResult(this.itemCounter >= 0
+        ? [this.suggestions[this.itemCounter]]
+        : this.suggestions)
+    },
+    onChange () {
+      this.getSuggestions()
+      this.isOpen = Boolean(this.value)
     },
     onDown () {
       if (this.itemCounter < this.suggestions.length) {
@@ -120,6 +126,12 @@ export default {
     padding: 0 10px;
     background: #ffffff;
     border-radius: 0 0 10px 10px;
+  }
+  .suggestion {
+    cursor: pointer;
+  }
+  .suggestion:hover {
+    background: #7f828b;
   }
   .is-active {
     background: #7f828b;
