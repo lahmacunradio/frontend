@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <span>
     <input
       class="input"
       :class="{'open': isOpen}"
@@ -24,7 +24,7 @@
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
     </ul>
-  </div>
+  </span>
 </template>
 
 <script>
@@ -55,6 +55,12 @@ export default {
       isOpen: false,
       suggestions: []
     }
+  },
+  mounted () {
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  destroyed () {
+    document.removeEventListener('click', this.handleClickOutside)
   },
   methods: {
     withAttribute (item) {
@@ -89,7 +95,7 @@ export default {
     },
     onChange () {
       this.getSuggestions()
-      this.isOpen = Boolean(this.value)
+      this.isOpen = Boolean(this.value) && this.suggestions.length > 0
     },
     onDown () {
       if (this.itemCounter < this.suggestions.length) {
@@ -100,6 +106,12 @@ export default {
       if (this.itemCounter > 0) {
         --this.itemCounter
       }
+    },
+    handleClickOutside (event) {
+      if (!this.$el.contains(event.target)) {
+        this.isOpen = false
+        this.itemCounter = -1
+      }
     }
   }
 }
@@ -109,7 +121,7 @@ export default {
     position: relative;
     width: 350px;
     height: 30px;
-    border-radius: 10px;
+    border-radius: 0.25rem;
     outline: none;
     padding: 0 10px;
   }
@@ -123,12 +135,13 @@ export default {
     height: max-content;
     max-height: 200px;
     overflow: scroll;
-    padding: 0 10px;
+    padding: 0 10px 10px 10px;
     background: #ffffff;
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 0.25rem 0.25rem;
   }
   .suggestion {
     cursor: pointer;
+    border-radius: 0.25rem;
   }
   .suggestion:hover {
     background: #7f828b;
