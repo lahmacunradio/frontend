@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <div class="container">
     <input
       class="input"
       :class="{'open': isOpen}"
@@ -9,6 +9,7 @@
       @keydown.enter="onEnter"
       @keydown.down="onDown"
       @keydown.up="onUp"
+      :placeholder="placeHolder"
     />
     <ul
       class="suggestions"
@@ -24,7 +25,7 @@
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
     </ul>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -42,6 +43,10 @@ export default {
     searchFields: {
       required: false,
       type: Array
+    },
+    placeHolder: {
+      required: false,
+      type: String
     }
   },
   model: {
@@ -138,15 +143,19 @@ export default {
     padding: 0 10px 10px 10px;
     background: #ffffff;
     border-radius: 0 0 0.25rem 0.25rem;
+    border-top-style: solid;
+    border-top-color: #7f828b;
+    border-top-width: 2px;
   }
   .suggestion {
     cursor: pointer;
     border-radius: 0.25rem;
+    padding: 3px;
   }
   .suggestion:hover {
-    background: #7f828b;
+    background: #e9ccff;
   }
   .is-active {
-    background: #7f828b;
+    background: #e7e7e7;
   }
 </style>

@@ -5,6 +5,7 @@
       suggestionAttribute="name"
       :searchFields="searchFields"
       @update="onUpdate"
+      placeHolder="Search"
     />
     <div v-if="arcsiShowsList.length  > 0" >
       <h1 class="m-4 text-center title">Lahmacun Shows</h1>
@@ -61,5 +62,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>
