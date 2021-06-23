@@ -91,6 +91,11 @@ export default {
     min-height: 300px;
     min-width: 300px;
     object-fit: cover;
+    filter: grayscale(100%);
+    transition: 1s;
+  }
+  &:hover img {
+    filter: none;
   }
 }
 .news-infos {
