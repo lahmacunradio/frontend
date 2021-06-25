@@ -2,7 +2,14 @@
   <div class="mb-2">
     <nuxt-link :to="'/news/' + news.slug">
       <div class="news-image">
-        <img :src="newsImage" :alt="news.title.rendered" class="mb-4 rounded-md">
+        <img
+          :src="newsImage"
+          :srcset="`${newsImageSmall} 480w`"
+          sizes="(max-width: 640px) 480px,
+            800px"
+          :alt="news.title.rendered"
+          class="mb-4 rounded-md"
+        >
       </div>
       <h5 class="py-4">
         {{ htmlDecoder(news.title.rendered) }}
@@ -26,7 +33,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo.png'
+      newsImage: '/img/lahmacun-logo.png',
+      newsImageSmall: '/img/lahmacun-logo.png'
     }
   },
   computed: {
@@ -39,6 +47,7 @@ export default {
       const adress = `${contentApiURL}/media/${newsId}`
       const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
+      this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
     }
   }
 }

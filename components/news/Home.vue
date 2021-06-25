@@ -1,8 +1,15 @@
 <template>
-  <div class="w-full">
+  <div class="w-full news-home-container">
     <nuxt-link :to="'/news/' + news.slug">
       <div class="news-image">
-        <img :src="newsImage" :alt="news.title.rendered" class="">
+        <img
+          :src="newsImage"
+          :srcset="`${newsImageSmall} 480w`"
+          sizes="(max-width: 640px) 480px,
+            800px"
+          :alt="news.title.rendered"
+          class=""
+        >
       </div>
     </nuxt-link>
     <div class="grid news-infos">
@@ -52,6 +59,7 @@ export default {
   data () {
     return {
       newsImage: '/img/lahmacun-logo.png',
+      newsImageSmall: '/img/lahmacun-logo.png',
       format
     }
   },
@@ -73,6 +81,7 @@ export default {
       const adress = `${contentApiURL}/media/${newsId}`
       const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
+      this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
     }
   }
 }
@@ -81,40 +90,43 @@ export default {
 
 <style lang="scss" scoped>
 @import "/assets/css/variables";
-.news-image {
-  width: 100%;
-  max-height: 300px;
-  overflow: hidden;
-  display: flex;
-  align-content: center;
-  img {
-    min-height: 300px;
-    min-width: 300px;
-    object-fit: cover;
-    filter: grayscale(100%);
-    transition: 1s;
-  }
-  &:hover img {
-    filter: none;
-  }
-}
-.news-infos {
-    background: white;
-    grid-template-columns: 130px 1fr;
-    .news-date {
-        text-align: center;
-        background: $black-color;
-        > div {
-            padding: 1rem 0;
-        }
-        .newsgeneral {
-            background: $lahma-pink;
-            max-height: 5rem;
-        }
-        .newsdate {
-            color: white;
-            font-size: 2rem;
-        }
+.news-home-container {
+  .news-image {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-content: center;
+    img {
+      min-height: 300px;
+      min-width: 300px;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition: 1s;
     }
+  }
+  &:hover .news-image img {
+      filter: none;
+  }
+  .news-infos {
+      background: white;
+      grid-template-columns: 130px 1fr;
+      .news-date {
+          text-align: center;
+          background: $black-color;
+          > div {
+              padding: 1rem 0;
+          }
+          .newsgeneral {
+              background: $lahma-pink;
+              max-height: 5rem;
+          }
+          .newsdate {
+              color: white;
+              font-size: 2rem;
+          }
+      }
+  }
 }
+
 </style>
