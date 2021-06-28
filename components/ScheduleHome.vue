@@ -32,31 +32,6 @@
         </div>
       </div>
     </div>
-    <!-- OLD SCHEDULE BLOCK
-    <div class="old-schedule">
-      <div v-for="(day, index) in showsByDate" :key="day.id" class="mb-2 scheduleblock">
-        <div class="flex flex-row justify-between dayname">
-          <h4>{{ dayNames[day[0].day-1] }}</h4>
-          <span>{{ format(new Date(index === 0 ? todayDate :
-            tommorrow.setDate(tommorrow.getDate() + 1)) , 'MMMM dd.') }}</span>
-        </div>
-        <div class="dayshows">
-          <div v-for="show in day" :key="show.id" :class="showAirCheck(index, show.name) ? 'dayblock onair' : 'dayblock'">
-            <div class="show-basic-infos">
-              {{ removeSeconds(show.start) }}-{{ removeSeconds(show.end) }} -
-              <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-                {{ show.name }}
-              </nuxt-link>
-              <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
-            </div>
-            <div v-if="showAirCheck(index, show.name)" class="onairtext">
-              &nbsp;— On Air
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    -->
   </div>
 </template>
 
