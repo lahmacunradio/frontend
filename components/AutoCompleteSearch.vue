@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <div class="container">
     <input
       class="input"
       :class="{'open': isOpen}"
@@ -9,6 +9,7 @@
       @keydown.enter="onEnter"
       @keydown.down="onDown"
       @keydown.up="onUp"
+      :placeholder="placeHolder"
     />
     <ul
       class="suggestions"
@@ -20,11 +21,13 @@
         class="suggestion"
         @click="onClick(suggestion)"
         :class="{ 'is-active': i === itemCounter }"
+        :ref="i === itemCounter ? `focusItem` : null"
+
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
     </ul>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -42,6 +45,10 @@ export default {
     searchFields: {
       required: false,
       type: Array
+    },
+    placeHolder: {
+      required: false,
+      type: String
     }
   },
   model: {
@@ -61,6 +68,13 @@ export default {
   },
   destroyed () {
     document.removeEventListener('click', this.handleClickOutside)
+  },
+  updated () {
+    if (this.$refs.focusItem) {
+      if (this.$refs.focusItem.length) {
+        this.$refs.focusItem[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
+      }
+    }
   },
   methods: {
     withAttribute (item) {
@@ -96,9 +110,10 @@ export default {
     onChange () {
       this.getSuggestions()
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
+      this.itemCounter = -1
     },
     onDown () {
-      if (this.itemCounter < this.suggestions.length) {
+      if (this.itemCounter + 1 < this.suggestions.length) {
         ++this.itemCounter
       }
     },
@@ -138,15 +153,19 @@ export default {
     padding: 0 10px 10px 10px;
     background: #ffffff;
     border-radius: 0 0 0.25rem 0.25rem;
+    border-top-style: solid;
+    border-top-color: #7f828b;
+    border-top-width: 2px;
   }
   .suggestion {
     cursor: pointer;
     border-radius: 0.25rem;
+    padding: 3px;
   }
   .suggestion:hover {
-    background: #7f828b;
+    background: #e9ccff;
   }
   .is-active {
-    background: #7f828b;
+    background: #e7e7e7;
   }
 </style>
