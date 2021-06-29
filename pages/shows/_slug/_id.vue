@@ -16,7 +16,7 @@
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
         <div class="py-4">
-          <ArcsiPlayer v-if="playEpisode" :sources="arcsiAudio" />
+          <ArcsiPlayer v-if="playEpisode" :sources="arcsiAudio" :html5="true" />
           <a v-else href="#" @click.prevent="playEpisode = true">
             <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
           </a>
