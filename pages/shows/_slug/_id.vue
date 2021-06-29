@@ -15,13 +15,19 @@
       <div class="mb-4">
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
+        <div class="py-4">
+          <ArcsiPlayer v-if="playEpisode" :sources="arcsiAudio" />
+          <a v-else href="#" @click.prevent="playEpisode = true">
+            <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { arcsiItemBaseURL } from '~/constants'
+import { arcsiItemBaseURL, mediaServerURL } from '~/constants'
 
 export default {
   components: {
@@ -31,7 +37,8 @@ export default {
       arcsiItemShadowbox: false,
       slug: this.$route.params.slug,
       id: this.$route.params.id,
-      arcsiEpisode: {}
+      arcsiEpisode: {},
+      playEpisode: false
     }
   },
   async fetch () {
@@ -40,7 +47,16 @@ export default {
   },
   head () {
     return {
-      title: this.arcsiEpisode.name
+      title: this.fullEpisodeTitle
+    }
+  },
+  computed: {
+    arcsiAudio () {
+      return [`${mediaServerURL}${this.slug}/${this.arcsiEpisode.archive_lahmastore_canonical_url}`]
+    },
+    fullEpisodeTitle () {
+      if (!this.arcsiEpisode) { return false }
+      return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
     }
   }
 }
