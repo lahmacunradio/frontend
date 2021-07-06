@@ -6,7 +6,7 @@
     </div>
     <div v-else>
       <div>
-        <button @click="togglePlayback">
+        <button @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
           </span>
@@ -34,6 +34,12 @@ import { format, addSeconds } from 'date-fns'
 
 export default {
   mixins: [VueHowler],
+  props: {
+    episode: {
+      type: Object,
+      required: true
+    }
+  },
   data () {
     return {
     }
@@ -42,9 +48,23 @@ export default {
     currentDuration () {
       const helperDate = addSeconds(new Date(0), this.duration)
       return format(helperDate, 'mm:ss')
+    },
+    playerData () {
+      return {
+        player: 'arcsi',
+        data: this.episode
+      }
     }
   },
   methods: {
+    playArcsi () {
+      this.togglePlayback()
+      this.$root.$emit('arcsiplayer', this.playerData)
+      /*
+      Listen with
+      this.$root.$on('arcsiplayer', data => console.log(data))
+      */
+    }
   }
 }
 </script>
