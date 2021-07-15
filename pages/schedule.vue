@@ -28,8 +28,9 @@
               <i aria-hidden="true" class="fa fa-long-arrow-right" />
               {{ removeSeconds(show.end) }} -
               <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-                {{ show.name }}
+                <b>{{ show.name }}</b>
               </nuxt-link>
+              {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
               <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
             </div>
           </div>
@@ -80,6 +81,15 @@ export default {
         return this.nowPlaying?.live?.streamer_name
       } else {
         return this.nowPlaying?.now_playing?.song.artist
+      }
+    },
+    streamEpisodeTitle () {
+      if (!this.nowPlaying) {
+        return false
+      } else if (this.nowPlaying?.live?.is_live) {
+        return this.nowPlaying?.live?.song.title
+      } else {
+        return this.nowPlaying?.now_playing?.song.title
       }
     },
     todayName () {
