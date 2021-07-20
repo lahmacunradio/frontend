@@ -2,9 +2,18 @@
 
 > Frontend for Lahmacun Radio 2021
 
+## Dev env
+#### Node
+At least `>=12.13.0`
+Recommended `>=14.17.0`
+#### Yarn
+At least `>=1.22.10`
+
 ## Build Setup
 
 ``` bash
+$ cd ./app
+
 # install dependencies
 $ yarn install
 
@@ -17,6 +26,21 @@ $ yarn start
 
 # generate static project
 $ yarn generate
+```
+
+## Docker Setup
+``` bash
+# Make sure you are in project root where file exists
+$ ls docker-compose.yml
+
+# Build the image after development changes
+$ docker-compose build
+
+# Load the app
+$ docker-compose up -d
+
+# Stop the app
+$ docker-compose down
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

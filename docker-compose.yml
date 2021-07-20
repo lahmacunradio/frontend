@@ -1,0 +1,17 @@
+version: '3'
+
+services:  
+  app:
+    build: ./app
+    ports:
+      - 3333:3333 
+  
+  proxy:
+    image: nginx:1.19
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
