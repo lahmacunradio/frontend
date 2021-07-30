@@ -3,7 +3,7 @@ export default {
   components: true,
   server: {
     port: 3333, // default: 3000
-    host: 'localhost' // default: localhost
+    host: '0.0.0.0' // default: localhost
   },
   /*
   ** Headers of the page
