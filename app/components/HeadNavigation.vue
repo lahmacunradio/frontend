@@ -11,10 +11,11 @@
           Shows
         </NuxtLink>
       </li>
-      <li>Archive</li>
-      <li>Gallery</li>
-      <li>Shop</li>
-      <li>Donate</li>
+      <li>
+        <NuxtLink to="/schedule/">
+          Schedule
+        </NuxtLink>
+      </li>
     </ul>
   </nav>
 </template>

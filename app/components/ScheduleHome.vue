@@ -2,7 +2,7 @@
   <div class="h-full overflow-hidden bg-gray-300">
     <div class="grid grid-cols-2 text-center schedule-head">
       <div class="infos title">
-        <nuxt-link to="/shows">
+        <nuxt-link to="/schedule">
           <h3>Schedule</h3>
         </nuxt-link>
       </div>
@@ -25,9 +25,6 @@
               {{ show.name }}
             </nuxt-link>
             <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
-          </div>
-          <div v-if="showAirCheck(index, show.name)" class="onairtext">
-            &nbsp;— On Air
           </div>
         </div>
       </div>
