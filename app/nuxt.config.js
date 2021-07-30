@@ -40,7 +40,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/mixinCommonMethods'
+    '~/plugins/mixinCommonMethods',
+    { src: '~/plugins/vuex-persist', mode: 'client' }
   ],
   /*
   ** Nuxt.js dev-modules
