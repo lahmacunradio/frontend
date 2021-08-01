@@ -1,0 +1,209 @@
+<template>
+  <div class="h-full overflow-hidden bg-gray-300">
+    <div class="grid grid-cols-2 text-center schedule-head">
+      <div class="infos title">
+        <nuxt-link to="/schedule">
+          <h3>Schedule</h3>
+        </nuxt-link>
+      </div>
+      <div class="infos day">
+        <h3>{{ todayName }}</h3>
+      </div>
+    </div>
+    <div class="flex items-center scheduleblock">
+      <div class="w-full m-auto">
+        <div v-for="(show, index) in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+          <div class="onairshow">
+            <span class="text-red-600">●</span>
+            On Air
+          </div>
+          <div class="show-basic-infos">
+            {{ removeSeconds(show.start) }}
+            <i aria-hidden="true" class="fa fa-long-arrow-right" />
+            {{ removeSeconds(show.end) }} -
+            <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
+              {{ show.name }}
+            </nuxt-link>
+            <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { format } from 'date-fns'
+import { streamServer } from '~/constants'
+
+export default {
+  props: {
+    shows: {
+      required: true,
+      type: Array
+    }
+  },
+  data () {
+    return {
+      streamServer,
+      format,
+      showsByDate: [],
+      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      interval: null,
+      nowPlaying: {}
+    }
+  },
+  computed: {
+    getToday () {
+      const d = new Date()
+      return d.getDay()
+    },
+    todayDate () {
+      return new Date()
+    },
+    tommorrow () {
+      return new Date(new Date())
+    },
+    streamShowTitle () {
+      if (!this.nowPlaying) {
+        return false
+      } else if (this.nowPlaying?.live?.is_live) {
+        return this.nowPlaying?.live?.streamer_name
+      } else {
+        return this.nowPlaying?.now_playing?.song.artist
+      }
+    },
+    todayName () {
+      return this.dayNames[this.getToday - 1]
+    }
+  },
+  mounted () {
+    this.groupShowsByDay(this.shows)
+    this.checkNowPlaying()
+  },
+  beforeDestroy () {
+    // prevent memory leak
+    clearInterval(this.interval)
+  },
+  created () {
+    // update the time every minute
+    this.interval = setInterval(() => {
+      this.checkNowPlaying()
+    }, 60 * 1000)
+  },
+  methods: {
+    showAirCheck (index, showname) {
+      if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
+        return true
+      }
+    },
+    checkNowPlaying () {
+      this.$axios.get(this.streamServer).then((response) => {
+        this.nowPlaying = response.data
+      }).catch((error) => {
+        console.error(error)
+      })
+    },
+    groupShowsByDay (shows) {
+      const list = []
+      const daybyMonday = this.getToday === 0 ? 7 : this.getToday
+      const dayIndex = daybyMonday - 1
+      for (let i = 0; i < 7; i++) {
+        list.push([])
+        shows.forEach((show) => {
+          if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
+          if (show.day - 1 === i) {
+            list[i].push(show)
+          }
+        })
+      }
+      this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
+    }
+  }
+
+}
+
+</script>
+
+<style lang="scss" scoped>
+@import "/assets/css/variables";
+a {
+  &:hover {
+    font-weight: 500;
+  }
+}
+.schedule-head {
+  background: $lahma-pink;
+  h3 {
+    margin: 0.5rem;
+    text-transform: uppercase;
+  }
+  .day {
+    background: $black-color;
+    color: white;
+  }
+}
+.scheduleblock {
+  height: calc(100% - 50px);
+  .dayname {
+    border-bottom: 1px solid;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .dayblock {
+      @apply flex flex-row px-8 py-3;
+      .show-basic-infos {
+        position: relative;
+        width: 100%;
+        .show-image {
+          width: 150px;
+          height: 150px;
+          background: center center no-repeat;
+          background-size: cover;
+          border-radius: 5px;
+          display: none;
+          position: absolute;
+          z-index: 100;
+          top: calc(50% - 75px);
+          right: 0;
+        }
+      }
+      &:hover {
+        background: rgba(255, 255, 255, 0.5);
+        .show-image {
+          display: block;
+        }
+      }
+      .onairtext {
+        text-transform: uppercase;
+      }
+    }
+
+  &:first-child .dayshows, &:hover .dayshows {
+    display: block;
+  }
+  .onairshow {
+    opacity: 0;
+    padding-right: 1rem;
+    white-space: nowrap;
+  }
+  .onair {
+      @apply bg-white;
+      .onairshow {
+        opacity: 1;
+        animation: pulse 5s infinite;
+      }
+      &:hover {
+        @apply bg-white;
+      }
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  30% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+</style>
