@@ -1,6 +1,5 @@
 export const state = () => ({
   arcsiEpisode: {},
-  arcsiHistory: [],
   arcsiPlayHistory: {},
   arcsiVolume: 1
 })
