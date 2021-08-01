@@ -73,5 +73,11 @@ export default {
         '@babel/plugin-proposal-optional-chaining'
       ]
     }
+  },
+  vue: {
+    config: {
+      productionTip: false,
+      devtools: true
+    }
   }
 }
