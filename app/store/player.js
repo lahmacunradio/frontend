@@ -1,25 +1,24 @@
 export const state = () => ({
   arcsiEpisode: {},
   arcsiHistory: [],
-  arcsiVolume: 1,
-  arcsiPlayPositions: []
+  arcsiPlayHistory: {},
+  arcsiVolume: 1
 })
 
 export const mutations = {
   currentlyPlayingArcsi (state, episode) {
     state.arcsiEpisode = episode
-    state.arcsiHistory.push({
-      playDate: Date.now(),
-      episodeID: episode.id
-    })
   },
   setArcsiVolume (state, volume) {
     state.arcsiVolume = volume
   },
-  setArcsiProgress (state, progress) {
-    state.arcsiPlayPositions.push({
-      episodeID: progress.episode,
-      value: progress.value
-    })
+  setArcsiProgressHistory (state, progress) {
+    const newData = {
+      [progress.episodeID]: {
+        playDate: Date.now(),
+        playPosition: progress.value
+      }
+    }
+    Object.assign(state.arcsiPlayHistory, newData)
   }
 }
