@@ -1,17 +1,14 @@
 <template>
   <div class="h-full overflow-hidden bg-gray-300">
-    <div class="grid grid-cols-2 text-center schedule-head">
+    <div class="text-center schedule-head">
       <div class="infos title">
         <nuxt-link to="/schedule">
-          <h3>Schedule</h3>
+          <h3>Today's Schedule</h3>
         </nuxt-link>
-      </div>
-      <div class="infos day">
-        <h3>{{ todayName }}</h3>
       </div>
     </div>
     <div class="flex items-center scheduleblock">
-      <div class="w-full m-auto">
+      <div class="w-full pt-4 pb-8 m-auto">
         <div v-for="(show, index) in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
@@ -19,7 +16,7 @@
           </div>
           <div class="show-basic-infos">
             {{ removeSeconds(show.start) }}
-            <i aria-hidden="true" class="fa fa-long-arrow-right" />
+            <img src="/img/arrow-schedule.svg" alt="" class="inline-block w-10">
             {{ removeSeconds(show.end) }} -
             <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}
@@ -135,7 +132,8 @@ a {
 .schedule-head {
   background: $lahma-pink;
   h3 {
-    margin: 0.5rem;
+    margin: 0 0.5rem;
+    padding: 0.5rem;
     text-transform: uppercase;
   }
   .day {
@@ -151,7 +149,7 @@ a {
     margin-bottom: 0.25rem;
   }
   .dayblock {
-      @apply flex flex-row px-8 py-3;
+      @apply flex flex-row px-8 py-2;
       .show-basic-infos {
         position: relative;
         width: 100%;

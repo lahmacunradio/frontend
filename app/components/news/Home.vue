@@ -1,6 +1,11 @@
 <template>
   <div class="w-full news-home-container">
     <div class="relative newsimage-slider">
+      <div class="absolute top-0 right-0 news-badge">
+        <nuxt-link to="/news">
+          <h3>News</h3>
+        </nuxt-link>
+      </div>
       <div class="absolute z-10 flex items-center justify-between w-full h-full px-4 my-4">
         <div class="cursor-pointer" @click="$emit('changenews', 'previous')">
           <img src="/img/arrow-left.svg" alt="">
@@ -82,6 +87,18 @@ export default {
 
 <style lang="scss" scoped>
 @import "/assets/css/variables";
+.news-badge {
+  background: $lahma-pink;
+  transform: rotate(20deg);
+  border-radius: 50%;
+  margin: 1rem;
+  z-index: 15;
+  h3 {
+    margin: 0;
+    padding: 1rem;
+    text-transform: uppercase;
+  }
+}
 .news-home-container {
   .news-image {
     width: 100%;
@@ -89,9 +106,11 @@ export default {
     overflow: hidden;
     display: flex;
     align-content: center;
+    justify-content: center;
     img {
       min-height: 300px;
       min-width: 300px;
+      width: 100%;
       object-fit: cover;
       filter: grayscale(100%);
       transition: 1s;
