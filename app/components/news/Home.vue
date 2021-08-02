@@ -1,31 +1,28 @@
 <template>
   <div class="w-full news-home-container">
-    <nuxt-link :to="'/news/' + news.slug">
-      <div class="news-image">
-        <img
-          :src="newsImage"
-          :srcset="`${newsImageSmall} 480w`"
-          sizes="(max-width: 640px) 480px,
+    <div class="relative newsimage-slider">
+      <div class="absolute z-10 flex items-center justify-between w-full h-full px-4 my-4">
+        <div class="cursor-pointer" @click="$emit('changenews', 'previous')">
+          <img src="/img/arrow-left.svg" alt="">
+        </div>
+        <div class="cursor-pointer" @click="$emit('changenews', 'next')">
+          <img src="/img/arrow-right.svg" alt="">
+        </div>
+      </div>
+      <nuxt-link :to="'/news/' + news.slug">
+        <div class="news-image">
+          <img
+            :src="newsImage"
+            :srcset="`${newsImageSmall} 480w`"
+            sizes="(max-width: 640px) 480px,
             800px"
-          :alt="news.title.rendered"
-          class=""
-        >
-      </div>
-    </nuxt-link>
-    <div class="grid news-infos">
-      <div class="news-date">
-        <div class="newsgeneral">
-          <nuxt-link to="news/">
-            <h3 class="m-0">
-              News
-            </h3>
-          </nuxt-link>
+            :alt="news.title.rendered"
+            class=""
+          >
         </div>
-        <div class="newsdate">
-          <p>{{ format(new Date(news.modified), 'MM') }}</p>
-          <p>{{ format(new Date(news.modified), 'dd') }}</p>
-        </div>
-      </div>
+      </nuxt-link>
+    </div>
+    <div class="news-infos">
       <div class="px-4 news-info-details">
         <h5 class="py-4">
           <nuxt-link :to="'/news/' + news.slug">
@@ -33,11 +30,6 @@
           </nuxt-link>
         </h5>
         <div v-html="news.excerpt.rendered" />
-        <div class="flex justify-end my-4">
-          <div class="px-4 py-2 bg-gray-200 rounded-lg cursor-pointer more-button" @click="$emit('changenews')">
-            Previous news <i class="fa fa-long-arrow-right" aria-hidden="true" />
-          </div>
-        </div>
       </div>
     </div>
   </div>
