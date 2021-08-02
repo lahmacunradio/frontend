@@ -22,7 +22,6 @@
         @click="onClick(suggestion)"
         :class="{ 'is-active': i === itemCounter }"
         :ref="i === itemCounter ? `focusItem` : null"
-
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
@@ -103,6 +102,12 @@ export default {
       this.emitResult([item])
     },
     onEnter () {
+      if (this.itemCounter >= 0) {
+        this.value =
+          this.suggestionAttribute
+            ? this.suggestions[this.itemCounter][this.suggestionAttribute]
+            : this.suggestions
+      }
       this.emitResult(this.itemCounter >= 0
         ? [this.suggestions[this.itemCounter]]
         : this.suggestions)
@@ -112,12 +117,14 @@ export default {
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
       this.itemCounter = -1
     },
-    onDown () {
+    onDown (e) {
+      e.preventDefault()
       if (this.itemCounter + 1 < this.suggestions.length) {
         ++this.itemCounter
       }
     },
-    onUp () {
+    onUp (e) {
+      e.preventDefault()
       if (this.itemCounter > 0) {
         --this.itemCounter
       }
@@ -163,7 +170,7 @@ export default {
     padding: 3px;
   }
   .suggestion:hover {
-    background: #e9ccff;
+    background: #e7e7e7;
   }
   .is-active {
     background: #e7e7e7;
