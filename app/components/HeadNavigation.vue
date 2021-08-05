@@ -2,8 +2,8 @@
   <nav class="">
     <ul>
       <li>
-        <NuxtLink to="/about/">
-          About Us
+        <NuxtLink to="/schedule/">
+          Schedule
         </NuxtLink>
       </li>
       <li>
@@ -12,8 +12,28 @@
         </NuxtLink>
       </li>
       <li>
-        <NuxtLink to="/schedule/">
-          Schedule
+        <NuxtLink to="/archive/">
+          Archive
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink to="/news/">
+          News
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink to="/community/">
+          Community
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink to="/photos/">
+          Photos
+        </NuxtLink>
+      </li>
+      <li>
+        <NuxtLink to="/about/">
+          About
         </NuxtLink>
       </li>
     </ul>

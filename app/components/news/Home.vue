@@ -28,8 +28,8 @@
       </nuxt-link>
     </div>
     <div class="news-infos">
-      <div class="px-4 news-info-details">
-        <h5 class="py-4">
+      <div class="p-4 news-info-details">
+        <h5 class="pb-4">
           <nuxt-link :to="'/news/' + news.slug">
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
