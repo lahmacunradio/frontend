@@ -2,7 +2,8 @@ export const state = () => ({
   arcsiEpisode: {},
   arcsiHistory: [],
   arcsiVolume: 1,
-  arcsiPlayPositions: []
+  arcsiPlayPositions: [],
+  streamVolume: 55
 })
 
 export const mutations = {
@@ -21,5 +22,8 @@ export const mutations = {
       episodeID: progress.episode,
       value: progress.value
     })
+  },
+  setStreamVolume (state, volume) {
+    state.streamVolume = volume
   }
 }

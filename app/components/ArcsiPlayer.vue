@@ -122,7 +122,6 @@ export default {
       const arcsiSeekPosition = this.$store.state.player.arcsiPlayPositions.find(x => x.episodeID === this.episode.id)
       if (arcsiSeekPosition && arcsiSeekPosition.value !== '0') {
         setTimeout(() => {
-          console.log(arcsiSeekPosition.value)
           this.setProgress(parseFloat(arcsiSeekPosition.value))
         }, 100)
       }
