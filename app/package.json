@@ -24,6 +24,8 @@
     "sass": "^1.32.0",
     "sass-loader": "^10.1.1",
     "store": "^2.0.12",
+    "swiper": "^6.8.1",
+    "vue-awesome-swiper": "^4.1.1",
     "vue-howler": "^0.7.0",
     "vue-marked": "^0.1.1",
     "vuex-persist": "^3.1.3"
