@@ -1,6 +1,6 @@
 <template>
-  <div>
-      <h1>Archive comming soon</h1>
+  <div class="container">
+    <h1>Archive comming soon</h1>
   </div>
 </template>
 

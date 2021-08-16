@@ -624,7 +624,6 @@ a.programimage {
       white-space: normal;
     }
     h5 {
-      color: #585858 !important;
       font-size: 0.9em;
       text-transform: none;
     }
