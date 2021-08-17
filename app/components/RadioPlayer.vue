@@ -41,7 +41,7 @@
                 <vue-slider
                   v-model="volume"
                   :height="25"
-                  :tooltip="none"
+                  tooltip="none"
                   :dot-size="25"
                 />
               </div>
@@ -92,7 +92,7 @@
         </div>
 
         <div class="radio-control-select-stream" style="display:none;">
-          <div v-if="this.streams.length > 1" class="dropdown">
+          <div v-if="streams.length > 1" class="dropdown">
             <button
               id="btn-select-stream"
               class="btn btn-sm btn-outline-primary dropdown-toggle"
