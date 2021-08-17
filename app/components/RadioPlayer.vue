@@ -38,16 +38,12 @@
 
             <div id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
               <div class="radio-control-volume-slider">
-                <input
-                  id="jp-volume-range"
+                <vue-slider
                   v-model="volume"
-                  type="range"
-                  :title="'volume_slider'"
-                  class="custom-range jp-volume-range"
-                  min="0"
-                  max="100"
-                  step="1"
-                >
+                  :height="25"
+                  :tooltip="none"
+                  :dot-size="25"
+                />
               </div>
             </div>
           </div>
@@ -61,7 +57,7 @@
                     <i class="fa fa-link" aria-hidden="true" />
                   </nuxt-link>
 
-                  <a v-if="check_offairlink == true" :href="this.np.now_playing.song.custom_fields.offairlink" target="_blank">
+                  <a v-if="check_offairlink == true" :href="np.now_playing.song.custom_fields.offairlink" target="_blank">
                     <span>{{ show_title }}&nbsp;</span>
                     <i class="fa fa-link" aria-hidden="true" />
                   </a>
@@ -142,8 +138,14 @@
 </template>
 
 <script>
+import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min.js'
+import 'vue-slider-component/dist-css/vue-slider-component.css'
+// import theme
+import 'vue-slider-component/theme/default.css'
+
 export default {
   components: {
+    VueSlider
   },
   props: {
     nowPlayingUri: {
@@ -561,9 +563,6 @@ export default {
         .radio-control-max-volume-button {
             flex-shrink: 0;
         }
-        .radio-control-volume-slider {
-
-        }
     }
 }
 
@@ -649,82 +648,6 @@ a.programimage {
         height: 25px;
         clip-path: polygon(100% 0, 0% 100%, 100% 100%);
     }
-    input.jp-volume-range {
-        width: 200px;
-        height: 25px;
-        @apply bg-black;
-        -webkit-appearance: none;
-    }
-}
-
-.volumeshower {
-  margin: 10px 5px 0;
-  display: block;
-  -moz-transform: translateY(-1px);
-}
-
-/* volume control cursos */
-/* these ones work for Safari and Chrome  */
-.custom-range::-webkit-slider-thumb {
-  transition-duration: .3s;
-  transition-property: box-shadow;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: $lahma-pink;
-  border: none;
-  height: 25px;
-  margin-top: 0px;
-  width: 50px;
-}
-
-.custom-range::-webkit-slider-progress {
-  background-color: $lahma-pink;
-  height: 25px;
-}
-
-.custom-range::-webkit-slider-thumb:active {
-  box-shadow: none;
-}
-
-.custom-range::-webkit-slider-runnable-track {
-  height: 25px;
-}
-
-/* these ones work for Mozilla */
-
-.custom-range::-moz-range-track {
-  height: 3px;
-}
-
-.custom-range::-moz-range-thumb {
-  transition-duration: .3s;
-  transition-property: box-shadow;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  border-radius: 50%;
-  height: 25px;
-  margin-top: -6px;
-  width: 25px;
-}
-
-.custom-range::-moz-range-progress {
-  background-color: $lahma-pink;
-  height: 25px;
-}
-
-.custom-range::-moz-range-thumb:active {
-  box-shadow: none;
-}
-
-.custom-range::-moz-range-runnable-track {
-  border-radius: 2px;
-  height: 5px;
 }
 
 .creditswrap {
@@ -781,4 +704,24 @@ a.programimage {
   }
 }
 
+</style>
+
+<style lang="scss">
+@import "/assets/css/variables";
+.radio-control-volume-slider {
+  .vue-slider {
+    padding: 0 !important;
+    .vue-slider-rail {
+      @apply bg-black;
+      border-radius: 0;
+      .vue-slider-process {
+          background-color: $lahma-pink;
+          border-radius: 0;
+      }
+      .vue-slider-dot {
+        opacity: 0;
+      }
+    }
+  }
+}
 </style>
