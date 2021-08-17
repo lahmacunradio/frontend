@@ -94,8 +94,14 @@ h3 {
 .swiper-button-next {
   right: -20px;
 }
-.swiper-button-next::after, .swiper-button-prev::after {
-  content: '';
+.swiper-button-next, .swiper-button-prev {
+  img {
+    width: 3rem;
+    max-width: none;
+  }
+  &::after {
+    content: '';
+  }
 }
 
 </style>
