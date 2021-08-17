@@ -92,6 +92,11 @@ export default {
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
   },
+  beforeDestroy () {
+    if (this.playing) {
+      this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+    }
+  },
   methods: {
     playArcsi () {
       this.togglePlayback()
