@@ -90,20 +90,31 @@ export default {
       this.setVolume(parseFloat(this.$store.state.player.arcsiVolume))
     }
     this.findIfArcsiSeek()
+    this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+  },
+  beforeDestroy () {
+    if (this.playing) {
+      this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+    }
   },
   methods: {
     playArcsi () {
       this.togglePlayback()
+      const playHistory = {
+        episodeID: this.episode.id,
+        value: this.progress
+      }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+      this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
     stopArcsi () {
       this.stop()
-      const arcsiSeekObject = {
-        episode: this.episode.id,
-        value: '0'
+      const playHistory = {
+        episodeID: this.episode.id,
+        value: 0
       }
       this.currentProgress = '0'
-      this.$store.commit('player/setArcsiProgress', arcsiSeekObject)
+      this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
@@ -111,18 +122,18 @@ export default {
     },
     seekBar (value) {
       this.setProgress(parseFloat(value))
-      const arcsiSeekObject = {
-        episode: this.episode.id,
-        value
+      const playHistory = {
+        episodeID: this.episode.id,
+        value: parseFloat(value)
       }
-      this.$store.commit('player/setArcsiProgress', arcsiSeekObject)
+      this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
     findIfArcsiSeek () {
-      if (!this.$store.state.player.arcsiPlayPositions) { return false }
-      const arcsiSeekPosition = this.$store.state.player.arcsiPlayPositions.find(x => x.episodeID === this.episode.id)
-      if (arcsiSeekPosition && arcsiSeekPosition.value !== '0') {
+      if (!this.$store.state.player.arcsiPlayHistory) { return false }
+      const arcsiPlayerSeek = this.$store.state.player.arcsiPlayHistory[this.episode.id]
+      if (arcsiPlayerSeek && arcsiPlayerSeek.playPosition !== 0) {
         setTimeout(() => {
-          this.setProgress(parseFloat(arcsiSeekPosition.value))
+          this.setProgress(arcsiPlayerSeek.playPosition)
         }, 100)
       }
     }
