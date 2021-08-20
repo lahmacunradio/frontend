@@ -1,8 +1,9 @@
 import Vue from 'vue'
-import VueAwesomeSwiper from 'vue-awesome-swiper'
+import { Swiper as SwiperClass, Pagination, Navigation, Mousewheel, Autoplay } from 'vue-awesome-swiper'
+import getAwesomeSwiper from 'vue-awesome-swiper/dist/exporter'
 
-import '@/assets/css/swiper.min.css'
 // import custom style
 import '@/assets/css/customswiper.scss'
 
-Vue.use(VueAwesomeSwiper)
+SwiperClass.use([Pagination, Mousewheel, Navigation, Autoplay])
+Vue.use(getAwesomeSwiper(SwiperClass))
