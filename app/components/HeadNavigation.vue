@@ -59,7 +59,7 @@ export default {
         margin: 0;
         li {
             display: inline-block;
-            margin: 0 -1.5rem;
+            margin: -1.5rem;
             text-transform: uppercase;
             position: relative;
             padding: 1rem 2rem;

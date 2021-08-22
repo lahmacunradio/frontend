@@ -112,25 +112,7 @@
         </div>
 
         <div class="sand-clock">
-          <img src="/img/sand-clock.svg" alt="">
-          <div class="progress remaining">
-            <div
-              class="progress-bar"
-              role="progressbar"
-              :style="{
-                height: 100-time_percent+'%',
-                marginTop: time_percent+'%' }"
-            />
-          </div>
-          <div class="progress elapsed">
-            <div
-              class="progress-bar"
-              role="progressbar"
-              :style="{
-                height: time_percent+'%',
-                marginTop: 100-time_percent+'%' }"
-            />
-          </div>
+          <img src="/img/sand-clock-full.svg" alt="">
         </div>
       </div>
     </div>
@@ -677,30 +659,11 @@ a.programimage {
 
 .sand-clock {
   position: relative;
+  min-width: 40px;
   img {
     height: 80px;
     z-index: 10;
     position: relative;
-  }
-  .progress {
-    height: 30px;
-    width: 45px;
-    position: absolute;
-    &.remaining {
-      top: 7px;
-      .progress-bar {
-        clip-path: polygon(50% 100%, 1px -6px, 91.11% -3px);
-      }
-    }
-    &.elapsed {
-      bottom: 23px;
-      .progress-bar {
-        clip-path: polygon(50% -15px, -2.22% 153.33%, 95.56% 156.67%);
-      }
-    }
-    .progress-bar {
-      background: $lahma-pink;
-    }
   }
 }
 

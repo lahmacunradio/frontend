@@ -1,8 +1,8 @@
 <template>
-  <div class="latest-arcsi-blokk">
+  <div v-if="episode" class="latest-arcsi-blokk">
     <NuxtLink :to="`shows/${showslug}/${episode.id}`">
       <div class="mb-4 arcsi-img">
-        <img class="block" :src="episode.image_url">
+        <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
     <NuxtLink :to="`shows/${showslug}/${episode.id}`">
@@ -42,6 +42,11 @@ export default {
   data () {
     return {
       showslug: ''
+    }
+  },
+  computed: {
+    episodeImage () {
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
     }
   },
   created () {

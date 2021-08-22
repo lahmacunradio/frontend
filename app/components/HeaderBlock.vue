@@ -2,7 +2,7 @@
   <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
     <div class="flex items-center">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
-        <img src="/img/lahmacun-logo.png" alt="" class="w-24">
+        <img src="/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
       <div class="mr-8">
         <client-only>
@@ -53,13 +53,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
   header {
       justify-content: space-between;
       align-content: center;
-  }
-  .currenttime {
-    font-size: 1.4rem;
-    font-weight: 600;
+      .logo {
+        min-width: 6rem;
+      }
+      .currenttime {
+        font-size: 1.4rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
   }
 </style>

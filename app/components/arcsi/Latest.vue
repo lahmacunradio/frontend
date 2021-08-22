@@ -57,13 +57,24 @@ export default {
     }
   },
   computed: {
+    getToday () {
+      const d = new Date()
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      return `${year}-${month}-${day}`
+    },
     arcsiEpisodes () {
       return this.$store.state.arcsiEpisodes
     },
     arcsiEpisodesListSortedLatest () {
       if (this.arcsiEpisodes) {
         const showslist = [...this.arcsiEpisodes]
-        return showslist.sort((a, b) => new Date(b.play_date) - new Date(a.play_date)).slice(this.startIndex, this.numberOfEpisodes)
+        return showslist
+          .filter(item => item.play_date < this.getToday)
+          .filter(item => item.archived === true)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+          .slice(this.startIndex, this.numberOfEpisodes)
       }
       return null
     },
