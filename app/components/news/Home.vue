@@ -34,7 +34,7 @@
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
         </h5>
-        <div v-html="news.excerpt.rendered" />
+        <div v-html="truncatedNews" />
       </div>
     </div>
   </div>
@@ -61,6 +61,9 @@ export default {
     }
   },
   computed: {
+    truncatedNews () {
+      return this.truncate(this.news.excerpt.rendered, 300)
+    }
   },
   watch: {
     news: {
