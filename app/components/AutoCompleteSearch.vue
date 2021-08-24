@@ -7,8 +7,6 @@
       v-model="value"
       @input="onChange"
       @keydown.enter="onEnter"
-      @keydown.down="onDown"
-      @keydown.up="onUp"
       :placeholder="placeHolder"
     />
     <ul
@@ -116,18 +114,6 @@ export default {
       this.getSuggestions()
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
       this.itemCounter = -1
-    },
-    onDown (e) {
-      e.preventDefault()
-      if (this.itemCounter + 1 < this.suggestions.length) {
-        ++this.itemCounter
-      }
-    },
-    onUp (e) {
-      e.preventDefault()
-      if (this.itemCounter > 0) {
-        --this.itemCounter
-      }
     },
     handleClickOutside (event) {
       if (!this.$el.contains(event.target)) {
