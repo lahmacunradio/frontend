@@ -4,8 +4,9 @@
       <img src="/img/preloader.svg">
       <p>Preloading...</p>
     </div>
-    <div v-else>
+    <div v-else class="flex items-center justify-between w-full">
       <div>
+        <h5>{{ episode.shows[0].name + ' - ' + episode.name }}</h5>
         <button @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
@@ -18,25 +19,27 @@
           <i class="fa fa-stop" aria-hidden="true" />
         </button>
       </div>
-      <div id="myProgress" class="my-2">
-        <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
-        <input
-          id="progressingRange"
-          :value="progress"
-          type="range"
-          min="0"
-          max="1"
-          step="0.001"
-          @change="seekBar($event.target.value)"
-        >
-      </div>
       <div>
-        <span>Total duration: {{ currentDuration }}</span>
-        <span> - </span>
-        <span>playing: {{ currentSeek }}</span>
+        <div id="myProgress" class="my-2">
+          <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
+          <input
+            id="progressingRange"
+            :value="progress"
+            type="range"
+            min="0"
+            max="1"
+            step="0.001"
+            @change="seekBar($event.target.value)"
+          >
+        </div>
+        <div>
+          <span>Total duration: {{ currentDuration }}</span>
+          <span> - </span>
+          <span>playing: {{ currentSeek }}</span>
+        </div>
       </div>
       <div class="my-4">
-        <h4>Volume</h4>
+        <h5>Volume</h5>
         <input
           v-model="currentVolume"
           type="range"
@@ -92,6 +95,11 @@ export default {
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
   },
+  beforeUpdate () {
+    if (this.duration === 0) {
+      this.findIfArcsiSeek()
+    }
+  },
   beforeDestroy () {
     if (this.playing) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -128,13 +136,14 @@ export default {
       }
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
-    findIfArcsiSeek () {
-      if (!this.$store.state.player.arcsiPlayHistory) { return false }
-      const arcsiPlayerSeek = this.$store.state.player.arcsiPlayHistory[this.episode.id]
-      if (arcsiPlayerSeek && arcsiPlayerSeek.playPosition !== 0) {
+    async findIfArcsiSeek () {
+      const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
+      const arcsiPlayPosition = arcsiPlayerSeek.playPosition
+
+      if (arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
-          this.setProgress(arcsiPlayerSeek.playPosition)
-        }, 100)
+          this.setProgress(arcsiPlayPosition)
+        }, 1000)
       }
     }
   }
@@ -145,7 +154,7 @@ export default {
 @import "/assets/css/variables";
  #myProgress {
   width: 100%;
-  background-color: white;
+  background-color: $lahma-pink;
 }
 
 #myBar {

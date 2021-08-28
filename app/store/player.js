@@ -1,7 +1,8 @@
 export const state = () => ({
   arcsiEpisode: {},
   arcsiPlayHistory: {},
-  arcsiVolume: 1
+  arcsiVolume: 1,
+  isArcsiPlaying: {}
 })
 
 export const mutations = {
@@ -19,5 +20,8 @@ export const mutations = {
       }
     }
     Object.assign(state.arcsiPlayHistory, newData)
+  },
+  isArcsiPlaying (state, trigger) {
+    state.isArcsiPlaying = trigger
   }
 }

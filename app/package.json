@@ -24,7 +24,7 @@
     "sass": "^1.32.0",
     "sass-loader": "^10.1.1",
     "store": "^2.0.12",
-    "vue-howler": "https://github.com/gelid/vue-howler/tarball/master",
+    "vue-howler": "^0.7.0",
     "vue-marked": "^0.1.1",
     "vuex-persist": "^3.1.3"
   },

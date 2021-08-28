@@ -4834,9 +4834,10 @@ hosted-git-info@^2.1.4:
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
   integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
 
-"howler@https://github.com/gelid/howler.js/tarball/master":
-  version "2.1.2"
-  resolved "https://github.com/gelid/howler.js/tarball/master#ceeb341c89866286ca4c75e5b8eeac6fc120d328"
+howler@^2.0.5:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.2.3.tgz#a2eff9b08b586798e7a2ee17a602a90df28715da"
+  integrity sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==
 
 hsl-regex@^1.0.0:
   version "1.0.0"
@@ -9487,11 +9488,12 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
   integrity sha512-BXq3jwIagosjgNVae6tkHzzIk6a8MHFtzAdwhnV5VlvPTFxDCvIttgSiHWjdGoTJvXtmRu5HacExfdarRcFhog==
 
-"vue-howler@https://github.com/gelid/vue-howler/tarball/master":
-  version "0.7.1"
-  resolved "https://github.com/gelid/vue-howler/tarball/master#7fce62d3c66a3174432ce513f39ba4418ee605e9"
+vue-howler@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/vue-howler/-/vue-howler-0.7.0.tgz#4ca885a6b2b32173a29ad400a2519561d1e0c14f"
+  integrity sha512-19lgA4ehPPF9wkPRiP17DOMimIEf65WnhaQiE/n79xv7kk0bD6MG/6X4MZk1Kp1+w5QJbLskqXbBC1UlkTlZ9Q==
   dependencies:
-    howler "https://github.com/gelid/howler.js/tarball/master"
+    howler "^2.0.5"
     math-clamp "^1.0.0"
     object-assign "^4.1.1"
     object-values "^1.0.0"

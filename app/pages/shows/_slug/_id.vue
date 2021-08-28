@@ -16,10 +16,7 @@
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
         <div class="py-4">
-          <div v-if="playEpisode">
-            <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="true" />
-          </div>
-          <a v-else href="#" @click.prevent="playEpisode = true">
+          <a href="#" @click.prevent="playArcsi(true)">
             <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
           </a>
         </div>
@@ -53,12 +50,15 @@ export default {
     }
   },
   computed: {
-    arcsiAudio () {
-      return [`${mediaServerURL}${this.slug}/${this.arcsiEpisode.archive_lahmastore_canonical_url}`]
-    },
     fullEpisodeTitle () {
-      if (!this.arcsiEpisode) { return false }
+      if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
+    }
+  },
+  methods: {
+    playArcsi (trigger) {
+      this.$store.commit('player/isArcsiPlaying', trigger)
+      this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
     }
   }
 }
