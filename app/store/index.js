@@ -1,7 +1,8 @@
-import { arcsiServerURL, newsURL, aboutUsURL } from '~/constants'
+import { arcsiServerURL, newsURL, aboutUsURL, arcsiItemBaseURL } from '~/constants'
 
 export const state = () => ({
   arcsiShows: null,
+  arcsiEpisodes: null,
   newsList: null,
   aboutUs: null
 })
@@ -14,5 +15,7 @@ export const actions = {
     state.newsList = responseNews.data
     const responseAboutUs = await this.$axios.get(aboutUsURL)
     state.aboutUs = responseAboutUs.data
+    const responseAllEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+    state.arcsiEpisodes = responseAllEpisodes.data
   }
 }

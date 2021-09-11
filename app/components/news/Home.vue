@@ -1,43 +1,40 @@
 <template>
   <div class="w-full news-home-container">
-    <nuxt-link :to="'/news/' + news.slug">
-      <div class="news-image">
-        <img
-          :src="newsImage"
-          :srcset="`${newsImageSmall} 480w`"
-          sizes="(max-width: 640px) 480px,
+    <div class="relative newsimage-slider">
+      <div class="absolute top-0 right-0 news-badge">
+        <nuxt-link to="/news">
+          <h3>News</h3>
+        </nuxt-link>
+      </div>
+      <div class="absolute z-10 flex items-center justify-between w-full h-full px-4 my-4">
+        <div class="cursor-pointer" @click="$emit('changenews', 'previous')">
+          <img src="/img/arrow-left.svg" alt="">
+        </div>
+        <div class="cursor-pointer" @click="$emit('changenews', 'next')">
+          <img src="/img/arrow-right.svg" alt="">
+        </div>
+      </div>
+      <nuxt-link :to="'/news/' + news.slug">
+        <div class="news-image">
+          <img
+            :src="newsImage"
+            :srcset="`${newsImageSmall} 480w`"
+            sizes="(max-width: 640px) 480px,
             800px"
-          :alt="news.title.rendered"
-          class=""
-        >
-      </div>
-    </nuxt-link>
-    <div class="grid news-infos">
-      <div class="news-date">
-        <div class="newsgeneral">
-          <nuxt-link to="news/">
-            <h3 class="m-0">
-              News
-            </h3>
-          </nuxt-link>
+            :alt="news.title.rendered"
+            class=""
+          >
         </div>
-        <div class="newsdate">
-          <p>{{ format(new Date(news.modified), 'MM') }}</p>
-          <p>{{ format(new Date(news.modified), 'dd') }}</p>
-        </div>
-      </div>
-      <div class="px-4 news-info-details">
-        <h5 class="py-4">
+      </nuxt-link>
+    </div>
+    <div class="news-infos">
+      <div class="p-4 news-info-details">
+        <h5 class="pb-4">
           <nuxt-link :to="'/news/' + news.slug">
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
         </h5>
-        <div v-html="news.excerpt.rendered" />
-        <div class="flex justify-end my-4">
-          <div class="px-4 py-2 bg-gray-200 rounded-lg cursor-pointer more-button" @click="$emit('changenews')">
-            Previous news <i class="fa fa-long-arrow-right" aria-hidden="true" />
-          </div>
-        </div>
+        <div v-html="truncatedNews" />
       </div>
     </div>
   </div>
@@ -64,6 +61,9 @@ export default {
     }
   },
   computed: {
+    truncatedNews () {
+      return this.truncate(this.news.excerpt.rendered, 300)
+    }
   },
   watch: {
     news: {
@@ -90,6 +90,18 @@ export default {
 
 <style lang="scss" scoped>
 @import "/assets/css/variables";
+.news-badge {
+  background: $lahma-pink;
+  transform: rotate(20deg);
+  border-radius: 50%;
+  margin: 1rem;
+  z-index: 15;
+  h3 {
+    margin: 0;
+    padding: 1rem;
+    text-transform: uppercase;
+  }
+}
 .news-home-container {
   .news-image {
     width: 100%;
@@ -97,9 +109,11 @@ export default {
     overflow: hidden;
     display: flex;
     align-content: center;
+    justify-content: center;
     img {
       min-height: 300px;
       min-width: 300px;
+      width: 100%;
       object-fit: cover;
       filter: grayscale(100%);
       transition: 1s;

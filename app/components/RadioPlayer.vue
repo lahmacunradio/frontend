@@ -7,52 +7,43 @@
 
       <div class="now-playing-details">
         <div class="radio-controls">
-          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-              <div v-if="show_check == true" class="onair">On air</div>
-              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
-            </a>
-            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
+          <a class="bigplay-button" href="#" @click.prevent="toggle()">
+            <img src="/img/play_gomb.svg" alt="">
+          </a>
+          <div v-if="false">
+            <!-- old show image -->
+            <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
+              <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
+                <div v-if="show_check == true" class="onair">On air</div>
+                <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
+              </a>
+              <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
+            </div>
           </div>
 
           <div class="play-volume-controls">
-            <div v-if="is_playing" class="radio-control-play-button">
-              <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
-                <i class="material-icons lg" aria-hidden="true">pause_circle_outline</i>
-              </a>
-            </div>
-            <div v-else class="radio-control-play-button">
-              <a href="#" role="button" :title="'play_btn'" :aria-label="'play_btn'" @click.prevent="toggle()">
-                <i class="material-icons lg" aria-hidden="true">play_circle_outline</i>
-              </a>
-            </div>
-
-            <a href="#" class="text-secondary volumeshower" @mouseenter="showVolumeSlider = !showVolumeSlider">
-              <i class="material-icons" aria-hidden="true">volume_down</i>
-            </a>
-
-            <div v-show="showVolumeSlider" id="radio-player-controls" class="radio-controls-standalone volumecontrolos" @mouseleave="showVolumeSlider = !showVolumeSlider">
-              <div class="radio-control-mute-button">
-                <a href="#" class="text-secondary" :title="'mute_btn'" @click.prevent="volume = 0">
-                  <i class="material-icons" aria-hidden="true">volume_mute</i>
+            <div v-if="false">
+              <!-- old play button -->
+              <div v-if="is_playing" class="radio-control-play-button">
+                <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
+                  <i class="material-icons lg" aria-hidden="true">pause_circle_outline</i>
                 </a>
               </div>
+              <div v-else class="radio-control-play-button">
+                <a href="#" role="button" :title="'play_btn'" :aria-label="'play_btn'" @click.prevent="toggle()">
+                  <i class="material-icons lg" aria-hidden="true">play_circle_outline</i>
+                </a>
+              </div>
+            </div>
+
+            <div id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
               <div class="radio-control-volume-slider">
-                <input
-                  id="jp-volume-range"
+                <vue-slider
                   v-model="volume"
-                  type="range"
-                  :title="'volume_slider'"
-                  class="custom-range jp-volume-range"
-                  min="0"
-                  max="100"
-                  step="1"
-                >
-              </div>
-              <div class="radio-control-max-volume-button">
-                <a href="#" class="text-secondary" :title="'full_volume_btn'" @click.prevent="volume = 100">
-                  <i class="material-icons" aria-hidden="true">volume_up</i>
-                </a>
+                  :height="25"
+                  tooltip="none"
+                  :dot-size="25"
+                />
               </div>
             </div>
           </div>
@@ -66,7 +57,7 @@
                     <i class="fa fa-link" aria-hidden="true" />
                   </nuxt-link>
 
-                  <a v-if="check_offairlink == true" :href="this.np.now_playing.song.custom_fields.offairlink" target="_blank">
+                  <a v-if="check_offairlink == true" :href="np.now_playing.song.custom_fields.offairlink" target="_blank">
                     <span>{{ show_title }}&nbsp;</span>
                     <i class="fa fa-link" aria-hidden="true" />
                   </a>
@@ -84,7 +75,7 @@
               </div>
             </div>
 
-            <div v-if="time_display_played" class="time-display">
+            <div v-if="time_display_played" class="time-display" style="display:none;">
               <div class="time-display-played text-secondary">
                 {{ time_display_played }}
               </div>
@@ -101,7 +92,7 @@
         </div>
 
         <div class="radio-control-select-stream" style="display:none;">
-          <div v-if="this.streams.length > 1" class="dropdown">
+          <div v-if="streams.length > 1" class="dropdown">
             <button
               id="btn-select-stream"
               class="btn btn-sm btn-outline-primary dropdown-toggle"
@@ -119,16 +110,24 @@
             </div>
           </div>
         </div>
+
+        <div class="sand-clock">
+          <img src="/img/sand-clock-full.svg" alt="">
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import store from 'store'
+import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min.js'
+import 'vue-slider-component/dist-css/vue-slider-component.css'
+// import theme
+import 'vue-slider-component/theme/default.css'
 
 export default {
   components: {
+    VueSlider
   },
   props: {
     nowPlayingUri: {
@@ -143,7 +142,6 @@ export default {
   data () {
     return {
       streamModal: false,
-      showVolumeSlider: false,
       np: {
         live: {
           is_live: 'Is Live',
@@ -297,9 +295,7 @@ export default {
   watch: {
     volume (volume) {
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
-      if (store.enabled) {
-        store.set('player_volume', volume)
-      }
+      this.$store.commit('player/setStreamVolume', volume)
     }
   },
   created () {
@@ -328,8 +324,8 @@ export default {
       })
     }
     // Check webstorage for existing volume preference.
-    if (store.enabled && store.get('player_volume') !== undefined) {
-      this.volume = store.get('player_volume', this.volume)
+    if (this.volume !== this.$store.state.player.streamVolume) {
+      this.volume = this.$store.state.player.streamVolume
     }
     // Check the query string if browser supports easy query string access.
     if (typeof URLSearchParams !== 'undefined') {
@@ -450,6 +446,7 @@ export default {
 @import "/assets/css/variables";
 .radio-player-widget {
     min-width: 300px;
+    max-width: 400px;
     width: 100%;
     .now-playing-details {
         display: flex;
@@ -487,6 +484,8 @@ export default {
             }
             a {
               display: block;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
         }
         .time-display {
@@ -534,6 +533,8 @@ export default {
         display: flex;
         flex-direction: row;
         width: 100%;
+        min-width: 300px;
+        margin-right: 1rem;
         .radio-control-play-button {
             margin-right: 0.5em;
         }
@@ -543,9 +544,6 @@ export default {
         .radio-control-mute-button,
         .radio-control-max-volume-button {
             flex-shrink: 0;
-        }
-        .radio-control-volume-slider {
-
         }
     }
 }
@@ -607,7 +605,6 @@ a.programimage {
       white-space: normal;
     }
     h5 {
-      color: #585858 !important;
       font-size: 0.9em;
       text-transform: none;
     }
@@ -630,94 +627,9 @@ a.programimage {
     }
     .radio-control-volume-slider {
         width: 200px;
+        height: 25px;
+        clip-path: polygon(100% 0, 0% 100%, 100% 100%);
     }
-    input.jp-volume-range {
-        width: 200px;
-        height: 4px;
-        @apply bg-gray-300;
-    }
-}
-
-.volumeshower {
-  margin: 10px 5px 0;
-  display: block;
-  -moz-transform: translateY(-1px);
-}
-
-/* volume control cursos */
-/* these ones work for Safari and Chrome  */
-.custom-range::-webkit-slider-thumb {
-  transition-duration: .3s;
-  transition-property: box-shadow;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: #f5f5f5;
-  border: 1px solid #9a9a9a;
-  border-radius: 50%;
-  height: 15px;
-  margin-top: -6px;
-  width: 15px;
-}
-
-.custom-range::-webkit-slider-progress {
-  background-color: black;
-}
-
-.custom-range:focus::-webkit-slider-thumb {
-    border: 1px solid grey;
-    box-shadow: none;
-    background: #e6e6e6;
-}
-
-.custom-range::-webkit-slider-thumb:active {
-  box-shadow: none;
-}
-
-.custom-range::-webkit-slider-runnable-track {
-  border-radius: 2px;
-  height: 3px;
-}
-
-/* these ones work for Mozilla */
-
-.custom-range::-moz-range-track {
-  height: 3px;
-}
-
-.custom-range::-moz-range-thumb {
-  transition-duration: .3s;
-  transition-property: box-shadow;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  background-color: #f5f5f5;
-  border: 1px solid #9a9a9a;
-  border-radius: 50%;
-  height: 15px;
-  margin-top: -6px;
-  width: 15px;
-}
-
-.custom-range::-moz-range-progress {
-  background-color: black;
-}
-
-.custom-range:focus::-moz-range-thumb {
-    border: 1px solid grey;
-    box-shadow: none;
-    background: #e6e6e6;
-}
-
-.custom-range::-moz-range-thumb:active {
-  box-shadow: none;
-}
-
-.custom-range::-moz-range-runnable-track {
-  border-radius: 2px;
-  height: 5px;
 }
 
 .creditswrap {
@@ -738,4 +650,41 @@ a.programimage {
 }
 
 /* Finish player overrides */
+
+/* New Player styles */
+.bigplay-button img {
+  height: 75px;
+  padding: 0 1rem;
+}
+
+.sand-clock {
+  position: relative;
+  min-width: 40px;
+  img {
+    height: 80px;
+    z-index: 10;
+    position: relative;
+  }
+}
+
+</style>
+
+<style lang="scss">
+@import "/assets/css/variables";
+.radio-control-volume-slider {
+  .vue-slider {
+    padding: 0 !important;
+    .vue-slider-rail {
+      @apply bg-black;
+      border-radius: 0;
+      .vue-slider-process {
+          background-color: $lahma-pink;
+          border-radius: 0;
+      }
+      .vue-slider-dot {
+        opacity: 0;
+      }
+    }
+  }
+}
 </style>
