@@ -1,25 +1,25 @@
 <template>
   <div class="container">
     <input
+      v-model="value"
       class="input"
       :class="{'open': isOpen}"
       type="search"
-      v-model="value"
-      @input="onChange"
-      @keydown.enter="onEnter"
       :placeholder="placeHolder"
-    />
+      @input="listChange"
+      @keydown.enter="onEnter"
+    >
     <ul
-      class="suggestions"
       v-show="isOpen"
+      class="suggestions"
     >
       <li
         v-for="(suggestion, i) in suggestions"
         :key="suggestionAttribute ? suggestion.id : suggestion + i"
-        class="suggestion"
-        @click="onClick(suggestion)"
-        :class="{ 'is-active': i === itemCounter }"
         :ref="i === itemCounter ? `focusItem` : null"
+        class="suggestion"
+        :class="{ 'is-active': i === itemCounter }"
+        @click="onClick(suggestion)"
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
@@ -29,6 +29,10 @@
 
 <script>
 export default {
+  model: {
+    prop: 'items',
+    event: 'change'
+  },
   props: {
     defaultItems: {
       required: true,
@@ -47,10 +51,6 @@ export default {
       required: false,
       type: String
     }
-  },
-  model: {
-    prop: 'items',
-    event: 'change'
   },
   data () {
     return {
@@ -114,6 +114,21 @@ export default {
       this.getSuggestions()
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
       this.itemCounter = -1
+    },
+    listChange () {
+      this.getSuggestions()
+      this.isOpen = Boolean(this.value) && this.suggestions.length > 0
+      this.itemCounter = -1
+
+      if (this.itemCounter >= 0) {
+        this.value =
+          this.suggestionAttribute
+            ? this.suggestions[this.itemCounter][this.suggestionAttribute]
+            : this.suggestions
+      }
+      this.emitResult(this.itemCounter >= 0
+        ? [this.suggestions[this.itemCounter]]
+        : this.suggestions)
     },
     handleClickOutside (event) {
       if (!this.$el.contains(event.target)) {
