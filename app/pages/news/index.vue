@@ -121,7 +121,7 @@ export default {
           .then(res => res.json())
         return
       }
-      const selectedTag = this.allTags.find(a => a.name === selectedValue)
+      const selectedTag = this.allTags.find(a => a.slug === selectedValue)
       if (selectedTag) {
         this.newsFilteredList = await fetch(`${newsBaseURL}&tags=${selectedTag.id}`)
           .then(res => res.json())
