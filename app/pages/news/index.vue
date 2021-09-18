@@ -43,12 +43,12 @@
       </div>
     </article>
     <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
-      <div>First |</div>
-      <div> Previous |</div>
-      <div>
-        <a href="#" @click.prevent="fetchNewsPagination(1)">Next</a>
-        |
-      </div>
+      <a href="#" @click.prevent="fetchNewsPaginationFirst">First</a>
+      |
+      <a href="#" @click.prevent="fetchNewsPaginationPrevious">Previous</a>
+      |
+      <a href="#" @click.prevent="fetchNewsPaginationNext">Next</a>
+      |
       <div> Last</div>
     </footer>
   </div>
@@ -63,7 +63,7 @@ export default {
     return {
       newsFilteredList: {},
       numberOfItems: 12,
-      startOffset: 1
+      startOffset: 0
     }
   },
   head () {
@@ -80,10 +80,26 @@ export default {
     }
   },
   methods: {
-    async fetchNewsPagination (offset) {
-      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * this.startOffset}`)
+    async fetchNewsPaginationFirst () {
+      if (this.startOffset === 0) {
+        return false
+      }
+      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
         .then(res => res.json())
-      this.startOffset = this.startOffset + offset
+      this.startOffset = 0
+    },
+    async fetchNewsPaginationPrevious () {
+      if (this.startOffset === 0) {
+        return false
+      }
+      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset - 1)}`)
+        .then(res => res.json())
+      this.startOffset = this.startOffset - 1
+    },
+    async fetchNewsPaginationNext () {
+      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset + 1)}`)
+        .then(res => res.json())
+      this.startOffset = this.startOffset + 1
     },
     async fetchNewsYear (year) {
       this.newsFilteredList = await fetch(`${newsBaseURL}&tags=${year}`)
