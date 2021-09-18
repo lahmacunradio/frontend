@@ -5,7 +5,7 @@
         News
       </h1>
       <div>
-        <select id="year" name="">
+        <select id="year" name="" @change="fetchNewsTag($event)">
           <option disabled selected value>
             Year
           </option>
@@ -16,9 +16,12 @@
             2020
           </option>
         </select>
-        <select id="Tag" name="">
+        <select id="Tag" name="" @change="fetchNewsTag($event)">
           <option disabled selected value>
             Tag
+          </option>
+          <option value="interview" name="interview">
+            Interview
           </option>
           <option value="music" name="music">
             Music
@@ -55,13 +58,14 @@
 </template>
 
 <script>
-import { newsBaseURL } from '~/constants'
+import { contentApiURL, newsBaseURL } from '~/constants'
 
 export default {
   components: {},
   data () {
     return {
-      newsFilteredList: {},
+      newsFilteredList: [],
+      allTags: [],
       numberOfItems: 12,
       startOffset: 0
     }
@@ -78,6 +82,10 @@ export default {
     sortNews () {
       return [...this.newsList].sort((a, b) => a.date - b.date)
     }
+  },
+  async mounted () {
+    this.allTags = await fetch(`${contentApiURL}/tags`)
+      .then(res => res.json())
   },
   methods: {
     async fetchNewsPaginationFirst () {
@@ -101,9 +109,13 @@ export default {
         .then(res => res.json())
       this.startOffset = this.startOffset + 1
     },
-    async fetchNewsYear (year) {
-      this.newsFilteredList = await fetch(`${newsBaseURL}&tags=${year}`)
-        .then(res => res.json())
+    async fetchNewsTag (tag) {
+      const selectedValue = tag.target.value
+      const selectedTag = this.allTags.find(a => a.name === selectedValue)
+      if (selectedTag) {
+        this.newsFilteredList = await fetch(`${newsBaseURL}&tags=${selectedTag.id}`)
+          .then(res => res.json())
+      }
     }
   }
 }
