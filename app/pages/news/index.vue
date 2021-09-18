@@ -9,6 +9,9 @@
           <option disabled selected value>
             Year
           </option>
+          <option value="all" name="all">
+            All years
+          </option>
           <option value="2021" name="2021">
             2021
           </option>
@@ -19,6 +22,9 @@
         <select id="Tag" name="" @change="fetchNewsTag($event)">
           <option disabled selected value>
             Tag
+          </option>
+          <option value="all" name="all">
+            All Tags
           </option>
           <option value="interview" name="interview">
             Interview
@@ -35,24 +41,19 @@
         </select>
       </div>
     </header>
-    <article v-if="newsFilteredList.length" class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+    <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
       <div v-for="news in newsFilteredList" :key="news.id">
-        <NewsBlock :news="news" />
-      </div>
-    </article>
-    <article v-else class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-      <div v-for="news in sortNews" :key="news.id">
         <NewsBlock :news="news" />
       </div>
     </article>
     <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
       <a href="#" @click.prevent="fetchNewsPaginationFirst">First</a>
-      |
+      <span> | </span>
       <a href="#" @click.prevent="fetchNewsPaginationPrevious">Previous</a>
-      |
+      <span> | </span>
       <a href="#" @click.prevent="fetchNewsPaginationNext">Next</a>
-      |
-      <div> Last</div>
+      <span> | </span>
+      <a href="#" @click.prevent="fetchNewsPaginationLast">Last</a>
     </footer>
   </div>
 </template>
@@ -64,9 +65,10 @@ export default {
   components: {},
   data () {
     return {
-      newsFilteredList: [],
-      allTags: [],
+      newsFilteredList: null,
+      allTags: null,
       numberOfItems: 12,
+      numberOfTotal: 0,
       startOffset: 0
     }
   },
@@ -76,16 +78,14 @@ export default {
     }
   },
   computed: {
-    newsList () {
-      return this.$store.state.newsList
-    },
-    sortNews () {
-      return [...this.newsList].sort((a, b) => a.date - b.date)
-    }
   },
   async mounted () {
+    this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
+      .then(res => res.json())
     this.allTags = await fetch(`${contentApiURL}/tags`)
       .then(res => res.json())
+    this.numberOfTotal = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}`)
+      .then(res => parseInt(res.headers.get('x-wp-total')))
   },
   methods: {
     async fetchNewsPaginationFirst () {
@@ -109,8 +109,18 @@ export default {
         .then(res => res.json())
       this.startOffset = this.startOffset + 1
     },
+    async fetchNewsPaginationLast () {
+      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * Math.round(this.numberOfTotal / this.numberOfItems - 1)}`)
+        .then(res => res.json())
+      this.startOffset = Math.round(this.numberOfTotal / this.numberOfItems - 1)
+    },
     async fetchNewsTag (tag) {
       const selectedValue = tag.target.value
+      if (selectedValue === 'all') {
+        this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.startOffset * this.numberOfItems}`)
+          .then(res => res.json())
+        return
+      }
       const selectedTag = this.allTags.find(a => a.name === selectedValue)
       if (selectedTag) {
         this.newsFilteredList = await fetch(`${newsBaseURL}&tags=${selectedTag.id}`)
