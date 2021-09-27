@@ -13,7 +13,8 @@
         {{ episode.shows[0].name }}
       </h5>
     </NuxtLink>
-    <div class="flex items-center mt-6 tags">
+    <div v-if="false" class="flex items-center mt-6 tags">
+      <!-- tags are not needed for now -->
       <div class="tag">
         dub
       </div>

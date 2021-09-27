@@ -3,7 +3,7 @@
     <header>
       <h2>Schedule</h2>
     </header>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid-cols-3 gap-4 md:grid">
       <div class="days">
         <ul>
           <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
@@ -26,8 +26,9 @@
             <div class="show-basic-infos">
               {{ removeSeconds(show.start) }}
               <img src="/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-              {{ removeSeconds(show.end) }} -
-              <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
+              {{ removeSeconds(show.end) }}
+              <span class="hidden md:inline-block"> - </span>
+              <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url" class="block md:inline-block">
                 <b>{{ show.name }}</b>
               </nuxt-link>
               {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
@@ -157,8 +158,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "assets/css/variables";
 .dayblock {
-    @apply flex flex-row px-8 py-3;
+    @apply flex flex-row md:px-8 py-3 px-3;
     .show-basic-infos {
     position: relative;
     width: 100%;
@@ -189,6 +191,9 @@ export default {
     opacity: 0;
     padding-right: 1rem;
     white-space: nowrap;
+    @media (max-width: $mobile-width) {
+      display: none;
+    }
 }
 .onair {
     @apply bg-white;

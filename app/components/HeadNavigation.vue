@@ -52,17 +52,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "assets/css/variables";
   nav {
       font-size: 1rem;
       ul {
         padding:0;
         margin: 0;
+        @media (max-width: $mobile-width) {
+          text-align: center;
+        }
         li {
             display: inline-block;
             margin: -1.5rem;
             text-transform: uppercase;
             position: relative;
             padding: 1rem 2rem;
+            @media (max-width: $mobile-width) {
+              padding: 1.8rem 2rem;
+            }
             &.selected {
                 background: url('/img/selected-menu.svg') no-repeat center center;
                 background-size: 7rem;

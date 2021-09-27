@@ -48,7 +48,7 @@ export default {
             slidesPerView: 2,
             spaceBetween: 30
           },
-          420: {
+          0: {
             slidesPerView: 1,
             spaceBetween: 30
           }
@@ -104,6 +104,14 @@ h3 {
 }
 .swiper-button-next {
   right: -20px;
+}
+@media (max-width: $mobile-width) {
+  .swiper-button-prev {
+    left: 20px;
+  }
+  .swiper-button-next {
+    right: 20px;
+  }
 }
 .swiper-button-next, .swiper-button-prev {
   img {
