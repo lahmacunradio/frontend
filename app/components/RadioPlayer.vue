@@ -36,7 +36,7 @@
               </div>
             </div>
 
-            <div v-if="!is_touch_enabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+            <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
               <div class="radio-control-volume-slider">
                 <vue-slider
                   v-model="volume"
@@ -290,11 +290,6 @@ export default {
           return artworkJSON
         }
       }
-    },
-    is_touch_enabled () {
-      return ('ontouchstart' in window) ||
-           (navigator.maxTouchPoints > 0) ||
-           (navigator.msMaxTouchPoints > 0)
     }
   },
   watch: {
@@ -465,6 +460,9 @@ export default {
             min-width: 0;
             position: relative;
             max-height: 70px;
+            @media (max-width: $mobile-width) {
+              max-width: 50vw;
+            }
         }
         h4, h5 {
             margin: 0;
@@ -542,6 +540,7 @@ export default {
         margin-right: 1rem;
         @media (max-width: $mobile-width) {
           margin-right: 0;
+          min-width: auto;
         }
         .radio-control-play-button {
             margin-right: 0.5em;

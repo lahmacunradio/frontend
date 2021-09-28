@@ -149,7 +149,7 @@ a {
     margin-bottom: 0.25rem;
   }
   .dayblock {
-      @apply flex flex-row px-8 py-2;
+      @apply flex flex-row md:px-8 py-2 px-4;
       .show-basic-infos {
         position: relative;
         width: 100%;

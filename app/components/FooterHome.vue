@@ -73,6 +73,10 @@ export default {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            @media (max-width: $mobile-width) {
+              padding: 1rem;
+              font-size: 0.9rem;
+            }
             p {
                 max-width: 350px;
                 margin-top: 1rem;

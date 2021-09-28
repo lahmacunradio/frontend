@@ -32,7 +32,7 @@
                 <b>{{ show.name }}</b>
               </nuxt-link>
               {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
-              <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
+              <div v-if="!isTouchEnabled" class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
             </div>
           </div>
         </div>

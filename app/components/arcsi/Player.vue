@@ -35,7 +35,7 @@
         <span> - </span>
         <span>playing: {{ currentSeek }}</span>
       </div>
-      <div class="my-4">
+      <div v-if="!isTouchEnabled" class="my-4">
         <h4>Volume</h4>
         <input
           v-model="currentVolume"

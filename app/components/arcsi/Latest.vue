@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Arcsi's Latest</h3>
-    <div class="container relative py-8">
+    <div class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="i" class="swiper-slide">
@@ -121,6 +121,9 @@ h3 {
   &::after {
     content: '';
   }
+}
+.latest-container {
+  max-height: 75vh;
 }
 
 </style>
