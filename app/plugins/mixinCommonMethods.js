@@ -53,6 +53,18 @@ export function slugify (str) {
   return str
 }
 
+export function debounceFunction (func, delay = 300) {
+  let debounceTimer
+  return function () {
+    // console.log("debouncing call..");
+    const context = this
+    const args = arguments
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => func.apply(context, args), delay)
+    // console.log("..done");
+  }
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -66,7 +78,8 @@ if (!Vue.__my_mixin__) {
       removeSeconds,
       truncate,
       htmlDecoder,
-      slugify
+      slugify,
+      debounceFunction
     }
   })
 }
