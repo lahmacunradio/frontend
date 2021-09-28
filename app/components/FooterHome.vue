@@ -10,7 +10,7 @@
       </div>
       <div class="justify-between py-8 md:flex">
         <div class="infos">
-          <div>
+          <div class="mb-4">
             <h5>FOLLOW</h5>
             <ul>
               <li>Facebook</li>
@@ -19,7 +19,7 @@
               <li>Bandcamp</li>
             </ul>
           </div>
-          <div>
+          <div class="mb-4">
             <h5>Contact</h5>
             <p>
               <a href="mailto:contact@lahmacun.hu">contact@lahmacun.hu</a>
@@ -49,7 +49,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .homefooter {
     background: url('/img/footer-back-home.png') no-repeat bottom center;
     background-size: cover;

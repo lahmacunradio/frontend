@@ -57,13 +57,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .latest-arcsi-blokk {
   .arcsi-img {
-    height: 400px;
-    @media (max-width: $mobile-width) {
-      height: auto;
-    }
+    height: auto;
+    max-height: 400px;
     width: 100%;
     overflow: hidden;
     img {

@@ -88,7 +88,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 h3 {
     width: 100%;
     padding: 0.5rem;

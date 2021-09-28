@@ -65,13 +65,6 @@ export function debounceFunction (func, delay = 300) {
   }
 }
 
-export function isTouchEnabled () {
-  if (!window) { return false }
-  return ('ontouchstart' in window) ||
-       (navigator.maxTouchPoints > 0) ||
-       (navigator.msMaxTouchPoints > 0)
-}
-
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -86,8 +79,7 @@ if (!Vue.__my_mixin__) {
       truncate,
       htmlDecoder,
       slugify,
-      debounceFunction,
-      isTouchEnabled
+      debounceFunction
     }
   })
 }

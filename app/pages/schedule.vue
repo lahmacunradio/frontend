@@ -95,6 +95,9 @@ export default {
     },
     todayName () {
       return this.dayNames[this.getToday - 1]
+    },
+    isTouchEnabled () {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   mounted () {
@@ -158,7 +161,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "assets/css/variables";
 .dayblock {
     @apply flex flex-row md:px-8 py-3 px-3;
     .show-basic-infos {

@@ -54,7 +54,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "assets/css/variables";
   header {
       justify-content: space-between;
       align-content: center;

@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",
+    "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/tailwindcss": "^4.0.3",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "autoprefixer": "^9",

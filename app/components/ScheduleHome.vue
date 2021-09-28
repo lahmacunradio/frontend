@@ -9,7 +9,7 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-for="(show, index) in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+        <div v-for="(show, index) in showsByDate[0]" :key="show.id + index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
             On Air
@@ -123,7 +123,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 a {
   &:hover {
     font-weight: 500;
@@ -143,6 +142,7 @@ a {
 }
 .scheduleblock {
   height: calc(100% - 50px);
+  max-height: 450px;
   .dayname {
     border-bottom: 1px solid;
     padding-bottom: 0.25rem;
