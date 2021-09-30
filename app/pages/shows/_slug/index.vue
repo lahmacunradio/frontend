@@ -9,6 +9,9 @@
       </div>
       <div class="mb-4">
         <h3>{{ arcsiInfosBlock.name }}</h3>
+        <div class="show-infos">
+          <p>Airing time: {{ dayNames[arcsiInfosBlock.day] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+        </div>
         <div>{{ arcsiInfosBlock.description }}</div>
       </div>
     </div>
@@ -41,6 +44,7 @@ import { mediaServerURL } from '~/constants'
 export default {
   data () {
     return {
+      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
       slug: this.$route.params.slug,
       mediaServerURL,
@@ -70,6 +74,21 @@ export default {
       }
       return null
     }
+  },
+  methods: {
+    showFrequency (frequency, week) {
+      let showText = 'Not defined'
+      if (frequency === 1) {
+        showText = 'New Episode: Monthly'
+      }
+      if (frequency === 2) {
+        showText = 'New Episode: Every Second Week'
+      }
+      if (frequency >= 3) {
+        showText = 'New Episode: Weekly'
+      }
+      return showText
+    }
   }
 }
 </script>
@@ -78,5 +97,8 @@ export default {
   .show-image {
       min-width: 300px;
       max-width: 360px;
+  }
+  .show-infos {
+    margin-bottom: 1rem;
   }
 </style>
