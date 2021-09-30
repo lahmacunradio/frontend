@@ -11,6 +11,13 @@
         <h3>{{ arcsiInfosBlock.name }}</h3>
         <div class="show-infos">
           <p>Airing time: {{ dayNames[arcsiInfosBlock.day] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+          <p>
+            Last episode:
+            <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
+              <strong>{{ arcsiShowsList[0].name }}</strong>
+            </NuxtLink>,
+            {{ formatDistance(new Date(arcsiShowsList[0].play_date), new Date().getTime(), { addSuffix: true }) }}
+          </p>
         </div>
         <div>{{ arcsiInfosBlock.description }}</div>
       </div>
@@ -38,7 +45,8 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
+import { format, formatDistance } from 'date-fns'
+
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -48,7 +56,8 @@ export default {
       shadowbox: false,
       slug: this.$route.params.slug,
       mediaServerURL,
-      format
+      format,
+      formatDistance
     }
   },
   head () {
