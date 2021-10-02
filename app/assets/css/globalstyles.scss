@@ -1,3 +1,5 @@
+@import 'variables';
+
 @mixin aspect-ratio($width, $height) {
   position: relative;
   &:before {
@@ -95,9 +97,11 @@ span.moresign {
   display: none;
 }
 
-.show-description > h3 {
-  margin-top: 0;
-}
+.show-description {
+  h3 {
+    margin-top: 0;
+  }
+} 
 
 .aspect-ratio-1\/1 {
   @include aspect-ratio(1, 1);
@@ -107,4 +111,13 @@ span.moresign {
       top: 0;
       left: 0;
   }
+}
+
+@keyframes infiniterotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.rotate-element {
+  animation: infiniterotate 6s linear infinite;
 }

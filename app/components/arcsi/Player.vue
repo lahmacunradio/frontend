@@ -1,7 +1,7 @@
 <template>
   <div class="arcsiplayer">
-    <div v-if="duration === 0" class="flex py-2 preload">
-      <img src="/img/preloader.svg" class="h-8">
+    <div v-if="duration === 0" class="flex items-center py-6 preload">
+      <img src="/img/preloader.svg" class="h-8 mr-4">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex items-center justify-between w-full">
@@ -52,7 +52,7 @@
         </div>
       </div>
       <div v-if="!isTouchEnabled" class="my-4">
-        <h4>Volume</h4>
+        <b>Volume</b><br>
         <input
           v-model="currentVolume"
           type="range"
@@ -112,6 +112,12 @@ export default {
     },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
+    },
+    arcsiIsPlaying () {
+      if (!this.$store.state.player.isArcsiPlaying) {
+        return false
+      }
+      return this.$store.state.player.isArcsiPlaying
     }
   },
   mounted () {
@@ -141,6 +147,11 @@ export default {
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      if (this.playing) {
+        this.$store.commit('player/isArcsiPlaying', false)
+      } else {
+        this.$store.commit('player/isArcsiPlaying', true)
+      }
     },
     stopArcsi () {
       this.stop()
@@ -150,6 +161,7 @@ export default {
       }
       this.currentProgress = '0'
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      this.$store.commit('player/isArcsiPlaying', false)
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))

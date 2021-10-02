@@ -2,7 +2,7 @@ export const state = () => ({
   arcsiEpisode: {},
   arcsiPlayHistory: {},
   arcsiVolume: 1,
-  isArcsiPlaying: {},
+  isArcsiPlaying: false,
   isArcsiVisible: false
 })
 

@@ -1,16 +1,25 @@
 <template>
   <div class="bottomarcsiplayer">
-    <div v-if="playEpisode" class="relative playerblock">
+    <div class="relative playerblock">
       <div class="container" :class="arcsiVisible ? 'h-auto' : 'h-0'">
-        <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="true" />
+        <div v-if="arcsiEpisode">
+          <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="true" />
+        </div>
+        <div v-else>
+          <div class="py-8">
+            No arcsi episode selected
+          </div>
+        </div>
       </div>
       <div class="close">
-        <a href="#" class="px-4 py-2 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+        <a href="#" class="block px-4 py-1 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
           <span v-if="arcsiVisible">
             X
           </span>
           <span v-else class="text-xl">
-            <b>A</b>
+            <b class="block -mt-1" :class="isArcsiPlaying && 'rotate-element'">
+              A
+            </b>
           </span>
         </a>
       </div>
@@ -30,7 +39,7 @@ export default {
     arcsiVisible () {
       return this.$store.state.player.isArcsiVisible
     },
-    playEpisode () {
+    isArcsiPlaying () {
       if (!this.$store.state.player.isArcsiPlaying) {
         return false
       }
