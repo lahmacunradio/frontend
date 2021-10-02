@@ -7,7 +7,7 @@
           <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name" :description="arcsiInfosBlock.description" :visibility="shadowbox" />
         </a>
       </div>
-      <div class="mb-4">
+      <div class="mb-4 show-description">
         <h3>{{ arcsiInfosBlock.name }}</h3>
         <div>{{ arcsiInfosBlock.description }}</div>
       </div>

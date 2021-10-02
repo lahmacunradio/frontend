@@ -1,12 +1,17 @@
 <template>
   <div class="bottomarcsiplayer">
     <div v-if="playEpisode" class="relative playerblock">
-      <div class="container">
+      <div class="container" :class="arcsiVisible ? 'h-auto' : 'h-0'">
         <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="true" />
       </div>
       <div class="close">
-        <a href="#" class="p-4" @click.prevent="closeArcsi">
-          X
+        <a href="#" class="px-4 py-2 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+          <span v-if="arcsiVisible">
+            X
+          </span>
+          <span v-else class="text-xl">
+            <b>A</b>
+          </span>
         </a>
       </div>
     </div>
@@ -22,6 +27,9 @@ export default {
     }
   },
   computed: {
+    arcsiVisible () {
+      return this.$store.state.player.isArcsiVisible
+    },
     playEpisode () {
       if (!this.$store.state.player.isArcsiPlaying) {
         return false
@@ -44,8 +52,11 @@ export default {
     }
   },
   methods: {
-    closeArcsi () {
+    stopArcsi () {
       this.$store.commit('player/isArcsiPlaying', false)
+    },
+    togglePlayerVisibility (state) {
+      this.$store.commit('player/isArcsiVisible', state)
     }
   }
 }
@@ -54,15 +65,14 @@ export default {
 <style lang="scss" scoped>
 @import "/assets/css/variables";
 .bottomarcsiplayer {
-    background: white;
-    position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
+    @apply z-50 bg-white fixed;
 }
 .close {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -1.75rem;
+    right: 1rem;
 }
 </style>

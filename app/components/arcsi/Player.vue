@@ -1,13 +1,12 @@
 <template>
   <div class="arcsiplayer">
-    <div v-if="duration === 0" class="py-2 preload">
-      <img src="/img/preloader.svg">
+    <div v-if="duration === 0" class="flex py-2 preload">
+      <img src="/img/preloader.svg" class="h-8">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex items-center justify-between w-full">
-      <div>
-        <h5>{{ episode.shows[0].name + ' - ' + episode.name }}</h5>
-        <button @click="playArcsi">
+      <div class="flex">
+        <button class="mr-4" @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
           </span>
@@ -15,9 +14,23 @@
             <i class="fa fa-play" aria-hidden="true" />
           </span>
         </button>
+        <!-- Stop button not needed?
         <button @click="stopArcsi">
           <i class="fa fa-stop" aria-hidden="true" />
         </button>
+        -->
+        <h5 v-if="arcsiShow">
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
+            {{ episode.shows[0].name }}
+          </NuxtLink>
+          <span> - </span>
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.id}`">
+            {{ episode.name }}
+          </NuxtLink>
+        </h5>
+        <h5 v-else>
+          {{ episode.shows[0].name + ' - ' + episode.name }}
+        </h5>
       </div>
       <div>
         <div id="myProgress" class="my-2">
@@ -85,6 +98,17 @@ export default {
         player: 'arcsi',
         data: this.episode
       }
+    },
+    arcsiList () {
+      return [...this.$store.state.arcsiShows]
+    },
+    arcsiShow () {
+      if (!this.arcsiList) {
+        return false
+      }
+      const showID = this.episode?.shows?.[0].id
+      const showObject = this.arcsiList?.find(show => show.id === showID)
+      return showObject
     }
   },
   mounted () {
@@ -138,7 +162,7 @@ export default {
     },
     async findIfArcsiSeek () {
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
-      const arcsiPlayPosition = arcsiPlayerSeek.playPosition
+      const arcsiPlayPosition = await arcsiPlayerSeek.playPosition
 
       if (arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {

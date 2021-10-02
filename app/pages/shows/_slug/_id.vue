@@ -12,7 +12,7 @@
           <Modal :media="arcsiEpisode.image_url" :title="arcsiEpisode.name" :description="arcsiEpisode.description" :visibility="arcsiItemShadowbox" />
         </a>
       </div>
-      <div class="mb-4">
+      <div class="mb-4 show-description">
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
         <div class="py-4">
@@ -58,6 +58,7 @@ export default {
   methods: {
     playArcsi (trigger) {
       this.$store.commit('player/isArcsiPlaying', trigger)
+      this.$store.commit('player/isArcsiVisible', true)
       this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
     }
   }

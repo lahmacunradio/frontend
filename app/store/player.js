@@ -2,7 +2,8 @@ export const state = () => ({
   arcsiEpisode: {},
   arcsiPlayHistory: {},
   arcsiVolume: 1,
-  isArcsiPlaying: {}
+  isArcsiPlaying: {},
+  isArcsiVisible: false
 })
 
 export const mutations = {
@@ -26,5 +27,9 @@ export const mutations = {
   },
   isArcsiPlaying (state, trigger) {
     state.isArcsiPlaying = trigger
+  },
+  isArcsiVisible (state, showState) {
+    state.isArcsiVisible = showState
   }
+
 }
