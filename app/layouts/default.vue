@@ -1,7 +1,7 @@
 <template>
   <div>
     <HeaderBlock />
-    <nuxt class="py-8" />
+    <nuxt :class="$route.name === 'index' ? '' : 'py-8'" />
     <FooterHome v-if="$route.name === 'index'" />
     <BottomArcsiPlayer />
   </div>

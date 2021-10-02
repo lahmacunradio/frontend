@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="m-4 text-center title">
+    <div class="m-8 text-center title">
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
     <ShowsLister :shows="arcsiShowsList" />
-    <div class="m-4 text-center title">
+    <div class="m-8 text-center title">
       <h1>Past Shows</h1>
     </div>
     <ShowsLister :shows="pastShowsList" />
@@ -19,21 +19,21 @@ import { mediaServerURL } from '~/constants'
 export default {
   components: {},
 
-  data() {
+  data () {
     return {
       mediaServerURL
     }
   },
-  head() {
+  head () {
     return {
       title: 'Lahmacun Shows'
     }
   },
   computed: {
-    arcsiShows() {
+    arcsiShows () {
       return this.$store.state.arcsiShows
     },
-    arcsiShowsList() {
+    arcsiShowsList () {
       if (this.arcsiShows) {
         const arcsiShowsList = [...this.arcsiShows]
         return arcsiShowsList.filter((show) => {

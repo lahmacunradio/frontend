@@ -51,8 +51,8 @@
           <span>playing: {{ currentSeek }}</span>
         </div>
       </div>
-      <div class="my-4">
-        <h5>Volume</h5>
+      <div v-if="!isTouchEnabled" class="my-4">
+        <h4>Volume</h4>
         <input
           v-model="currentVolume"
           type="range"
@@ -109,6 +109,9 @@ export default {
       const showID = this.episode?.shows?.[0].id
       const showObject = this.arcsiList?.find(show => show.id === showID)
       return showObject
+    },
+    isTouchEnabled () {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   mounted () {
@@ -175,7 +178,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
  #myProgress {
   width: 100%;
   background-color: $lahma-pink;
