@@ -1,13 +1,16 @@
 <template>
   <div>
-    <section class="grid-cols-2 mb-16 md:grid">
-      <div>
-        <NewsHome :news="sortNews[newsStart]" @changenews="changenews" />
+    <section class="grid-cols-2 mb-16 md:grid home-top">
+      <div class="bg-white">
+        <NewsHome :news="sortNews[newsStart]" @changenews="changenews(direction)" />
       </div>
       <div>
         <ScheduleHome :shows="sortShowsForSchedule" />
       </div>
     </section>
+    <article>
+      <ArcsiLatest />
+    </article>
   </div>
 </template>
 
@@ -37,9 +40,11 @@ export default {
     }
   },
   methods: {
-    changenews () {
+    changenews (direction) {
       if (this.newsStart === this.newsLimit - 1) {
         this.newsStart = 0
+      } else if (direction === 'previous') {
+        this.newsStart++
       } else {
         this.newsStart++
       }
@@ -50,6 +55,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.home-top {
+  margin-bottom: 0;
+}
 h3 {
   margin-bottom: 1rem;
 }

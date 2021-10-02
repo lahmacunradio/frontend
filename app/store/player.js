@@ -12,6 +12,9 @@ export const mutations = {
   setArcsiVolume (state, volume) {
     state.arcsiVolume = volume
   },
+  setStreamVolume (state, volume) {
+    state.streamVolume = volume
+  },
   setArcsiProgressHistory (state, progress) {
     const newData = {
       [progress.episodeID]: {
