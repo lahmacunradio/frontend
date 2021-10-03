@@ -177,11 +177,17 @@ export default {
     },
     async findIfArcsiSeek () {
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
-      const arcsiPlayPosition = await arcsiPlayerSeek.playPosition
+      const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
       if (arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
           this.setProgress(arcsiPlayPosition)
+          this.play()
+        }, 1000)
+      } else {
+        setTimeout(() => {
+          this.setProgress(0)
+          this.play()
         }, 1000)
       }
     }
