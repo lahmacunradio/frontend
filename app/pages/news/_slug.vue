@@ -8,18 +8,18 @@
 
 export default {
   components: {},
-  data() {
+  data () {
     return {
       slug: this.$route.params.slug
     }
   },
-  head() {
+  head () {
     return {
       title: this.htmlDecoder(this.selectedNews.title.rendered)
     }
   },
   computed: {
-    selectedNews() {
+    selectedNews () {
       return this.$store.state.newsList.filter(news => news.slug === this.slug).shift()
     }
   }

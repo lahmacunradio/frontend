@@ -36,7 +36,7 @@
               </div>
             </div>
 
-            <div id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+            <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
               <div class="radio-control-volume-slider">
                 <vue-slider
                   v-model="volume"
@@ -290,6 +290,9 @@ export default {
           return artworkJSON
         }
       }
+    },
+    isTouchEnabled () {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   watch: {
@@ -443,7 +446,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .radio-player-widget {
     min-width: 300px;
     max-width: 400px;
@@ -460,16 +462,19 @@ export default {
             min-width: 0;
             position: relative;
             max-height: 70px;
+            @media (max-width: $mobile-width) {
+              max-width: 50vw;
+            }
         }
         h4, h5 {
             margin: 0;
             line-height: 1.3;
         }
         h4 {
-            font-size: 15px;
+            font-size: 0.9rem;
         }
         h5 {
-            font-size: 13px;
+            font-size: 0.8rem;
             font-weight: normal;
         }
         .now-playing-title,
@@ -535,6 +540,10 @@ export default {
         width: 100%;
         min-width: 300px;
         margin-right: 1rem;
+        @media (max-width: $mobile-width) {
+          margin-right: 0;
+          min-width: auto;
+        }
         .radio-control-play-button {
             margin-right: 0.5em;
         }
@@ -613,11 +622,13 @@ a.programimage {
 .now-playing-main .media-body {
     overflow: auto;
 }
-
+.play-volume-controls {
+  position: relative;
+}
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
     background: white;
-    top: 65px;
+    bottom: 3px;
     z-index: 500;
     padding-left: 3px;
     line-height: 1;
@@ -655,13 +666,20 @@ a.programimage {
 .bigplay-button img {
   height: 75px;
   padding: 0 1rem;
+  @media (max-width: $mobile-width) {
+    height: 65px;
+    padding: 0 1rem 0 0;
+  }
 }
 
 .sand-clock {
   position: relative;
-  min-width: 40px;
+  min-width: 48px;
   img {
     height: 80px;
+    @media (max-width: $mobile-width) {
+      height: 55px;
+    }
     z-index: 10;
     position: relative;
   }
@@ -670,7 +688,6 @@ a.programimage {
 </style>
 
 <style lang="scss">
-@import "/assets/css/variables";
 .radio-control-volume-slider {
   .vue-slider {
     padding: 0 !important;

@@ -7,14 +7,15 @@
       @update="onUpdate"
       placeHolder="Search"
     />
-    <div v-if="arcsiShowsList.length  > 0" >
-      <h1 class="m-4 text-center title">Lahmacun Shows</h1>
-      <ShowsLister :shows='arcsiShowsList' />
+    <div class="m-8 text-center title">
+      <h1>Lahmacun Shows</h1>
     </div>
-    <div v-if="pastShowsList.length > 0">
-      <h1 class="m-4 text-center title">Past Shows</h1>
-      <ShowsLister :shows="pastShowsList" />
+    <!-- Make a listing component -->
+    <ShowsLister :shows="arcsiShowsList" />
+    <div class="m-8 text-center title">
+      <h1>Past Shows</h1>
     </div>
+    <ShowsLister :shows="pastShowsList" />
   </div>
 </template>
 
@@ -23,6 +24,8 @@
 import { mediaServerURL } from '~/constants'
 
 export default {
+  components: {},
+
   data () {
     return {
       mediaServerURL,
@@ -37,6 +40,9 @@ export default {
     }
   },
   computed: {
+    arcsiShows () {
+      return this.$store.state.arcsiShows
+    },
     arcsiShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (

@@ -35,7 +35,7 @@
         <span> - </span>
         <span>playing: {{ currentSeek }}</span>
       </div>
-      <div class="my-4">
+      <div v-if="!isTouchEnabled" class="my-4">
         <h4>Volume</h4>
         <input
           v-model="currentVolume"
@@ -82,6 +82,9 @@ export default {
         player: 'arcsi',
         data: this.episode
       }
+    },
+    isTouchEnabled () {
+      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   mounted () {
@@ -142,7 +145,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
  #myProgress {
   width: 100%;
   background-color: white;
