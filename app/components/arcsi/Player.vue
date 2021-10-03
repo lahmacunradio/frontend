@@ -32,7 +32,7 @@
           {{ episode.shows[0].name + ' - ' + episode.name }}
         </h5>
       </div>
-      <div>
+      <div class="md:mr-2">
         <div id="myProgress" class="my-2">
           <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
           <input
@@ -45,10 +45,10 @@
             @change="seekBar($event.target.value)"
           >
         </div>
-        <div>
-          <span>Total duration: {{ currentDuration }}</span>
-          <span> - </span>
-          <span>playing: {{ currentSeek }}</span>
+        <div class="whitespace-nowrap">
+          <span>Total: {{ currentDuration }}</span>
+          <span v-if="seek"> - </span>
+          <span v-if="seek">seek: {{ currentSeek }}</span>
         </div>
       </div>
       <div v-if="!isTouchEnabled" class="my-4">
@@ -68,7 +68,6 @@
 
 <script>
 import VueHowler from 'vue-howler'
-import { format, addSeconds } from 'date-fns'
 
 export default {
   mixins: [VueHowler],
@@ -86,12 +85,10 @@ export default {
   },
   computed: {
     currentDuration () {
-      const helperDate = addSeconds(new Date(0), this.duration)
-      return format(helperDate, 'mm:ss')
+      return this.convertHourMinuteSecond(this.duration)
     },
     currentSeek () {
-      const helperDate = addSeconds(new Date(0), this.seek)
-      return format(helperDate, 'mm:ss')
+      return this.convertHourMinuteSecond(this.seek)
     },
     playerData () {
       return {

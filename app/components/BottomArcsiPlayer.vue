@@ -1,7 +1,7 @@
 <template>
   <div class="bottomarcsiplayer">
     <div class="relative playerblock">
-      <div class="container" :class="arcsiVisible ? 'h-auto' : 'h-0'">
+      <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
         <div v-if="arcsiEpisode">
           <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="false" />
         </div>
