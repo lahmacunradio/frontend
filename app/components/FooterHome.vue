@@ -8,9 +8,9 @@
         </div>
         <img src="/img/Lahmacun-Team-2020.jpg" alt="">
       </div>
-      <div class="flex justify-between py-8">
+      <div class="justify-between py-8 md:flex">
         <div class="infos">
-          <div>
+          <div class="mb-4">
             <h5>FOLLOW</h5>
             <ul>
               <li>Facebook</li>
@@ -19,14 +19,14 @@
               <li>Bandcamp</li>
             </ul>
           </div>
-          <div>
+          <div class="mb-4">
             <h5>Contact</h5>
             <p>
               <a href="mailto:contact@lahmacun.hu">contact@lahmacun.hu</a>
             </p>
           </div>
         </div>
-        <div class="py-4 logos">
+        <div class="py-8 md:py-4 logos">
           <a href="http://golyapresszo.hu/" target="_blank">
             <img src="/img/golyalogo-1.png" alt="">
           </a>
@@ -57,6 +57,9 @@ export default {
     }
     .image {
         position: relative;
+        @media (max-width: $mobile-width) {
+          overflow: hidden;
+        }
         .gradient {
             position: absolute;
             bottom: 0;
@@ -69,10 +72,22 @@ export default {
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            @media (max-width: $mobile-width) {
+              padding: 1rem;
+              font-size: 0.9rem;
+            }
             p {
                 max-width: 350px;
                 margin-top: 1rem;
             }
+        }
+        @media (max-width: $mobile-width) {
+          img {
+            height: 50vh;
+            width: auto;
+            max-width: none;
+            margin-left: -100%;
+          }
         }
     }
     .infos {
@@ -87,6 +102,9 @@ export default {
             display: inline-block;
             vertical-align: middle;
             margin-left: 3rem;
+            @media (max-width: $mobile-width) {
+              margin: 0;
+            }
         }
     }
 }

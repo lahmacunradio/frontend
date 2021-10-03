@@ -1,3 +1,11 @@
 $lahma-pink: #d09cf8;
 $black-color: #23282d;
-$lahma-type: 'Rubik', "Segoe UI","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+$lahma-type: 'Rubik', "Segoe UI","Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+
+/* See tailwind.config.js
+  theme: {
+    screens: {
+*/
+$notebook-width: 1024px;
+$tablet-width: 768px;
+$mobile-width: 576px;

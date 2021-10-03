@@ -1,10 +1,10 @@
 <template>
   <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
-    <div class="flex items-center">
+    <div class="items-center md:flex">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <img src="/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
-      <div class="mr-8">
+      <div class="my-4 md:mr-8">
         <client-only>
           <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
         </client-only>
@@ -65,5 +65,14 @@ export default {
         font-weight: 600;
         white-space: nowrap;
       }
+  }
+  @media (max-width: $tablet-width) {
+    #time {
+      position: absolute;
+      top: 0;
+      right: 0;
+      text-align: right;
+      padding: 2rem 1rem;
+    }
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3>Arcsi's Latest</h3>
-    <div class="container relative py-8">
+    <div class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="i" class="swiper-slide">
@@ -48,7 +48,7 @@ export default {
             slidesPerView: 2,
             spaceBetween: 30
           },
-          420: {
+          0: {
             slidesPerView: 1,
             spaceBetween: 30
           }
@@ -88,7 +88,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 h3 {
     width: 100%;
     padding: 0.5rem;
@@ -105,6 +104,14 @@ h3 {
 .swiper-button-next {
   right: -20px;
 }
+@media (max-width: $mobile-width) {
+  .swiper-button-prev {
+    left: 20px;
+  }
+  .swiper-button-next {
+    right: 20px;
+  }
+}
 .swiper-button-next, .swiper-button-prev {
   img {
     width: 3rem;
@@ -113,6 +120,9 @@ h3 {
   &::after {
     content: '';
   }
+}
+.latest-container {
+  max-height: 75vh;
 }
 
 </style>
