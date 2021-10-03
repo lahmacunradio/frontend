@@ -40,9 +40,6 @@ export default {
     }
   },
   computed: {
-    arcsiShows () {
-      return this.$store.state.arcsiShows
-    },
     arcsiShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (

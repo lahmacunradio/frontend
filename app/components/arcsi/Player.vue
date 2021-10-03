@@ -4,8 +4,8 @@
       <img src="/img/preloader.svg" class="h-8 mr-4">
       <p>Preloading...</p>
     </div>
-    <div v-else class="flex items-center justify-between w-full">
-      <div class="flex">
+    <div v-else class="items-center justify-between w-full md:flex">
+      <div class="flex py-2">
         <button class="mr-4" @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
@@ -120,6 +120,16 @@ export default {
       return this.$store.state.player.isArcsiPlaying
     }
   },
+  watch: {
+    '$store.state.player.isStreamPlaying': {
+      handler () {
+        if (this.$store.state.player.isStreamPlaying) {
+          this.pauseArcsi()
+        }
+      },
+      deep: true
+    }
+  },
   mounted () {
     if (this.currentVolume !== this.$store.state.player.arcsiVolume) {
       this.currentVolume = this.$store.state.player.arcsiVolume
@@ -152,6 +162,11 @@ export default {
       } else {
         this.$store.commit('player/isArcsiPlaying', true)
       }
+      this.$store.commit('player/isStreamPlaying', false)
+    },
+    pauseArcsi () {
+      this.stop()
+      this.$store.commit('player/isArcsiPlaying', false)
     },
     stopArcsi () {
       this.stop()
@@ -179,16 +194,18 @@ export default {
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
-      if (arcsiPlayerSeek && arcsiPlayPosition !== 0) {
+      if (this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
           this.setProgress(arcsiPlayPosition)
           this.play()
         }, 1000)
-      } else {
+      } else if (this.arcsiIsPlaying) {
         setTimeout(() => {
           this.setProgress(0)
           this.play()
         }, 1000)
+      } else {
+        this.stopArcsi()
       }
     }
   }

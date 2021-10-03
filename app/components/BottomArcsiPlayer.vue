@@ -16,11 +16,11 @@
           <span v-if="arcsiVisible">
             X
           </span>
-          <span v-else class="text-xl">
+          <div v-else class="text-xl">
             <b class="block -mt-1" :class="isArcsiPlaying && 'rotate-element'">
               A
             </b>
-          </span>
+          </div>
         </a>
       </div>
     </div>
