@@ -1,5 +1,12 @@
 <template>
   <div>
+    <AutoCompleteSearch
+      :defaultItems="defaultArcsiShows"
+      suggestionAttribute="name"
+      :searchFields="searchFields"
+      @update="onUpdate"
+      placeHolder="Search"
+    />
     <div class="m-8 text-center title">
       <h1>Lahmacun Shows</h1>
     </div>
@@ -21,7 +28,10 @@ export default {
 
   data () {
     return {
-      mediaServerURL
+      mediaServerURL,
+      defaultArcsiShows: this.$store.state.arcsiShows,
+      arcsiShows: this.$store.state.arcsiShows,
+      searchFields: ['name', 'description']
     }
   },
   head () {
@@ -35,31 +45,27 @@ export default {
     },
     arcsiShowsList () {
       if (this.arcsiShows) {
-        const arcsiShowsList = [...this.arcsiShows]
-        return arcsiShowsList.filter((show) => {
-          return !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
-        }).sort((a, b) => a.name.localeCompare(b.name))
+        return this.arcsiShows.filter(show => (
+          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
+        )).sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
     },
     pastShowsList () {
       if (this.arcsiShows) {
-        const arcsiShowsList = [...this.arcsiShows]
-        return arcsiShowsList.filter((show) => {
-          return !show.active
-        }).sort((a, b) => a.name.localeCompare(b.name))
+        return this.arcsiShows.filter(show => !show.active)
+          .sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
     }
   },
-  mounted () {
-    // console.log(this.arcsiShows)
-  },
   methods: {
+    onUpdate (result) {
+      this.arcsiShows = result
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>
