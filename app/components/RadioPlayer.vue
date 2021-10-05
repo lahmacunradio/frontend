@@ -2,7 +2,7 @@
   <div class="stations nowplaying altalanosinfok">
     <div class="radio-player-widget">
       <template v-if="is_playing">
-        <audio ref="player" :title="np.now_playing.song.text" />
+        <audio id="lahmastream" ref="player" :title="np.now_playing.song.text" />
       </template>
 
       <div class="now-playing-details">
@@ -299,6 +299,14 @@ export default {
     volume (volume) {
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
       this.$store.commit('player/setStreamVolume', volume)
+    },
+    '$store.state.player.isArcsiPlaying': {
+      handler () {
+        if (this.$store.state.player.isArcsiPlaying) {
+          this.stop()
+        }
+      },
+      deep: true
     }
   },
   created () {
@@ -344,8 +352,8 @@ export default {
       this.audio.src = this.current_stream.url
       this.audio.play()
       this.is_playing = true
-      document.body.classList.add('Playing')
-
+      this.$store.commit('player/isArcsiPlaying', false)
+      this.$store.commit('player/isStreamPlaying', true)
       /*
             if (this.show_check) {
                 gtag('event', 'Radio play', {
@@ -360,8 +368,7 @@ export default {
       this.is_playing = false
       this.audio.pause()
       this.audio.src = ''
-      document.body.classList.remove('Playing')
-
+      this.$store.commit('player/isStreamPlaying', false)
       /*
             if (this.show_check) {
                 gtag('event', 'Radio play', {

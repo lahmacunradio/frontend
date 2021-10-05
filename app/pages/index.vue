@@ -16,7 +16,6 @@
 
 <script>
 export default {
-  layout: 'home',
   data () {
     return {
       newsLimit: 9,

@@ -12,16 +12,18 @@
           <Modal :media="arcsiEpisode.image_url" :title="arcsiEpisode.name" :description="arcsiEpisode.description" :visibility="arcsiItemShadowbox" />
         </a>
       </div>
-      <div class="mb-4">
+      <div class="mb-4 show-description">
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
         <div class="py-4">
-          <div v-if="playEpisode">
-            <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="true" />
+          <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
+            <i>Episode is now in the Arcsi player...</i>
           </div>
-          <a v-else href="#" @click.prevent="playEpisode = true">
-            <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
-          </a>
+          <div v-else>
+            <a href="#" @click.prevent="playArcsi()">
+              <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -29,7 +31,7 @@
 </template>
 
 <script>
-import { arcsiItemBaseURL, mediaServerURL } from '~/constants'
+import { arcsiItemBaseURL } from '~/constants'
 
 export default {
   components: {
@@ -53,12 +55,31 @@ export default {
     }
   },
   computed: {
-    arcsiAudio () {
-      return [`${mediaServerURL}${this.slug}/${this.arcsiEpisode.archive_lahmastore_canonical_url}`]
-    },
     fullEpisodeTitle () {
-      if (!this.arcsiEpisode) { return false }
+      if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
+    },
+    arcsiVisible () {
+      return this.$store.state.player.isArcsiVisible
+    },
+    arcsiEpisodePlaying () {
+      if (!this.$store.state.player.isArcsiPlaying) {
+        return false
+      }
+      return this.$store.state.player.isArcsiPlaying
+    },
+    arcsiCurrentEpisode () {
+      if (!this.$store.state.player.arcsiEpisode) {
+        return false
+      }
+      return this.$store.state.player.arcsiEpisode
+    }
+  },
+  methods: {
+    playArcsi () {
+      this.$store.commit('player/isArcsiPlaying', true)
+      this.$store.commit('player/isArcsiVisible', true)
+      this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
     }
   }
 }

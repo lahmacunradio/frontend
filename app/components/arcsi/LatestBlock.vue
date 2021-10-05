@@ -1,14 +1,14 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
-    <NuxtLink :to="`shows/${showslug}/${episode.id}`">
+    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
       <div class="mb-4 arcsi-img">
         <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
-    <NuxtLink :to="`shows/${showslug}/${episode.id}`">
+    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
       <h5>{{ episode.name }}</h5>
     </NuxtLink>
-    <NuxtLink :to="`shows/${showslug}`">
+    <NuxtLink :to="`/shows/${showslug}`">
       <h5 class="text-white">
         {{ episode.shows[0].name }}
       </h5>

@@ -1,11 +1,16 @@
 export const state = () => ({
+  isStreamPlaying: false,
   arcsiEpisode: {},
   arcsiPlayHistory: {},
   arcsiVolume: 1,
-  streamVolume: 0.55
+  isArcsiPlaying: false,
+  isArcsiVisible: false
 })
 
 export const mutations = {
+  isStreamPlaying (state, trigger) {
+    state.isStreamPlaying = trigger
+  },
   currentlyPlayingArcsi (state, episode) {
     state.arcsiEpisode = episode
   },
@@ -23,5 +28,12 @@ export const mutations = {
       }
     }
     Object.assign(state.arcsiPlayHistory, newData)
+  },
+  isArcsiPlaying (state, trigger) {
+    state.isArcsiPlaying = trigger
+  },
+  isArcsiVisible (state, showState) {
+    state.isArcsiVisible = showState
   }
+
 }

@@ -1,12 +1,12 @@
 <template>
   <div class="arcsiplayer">
-    <div v-if="duration === 0" class="py-2 preload">
-      <img src="/img/preloader.svg">
+    <div v-if="duration === 0" class="flex items-center py-6 preload">
+      <img src="/img/preloader.svg" class="h-8 mr-4">
       <p>Preloading...</p>
     </div>
-    <div v-else>
-      <div>
-        <button @click="playArcsi">
+    <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
+      <div class="flex py-2">
+        <button class="mr-4" @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
           </span>
@@ -14,29 +14,45 @@
             <i class="fa fa-play" aria-hidden="true" />
           </span>
         </button>
+        <!-- Stop button not needed?
         <button @click="stopArcsi">
           <i class="fa fa-stop" aria-hidden="true" />
         </button>
+        -->
+        <h5 v-if="arcsiShow">
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
+            {{ episode.shows[0].name }}
+          </NuxtLink>
+          <span> - </span>
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.id}`">
+            {{ episode.name }}
+          </NuxtLink>
+        </h5>
+        <h5 v-else>
+          {{ episode.shows[0].name + ' - ' + episode.name }}
+        </h5>
       </div>
-      <div id="myProgress" class="my-2">
-        <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
-        <input
-          id="progressingRange"
-          :value="progress"
-          type="range"
-          min="0"
-          max="1"
-          step="0.001"
-          @change="seekBar($event.target.value)"
-        >
-      </div>
-      <div>
-        <span>Total duration: {{ currentDuration }}</span>
-        <span> - </span>
-        <span>playing: {{ currentSeek }}</span>
+      <div class="w-full md:mr-2 md:w-32">
+        <div id="myProgress" class="my-2">
+          <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
+          <input
+            id="progressingRange"
+            :value="progress"
+            type="range"
+            min="0"
+            max="1"
+            step="0.001"
+            @change="seekBar($event.target.value)"
+          >
+        </div>
+        <div class="whitespace-nowrap">
+          <span>Total: {{ currentDuration }}</span>
+          <span v-if="seek"> - </span>
+          <span v-if="seek">seek: {{ currentSeek }}</span>
+        </div>
       </div>
       <div v-if="!isTouchEnabled" class="my-4">
-        <h4>Volume</h4>
+        <b>Volume</b><br>
         <input
           v-model="currentVolume"
           type="range"
@@ -52,7 +68,6 @@
 
 <script>
 import VueHowler from 'vue-howler'
-import { format, addSeconds } from 'date-fns'
 
 export default {
   mixins: [VueHowler],
@@ -70,12 +85,10 @@ export default {
   },
   computed: {
     currentDuration () {
-      const helperDate = addSeconds(new Date(0), this.duration)
-      return format(helperDate, 'mm:ss')
+      return this.convertHourMinuteSecond(this.duration)
     },
     currentSeek () {
-      const helperDate = addSeconds(new Date(0), this.seek)
-      return format(helperDate, 'mm:ss')
+      return this.convertHourMinuteSecond(this.seek)
     },
     playerData () {
       return {
@@ -83,8 +96,35 @@ export default {
         data: this.episode
       }
     },
+    arcsiList () {
+      return [...this.$store.state.arcsiShows]
+    },
+    arcsiShow () {
+      if (!this.arcsiList) {
+        return false
+      }
+      const showID = this.episode?.shows?.[0].id
+      const showObject = this.arcsiList?.find(show => show.id === showID)
+      return showObject
+    },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
+    },
+    arcsiIsPlaying () {
+      if (!this.$store.state.player.isArcsiPlaying) {
+        return false
+      }
+      return this.$store.state.player.isArcsiPlaying
+    }
+  },
+  watch: {
+    '$store.state.player.isStreamPlaying': {
+      handler () {
+        if (this.$store.state.player.isStreamPlaying) {
+          this.pauseArcsi()
+        }
+      },
+      deep: true
     }
   },
   mounted () {
@@ -94,6 +134,11 @@ export default {
     }
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+  },
+  beforeUpdate () {
+    if (this.duration === 0) {
+      this.findIfArcsiSeek()
+    }
   },
   beforeDestroy () {
     if (this.playing) {
@@ -109,6 +154,16 @@ export default {
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      if (this.playing) {
+        this.$store.commit('player/isArcsiPlaying', false)
+      } else {
+        this.$store.commit('player/isArcsiPlaying', true)
+      }
+      this.$store.commit('player/isStreamPlaying', false)
+    },
+    pauseArcsi () {
+      this.pause()
+      this.$store.commit('player/isArcsiPlaying', false)
     },
     stopArcsi () {
       this.stop()
@@ -118,6 +173,7 @@ export default {
       }
       this.currentProgress = '0'
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      this.$store.commit('player/isArcsiPlaying', false)
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
@@ -131,13 +187,22 @@ export default {
       }
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
-    findIfArcsiSeek () {
-      if (!this.$store.state.player.arcsiPlayHistory) { return false }
-      const arcsiPlayerSeek = this.$store.state.player.arcsiPlayHistory[this.episode.id]
-      if (arcsiPlayerSeek && arcsiPlayerSeek.playPosition !== 0) {
+    async findIfArcsiSeek () {
+      const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
+      const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
+
+      if (this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
-          this.setProgress(arcsiPlayerSeek.playPosition)
-        }, 100)
+          this.setProgress(arcsiPlayPosition)
+          this.play()
+        }, 1000)
+      } else if (this.arcsiIsPlaying) {
+        setTimeout(() => {
+          this.setProgress(0)
+          this.play()
+        }, 1000)
+      } else {
+        this.stopArcsi()
       }
     }
   }
@@ -147,7 +212,7 @@ export default {
 <style lang="scss" scoped>
  #myProgress {
   width: 100%;
-  background-color: white;
+  background-color: $lahma-pink;
 }
 
 #myBar {
