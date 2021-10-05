@@ -4,7 +4,7 @@
       <img src="/img/preloader.svg" class="h-8 mr-4">
       <p>Preloading...</p>
     </div>
-    <div v-else class="items-center justify-between w-full md:flex">
+    <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
       <div class="flex py-2">
         <button class="mr-4" @click="playArcsi">
           <span v-if="playing">
@@ -32,7 +32,7 @@
           {{ episode.shows[0].name + ' - ' + episode.name }}
         </h5>
       </div>
-      <div class="md:mr-2">
+      <div class="w-full md:mr-2 md:w-32">
         <div id="myProgress" class="my-2">
           <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
           <input
@@ -162,7 +162,7 @@ export default {
       this.$store.commit('player/isStreamPlaying', false)
     },
     pauseArcsi () {
-      this.stop()
+      this.pause()
       this.$store.commit('player/isArcsiPlaying', false)
     },
     stopArcsi () {

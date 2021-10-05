@@ -4,7 +4,7 @@
     <div class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="i" class="swiper-slide">
+          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i" class="swiper-slide">
             <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
           </div>
         </div>
