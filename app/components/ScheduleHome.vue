@@ -161,15 +161,17 @@ a {
           border-radius: 5px;
           display: none;
           position: absolute;
-          z-index: 100;
+          z-index: 10;
           top: calc(50% - 75px);
           right: 0;
         }
       }
       &:hover {
-        background: rgba(255, 255, 255, 0.5);
-        .show-image {
-          display: block;
+        @media (min-width: $tablet-width) {
+          background: rgba(255, 255, 255, 0.5);
+          .show-image {
+            display: block;
+          }
         }
       }
       .onairtext {

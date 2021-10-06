@@ -1,7 +1,7 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
     <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
-      <div class="mb-4 arcsi-img">
+      <div class="mb-4 arcsi-img aspect-ratio-1/1">
         <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
@@ -60,13 +60,13 @@ export default {
 .latest-arcsi-blokk {
   .arcsi-img {
     height: auto;
-    max-height: 400px;
     width: 100%;
     overflow: hidden;
     img {
       object-fit: cover;
-      min-height: 100%;
-      min-width: 100%;
+      height: 100%;
+      width: 100%;
+      object-position: center;
     }
   }
 }

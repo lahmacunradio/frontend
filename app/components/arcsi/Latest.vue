@@ -30,6 +30,7 @@ export default {
   data () {
     return {
       startIndex: 0,
+      preloadImages: false,
       numberOfEpisodes: 9,
       swiperOption: {
         slidesPerView: 3,
@@ -121,8 +122,8 @@ h3 {
     content: '';
   }
 }
-.latest-container {
+/* .latest-container {
   max-height: 75vh;
-}
+} */
 
 </style>
