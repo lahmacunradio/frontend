@@ -88,5 +88,11 @@ export default {
     ],
     hoistUseStatements: true
     // Hoists the "@use" imports. Applies only to "sass", "scss" and "less". Default: false.
+  },
+  messages: {
+    server_error: '🧐 Oh no! 🧤 Server is down 🤖',
+    nuxtjs: 'What happened? 🙀🐁',
+    back_to_home: '🗣 Back home! 🎅🧨👉',
+    server_error_details: 'Server errorrrrr or unreachable 🤯'
   }
 }
