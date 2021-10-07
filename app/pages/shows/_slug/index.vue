@@ -29,9 +29,11 @@
       <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
           <div>
+            <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md image-fit">
+            </NuxtLink>
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
-              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md">
-              <h5>
+              <h5 class="mt-4">
                 {{ arcsi.name }}
               </h5>
             </NuxtLink>
