@@ -10,7 +10,7 @@
       <div class="mb-4 show-description">
         <h3>{{ arcsiInfosBlock.name }}</h3>
         <div class="show-infos">
-          <p>Airing time: {{ dayNames[arcsiInfosBlock.day] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
           <p>
             Last episode:
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
