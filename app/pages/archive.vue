@@ -1,14 +1,25 @@
 <template>
   <div class="container">
-    <h1>Arcsives</h1>
+    <h1 class="mb-4">Arcsi Episodes</h1>
+    <div v-if="defaultEpisodes">
+      <AutoCompleteSearch
+        :default-items="defaultEpisodes"
+        suggestion-attribute="name"
+        :search-fields="searchFields"
+        place-holder="Search"
+        @update.passive="onUpdate"
+      />
+    </div>
     <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
       <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
         <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
       </div>
     </article>
-    <div id="loadmore" class="p-4 text-center">
-      <a href="#" class="font-bold" @click.prevent="loadMoreEpisodes">
-        Load previous
+    <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
+      <a href="#" @click.prevent="loadMoreEpisodes">
+        <b>Load {{ startNumberofEpisodes }} more episodes</b>
+        <br>
+        (showing {{ numberOfEpisodes }} episodes)
       </a>
     </div>
   </div>
@@ -24,10 +35,21 @@ export default {
       preloadImages: false,
       numberOfEpisodes: 12,
       startNumberofEpisodes: 12,
-      arcsiEpisodes: null
+      arcsiEpisodes: null,
+      defaultEpisodes: null,
+      searchFields: ['name', 'description']
     }
   },
   async fetch () {
+    this.defaultEpisodes = await fetch(arcsiItemBaseURL + '/all')
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
     this.arcsiEpisodes = await fetch(arcsiItemBaseURL + '/all')
       .then((res) => {
         if (res.ok) {
@@ -64,6 +86,9 @@ export default {
   methods: {
     loadMoreEpisodes () {
       this.numberOfEpisodes = this.numberOfEpisodes + this.startNumberofEpisodes
+    },
+    onUpdate (result) {
+      this.arcsiEpisodes = result
     }
   }
 }
