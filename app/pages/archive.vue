@@ -1,13 +1,15 @@
 <template>
   <div class="container">
-    <h1 class="mb-4">Arcsi Episodes</h1>
+    <h1 class="mb-4">
+      Arcsi Episodes
+    </h1>
     <div v-if="defaultEpisodes">
       <AutoCompleteSearch
         :default-items="defaultEpisodes"
         suggestion-attribute="name"
         :search-fields="searchFields"
         place-holder="Search"
-        @update.passive="onUpdate"
+        @update="onUpdate"
       />
     </div>
     <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
