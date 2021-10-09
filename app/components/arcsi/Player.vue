@@ -5,7 +5,7 @@
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex py-2">
+      <div class="flex py-3">
         <button class="mr-4" @click="playArcsi">
           <span v-if="playing">
             <i class="fa fa-pause" aria-hidden="true" />
@@ -52,11 +52,17 @@
           {{ currentDuration }}
         </div>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="my-4">
-        <i class="mr-1 align-text-top fa fa-volume-up" />
+      <div v-if="!isTouchEnabled" id="myVolume" class="my-2">
+        <div class="inline-block w-4 align-middle">
+          <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
+          <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
+          <i v-else-if="currentVolume < '0.7'" class="fa fa-volume-down" />
+          <i v-else class="fa fa-volume-up" />
+        </div>
         <input
           id="volumeRange"
           v-model="currentVolume"
+          class="align-text-top"
           type="range"
           min="0"
           max="1"

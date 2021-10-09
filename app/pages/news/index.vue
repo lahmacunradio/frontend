@@ -6,7 +6,7 @@
       </h1>
     </header>
     <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-      <div v-for="news in newsFilteredList" :key="news.id">
+      <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
         <NewsBlock :news="news" />
       </div>
     </article>
@@ -103,5 +103,8 @@ export default {
   pointer-events: none;
   opacity: 0.5;
   cursor: default;
+}
+.news-block {
+  max-width: 100%;
 }
 </style>
