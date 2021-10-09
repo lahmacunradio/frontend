@@ -18,7 +18,14 @@ export default {
   },
   async fetch () {
     this.aboutUs = await fetch(`${aboutUsURL}`)
-      .then(res => res.json())
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
   },
   computed: {
     aboutUsResults () {
