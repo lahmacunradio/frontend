@@ -38,7 +38,6 @@
               </h5>
             </NuxtLink>
             <small>Play date: {{ format(new Date(arcsi.play_date), 'yyyy. MMMM dd.') }}</small>
-            <p>{{ arcsi.description }}</p>
           </div>
         </div>
       </div>
