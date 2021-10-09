@@ -3,15 +3,15 @@
     <header>
       <h2>Schedule</h2>
     </header>
-    <div class="grid-cols-3 gap-4 md:grid">
-      <div class="days">
+    <div class="">
+      <div class="mb-4 border-b days">
         <ul>
           <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
-            <div class="flex-row p-3 border-b" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
-              <h4 class="inline-block">
+            <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
+              <h4 class="block">
                 {{ day }}
               </h4>
-              - {{ format(add(todayDate, { days: dayIndex} ), 'MMM do') }}
+              {{ format(add(todayDate, { days: dayIndex} ), 'MMM do') }}
             </div>
           </li>
         </ul>
@@ -180,10 +180,12 @@ export default {
     }
     }
     &:hover {
-    background: rgba(255, 255, 255, 0.5);
-    .show-image {
-        display: block;
-    }
+      @media (min-width: $tablet-width) {
+        background: rgba(255, 255, 255, 0.5);
+        .show-image {
+          display: block;
+        }
+      }
     }
     .onairtext {
     text-transform: uppercase;
@@ -216,8 +218,29 @@ export default {
 }
 
 .days {
+  ul {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      height: 0.5rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: white;
+    }
     li {
         cursor: pointer;
+        width: 100%;
+        white-space: nowrap;
+        h4 {
+          font-size: 1.2rem;
+        }
     }
+  }
 }
 </style>
