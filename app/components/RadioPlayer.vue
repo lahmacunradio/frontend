@@ -351,6 +351,10 @@ export default {
     }
     this.checkNowPlaying()
   },
+  beforeDestroy () {
+    clearInterval(this.np_interval)
+    this.np_interval = null
+  },
   methods: {
     play () {
       this.audio.src = this.current_stream.url
