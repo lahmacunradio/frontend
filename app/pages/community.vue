@@ -30,27 +30,41 @@
     </article>
     <article id="projects-page" ref="projects">
       <h2>Projects</h2>
+      <div class="projects-content">
+        Our projects, comming soon...
+      </div>
     </article>
     <article id="favourite-page" ref="favourite">
       <h2>Favourite radio stations</h2>
+      <div class="favourite-radios-content" v-html="favouritesContentResults" />
     </article>
   </div>
 </template>
 
 <script>
-import { donateURL } from '~/constants'
+import { donateURL, favouriteRadiosURL } from '~/constants'
 
 export default {
   data () {
     return {
-      donateContent: null
+      donateContent: null,
+      favouritesContent: null
     }
   },
   async fetch () {
-    this.donateContent = await fetch(`${donateURL}`)
+    this.donateContent = await this.$axios.get(`${donateURL}`)
       .then((res) => {
-        if (res.ok) {
-          return res.json()
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+    this.favouritesContent = await this.$axios.get(`${favouriteRadiosURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
         }
       })
       .catch((error) => {
@@ -64,12 +78,27 @@ export default {
       }
       const content = this.donateContent.content.rendered.replace('target="_top"', 'target="_blank"')
       return content
+    },
+    favouritesContentResults () {
+      if (!this.favouritesContent) {
+        return false
+      }
+      const content = this.favouritesContent.content.rendered
+      return content
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+h2 {
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+article {
+  margin-bottom: 2rem;
+}
+
 .comunity-navigation {
   li {
     display: inline-block;
@@ -98,7 +127,24 @@ export default {
     text-align: center;
     padding: 0 2rem;
     margin-bottom: 1rem;
+    h4 {
+      margin-bottom: 1rem;
+    }
   }
-
+}
+#favourite-page .favourite-radios-content {
+  table {
+    overflow: auto;
+    display: block;
+  }
+  td {
+    padding: 0.25rem 1rem 0.25rem 0;
+    &:first-child {
+      width: 25%;
+    }
+    a {
+      white-space: nowrap;
+    }
+  }
 }
 </style>
