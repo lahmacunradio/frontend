@@ -52,7 +52,7 @@
           {{ currentDuration }}
         </div>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="my-2">
+      <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap">
         <div class="inline-block w-4 align-middle">
           <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
           <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
