@@ -17,3 +17,4 @@ export const newsBaseURL = 'https://www.lahmacun.hu/wp-json/wp/v2/posts?categori
 export const newsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/posts?categories=5&per_page=12'
 
 export const aboutUsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/pages/228'
+export const donateURL = 'https://www.lahmacun.hu/wp-json/wp/v2/pages/2'
