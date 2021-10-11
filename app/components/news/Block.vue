@@ -15,7 +15,9 @@
         {{ htmlDecoder(news.title.rendered) }}
       </h5>
     </nuxt-link>
-    <div v-html="news.excerpt.rendered" />
+    <div class="news-text">
+      <div v-html="truncatedNews" />
+    </div>
   </div>
 </template>
 
@@ -38,6 +40,9 @@ export default {
     }
   },
   computed: {
+    truncatedNews () {
+      return this.truncate(this.news.excerpt.rendered, 150)
+    }
   },
   mounted () {
     this.loadNewsImages(this.news.featured_media)
@@ -67,4 +72,9 @@ export default {
     object-fit: cover;
   }
 }
+.news-text {
+  overflow: auto;
+  max-width: calc(100vw - 3rem);
+}
+
 </style>

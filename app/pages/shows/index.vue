@@ -1,21 +1,35 @@
 <template>
-  <div>
+  <div class="container">
     <AutoCompleteSearch
-      :defaultItems="defaultArcsiShows"
-      suggestionAttribute="name"
-      :searchFields="searchFields"
+      :default-items="defaultArcsiShows"
+      suggestion-attribute="name"
+      :search-fields="searchFields"
+      place-holder="Search"
       @update="onUpdate"
-      placeHolder="Search"
     />
-    <div class="m-8 text-center title">
+    <div class="my-8 title">
       <h1>Lahmacun Shows</h1>
     </div>
     <!-- Make a listing component -->
-    <ShowsLister :shows="arcsiShowsList" />
-    <div class="m-8 text-center title">
+    <div v-if="arcsiShowsList.length">
+      <ShowsLister :shows="arcsiShowsList" />
+    </div>
+    <div v-else>
+      <p class="italic">
+        No matching Shows found
+      </p>
+    </div>
+    <div class="my-8 title">
       <h1>Past Shows</h1>
     </div>
-    <ShowsLister :shows="pastShowsList" />
+    <div v-if="pastShowsList.length">
+      <ShowsLister :shows="pastShowsList" />
+    </div>
+    <div v-else>
+      <p class="italic">
+        No matching Shows found
+      </p>
+    </div>
   </div>
 </template>
 
