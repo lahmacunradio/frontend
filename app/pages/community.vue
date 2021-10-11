@@ -21,6 +21,9 @@
           </li>
         </ul>
       </nav>
+      <div v-if="$fetchState.pending" class="center">
+        Loading...
+      </div>
     </header>
     <article id="donate-page" ref="donate">
       <div v-if="donateContent">
@@ -74,14 +77,14 @@ export default {
   computed: {
     donateContentResults () {
       if (!this.donateContent) {
-        return false
+        return 'No content'
       }
       const content = this.donateContent.content.rendered.replace('target="_top"', 'target="_blank"')
       return content
     },
     favouritesContentResults () {
       if (!this.favouritesContent) {
-        return false
+        return 'No content'
       }
       const content = this.favouritesContent.content.rendered
       return content
