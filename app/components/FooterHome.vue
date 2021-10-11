@@ -13,10 +13,27 @@
           <div class="mb-4">
             <h5>FOLLOW</h5>
             <ul>
-              <li>Facebook</li>
-              <li>Instagram</li>
-              <li>Soundcloud</li>
-              <li>Bandcamp</li>
+              <li>
+                <a href="https://www.facebook.com/lahmacunradio" target="_blank" rel="noopener noreferrer">
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <a href="http://instagram.com/lahmacunradio" target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+              </li>
+              <li>
+                <a href="https://www.mixcloud.com/LahmacunRadio/" target="_blank" rel="noopener noreferrer">
+                  Soundcloud
+
+                </a>
+              </li>
+              <li>
+                <a href="https://lahmacunradio.bandcamp.com/" target="_blank" rel="noopener noreferrer">
+                  Bandcamp
+                </a>
+              </li>
             </ul>
           </div>
           <div class="mb-4">

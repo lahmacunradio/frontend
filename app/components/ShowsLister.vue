@@ -1,5 +1,5 @@
 <template>
-  <div class="container grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+  <div class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
     <div v-for="show in shows" :key="show.id" class="max-w-sm overflow-hidden bg-white rounded shadow-lg cursor-pointer">
       <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url">
         <div class="show-image">
