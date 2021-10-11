@@ -1,5 +1,12 @@
 <template>
   <div class="container">
+<!--    <AutoCompleteSearch-->
+<!--      :defaultItems="defaultArcsiShows"-->
+<!--      suggestionAttribute="name"-->
+<!--      :searchFields="searchFields"-->
+<!--      @update="onUpdate"-->
+<!--      placeHolder="Search"-->
+<!--    />-->
     <header class="flex flex-row items-center justify-between">
       <h1 class="mb-8">
         News
@@ -39,7 +46,7 @@
 </template>
 
 <script>
-import { newsBaseURL } from '~/constants'
+import { newsBaseURL, contentApiURL } from '~/constants'
 
 export default {
   components: {},
@@ -48,7 +55,8 @@ export default {
       newsFilteredList: null,
       numberOfItems: 12,
       numberOfTotal: 0,
-      startOffset: 0
+      startOffset: 0,
+      initialCallback: res => res.json()
     }
   },
   head () {
@@ -62,12 +70,16 @@ export default {
     }
   },
   async mounted () {
-    this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
-      .then(res => res.json())
-    this.numberOfTotal = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}`)
-      .then(res => parseInt(res.headers.get('x-wp-total')))
+    this.newsFilteredList = await this.useFetch()
+    this.numberOfTotal = await this.useFetch({callback: res => parseInt(res.headers.get('x-wp-total'))})
   },
   methods: {
+    async useFetch({ callback=this.initialCallback, offset=0, search='' }) {
+      { callback=this.initialCallback, offset=0, search='' }
+      return await fetch(
+        `${newsBaseURL}&per_page=${this.numberOfItems}&offset=${offset}&search=${search}`)
+        .then(res => callback(res))
+    },
     async fetchNewsPaginationFirst () {
       if (this.startOffset === 0) {
         return false
@@ -75,6 +87,7 @@ export default {
       this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
         .then(res => res.json())
       this.startOffset = 0
+      await this.useFetch()
     },
     async fetchNewsPaginationPrevious () {
       if (this.startOffset === 0) {
@@ -83,16 +96,19 @@ export default {
       this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset - 1)}`)
         .then(res => res.json())
       this.startOffset = this.startOffset - 1
+      await this.useFetch()
     },
     async fetchNewsPaginationNext () {
       this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset + 1)}`)
         .then(res => res.json())
       this.startOffset = this.startOffset + 1
+      await this.useFetch()
     },
     async fetchNewsPaginationLast () {
       this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * this.lastPage}`)
         .then(res => res.json())
       this.startOffset = this.lastPage
+      await this.useFetch()
     }
   }
 }
