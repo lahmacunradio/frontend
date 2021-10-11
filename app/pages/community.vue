@@ -25,7 +25,7 @@
     <article id="donate-page" ref="donate">
       <div v-if="donateContent">
         <h2>{{ donateContent.title.rendered }}</h2>
-        <div v-html="donateContentResults" />
+        <div class="donate-content" v-html="donateContentResults" />
       </div>
     </article>
     <article id="projects-page" ref="projects">
@@ -62,7 +62,8 @@ export default {
       if (!this.donateContent) {
         return false
       }
-      return this.donateContent.content.rendered
+      const content = this.donateContent.content.rendered.replace('target="_top"', 'target="_blank"')
+      return content
     }
   }
 }
@@ -74,10 +75,30 @@ export default {
     display: inline-block;
     &:after {
       content: ' | ';
+      margin: 0 0.5rem;
     }
     &:last-child:after {
       display: none;
     }
   }
+}
+
+</style>
+
+<style lang="scss">
+.donate-content {
+  @apply md:flex;
+  #donatetext {
+    @apply md:pr-4 mb-4;
+    hr {
+      margin: 1rem 0;
+    }
+  }
+  #donatepart {
+    text-align: center;
+    padding: 0 2rem;
+    margin-bottom: 1rem;
+  }
+
 }
 </style>
