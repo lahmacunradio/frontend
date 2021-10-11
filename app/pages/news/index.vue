@@ -62,36 +62,36 @@ export default {
     }
   },
   async mounted () {
-    this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
-      .then(res => res.json())
-    this.numberOfTotal = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}`)
-      .then(res => parseInt(res.headers.get('x-wp-total')))
+    this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
+      .then(res => res.data)
+    this.numberOfTotal = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}`)
+      .then(res => parseInt(res.headers['x-wp-total']))
   },
   methods: {
     async fetchNewsPaginationFirst () {
       if (this.startOffset === 0) {
         return false
       }
-      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
-        .then(res => res.json())
+      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
+        .then(res => res.data)
       this.startOffset = 0
     },
     async fetchNewsPaginationPrevious () {
       if (this.startOffset === 0) {
         return false
       }
-      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset - 1)}`)
-        .then(res => res.json())
+      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset - 1)}`)
+        .then(res => res.data)
       this.startOffset = this.startOffset - 1
     },
     async fetchNewsPaginationNext () {
-      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset + 1)}`)
-        .then(res => res.json())
+      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset + 1)}`)
+        .then(res => res.data)
       this.startOffset = this.startOffset + 1
     },
     async fetchNewsPaginationLast () {
-      this.newsFilteredList = await fetch(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * this.lastPage}`)
-        .then(res => res.json())
+      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * this.lastPage}`)
+        .then(res => res.data)
       this.startOffset = this.lastPage
     }
   }

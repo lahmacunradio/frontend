@@ -1,6 +1,12 @@
 <template>
   <div>
     <h3>Arcsi's Latest</h3>
+    <div v-if="$fetchState.pending" class="py-8 center w-100">
+      Loading...
+    </div>
+    <div v-if="$fetchState.error" class="py-8 center w-100">
+      Some error happened...
+    </div>
     <div class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
@@ -61,12 +67,8 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await fetch(arcsiItemBaseURL + '/all')
-      .then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-      })
+    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
       .catch((error) => {
         console.error('Error:', error)
       })
