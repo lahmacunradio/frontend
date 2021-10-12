@@ -332,7 +332,7 @@ export default {
     // Allow pausing from the mobile metadata update.
     if ('mediaSession' in navigator) {
       navigator.mediaSession.setActionHandler('pause', () => {
-        this.toggle()
+        this.stop()
       })
     }
     // Check webstorage for existing volume preference.
