@@ -144,7 +144,7 @@ export default {
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
     // Allow pausing from the mobile metadata update.
     navigator.mediaSession.setActionHandler('pause', () => {
-      this.pauseArcsi()
+      this.togglePlayback()
     })
   },
   beforeUpdate () {
@@ -183,7 +183,7 @@ export default {
           })
           // Allow pausing from the mobile metadata update.
           navigator.mediaSession.setActionHandler('pause', () => {
-            this.pauseArcsi()
+            this.togglePlayback()
           })
         }
       }
