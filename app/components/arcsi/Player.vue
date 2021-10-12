@@ -163,7 +163,6 @@ export default {
   },
   methods: {
     playArcsi () {
-      this.togglePlayback()
       const playHistory = {
         episodeID: this.episode.id,
         value: this.progress
@@ -171,8 +170,10 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
       if (this.playing) {
+        this.pause()
         this.$store.commit('player/isArcsiPlaying', false)
       } else {
+        this.play()
         this.$store.commit('player/isArcsiPlaying', true)
         // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
         if ('mediaSession' in navigator) {
@@ -182,10 +183,6 @@ export default {
             artwork: [
               { src: this.episode.image_url }
             ]
-          })
-          // Allow pausing from the mobile metadata update.
-          navigator.mediaSession.setActionHandler('pause', () => {
-            this.playArcsi()
           })
         }
       }
