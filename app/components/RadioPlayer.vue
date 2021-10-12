@@ -331,9 +331,6 @@ export default {
     }
     // Allow pausing from the mobile metadata update.
     if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('play', () => {
-        this.play()
-      })
       navigator.mediaSession.setActionHandler('pause', () => {
         this.toggle()
       })
