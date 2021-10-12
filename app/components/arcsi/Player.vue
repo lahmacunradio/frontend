@@ -142,12 +142,6 @@ export default {
     }
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-    // Allow pausing from the mobile metadata update.
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('pause', () => {
-        this.pauseArcsi()
-      })
-    }
   },
   beforeUpdate () {
     if (this.duration === 0) {
@@ -181,6 +175,10 @@ export default {
               { src: this.episode.image_url }
             ]
           })
+          // Allow pausing from the mobile metadata update.
+          navigator.mediaSession.setActionHandler('pause', () => {
+            this.pauseArcsi()
+          })
         }
       }
       this.$store.commit('player/isStreamPlaying', false)
@@ -188,6 +186,7 @@ export default {
     pauseArcsi () {
       this.pause()
       this.$store.commit('player/isArcsiPlaying', false)
+      navigator.mediaSession.setActionHandler('pause', () => null)
     },
     stopArcsi () {
       this.stop()
@@ -198,6 +197,7 @@ export default {
       this.currentProgress = '0'
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
       this.$store.commit('player/isArcsiPlaying', false)
+      navigator.mediaSession.setActionHandler('pause', () => null)
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))

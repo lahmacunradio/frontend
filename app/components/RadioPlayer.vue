@@ -329,12 +329,6 @@ export default {
         this.stop()
       }
     }
-    // Allow pausing from the mobile metadata update.
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('pause', () => {
-        this.stop()
-      })
-    }
     // Check webstorage for existing volume preference.
     if (this.volume !== this.$store.state.player.streamVolume) {
       this.volume = this.$store.state.player.streamVolume
@@ -373,6 +367,12 @@ export default {
             */
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
+      // Allow pausing from the mobile metadata update.
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('pause', () => {
+          this.stop()
+        })
+      }
     },
     showCurrentMetadata () {
       // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
@@ -404,6 +404,10 @@ export default {
 
       clearInterval(this.np_interval)
       this.np_interval = null
+      // Allow pausing from the mobile metadata update.
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('pause', () => null)
+      }
     },
     toggle () {
       if (this.is_playing) {
