@@ -172,6 +172,12 @@ export default {
       if (this.playing) {
         this.pause()
         this.$store.commit('player/isArcsiPlaying', false)
+        if ('mediaSession' in navigator) {
+          // Allow pausing from the mobile metadata update.
+          navigator.mediaSession.setActionHandler('pause', () => {
+            this.playArcsi()
+          })
+        }
       } else {
         this.play()
         this.$store.commit('player/isArcsiPlaying', true)
@@ -201,7 +207,6 @@ export default {
       this.currentProgress = '0'
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
       this.$store.commit('player/isArcsiPlaying', false)
-      navigator.mediaSession.setActionHandler('pause', () => null)
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
