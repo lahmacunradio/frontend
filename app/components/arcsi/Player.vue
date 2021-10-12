@@ -142,6 +142,10 @@ export default {
     }
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+    // Allow pausing from the mobile metadata update.
+    navigator.mediaSession.setActionHandler('pause', () => {
+      this.pauseArcsi()
+    })
   },
   beforeUpdate () {
     if (this.duration === 0) {
@@ -151,6 +155,8 @@ export default {
   beforeDestroy () {
     if (this.playing) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+      // Allow pausing from the mobile metadata update.
+      navigator.mediaSession.setActionHandler('pause', () => null)
     }
   },
   methods: {
@@ -186,7 +192,6 @@ export default {
     pauseArcsi () {
       this.pause()
       this.$store.commit('player/isArcsiPlaying', false)
-      navigator.mediaSession.setActionHandler('pause', () => null)
     },
     stopArcsi () {
       this.stop()
