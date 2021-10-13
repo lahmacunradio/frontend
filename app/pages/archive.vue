@@ -12,6 +12,12 @@
         @update="onUpdate"
       />
     </div>
+    <div v-if="$fetchState.pending" class="py-8 text-center">
+      Loading ...
+    </div>
+    <div v-if="$fetchState.error" class="py-8 text-center">
+      Error happened
+    </div>
     <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
       <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
         <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
