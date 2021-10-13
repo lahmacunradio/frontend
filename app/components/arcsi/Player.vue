@@ -172,13 +172,6 @@ export default {
       if (this.playing) {
         this.pause()
         this.$store.commit('player/isArcsiPlaying', false)
-        if ('mediaSession' in navigator) {
-          // Allow pausing from the mobile metadata update.
-          navigator.mediaSession.setActionHandler('pause', () => {
-            this.play()
-            this.$store.commit('player/isArcsiPlaying', true)
-          })
-        }
       } else {
         this.play()
         this.$store.commit('player/isArcsiPlaying', true)
@@ -190,10 +183,6 @@ export default {
             artwork: [
               { src: this.episode.image_url }
             ]
-          })
-          navigator.mediaSession.setActionHandler('pause', () => {
-            this.pause()
-            this.$store.commit('player/isArcsiPlaying', false)
           })
         }
       }
