@@ -21,6 +21,7 @@
 
 <script>
 import { directive } from 'vue-awesome-swiper'
+import { arcsiItemBaseURL } from '~/constants'
 
 export default {
   name: 'LatestArcsi',
@@ -33,6 +34,7 @@ export default {
       preloadImages: false,
       numberOfEpisodes: 9,
       swiperOption: {
+        preloadImages: false,
         slidesPerView: 3,
         spaceBetween: 30,
         loop: true,
@@ -54,8 +56,20 @@ export default {
             spaceBetween: 30
           }
         }
-      }
+      },
+      arcsiEpisodes: null
     }
+  },
+  async fetch () {
+    this.arcsiEpisodes = await fetch(arcsiItemBaseURL + '/all')
+      .then((res) => {
+        if (res.ok) {
+          return res.json()
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
   },
   computed: {
     getToday () {
@@ -64,9 +78,6 @@ export default {
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
-    },
-    arcsiEpisodes () {
-      return this.$store.state.arcsiEpisodes
     },
     arcsiEpisodesListSortedLatest () {
       if (this.arcsiEpisodes) {

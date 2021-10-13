@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="">
     <input
       v-model="value"
       class="input"
@@ -139,10 +139,14 @@ export default {
   }
 }
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
   .input {
     position: relative;
     width: 350px;
+    @media (max-width: $mobile-width) {
+      width: 100%;
+    }
     height: 30px;
     border-radius: 0.25rem;
     outline: none;
