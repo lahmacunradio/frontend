@@ -172,6 +172,15 @@ export default {
       if (this.playing) {
         this.pause()
         this.$store.commit('player/isArcsiPlaying', false)
+        if ('mediaSession' in navigator) {
+          // setTimouted binding
+          navigator.mediaSession.setActionHandler('pause', () => null)
+          setTimeout(function () {
+            navigator.mediaSession.setActionHandler('pause', () => {
+              this.playArcsi()
+            })
+          }, 1000)
+        }
       } else {
         this.play()
         this.$store.commit('player/isArcsiPlaying', true)
@@ -184,6 +193,13 @@ export default {
               { src: this.episode.image_url }
             ]
           })
+          // setTimouted binding
+          navigator.mediaSession.setActionHandler('pause', () => null)
+          setTimeout(function () {
+            navigator.mediaSession.setActionHandler('pause', () => {
+              this.playArcsi()
+            })
+          }, 1000)
         }
       }
       this.$store.commit('player/isStreamPlaying', false)
