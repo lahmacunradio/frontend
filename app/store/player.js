@@ -1,5 +1,6 @@
 export const state = () => ({
   isStreamPlaying: false,
+  streamVolume: 55,
   arcsiEpisode: {},
   arcsiPlayHistory: {},
   arcsiVolume: 1,

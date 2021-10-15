@@ -34,7 +34,7 @@
     <article id="projects-page" ref="projects">
       <h2>Projects</h2>
       <div class="projects-content">
-        Our projects, comming soon...
+        Our projects, coming soon...
       </div>
     </article>
     <article id="favourite-page" ref="favourite">
@@ -121,17 +121,23 @@ article {
 .donate-content {
   @apply md:flex;
   #donatetext {
-    @apply md:pr-4 mb-4;
+    @apply md:pr-16 mb-12;
     hr {
       margin: 1rem 0;
     }
   }
   #donatepart {
     text-align: center;
-    padding: 0 2rem;
+    padding: 1rem 2rem 2rem;
     margin-bottom: 1rem;
+    background: white;
+    box-shadow: 0px 0px 12px #23282d;
+    border-radius: 3px;
     h4 {
       margin-bottom: 1rem;
+      font-size: 1.2rem;
+      white-space: nowrap;
+      text-transform: uppercase;
     }
   }
 }
