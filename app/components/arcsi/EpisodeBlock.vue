@@ -1,0 +1,86 @@
+<template>
+  <div v-if="episode" class="latest-arcsi-blokk">
+    <NuxtLink :to="`/shows/${showslug}/${episode.id}`" class="relative block w-full mb-2">
+      <div class="absolute bottom-0 z-10 w-full p-2 text-center text-white bg-black">
+        <b>{{ episode.shows[0].name }}</b>
+      </div>
+      <div class="arcsi-img aspect-ratio-1/1">
+        <img class="block" :src="episodeImage">
+      </div>
+    </NuxtLink>
+    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
+      <h5>{{ episode.name }}</h5>
+    </NuxtLink>
+    <NuxtLink :to="`/shows/${showslug}`">
+      <p class="text-white">
+        Date: {{ format(new Date(episode.play_date), 'yyyy. MMMM dd.') }}
+      </p>
+    </NuxtLink>
+    <div v-if="false" class="flex items-center mt-6 tags">
+      <!-- tags are not needed for now -->
+      <div class="tag">
+        dub
+      </div>
+      <div class="tag">
+        psychedelic
+      </div>
+      <div class="tag">
+        experimental
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { format } from 'date-fns'
+
+export default {
+  props: {
+    episode: {
+      type: Object,
+      required: true
+    },
+    arcsilist: {
+      type: Array,
+      required: true
+    }
+  },
+  data () {
+    return {
+      showslug: '',
+      format
+    }
+  },
+  computed: {
+    episodeImage () {
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
+    }
+  },
+  created () {
+    this.showslug = this.arcsilist.find(item => item.id === this.episode.shows[0].id).archive_lahmastore_base_url
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.latest-arcsi-blokk {
+    margin-bottom: 0.5rem;
+  .arcsi-img {
+    height: auto;
+    width: 100%;
+    overflow: hidden;
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+      object-position: center;
+    }
+  }
+}
+.tag {
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.5rem;
+  @apply bg-white;
+}
+
+</style>
