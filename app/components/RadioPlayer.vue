@@ -176,6 +176,7 @@ export default {
       },
       audio: null,
       np_timeout: null,
+      np_interval: null,
       clock_interval: null,
 
       // rework the checks
@@ -267,7 +268,7 @@ export default {
         // check if this method is valid with streams
         return this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
       } else {
-        const songTitleJSON = this.np.now_playing.song.title
+        // const songTitleJSON = this.np.now_playing.song.title
         const songArtistJSON = this.np.now_playing.song.artist
         const artworkJSON = this.np.now_playing.song.art // art work url in json
 
@@ -331,12 +332,6 @@ export default {
         this.stop()
       }
     }
-    // Allow pausing from the mobile metadata update.
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('pause', () => {
-        this.stop()
-      })
-    }
     // Check webstorage for existing volume preference.
     if (this.volume !== this.$store.state.player.streamVolume) {
       this.volume = this.$store.state.player.streamVolume
@@ -350,14 +345,21 @@ export default {
     }
     this.checkNowPlaying()
   },
+  beforeDestroy () {
+    clearInterval(this.np_interval)
+    this.np_interval = null
+  },
   methods: {
     play () {
       this.audio.src = this.current_stream.url
       this.audio.play()
       this.is_playing = true
+      this.showCurrentMetadata()
+
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
-      /*
+
+      /* Google tags
             if (this.show_check) {
                 gtag('event', 'Radio play', {
                     'event_category': this.show_title,
@@ -366,13 +368,34 @@ export default {
                 });
             }
             */
+
+      this.np_interval = setInterval(this.showCurrentMetadata, 15000)
+      // Allow pausing from the mobile metadata update.
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('pause', () => {
+          this.stop()
+        })
+      }
+    },
+    showCurrentMetadata () {
+      // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
+      if ('mediaSession' in navigator && this.is_playing) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: this.np.now_playing.song.title,
+          artist: this.np.now_playing.song.artist,
+          artwork: [
+            { src: this.np.now_playing.song.art }
+          ]
+        })
+      }
     },
     stop () {
       this.is_playing = false
       this.audio.pause()
       this.audio.src = ''
       this.$store.commit('player/isStreamPlaying', false)
-      /*
+
+      /* Google tags
             if (this.show_check) {
                 gtag('event', 'Radio play', {
                     'event_category': this.show_title,
@@ -381,6 +404,13 @@ export default {
                 });
             }
             */
+
+      clearInterval(this.np_interval)
+      this.np_interval = null
+      // Allow pausing from the mobile metadata update.
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.setActionHandler('pause', () => null)
+      }
     },
     toggle () {
       if (this.is_playing) {
@@ -406,16 +436,6 @@ export default {
             }
           })
           this.current_stream = currentStream
-        }
-        // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: npNew.now_playing.song.title,
-            artist: npNew.now_playing.song.artist,
-            artwork: [
-              { src: npNew.now_playing.song.art }
-            ]
-          })
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {

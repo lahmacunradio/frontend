@@ -72,7 +72,6 @@ export default {
             &.selected {
                 background: url('/img/selected-menu.svg') no-repeat center center;
                 background-size: 7rem;
-                z-index: 0;
             }
             a {
               z-index: 5;

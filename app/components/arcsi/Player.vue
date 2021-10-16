@@ -52,7 +52,7 @@
           {{ currentDuration }}
         </div>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="my-2">
+      <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap">
         <div class="inline-block w-4 align-middle">
           <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
           <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
@@ -142,6 +142,12 @@ export default {
     }
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+    if ('mediaSession' in navigator) {
+      // Allow pausing from the mobile metadata update.
+      navigator.mediaSession.setActionHandler('pause', () => {
+        this.playArcsi()
+      })
+    }
   },
   beforeUpdate () {
     if (this.duration === 0) {
@@ -151,11 +157,12 @@ export default {
   beforeDestroy () {
     if (this.playing) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+      // Allow pausing from the mobile metadata update.
+      navigator.mediaSession.setActionHandler('pause', () => null)
     }
   },
   methods: {
     playArcsi () {
-      this.togglePlayback()
       const playHistory = {
         episodeID: this.episode.id,
         value: this.progress
@@ -163,9 +170,37 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
       if (this.playing) {
+        this.pause()
         this.$store.commit('player/isArcsiPlaying', false)
+        if ('mediaSession' in navigator) {
+          // setTimouted binding
+          setTimeout(function () {
+            navigator.mediaSession.setActionHandler('pause', () => {
+              this.pause()
+              this.$store.commit('player/isArcsiPlaying', false)
+            })
+          }, 3000)
+        }
       } else {
+        this.play()
         this.$store.commit('player/isArcsiPlaying', true)
+        // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
+        if ('mediaSession' in navigator) {
+          navigator.mediaSession.metadata = new MediaMetadata({
+            title: this.episode.name,
+            artist: this.episode.shows[0].name,
+            artwork: [
+              { src: this.episode.image_url }
+            ]
+          })
+          // setTimouted binding
+          setTimeout(function () {
+            navigator.mediaSession.setActionHandler('pause', () => {
+              this.play()
+              this.$store.commit('player/isArcsiPlaying', true)
+            })
+          }, 3000)
+        }
       }
       this.$store.commit('player/isStreamPlaying', false)
     },
@@ -202,12 +237,12 @@ export default {
       if (this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
           this.setProgress(arcsiPlayPosition)
-          this.play()
+          this.playArcsi()
         }, 1000)
       } else if (this.arcsiIsPlaying) {
         setTimeout(() => {
           this.setProgress(0)
-          this.play()
+          this.playArcsi()
         }, 1000)
       } else {
         this.stopArcsi()

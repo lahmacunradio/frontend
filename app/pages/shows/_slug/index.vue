@@ -80,7 +80,7 @@ export default {
     arcsiShowsList () {
       if (this.arcsiShows) {
         const showslist = [...this.arcsiInfosBlock.items]
-        return showslist.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        return showslist.filter(show => show.archived).sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
     }
