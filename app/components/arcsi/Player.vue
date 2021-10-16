@@ -174,12 +174,12 @@ export default {
         this.$store.commit('player/isArcsiPlaying', false)
         if ('mediaSession' in navigator) {
           // setTimouted binding
-          navigator.mediaSession.setActionHandler('pause', () => null)
           setTimeout(function () {
             navigator.mediaSession.setActionHandler('pause', () => {
-              this.playArcsi()
+              this.pause()
+              this.$store.commit('player/isArcsiPlaying', false)
             })
-          }, 1000)
+          }, 3000)
         }
       } else {
         this.play()
@@ -194,12 +194,12 @@ export default {
             ]
           })
           // setTimouted binding
-          navigator.mediaSession.setActionHandler('pause', () => null)
           setTimeout(function () {
             navigator.mediaSession.setActionHandler('pause', () => {
-              this.playArcsi()
+              this.play()
+              this.$store.commit('player/isArcsiPlaying', true)
             })
-          }, 1000)
+          }, 3000)
         }
       }
       this.$store.commit('player/isStreamPlaying', false)
