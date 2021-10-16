@@ -1,11 +1,11 @@
 <template>
   <div>
     <h3>Arcsi's Latest</h3>
-    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div v-if="$fetchState.error" class="py-8 text-center">
+    <div v-if="$fetchState.error" class="py-32 text-center">
       Error happened
     </div>
     <div class="container relative py-8 latest-container">
@@ -68,12 +68,8 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await fetch(arcsiItemBaseURL + '/all')
-      .then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-      })
+    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
       .catch((error) => {
         console.error('Error:', error)
       })
