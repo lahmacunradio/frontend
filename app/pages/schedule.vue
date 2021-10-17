@@ -88,9 +88,9 @@ export default {
       if (!this.nowPlaying) {
         return false
       } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.song.title
+        return this.nowPlaying?.live?.song?.title
       } else {
-        return this.nowPlaying?.now_playing?.song.title
+        return this.nowPlaying?.now_playing?.song?.title
       }
     },
     todayName () {

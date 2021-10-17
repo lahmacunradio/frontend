@@ -28,7 +28,7 @@
     <article id="donate-page" ref="donate">
       <div v-if="donateContent">
         <h2>{{ donateContent.title.rendered }}</h2>
-        <div class="donate-content" v-html="donateContentResults" />
+        <div v-sanitize="donateContentResults" class="donate-content" />
       </div>
     </article>
     <article id="projects-page" ref="projects">
@@ -39,7 +39,7 @@
     </article>
     <article id="favourite-page" ref="favourite">
       <h2>Favourite radio stations</h2>
-      <div class="favourite-radios-content" v-html="favouritesContentResults" />
+      <div v-sanitize="favouritesContentResults" class="favourite-radios-content" />
     </article>
   </div>
 </template>

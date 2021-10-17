@@ -5,10 +5,7 @@
       <img src="/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div v-if="$fetchState.error" class="py-32 text-center">
-      Error happened
-    </div>
-    <div class="container relative py-8 latest-container">
+    <div v-else class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i" class="swiper-slide">
@@ -22,6 +19,9 @@
       <div slot="button-next" class="swiper-button-next">
         <img src="/img/arrow-right.svg" alt="">
       </div>
+    </div>
+    <div v-if="$fetchState.error" class="py-32 text-center">
+      Error happened
     </div>
   </div>
 </template>

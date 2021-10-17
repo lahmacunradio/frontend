@@ -8,7 +8,7 @@
     </div>
     <div v-if="aboutUs">
       <h1>{{ aboutUs.title.rendered }}</h1>
-      <div v-html="aboutUsResults" />
+      <div v-sanitize="aboutUsResults" />
     </div>
   </div>
 </template>

@@ -13,7 +13,7 @@
         :alt="news.title.rendered"
         class="mb-4 rounded-md"
       >
-      <div class="text-content news-text" v-html="news.content.rendered" />
+      <div v-sanitize="news.content.rendered" class="text-content news-text" />
     </div>
   </div>
 </template>
