@@ -3,7 +3,7 @@
     <transition name="modal">
       <div class="modal-mask" @click="$emit('close')">
         <button class="modal-default-button" @click="$emit('close')">
-          <i class="fa fa-times" />
+          ×
         </button>
         <div class="modal-wrapper">
           <div class="modal-container">

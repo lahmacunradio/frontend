@@ -12,8 +12,9 @@ export const mediaServerURL = 'https://media.lahmacun.hu/'
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'
 
 export const contentApiURL = 'https://www.lahmacun.hu/wp-json/wp/v2'
-// wp limits the max number of pages, and better to have paginated querys, for now ok
-export const newsBaseURL = 'https://www.lahmacun.hu/wp-json/wp/v2/posts?categories=5'
-export const newsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/posts?categories=5&per_page=12'
-
-export const aboutUsURL = 'https://www.lahmacun.hu/wp-json/wp/v2/pages/228'
+// wp queries
+export const newsBaseURL = contentApiURL + '/posts?categories=5'
+export const newsURL = contentApiURL + '/posts?categories=5&per_page=12'
+export const aboutUsURL = contentApiURL + '/pages/228'
+export const donateURL = contentApiURL + '/pages/2'
+export const favouriteRadiosURL = contentApiURL + '/pages/2875'

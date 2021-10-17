@@ -1,6 +1,13 @@
 <template>
   <div>
     <h3>Arcsi's Latest</h3>
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
+      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <p>Loading...</p>
+    </div>
+    <div v-if="$fetchState.error" class="py-32 text-center">
+      Error happened
+    </div>
     <div class="container relative py-8 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
@@ -21,6 +28,7 @@
 
 <script>
 import { directive } from 'vue-awesome-swiper'
+import { arcsiItemBaseURL } from '~/constants'
 
 export default {
   name: 'LatestArcsi',
@@ -30,8 +38,10 @@ export default {
   data () {
     return {
       startIndex: 0,
+      preloadImages: false,
       numberOfEpisodes: 9,
       swiperOption: {
+        preloadImages: false,
         slidesPerView: 3,
         spaceBetween: 30,
         loop: true,
@@ -53,8 +63,16 @@ export default {
             spaceBetween: 30
           }
         }
-      }
+      },
+      arcsiEpisodes: null
     }
+  },
+  async fetch () {
+    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
+      .catch((error) => {
+        console.error('Error:', error)
+      })
   },
   computed: {
     getToday () {
@@ -63,9 +81,6 @@ export default {
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
-    },
-    arcsiEpisodes () {
-      return this.$store.state.arcsiEpisodes
     },
     arcsiEpisodesListSortedLatest () {
       if (this.arcsiEpisodes) {
@@ -121,8 +136,8 @@ h3 {
     content: '';
   }
 }
-.latest-container {
+/* .latest-container {
   max-height: 75vh;
-}
+} */
 
 </style>

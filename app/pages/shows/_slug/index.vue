@@ -10,7 +10,7 @@
       <div class="mb-4 show-description">
         <h3>{{ arcsiInfosBlock.name }}</h3>
         <div class="show-infos">
-          <p>Airing time: {{ dayNames[arcsiInfosBlock.day] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
           <p>
             Last episode:
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
@@ -29,14 +29,15 @@
       <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
           <div>
+            <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md image-fit">
+            </NuxtLink>
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
-              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md">
-              <h5>
+              <h5 class="mt-4">
                 {{ arcsi.name }}
               </h5>
             </NuxtLink>
             <small>Play date: {{ format(new Date(arcsi.play_date), 'yyyy. MMMM dd.') }}</small>
-            <p>{{ arcsi.description }}</p>
           </div>
         </div>
       </div>
@@ -79,7 +80,7 @@ export default {
     arcsiShowsList () {
       if (this.arcsiShows) {
         const showslist = [...this.arcsiInfosBlock.items]
-        return showslist.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        return showslist.filter(show => show.archived).sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
     }

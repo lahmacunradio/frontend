@@ -46,8 +46,8 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisode = await fetch(`${arcsiItemBaseURL}/${this.id}`)
-      .then(res => res.json())
+    this.arcsiEpisode = await this.$axios.get(`${arcsiItemBaseURL}/${this.id}`)
+      .then(res => res.data)
   },
   head () {
     return {

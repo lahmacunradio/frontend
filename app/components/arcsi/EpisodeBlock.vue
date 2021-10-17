@@ -1,7 +1,10 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
-    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
-      <div class="mb-4 arcsi-img aspect-ratio-1/1">
+    <NuxtLink :to="`/shows/${showslug}/${episode.id}`" class="relative block w-full mb-2">
+      <div class="absolute bottom-0 z-10 w-full p-2 text-center text-white bg-black">
+        <b>{{ episode.shows[0].name }}</b>
+      </div>
+      <div class="arcsi-img aspect-ratio-1/1">
         <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
@@ -9,9 +12,9 @@
       <h5>{{ episode.name }}</h5>
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
-      <h5 class="text-white">
-        {{ episode.shows[0].name }}
-      </h5>
+      <p class="text-white">
+        Date: {{ format(new Date(episode.play_date), 'yyyy. MMMM dd.') }}
+      </p>
     </NuxtLink>
     <div v-if="false" class="flex items-center mt-6 tags">
       <!-- tags are not needed for now -->
@@ -29,6 +32,8 @@
 </template>
 
 <script>
+import { format } from 'date-fns'
+
 export default {
   props: {
     episode: {
@@ -42,7 +47,8 @@ export default {
   },
   data () {
     return {
-      showslug: ''
+      showslug: '',
+      format
     }
   },
   computed: {
@@ -58,6 +64,7 @@ export default {
 
 <style lang="scss" scoped>
 .latest-arcsi-blokk {
+    margin-bottom: 0.5rem;
   .arcsi-img {
     height: auto;
     width: 100%;
