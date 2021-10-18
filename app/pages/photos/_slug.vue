@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <h1>Photos comming soon</h1>
+  <div>
+    Gallery item
   </div>
 </template>
 
@@ -10,6 +10,6 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 
 </style>
