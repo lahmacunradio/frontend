@@ -1,8 +1,14 @@
 <template>
   <div class="p-4 bg-white rounded-lg">
-    <h3>{{ gallery.title.rendered }}</h3>
-    <p>{{ gallery.excerpt.rendered }}</p>
-    <img :src="previewImage" alt="">
+    <h3 class="mt-0">
+      <NuxtLink :to="gallery.slug">
+        {{ htmlDecoder(gallery.title.rendered) }}
+      </NuxtLink>
+    </h3>
+    <div v-sanitize="gallery.excerpt.rendered" />
+    <NuxtLink :to="gallery.slug" class="gallery-preview">
+      <img :src="previewImage" :alt="htmlDecoder(gallery.title.rendered)">
+    </NuxtLink>
   </div>
 </template>
 
@@ -27,5 +33,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.gallery-preview {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    display: flex;
+    align-content: center;
+    img {
+      object-fit: cover;
+      min-height: 300px;
+      min-width: 300px;
+    }
+}
 </style>
