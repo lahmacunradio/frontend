@@ -159,6 +159,7 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       // Allow pausing from the mobile metadata update.
       navigator.mediaSession.setActionHandler('pause', () => null)
+      this.stop()
     }
   },
   methods: {
@@ -259,7 +260,7 @@ export default {
     input[type="range" i]::-webkit-slider-thumb {
       opacity: 0;
       transition: opacity 0.2s;
-      transform: translateY(5px);
+      transform: translateY(3px);
     }
     &:hover {
       input[type="range" i]::-webkit-slider-thumb {
