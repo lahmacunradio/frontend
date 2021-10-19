@@ -1,7 +1,7 @@
 <template>
   <a href="#" @click.prevent="shadowbox = !shadowbox">
     <div class="photo">
-      <img :src="photo.full_image_url" :alt="photo.title">
+      <img :src="photo.full_image_url" :srcset="photo.medium_srcset" :alt="photo.title">
     </div>
     <div class="description">
       {{ photo.title }}
@@ -46,5 +46,6 @@ export default {
     width: 100%;
     overflow: hidden;
     text-align: center;
+    text-overflow: ellipsis;
 }
 </style>

@@ -7,7 +7,7 @@
     </h3>
     <div v-sanitize="gallery.excerpt.rendered" />
     <NuxtLink :to="gallery.slug" class="gallery-preview">
-      <img :src="previewImage" :alt="htmlDecoder(gallery.title.rendered)">
+      <img :src="previewImage.full_image_url" :srcset="previewImage.medium_srcset" :alt="htmlDecoder(gallery.title.rendered)">
     </NuxtLink>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default {
       if (!this.gallery) {
         return false
       }
-      return this.gallery.acf.gallery[0].full_image_url
+      return this.gallery.acf.gallery[0]
     }
   }
 }
