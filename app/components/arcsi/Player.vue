@@ -276,9 +276,10 @@ export default {
 
 #progressingRange {
   width: 100%;
+  height: 0.8rem;
   -webkit-appearance: none !important;
   appearance: none;
-  margin-top: -1rem;
+  margin-top: -0.8rem;
   float: left;
   background: transparent;
 }
