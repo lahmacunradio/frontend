@@ -1,24 +1,22 @@
 <template>
   <div class="arcsiplayer">
-    <div v-if="duration === 0" class="flex items-center py-4 preload">
+    <template v-if="arcsiIsPlaying">
+      <audio id="arcsiplayer" ref="arcsi-player" preload="metadata" loop="false" :title="episode.shows[0].name + ' - ' + episode.name" />
+    </template>
+    <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
       <img src="/img/preloader.svg" class="h-4 mr-4">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
       <div class="flex py-4">
         <button class="mr-4" @click="playArcsi">
-          <span v-if="playing">
+          <span v-if="arcsiIsPlaying">
             <i class="fa fa-pause" aria-hidden="true" />
           </span>
           <span v-else>
             <i class="fa fa-play" aria-hidden="true" />
           </span>
         </button>
-        <!-- Stop button not needed?
-        <button @click="stopArcsi">
-          <i class="fa fa-stop" aria-hidden="true" />
-        </button>
-        -->
         <h5 v-if="arcsiShow">
           <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
             {{ episode.shows[0].name }}
@@ -75,10 +73,7 @@
 </template>
 
 <script>
-import VueHowler from 'vue-howler'
-
 export default {
-  mixins: [VueHowler],
   props: {
     episode: {
       type: Object,
@@ -87,11 +82,24 @@ export default {
   },
   data () {
     return {
+      audio: null,
       currentVolume: '1',
       currentProgress: this.progress || '0'
     }
   },
   computed: {
+    seek () {
+      if (!this.audio) {
+        return false
+      }
+      return this.audio.currentTime
+    },
+    duration () {
+      if (!this.audio) {
+        return false
+      }
+      return this.audio.duration
+    },
     currentDuration () {
       return this.convertHourMinuteSecond(this.duration)
     },
@@ -126,6 +134,13 @@ export default {
     }
   },
   watch: {
+    volume (volume) {
+      if (isNaN(volume)) {
+        volume = this.$store.player.arcsiVolume || 50
+      }
+      this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
+      this.$store.commit('player/setArcsiVolume', volume)
+    },
     '$store.state.player.isStreamPlaying': {
       handler () {
         if (this.$store.state.player.isStreamPlaying) {
@@ -134,6 +149,9 @@ export default {
       },
       deep: true
     }
+  },
+  created () {
+    this.audio = document.createElement('audio')
   },
   mounted () {
     if (this.currentVolume !== this.$store.state.player.arcsiVolume) {
@@ -155,7 +173,7 @@ export default {
     }
   },
   beforeDestroy () {
-    if (this.playing) {
+    if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       // Allow pausing from the mobile metadata update.
       navigator.mediaSession.setActionHandler('pause', () => null)
@@ -169,20 +187,17 @@ export default {
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      if (this.playing) {
-        this.pause()
+      if (this.arcsiIsPlaying) {
+        this.audio.play()
         this.$store.commit('player/isArcsiPlaying', false)
         if ('mediaSession' in navigator) {
-          // setTimouted binding
-          setTimeout(function () {
-            navigator.mediaSession.setActionHandler('pause', () => {
-              this.pause()
-              this.$store.commit('player/isArcsiPlaying', false)
-            })
-          }, 3000)
+          navigator.mediaSession.setActionHandler('pause', () => {
+            this.audio.pause()
+            this.$store.commit('player/isArcsiPlaying', false)
+          })
         }
       } else {
-        this.play()
+        this.audio.pause()
         this.$store.commit('player/isArcsiPlaying', true)
         // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
         if ('mediaSession' in navigator) {
@@ -193,23 +208,20 @@ export default {
               { src: this.episode.image_url }
             ]
           })
-          // setTimouted binding
-          setTimeout(function () {
-            navigator.mediaSession.setActionHandler('pause', () => {
-              this.play()
-              this.$store.commit('player/isArcsiPlaying', true)
-            })
-          }, 3000)
+          navigator.mediaSession.setActionHandler('pause', () => {
+            this.audio.play()
+            this.$store.commit('player/isArcsiPlaying', true)
+          })
         }
       }
       this.$store.commit('player/isStreamPlaying', false)
     },
     pauseArcsi () {
-      this.pause()
+      this.audio.pause()
       this.$store.commit('player/isArcsiPlaying', false)
     },
     stopArcsi () {
-      this.stop()
+      this.audio.stop()
       const playHistory = {
         episodeID: this.episode.id,
         value: 0
@@ -217,6 +229,9 @@ export default {
       this.currentProgress = '0'
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
       this.$store.commit('player/isArcsiPlaying', false)
+    },
+    setVolume (volume) {
+      this.audio.volume = volume
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))

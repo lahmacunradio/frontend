@@ -3,7 +3,9 @@
     <div class="relative playerblock">
       <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
         <div v-if="arcsiEpisode">
-          <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="false" />
+          <client-only>
+            <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="false" />
+          </client-only>
         </div>
         <div v-else>
           <div class="py-8">
