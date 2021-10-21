@@ -4,7 +4,7 @@
       <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
         <div v-if="arcsiEpisode">
           <client-only>
-            <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="false" />
+            <ArcsiPlayer :source="arcsiAudio" :episode="arcsiEpisode" />
           </client-only>
         </div>
         <div v-else>
@@ -59,7 +59,7 @@ export default {
       }
       const showID = this.arcsiEpisode?.shows?.[0].id
       const showObject = this.arcsiList?.find(show => show.id === showID)
-      return [`${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`]
+      return `${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`
     }
   },
   methods: {
