@@ -41,7 +41,7 @@
       </div>
       <div class="flex items-center w-full md:mr-2 md:w-64">
         <div class="text-sm seek-time">
-          {{ seek ? currentSeek : '0:00:00' }}
+          {{ seek && seek > 1 ? currentSeek : '0:00:00' }}
         </div>
         <div id="myProgress" class="mx-2 my-2">
           <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
@@ -52,7 +52,7 @@
             min="0"
             max="1"
             step="0.001"
-            @change="seekBar($event.target.value)"
+            @change="debounceFunction(seekBar($event.target.value), 500)"
           >
         </div>
         <div class="text-sm">
@@ -107,7 +107,7 @@ export default {
       if (!this.audio) {
         return false
       }
-      return this.audio.currentTime
+      return (this.seek / this.duration).toFixed(2)
     },
     currentDuration () {
       return this.convertHourMinuteSecond(this.duration)
@@ -169,12 +169,6 @@ export default {
     }
     this.findIfArcsiSeek()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-    if ('mediaSession' in navigator) {
-      // Allow pausing from the mobile metadata update.
-      navigator.mediaSession.setActionHandler('pause', () => {
-        this.playArcsi()
-      })
-    }
   },
   beforeUpdate () {
     if (this.duration === 0) {
@@ -187,7 +181,7 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       // Allow pausing from the mobile metadata update.
       navigator.mediaSession.setActionHandler('pause', () => null)
-      this.stopArcsi()
+      this.audio = null
     }
   },
   methods: {
@@ -208,6 +202,10 @@ export default {
             artwork: [
               { src: this.episode.image_url }
             ]
+          })
+          // Allow pausing from the mobile metadata update.
+          navigator.mediaSession.setActionHandler('pause', () => {
+            this.playArcsi()
           })
         }
       } else {
@@ -233,28 +231,30 @@ export default {
       this.$store.commit('player/isArcsiPlaying', false)
     },
     setVolume (volume) {
-      this.audio.volume = volume
+      if (this.audio) {
+        this.audio.volume = volume
+      }
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
       this.$store.commit('player/setArcsiVolume', value)
     },
     seekBar (value) {
-      this.audio.currentTime = parseFloat(value)
+      this.audio.currentTime = this.duration * parseFloat(value)
       const playHistory = {
         episodeID: this.episode.id,
-        value: parseFloat(value)
+        value: this.duration * parseFloat(value)
       }
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
     setProgress (progress) {
-      this.audio.currentTime = parseFloat(progress)
+      this.audio.currentTime = this.duration * parseFloat(progress)
     },
     getDuration () {
       this.duration = this.$refs.arcsiplayer.duration
     },
     getPosition () {
-      this.seek = this.$refs.arcsiplayer.currentTime
+      this.seek = this.$refs.arcsiplayer.currentTime || 0
     },
     async findIfArcsiSeek () {
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
@@ -265,13 +265,11 @@ export default {
           this.setProgress(arcsiPlayPosition)
           this.playArcsi()
         }, 3000)
-      } else if (this.arcsiIsPlaying) {
+      } else {
         setTimeout(() => {
           this.setProgress(0)
           this.playArcsi()
         }, 3000)
-      } else {
-        this.stopArcsi()
       }
     }
   }
