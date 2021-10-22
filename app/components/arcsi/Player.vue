@@ -8,6 +8,8 @@
         loop="false"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
+        @loadedmetadata="getDuration()"
+        @timeupdate="debounceFunction(getPosition(), 1000)"
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
@@ -95,27 +97,17 @@ export default {
     return {
       audio: null,
       currentVolume: '1',
-      currentProgress: '0'
+      currentProgress: '0',
+      duration: 0,
+      seek: 0
     }
   },
   computed: {
-    seek () {
-      if (!this.audio) {
-        return false
-      }
-      return this.audio.currentTime
-    },
     progress () {
       if (!this.audio) {
         return false
       }
       return this.audio.currentTime
-    },
-    duration () {
-      if (!this.audio) {
-        return false
-      }
-      return this.audio.duration
     },
     currentDuration () {
       return this.convertHourMinuteSecond(this.duration)
@@ -257,6 +249,12 @@ export default {
     },
     setProgress (progress) {
       this.audio.currentTime = parseFloat(progress)
+    },
+    getDuration () {
+      this.duration = this.$refs.arcsiplayer.duration
+    },
+    getPosition () {
+      this.seek = this.$refs.arcsiplayer.currentTime
     },
     async findIfArcsiSeek () {
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
