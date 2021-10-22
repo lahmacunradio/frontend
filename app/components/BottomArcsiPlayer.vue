@@ -33,6 +33,10 @@
 import { mediaServerURL } from '~/constants'
 
 export default {
+  validate ({ params, store }) {
+    // Check if arcsiShows exists
+    return store.state.arcsiShows.length
+  },
   data () {
     return {
     }
@@ -70,6 +74,7 @@ export default {
       this.$store.commit('player/isArcsiVisible', state)
     }
   }
+
 }
 </script>
 

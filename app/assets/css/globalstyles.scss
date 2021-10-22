@@ -119,6 +119,11 @@ span.moresign {
   object-fit: cover;
 }
 
+.preload-block {
+  background: url(/img/lahmacun-logo-dummy.png) no-repeat center center;
+  background-size: contain;
+}
+
 @keyframes infiniterotate {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
