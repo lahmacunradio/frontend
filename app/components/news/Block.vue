@@ -1,6 +1,6 @@
 <template>
   <div class="mb-2">
-    <nuxt-link :to="'/news/' + news.slug">
+    <NuxtLink :to="'/news/' + news.slug">
       <div class="news-image">
         <img
           :src="newsImage"
@@ -14,9 +14,9 @@
       <h5 class="py-4">
         {{ htmlDecoder(news.title.rendered) }}
       </h5>
-    </nuxt-link>
+    </NuxtLink>
     <div class="news-text">
-      <div v-html="truncatedNews" />
+      <div v-sanitize="truncatedNews" />
     </div>
   </div>
 </template>

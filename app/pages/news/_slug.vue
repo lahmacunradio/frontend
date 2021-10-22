@@ -1,26 +1,37 @@
 <template>
   <div class="container">
-    <NewsFull :news="selectedNews" />
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
+      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <p>Loading...</p>
+    </div>
+    <div v-if="$fetchState.error" class="py-8 text-center">
+      Error happened
+    </div>
+    <NewsFull v-if="selectedNews" :news="selectedNews" />
   </div>
 </template>
 
 <script>
+import { contentApiURL } from '~/constants'
 
 export default {
   components: {},
   data () {
     return {
-      slug: this.$route.params.slug
+      slug: this.$route.params.slug,
+      selectedNews: null
     }
+  },
+  async fetch () {
+    this.selectedNews = await this.$axios.get(`${contentApiURL}/posts?slug=${this.slug}`)
+      .then(res => res.data[0])
+      .catch((error) => {
+        console.error('Error:', error)
+      })
   },
   head () {
     return {
-      title: this.htmlDecoder(this.selectedNews.title.rendered)
-    }
-  },
-  computed: {
-    selectedNews () {
-      return this.$store.state.newsList.filter(news => news.slug === this.slug).shift()
+      title: this.htmlDecoder(this.selectedNews?.title?.rendered)
     }
   }
 }
