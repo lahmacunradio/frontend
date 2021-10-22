@@ -76,12 +76,6 @@ export default {
       ]
     }
   },
-  vue: {
-    config: {
-      productionTip: false,
-      devtools: true
-    }
-  },
   styleResources: {
     // your settings here
     scss: [
