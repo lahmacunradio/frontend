@@ -22,7 +22,7 @@
     "sass": "^1.43.3",
     "sass-loader": "^10.2.0",
     "store": "^2.0.12",
-    "swiper": "^5.4.5 || ^7.0.9",
+    "swiper": "^5.4.5",
     "v-sanitize": "^0.0.5",
     "vue-awesome-swiper": "^4.1.1",
     "vue-howler": "^0.7.0",
