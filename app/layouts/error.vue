@@ -23,7 +23,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .error-page {
   background: $lahma-pink;
   @apply flex flex-col align-middle justify-items-center;

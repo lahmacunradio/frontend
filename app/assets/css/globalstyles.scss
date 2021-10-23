@@ -87,6 +87,10 @@ h5 {
   line-height: 1.4em;
 }
 
+button:focus {
+  outline: none;
+}
+
 .text-content {
   p {
     margin-bottom: 0.5rem;

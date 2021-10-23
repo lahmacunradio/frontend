@@ -9,6 +9,7 @@
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
         @loadedmetadata="getDuration()"
+        @loadeddata="findIfArcsiSeek()"
         @timeupdate="debounceFunction(getPosition(), 1000)"
       />
     </template>
@@ -18,8 +19,11 @@
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
       <div class="flex py-4">
-        <button class="mr-4" @click="playArcsi">
-          <span v-if="arcsiIsPlaying">
+        <button class="mr-4" @click="toggleArcsi">
+          <span v-if="arcsiIsPlaying && seek === 0">
+            <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
+          </span>
+          <span v-else-if="arcsiIsPlaying">
             <i class="fa fa-pause" aria-hidden="true" />
           </span>
           <span v-else>
@@ -52,7 +56,7 @@
             min="0"
             max="1"
             step="0.001"
-            @change="debounceFunction(seekBar($event.target.value), 500)"
+            @change="seekBar($event.target.value)"
           >
         </div>
         <div class="text-sm">
@@ -167,7 +171,15 @@ export default {
       this.currentVolume = this.$store.state.player.arcsiVolume
       this.setVolume(parseFloat(this.$store.state.player.arcsiVolume))
     }
-    this.findIfArcsiSeek()
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.episode.name,
+        artist: this.episode.shows[0].name,
+        artwork: [
+          { src: this.episode.image_url }
+        ]
+      })
+    }
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
   },
   beforeUpdate () {
@@ -181,42 +193,55 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       // Allow pausing from the mobile metadata update.
       navigator.mediaSession.setActionHandler('pause', () => null)
-      this.audio = null
     }
+  },
+  destroyed () {
+    this.audio = null
   },
   methods: {
     playArcsi () {
       const playHistory = {
         episodeID: this.episode.id,
-        value: this.progress
+        value: Math.round(this.seek)
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      if (!this.arcsiIsPlaying) {
-        this.audio.play()
-        this.$store.commit('player/isArcsiPlaying', true)
-        if ('mediaSession' in navigator) {
-          navigator.mediaSession.metadata = new MediaMetadata({
-            title: this.episode.name,
-            artist: this.episode.shows[0].name,
-            artwork: [
-              { src: this.episode.image_url }
-            ]
-          })
-          // Allow pausing from the mobile metadata update.
-          navigator.mediaSession.setActionHandler('pause', () => {
-            this.playArcsi()
-          })
-        }
-      } else {
-        this.audio.pause()
-        this.$store.commit('player/isArcsiPlaying', false)
+      this.audio.play()
+      this.$store.commit('player/isArcsiPlaying', true)
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: this.episode.name,
+          artist: this.episode.shows[0].name,
+          artwork: [
+            { src: this.episode.image_url }
+          ]
+        })
+        // Allow pausing from the mobile metadata update.
+        navigator.mediaSession.setActionHandler('pause', () => {
+          this.toggleArcsi()
+        })
       }
       this.$store.commit('player/isStreamPlaying', false)
     },
     pauseArcsi () {
+      const playHistory = {
+        episodeID: this.episode.id,
+        value: Math.round(this.seek)
+      }
       this.audio.pause()
       this.$store.commit('player/isArcsiPlaying', false)
+      this.$store.commit('player/setArcsiProgressHistory', playHistory)
+    },
+    toggleArcsi () {
+      const arcsiReady = this.$refs.arcsiplayer?.readyState > 2
+      if (!arcsiReady && this.seek === 0) {
+        return false
+      }
+      if (this.arcsiIsPlaying) {
+        this.pauseArcsi()
+      } else {
+        this.playArcsi()
+      }
     },
     stopArcsi () {
       if (this.audio) {
@@ -240,15 +265,18 @@ export default {
       this.$store.commit('player/setArcsiVolume', value)
     },
     seekBar (value) {
-      this.audio.currentTime = this.duration * parseFloat(value)
+      this.$refs.arcsiplayer.currentTime = this.duration * parseFloat(value)
       const playHistory = {
         episodeID: this.episode.id,
-        value: this.duration * parseFloat(value)
+        value: Math.round(this.seek)
       }
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
     setProgress (progress) {
-      this.audio.currentTime = this.duration * parseFloat(progress)
+      this.$refs.arcsiplayer.currentTime = this.duration * parseFloat(progress)
+    },
+    setSeek (seek) {
+      this.$refs.arcsiplayer.currentTime = seek
     },
     getDuration () {
       this.duration = this.$refs.arcsiplayer.duration
@@ -257,19 +285,22 @@ export default {
       this.seek = this.$refs.arcsiplayer.currentTime || 0
     },
     async findIfArcsiSeek () {
+      const arcsiReady = await this.$refs.arcsiplayer?.readyState > 2
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
-      if (this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
+      if (arcsiReady && this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         setTimeout(() => {
-          this.setProgress(arcsiPlayPosition)
+          this.setSeek(arcsiPlayPosition)
           this.playArcsi()
         }, 3000)
+      } else if (arcsiReady && this.arcsiIsPlaying) {
+        setTimeout(() => {
+          this.setSeek(0)
+          this.playArcsi()
+        }, 1000)
       } else {
-        setTimeout(() => {
-          this.setProgress(0)
-          this.playArcsi()
-        }, 3000)
+        this.pauseArcsi()
       }
     }
   }

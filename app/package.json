@@ -25,7 +25,6 @@
     "swiper": "5.x",
     "v-sanitize": "^0.0.5",
     "vue-awesome-swiper": "^4.1.1",
-    "vue-howler": "^0.7.0",
     "vue-marked": "^0.1.1",
     "vue-sanitize-directive": "^0.1.0",
     "vue-slider-component": "^3.2.14",

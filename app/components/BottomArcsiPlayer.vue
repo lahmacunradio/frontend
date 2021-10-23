@@ -2,14 +2,18 @@
   <div class="bottomarcsiplayer">
     <div class="relative playerblock">
       <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
-        <div v-if="arcsiEpisode">
+        <div v-if="arcsiEpisode && arcsiAudio">
           <client-only>
             <ArcsiPlayer :source="arcsiAudio" :episode="arcsiEpisode" />
           </client-only>
         </div>
         <div v-else>
-          <div class="py-8">
-            No arcsi episode selected
+          <div class="py-4">
+            No arcsi episode selected. Go to
+            <NuxtLink to="archive" class="font-bold">
+              archive page
+            </NuxtLink>
+            for the full list
           </div>
         </div>
       </div>
@@ -58,7 +62,7 @@ export default {
       return [...this.$store.state.arcsiShows]
     },
     arcsiAudio () {
-      if (!this.arcsiEpisode || !this.arcsiList) {
+      if (!this.arcsiEpisode?.archive_lahmastore_canonical_url || !this.arcsiList) {
         return false
       }
       const showID = this.arcsiEpisode?.shows?.[0].id
@@ -79,7 +83,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .bottomarcsiplayer {
     bottom: 0;
     left: 0;
