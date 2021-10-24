@@ -10,7 +10,7 @@
         :src="source"
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
-        @timeupdate="debounceFunction(getPosition(), 1000)"
+        @timeupdate.passive="debounceFunction(getPosition(), 1000)"
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
@@ -78,7 +78,7 @@
           min="0"
           max="1"
           step="0.01"
-          @change="volumeBar($event.target.value)"
+          @input.passive="volumeBar($event.target.value)"
         >
       </div>
     </div>
@@ -191,8 +191,10 @@ export default {
   beforeDestroy () {
     if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-      // Allow pausing from the mobile metadata update.
-      navigator.mediaSession.setActionHandler('pause', () => null)
+      if ('mediaSession' in navigator) {
+        // Allow pausing from the mobile metadata update.
+        navigator.mediaSession.setActionHandler('pause', () => null)
+      }
     }
   },
   destroyed () {
