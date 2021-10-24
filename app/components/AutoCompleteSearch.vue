@@ -65,6 +65,7 @@ export default {
   },
   destroyed () {
     document.removeEventListener('click', this.handleClickOutside)
+    this.suggestions = []
   },
   updated () {
     if (this.$refs.focusItem) {

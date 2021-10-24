@@ -70,6 +70,10 @@ export default {
       return null
     }
   },
+  beforeDestroy () {
+    this.defaultArcsiShows = null
+    this.arcsiShows = null
+  },
   methods: {
     onUpdate (result) {
       this.arcsiShows = result
