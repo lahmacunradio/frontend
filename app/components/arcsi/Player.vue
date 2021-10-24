@@ -18,7 +18,7 @@
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex py-4">
+      <div class="flex pt-4 pb-2 md:py-4">
         <button class="mr-4" @click="toggleArcsi">
           <span v-if="arcsiIsPlaying && seek === 0">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
@@ -43,7 +43,7 @@
           {{ episode.shows[0].name + ' - ' + episode.name }}
         </h5>
       </div>
-      <div class="flex items-center w-full md:mr-2 md:w-64">
+      <div class="flex items-center w-full md:mr-2 md:w-64" :class="{'mb-2': isTouchEnabled}">
         <div class="text-sm seek-time">
           {{ seek && seek > 1 ? currentSeek : '0:00:00' }}
         </div>

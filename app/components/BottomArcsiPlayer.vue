@@ -24,7 +24,7 @@
               X
             </span>
             <div v-else class="text-xl">
-              <b class="block -mt-1" :class="isArcsiPlaying && 'rotate-element'">
+              <b class="block" :class="isArcsiPlaying && 'rotate-element'">
                 A
               </b>
             </div>
@@ -93,7 +93,7 @@ export default {
 }
 .close {
     position: absolute;
-    top: -1.75rem;
+    top: -2rem;
     right: 1rem;
 }
 </style>
