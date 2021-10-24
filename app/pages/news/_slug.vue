@@ -31,7 +31,32 @@ export default {
   },
   head () {
     return {
-      title: this.htmlDecoder(this.selectedNews?.title?.rendered)
+      title: this.htmlDecoder(this.selectedNews?.title?.rendered),
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.metaDescription
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.htmlDecoder(this.selectedNews?.title?.rendered)
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.metaDescription
+        }
+      ]
+    }
+  },
+  computed: {
+    metaDescription () {
+      if (!this.selectedNews) {
+        return false
+      }
+      return this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
     }
   }
 }
