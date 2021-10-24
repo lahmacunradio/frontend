@@ -147,13 +147,6 @@ export default {
     }
   },
   watch: {
-    volume (volume) {
-      if (isNaN(volume)) {
-        volume = this.$store.player.arcsiVolume || 50
-      }
-      this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
-      this.$store.commit('player/setArcsiVolume', volume)
-    },
     '$store.state.player.isStreamPlaying': {
       handler () {
         if (this.$store.state.player.isStreamPlaying) {
@@ -261,6 +254,7 @@ export default {
       if (this.audio) {
         this.audio.volume = volume
       }
+      this.currentVolume = volume
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
