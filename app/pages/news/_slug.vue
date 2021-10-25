@@ -7,7 +7,7 @@
     <div v-if="$fetchState.error" class="py-8 text-center">
       Error happened
     </div>
-    <NewsFull v-if="selectedNews" :news="selectedNews" />
+    <NewsFull v-if="selectedNews" :news="selectedNews" @getimage="getImage" />
   </div>
 </template>
 
@@ -19,7 +19,8 @@ export default {
   data () {
     return {
       slug: this.$route.params.slug,
-      selectedNews: null
+      selectedNews: null,
+      metaImage: '/img/lahmacun-logo-dummy.png'
     }
   },
   async fetch () {
@@ -47,6 +48,11 @@ export default {
           hid: 'og:description',
           name: 'og:description',
           content: this.metaDescription
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.metaImage
         }
       ]
     }
@@ -57,6 +63,11 @@ export default {
         return false
       }
       return this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+    }
+  },
+  methods: {
+    getImage (image) {
+      this.metaImage = image
     }
   }
 }
