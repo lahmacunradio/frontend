@@ -8,10 +8,20 @@ export const state = () => ({
 })
 
 export const actions = {
-  async nuxtServerInit ({ state }, { req }) {
-    const responseArcsi = await this.$axios.get(arcsiServerURL)
-    state.arcsiShows = responseArcsi.data
-    const responseNews = await this.$axios.get(newsURL)
-    state.newsList = responseNews.data
+  async nuxtServerInit ({ state }, { req, error }) {
+    await this.$axios.get(arcsiServerURL)
+      .then((res) => {
+        state.arcsiShows = res.data
+      })
+      .catch((e) => {
+        error({ statusCode: 500, message: 'Post not found' })
+      })
+    await this.$axios.get(newsURL)
+      .then((res) => {
+        state.newsList = res.data
+      })
+      .catch((e) => {
+        error({ statusCode: 500, message: 'Post not found' })
+      })
   }
 }
