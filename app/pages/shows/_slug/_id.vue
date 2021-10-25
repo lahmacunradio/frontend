@@ -79,6 +79,9 @@ export default {
       return this.$store.state.player.arcsiEpisode
     }
   },
+  beforeDestroy () {
+    this.arcsiEpisode = null
+  },
   methods: {
     playArcsi () {
       this.$store.commit('player/isArcsiPlaying', true)

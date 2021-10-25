@@ -310,7 +310,7 @@ export default {
     input[type="range" i]::-webkit-slider-thumb {
       opacity: 0;
       transition: opacity 0.2s;
-      transform: translateY(5px);
+      transform: translateY(3px);
     }
     &:hover {
       input[type="range" i]::-webkit-slider-thumb {
@@ -327,9 +327,10 @@ export default {
 
 #progressingRange {
   width: 100%;
+  height: 0.8rem;
   -webkit-appearance: none !important;
   appearance: none;
-  margin-top: -1rem;
+  margin-top: -0.8rem;
   float: left;
   background: transparent;
 }

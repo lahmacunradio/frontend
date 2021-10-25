@@ -50,21 +50,13 @@ export default {
     }
   },
   async fetch () {
-    this.defaultEpisodes = await fetch(arcsiItemBaseURL + '/all')
-      .then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-      })
+    this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
       .catch((error) => {
         console.error('Error:', error)
       })
-    this.arcsiEpisodes = await fetch(arcsiItemBaseURL + '/all')
-      .then((res) => {
-        if (res.ok) {
-          return res.json()
-        }
-      })
+    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
       .catch((error) => {
         console.error('Error:', error)
       })
@@ -91,6 +83,10 @@ export default {
     arcsiList () {
       return [...this.$store.state.arcsiShows]
     }
+  },
+  beforeDestroy () {
+    this.defaultEpisodes = null
+    this.arcsiEpisodes = null
   },
   methods: {
     loadMoreEpisodes () {
