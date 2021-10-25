@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-<!--    <AutoCompleteSearch-->
-<!--      :defaultItems="defaultArcsiShows"-->
-<!--      suggestionAttribute="name"-->
-<!--      :searchFields="searchFields"-->
-<!--      @update="onUpdate"-->
-<!--      placeHolder="Search"-->
-<!--    />-->
+    <input
+      v-model="search"
+      class="input"
+      type="search"
+      @input="onChange"
+      :placeholder="placeholder"
+    >
     <header class="flex flex-row items-center justify-between">
       <h1 class="mb-8">
         News
@@ -17,49 +17,32 @@
         <NewsBlock :news="news" />
       </div>
     </article>
-    <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
-      <div :class="{disabled: startOffset === 0}">
-        <a href="#" @click.prevent="fetchNewsPaginationFirst">
-          <i class="fa fa-angle-double-left" aria-hidden="true" /> First
-        </a>
-        <span class="mx-2">|</span>
-      </div>
-      <div :class="{disabled: startOffset === 0}">
-        <a href="#" @click.prevent="fetchNewsPaginationPrevious">
-          <i class="fa fa-angle-left" aria-hidden="true" /> Previous
-        </a>
-        <span class="mx-2">|</span>
-      </div>
-      <div :class="{disabled: startOffset === lastPage}">
-        <a href="#" @click.prevent="fetchNewsPaginationNext">
-          Next <i class="fa fa-angle-right" aria-hidden="true" />
-        </a>
-      </div>
-      <div :class="{disabled: startOffset === lastPage}">
-        <span class="mx-2">|</span>
-        <a href="#" @click.prevent="fetchNewsPaginationLast">
-          Last <i class="fa fa-angle-double-right" aria-hidden="true" />
-        </a>
-      </div>
-    </footer>
+    <div v-if="numberOfTotal > newsFilteredList.length" id="loadmore" class="p-4 text-center">
+      <a href="#" @click.prevent="fetchNews">
+        <b>Load {{ numberOfItems }} more episodes</b>
+        <br>
+        (showing {{ newsFilteredList.length }} episodes)
+      </a>
+    </div>
   </div>
 </template>
 
 <script>
-import { newsBaseURL, contentApiURL } from '~/constants'
+import { newsBaseURL } from '~/constants'
 
 export default {
   components: {},
   data () {
     return {
-      newsFilteredList: null,
+      newsFilteredList: [],
       numberOfItems: 12,
       numberOfTotal: 0,
-      startOffset: 0,
+      search: '',
       callBacks: {
         totalNumber: res => parseInt(res.headers.get('x-wp-total')),
-        filterList: res => res.json()
-      }
+        fetchNews: res => res.json()
+      },
+      placeholder: 'search'
     }
   },
   head () {
@@ -68,8 +51,8 @@ export default {
     }
   },
   computed: {
-    lastPage () {
-      return Math.round(this.numberOfTotal / this.numberOfItems - 1)
+    fetchCount () {
+      return this.newsFilteredList.length + this.numberOfItems
     }
   },
   async mounted () {
@@ -78,43 +61,33 @@ export default {
   },
   methods: {
     async useFetch({
-      type = 'filterList',
-      offset = 0,
-      search = ''
+      type = 'fetchNews',
     } = {}) {
       const callback = this.callBacks[type]
+      console.log(this.fetchCount, this.numberOfTotal, this.newsFilteredList)
       return await fetch(
-        `${newsBaseURL}&per_page=${this.numberOfItems}&offset=${offset}&search=${search}`)
+        `${newsBaseURL}${
+          type === 'fetchNews'
+            ? `&per_page=${this.fetchCount}`
+            : ''
+        }${
+          this.search.length > 2
+            ? `&search=${this.search}`
+            : ''
+        }`)
         .then(res => callback(res))
         .catch(e => console.log(e))
     },
-    async fetchNewsPaginationFirst () {
-      if (this.startOffset === 0) {
-        return false
-      }
+    async fetchNews () {
       this.newsFilteredList = await this.useFetch()
-      this.startOffset = 0
     },
-    async fetchNewsPaginationPrevious () {
-      if (this.startOffset === 0) {
-        return false
+    async onChange () {
+      if (this.search.length > 2 || !this.search) {
+        this.newsFilteredList = []
+        this.numberOfTotal = 0
+        await this.fetchNews()
+        this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
       }
-      this.newsFilteredList = await this.useFetch({
-        offset: this.numberOfItems * (this.startOffset - 1)
-      })
-      this.startOffset = this.startOffset - 1
-    },
-    async fetchNewsPaginationNext () {
-      this.newsFilteredList = await this.useFetch({
-        offset: this.numberOfItems * (this.startOffset + 1)
-      })
-      this.startOffset = this.startOffset + 1
-    },
-    async fetchNewsPaginationLast () {
-      this.newsFilteredList = await this.useFetch({
-        offset: this.numberOfItems * this.lastPage
-      })
-      this.startOffset = this.lastPage
     }
   }
 }
