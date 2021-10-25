@@ -2,7 +2,7 @@
   <div class="container">
     <NuxtLink :to="`/shows/${slug}`">
       <div class="pb-4">
-        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to Show
+        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to {{ showTitle }}
       </div>
     </NuxtLink>
     <div class="flex-row sm:flex">
@@ -55,6 +55,10 @@ export default {
     }
   },
   computed: {
+    showTitle () {
+      if (!this.arcsiEpisode) { return 'Show' }
+      return this.arcsiEpisode?.shows?.[0].name
+    },
     fullEpisodeTitle () {
       if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
