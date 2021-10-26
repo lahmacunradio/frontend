@@ -89,20 +89,32 @@ export default {
     }
   },
   computed: {
+    getToday () {
+      const d = new Date()
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      return `${year}-${month}-${day}`
+    },
     arcsiShows () {
       return this.$store.state.arcsiShows
     },
     arcsiInfosBlock () {
       if (this.arcsiShows) {
         const allShows = [...this.arcsiShows]
-        return allShows.filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
+        return allShows
+          .filter(show => show.archive_lahmastore_base_url === this.$route.params.slug)
+          .shift()
       }
       return null
     },
     arcsiShowsList () {
       if (this.arcsiShows) {
         const showslist = [...this.arcsiInfosBlock.items]
-        return showslist.filter(show => show.archived).sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        return showslist
+          .filter(show => show.play_date < this.getToday)
+          .filter(show => show.archived === true)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
     }
