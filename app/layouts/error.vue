@@ -1,5 +1,5 @@
 <template>
-  <div class="error-page">
+  <div class="container text-center error-page">
     <h1 v-if="error.statusCode === 404">
       Page not found
     </h1>
@@ -10,7 +10,8 @@
       An error occurred
     </h1>
     <NuxtLink to="/">
-      Home page
+      <img src="/img/lahmacun-logo.png" alt="" class="h-48 py-8 mx-auto">
+      Try the Home page
     </NuxtLink>
   </div>
 </template>
