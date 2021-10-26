@@ -31,6 +31,38 @@ export default {
       .catch((error) => {
         console.error('Error:', error)
       })
+  },
+  head () {
+    return {
+      title: 'Lahmacun Photos',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Photos from Lahmacun everydays'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Photos'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Photos from Lahmacun everydays'
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.metaImage
+        }
+      ]
+    }
+  },
+  computed: {
+    metaImage () {
+      return this.photoGalleries?.[0].acf.gallery?.[0].thumbnail_image_url
+    }
   }
 }
 </script>
