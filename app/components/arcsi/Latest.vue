@@ -97,6 +97,9 @@ export default {
       return [...this.$store.state.arcsiShows]
     }
   },
+  beforeDestroy () {
+    this.arcsiEpisodes = null
+  },
   methods: {
   }
 }
