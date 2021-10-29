@@ -51,7 +51,29 @@ export default {
   },
   head () {
     return {
-      title: this.fullEpisodeTitle
+      title: this.fullEpisodeTitle,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.fullEpisodeTitle
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.arcsiEpisode?.description
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.arcsiEpisode?.image_url
+        }
+      ]
     }
   },
   computed: {

@@ -49,6 +49,7 @@ export default {
       const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
       this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
+      this.$emit('getimage', this.newsImageSmall)
     }
   }
 }

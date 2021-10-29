@@ -63,7 +63,29 @@ export default {
   },
   head () {
     return {
-      title: this.arcsiInfosBlock.name
+      title: this.arcsiInfosBlock?.name,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.arcsiInfosBlock?.name
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.arcsiInfosBlock?.cover_image_url
+        }
+      ]
     }
   },
   computed: {

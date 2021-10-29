@@ -41,6 +41,53 @@ export default {
       .catch((error) => {
         console.error('Error:', error)
       })
+  },
+  head () {
+    return {
+      title: this.metaTitle,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.metaDescription
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.metaTitle
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.metaDescription
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.metaImage
+        }
+      ]
+    }
+  },
+  computed: {
+    metaTitle () {
+      if (!this.photoGallery) {
+        return false
+      }
+      return this.htmlDecoder(this.photoGallery.title.rendered)
+    },
+    metaDescription () {
+      if (!this.photoGallery) {
+        return false
+      }
+      return (this.photoGallery.content.rendered && this.stripHTMLTags(this.photoGallery.content.rendered)) || this.htmlDecoder(this.photoGallery.title.rendered) + ' photos'
+    },
+    metaImage () {
+      if (!this.photoGallery) {
+        return false
+      }
+      return this.photoGallery.acf.gallery?.[0].thumbnail_image_url
+    }
   }
 }
 </script>
