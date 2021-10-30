@@ -8,7 +8,8 @@
         loop="false"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
-        @paused="pauseArcsi()"
+        @play="playArcsi()"
+        @pause="pauseArcsi()"
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
         @timeupdate.passive="debounceFunction(getPosition(), 1000)"
@@ -151,7 +152,7 @@ export default {
     '$store.state.player.isStreamPlaying': {
       handler () {
         if (this.$store.state.player.isStreamPlaying) {
-          this.pauseArcsi()
+          this.audio?.pause()
         }
       },
       deep: true
@@ -172,6 +173,10 @@ export default {
         artwork: [
           { src: this.episode.image_url }
         ]
+      })
+      // Allow pausing from the mobile metadata update.
+      navigator.mediaSession.setActionHandler('pause', () => {
+        this.toggleArcsi()
       })
     }
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -202,7 +207,7 @@ export default {
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      this.audio.play()
+      this.audio?.play()
       this.$store.commit('player/isArcsiPlaying', true)
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -224,7 +229,7 @@ export default {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
-      this.audio.pause()
+      this.audio?.pause()
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
@@ -241,7 +246,7 @@ export default {
     },
     stopArcsi () {
       if (this.audio) {
-        this.audio.stop()
+        this.audio?.stop()
       }
       const playHistory = {
         episodeID: this.episode.id,
