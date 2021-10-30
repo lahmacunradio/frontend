@@ -8,8 +8,8 @@
       <div class="now-playing-details">
         <div class="radio-controls">
           <a class="bigplay-button" href="#" @click.prevent="toggle()">
-            <img v-if="!is_playing" src="@/assets/img/play_gomb.svg" alt="">
-            <img v-else src="@/assets/img/pause_gomb.svg" alt="">
+            <img v-if="is_playing" src="@/assets/img/pause_gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
+            <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
           </a>
           <div v-if="false">
             <!-- old show image -->
@@ -694,12 +694,19 @@ a.programimage {
 /* Finish player overrides */
 
 /* New Player styles */
-.bigplay-button img {
-  height: 75px;
-  padding: 0 1rem;
-  @media (max-width: $mobile-width) {
-    height: 65px;
-    padding: 0 1rem 0 0;
+.bigplay-button {
+  width: 6rem;
+  height: 4rem;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  img {
+    padding: 0 1rem;
+    max-height: 65px;
+    @media (max-width: $mobile-width) {
+      height: 65px;
+      padding: 0 1rem 0 0;
+    }
   }
 }
 
