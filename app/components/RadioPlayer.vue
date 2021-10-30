@@ -8,7 +8,8 @@
       <div class="now-playing-details">
         <div class="radio-controls">
           <a class="bigplay-button" href="#" @click.prevent="toggle()">
-            <img src="/img/play_gomb.svg" alt="">
+            <img v-if="!is_playing" src="@/assets/img/play_gomb.svg" alt="">
+            <img v-else src="@/assets/img/pause_gomb.svg" alt="">
           </a>
           <div v-if="false">
             <!-- old show image -->
@@ -112,7 +113,7 @@
         </div>
 
         <div class="sand-clock">
-          <img src="/img/sand-clock-full.svg" alt="">
+          <img src="@/assets/img/sand-clock-full.svg" alt="">
         </div>
       </div>
     </div>

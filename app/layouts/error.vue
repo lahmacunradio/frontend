@@ -10,7 +10,7 @@
       An error occurred
     </h1>
     <NuxtLink to="/">
-      <img src="/img/lahmacun-logo.png" alt="" class="h-48 py-8 mx-auto">
+      <img src="@/assets/img/lahmacun-logo.png" alt="" class="h-48 py-8 mx-auto">
       Try the Home page
     </NuxtLink>
   </div>

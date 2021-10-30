@@ -35,8 +35,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo-dummy.png',
-      newsImageSmall: '/img/lahmacun-logo-dummy.png'
+      newsImage: '@/assets/img/lahmacun-logo-dummy.png',
+      newsImageSmall: '@/assets/img/lahmacun-logo-dummy.png'
     }
   },
   computed: {

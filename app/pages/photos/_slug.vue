@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
     <div v-else>

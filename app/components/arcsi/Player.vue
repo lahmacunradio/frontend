@@ -14,7 +14,7 @@
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
-      <img src="/img/preloader.svg" class="h-4 mr-4">
+      <img src="@/assets/img/preloader.svg" class="h-4 mr-4">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">

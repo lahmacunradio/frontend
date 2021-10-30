@@ -2,7 +2,7 @@
   <div>
     <h3>Arcsi's Latest</h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
-      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
     <div v-else class="container relative py-8 latest-container">
@@ -14,10 +14,10 @@
         </div>
       </div>
       <div slot="button-prev" class="swiper-button-prev">
-        <img src="/img/arrow-left.svg" alt="">
+        <img src="@/assets/img/arrow-left.svg" alt="">
       </div>
       <div slot="button-next" class="swiper-button-next">
-        <img src="/img/arrow-right.svg" alt="">
+        <img src="@/assets/img/arrow-right.svg" alt="">
       </div>
     </div>
     <div v-if="$fetchState.error" class="py-32 text-center">
