@@ -55,8 +55,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '@/assets/img/lahmacun-logo-dummy.png',
-      newsImageSmall: '@/assets/img/lahmacun-logo-dummy.png',
+      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       format
     }
   },

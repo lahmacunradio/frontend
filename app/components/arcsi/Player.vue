@@ -8,6 +8,7 @@
         loop="false"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
+        @paused="pauseArcsi()"
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
         @timeupdate.passive="debounceFunction(getPosition(), 1000)"
