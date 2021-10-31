@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mb-8">
     <h1>Photos</h1>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
