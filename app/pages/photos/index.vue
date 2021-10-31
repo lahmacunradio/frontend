@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="container mb-8">
     <h1>Photos</h1>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
     <div v-else class="relative grid gap-8 py-8 lg:grid-cols-2 xl:grid-cols-3 galleries-container">

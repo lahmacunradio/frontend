@@ -2,7 +2,7 @@
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
       <div class="bg-white">
-        <NewsHome :news="sortNews[newsStart]" @changenews="changenews(direction)" />
+        <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
       </div>
       <div>
         <ScheduleHome :shows="sortShowsForSchedule" />
@@ -40,12 +40,14 @@ export default {
     }
   },
   methods: {
-    changenews (direction) {
-      if (this.newsStart === this.newsLimit - 1) {
+    changeIt (direction) {
+      if (this.newsStart === 0 && direction === 'previous') {
+        this.newsStart = this.newsLimit - 1
+      } else if (direction === 'next' && this.newsStart === this.newsLimit - 1) {
         this.newsStart = 0
       } else if (direction === 'previous') {
-        this.newsStart++
-      } else {
+        this.newsStart--
+      } else if (direction === 'next') {
         this.newsStart++
       }
     }

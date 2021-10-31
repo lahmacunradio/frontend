@@ -70,7 +70,7 @@ export default {
               padding: 1.8rem 2rem;
             }
             &.selected {
-                background: url('/img/selected-menu.svg') no-repeat center center;
+                background: url('@/assets/img/selected-menu.svg') no-repeat center center;
                 background-size: 7rem;
             }
             a {

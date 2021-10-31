@@ -16,7 +16,7 @@
           </div>
           <div class="show-basic-infos">
             {{ removeSeconds(show.start) }}
-            <img src="/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+            <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
             {{ removeSeconds(show.end) }} -
             <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}

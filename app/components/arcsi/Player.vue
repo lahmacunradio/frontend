@@ -8,13 +8,15 @@
         loop="false"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
+        @play="setPlayState()"
+        @pause="setPauseState()"
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
         @timeupdate.passive="debounceFunction(getPosition(), 1000)"
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
-      <img src="/img/preloader.svg" class="h-4 mr-4">
+      <img src="@/assets/img/preloader.svg" class="h-4 mr-4">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
@@ -150,7 +152,7 @@ export default {
     '$store.state.player.isStreamPlaying': {
       handler () {
         if (this.$store.state.player.isStreamPlaying) {
-          this.pauseArcsi()
+          this.audio?.pause()
         }
       },
       deep: true
@@ -164,15 +166,7 @@ export default {
       this.currentVolume = this.$store.state.player.arcsiVolume
       this.setVolume(parseFloat(this.$store.state.player.arcsiVolume))
     }
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: this.episode.name,
-        artist: this.episode.shows[0].name,
-        artwork: [
-          { src: this.episode.image_url }
-        ]
-      })
-    }
+    this.setMetaData()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
   },
   beforeUpdate () {
@@ -184,25 +178,34 @@ export default {
   beforeDestroy () {
     if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-      if ('mediaSession' in navigator) {
-        // Allow pausing from the mobile metadata update.
-        navigator.mediaSession.setActionHandler('pause', () => null)
-      }
+    }
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('pause', () => null)
     }
   },
   destroyed () {
     this.audio = null
   },
   methods: {
-    playArcsi () {
+    setPlayState () {
       const playHistory = {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      this.audio.play()
       this.$store.commit('player/isArcsiPlaying', true)
+      this.$store.commit('player/isStreamPlaying', false)
+    },
+    setPauseState () {
+      const playHistory = {
+        episodeID: this.episode.id,
+        value: Math.round(this.seek)
+      }
+      this.$store.commit('player/isArcsiPlaying', false)
+      this.$store.commit('player/setArcsiProgressHistory', playHistory)
+    },
+    setMetaData () {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.episode.name,
@@ -216,16 +219,16 @@ export default {
           this.toggleArcsi()
         })
       }
-      this.$store.commit('player/isStreamPlaying', false)
+    },
+    async playArcsi () {
+      await this.audio?.play()
+      this.setPlayState()
+      this.setMetaData()
     },
     pauseArcsi () {
-      const playHistory = {
-        episodeID: this.episode.id,
-        value: Math.round(this.seek)
-      }
-      this.audio.pause()
-      this.$store.commit('player/isArcsiPlaying', false)
-      this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      this.setPauseState()
+      this.audio?.pause()
+      this.setMetaData()
     },
     toggleArcsi () {
       const arcsiReady = this.$refs.arcsiplayer?.readyState > 2
@@ -240,7 +243,7 @@ export default {
     },
     stopArcsi () {
       if (this.audio) {
-        this.audio.stop()
+        this.audio?.stop()
       }
       const playHistory = {
         episodeID: this.episode.id,
@@ -268,19 +271,22 @@ export default {
       }
       this.$store.commit('player/setArcsiProgressHistory', playHistory)
     },
-    setProgress (progress) {
-      this.$refs.arcsiplayer.currentTime = this.duration * parseFloat(progress)
-    },
     setSeek (seek) {
+      if (!this.$refs.arcsiplayer) {
+        return false
+      }
       this.$refs.arcsiplayer.currentTime = seek
     },
     getDuration () {
-      this.duration = this.$refs.arcsiplayer.duration
+      this.duration = this.$refs.arcsiplayer?.duration
     },
     getPosition () {
-      this.seek = this.$refs.arcsiplayer.currentTime || 0
+      this.seek = this.$refs.arcsiplayer?.currentTime || 0
     },
     async findIfArcsiSeek () {
+      if (!this.$refs.arcsiplayer) {
+        return false
+      }
       const arcsiReady = await this.$refs.arcsiplayer?.readyState > 2
       const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition

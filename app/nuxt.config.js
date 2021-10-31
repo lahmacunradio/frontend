@@ -17,7 +17,7 @@ export default {
       { hid: 'description', name: 'description', content: 'Budapest online radio and more' },
       { hid: 'og:title', name: 'og:title', content: 'Lahmacun Radio' },
       { hid: 'og:description', name: 'og:description', content: 'Budapest online radio and more' },
-      { hid: 'og:image', name: 'og:image', content: '/img/lahmacun.png' }
+      { hid: 'og:image', name: 'og:image', content: '@/assets/img/lahmacun.png' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },

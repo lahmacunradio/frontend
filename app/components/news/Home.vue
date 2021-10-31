@@ -8,10 +8,10 @@
       </div>
       <div class="absolute z-10 flex items-center justify-between w-full h-full px-4 my-4">
         <div class="cursor-pointer" @click="$emit('changenews', 'previous')">
-          <img src="/img/arrow-left.svg" alt="">
+          <img src="@/assets/img/arrow-left.svg" alt="">
         </div>
         <div class="cursor-pointer" @click="$emit('changenews', 'next')">
-          <img src="/img/arrow-right.svg" alt="">
+          <img src="@/assets/img/arrow-right.svg" alt="">
         </div>
       </div>
       <nuxt-link :to="'/news/' + news.slug">
@@ -55,8 +55,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo-dummy.png',
-      newsImageSmall: '/img/lahmacun-logo-dummy.png',
+      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       format
     }
   },

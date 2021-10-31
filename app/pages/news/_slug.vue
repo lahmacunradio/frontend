@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-      <img src="/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
     <div v-if="$fetchState.error" class="py-8 text-center">
@@ -20,7 +20,7 @@ export default {
     return {
       slug: this.$route.params.slug,
       selectedNews: null,
-      metaImage: '/img/lahmacun-logo-dummy.png'
+      metaImage: '@/assets/lahmacun-logo-dummy.png'
     }
   },
   async fetch () {

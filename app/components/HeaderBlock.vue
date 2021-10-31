@@ -2,7 +2,7 @@
   <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
     <div class="items-center md:flex">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
-        <img src="/img/lahmacun-logo.png" alt="" class="w-24 logo">
+        <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
       <div class="my-4 md:mr-8">
         <client-only>

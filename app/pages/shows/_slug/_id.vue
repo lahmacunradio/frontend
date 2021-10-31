@@ -15,16 +15,18 @@
       <div class="mb-4 show-description">
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
-        <div class="py-4">
-          <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
-            <i>Episode is now in the Arcsi player...</i>
+        <client-only>
+          <div class="py-4">
+            <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
+              <i>Episode is now in the Arcsi player...</i>
+            </div>
+            <div v-else>
+              <a href="#" @click.prevent="playArcsi()">
+                <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
+              </a>
+            </div>
           </div>
-          <div v-else>
-            <a href="#" @click.prevent="playArcsi()">
-              <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
-            </a>
-          </div>
-        </div>
+        </client-only>
       </div>
     </div>
   </div>
