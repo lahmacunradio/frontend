@@ -16,7 +16,7 @@
       <div v-sanitize="photoGallery.content.rendered" />
       <div class="gap-8 my-8 md:grid-cols-2 lg:grid-cols-4 md:grid gallery-items">
         <div v-for="(photo, i) in photoGallery.acf.gallery" :key="i">
-          <GalleryPictureItem :photo="photo" />
+          <GalleryPictureItem :photo="photo" :gallery="photoGallery.acf.gallery" :gallery-position="i" />
         </div>
       </div>
     </div>

@@ -136,3 +136,23 @@ span.moresign {
 .rotate-element {
   animation: infiniterotate 6s linear infinite;
 }
+
+
+/* Modal anims */
+
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.1s ease-in;
+}
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  opacity: 1;
+}

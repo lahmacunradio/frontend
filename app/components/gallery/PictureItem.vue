@@ -1,13 +1,15 @@
 <template>
-  <a href="#" @click.prevent="shadowbox = !shadowbox">
-    <div class="photo aspect-ratio-1/1">
-      <img class="image-fit" :src="photo.full_image_url" :srcset="photo.medium_srcset" :alt="photo.title">
-      <div class="description">
-        {{ photo.title }}
+  <div>
+    <a href="#" @click.prevent="shadowbox = !shadowbox">
+      <div class="photo aspect-ratio-1/1">
+        <img class="image-fit" :src="photo.full_image_url" :srcset="photo.medium_srcset" :alt="photo.title">
+        <div class="description">
+          {{ photo.title }}
+        </div>
       </div>
-    </div>
-    <Modal :media="photo.full_image_url" :title="photo.title" :visibility="shadowbox" />
-  </a>
+    </a>
+    <ModalGallery :visibility="shadowbox" :gallery="gallery" :gallery-item-id="galleryPosition" @close="shadowbox = false" />
+  </div>
 </template>
 
 <script>
@@ -16,6 +18,16 @@ export default {
     photo: {
       type: Object,
       required: true
+    },
+    gallery: {
+      type: Array,
+      required: false,
+      default: null
+    },
+    galleryPosition: {
+      type: Number,
+      required: false,
+      default: 0
     }
   },
   data () {
