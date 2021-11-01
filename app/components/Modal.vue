@@ -121,11 +121,12 @@ export default {
 }
 
 .modal-default-button {
-  position: fixed;
-  right: 0;
-  color: white;
-  font-size: 2rem;
-  padding: 0.5rem;
+    position: fixed;
+    right: 0;
+    color: white;
+    font-size: 2rem;
+    padding: 1.5rem 1rem;
+    line-height: 0;
 }
 
 </style>

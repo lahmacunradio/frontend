@@ -2,7 +2,7 @@
   <div>
     <transition name="modal">
       <div v-if="showModal" id="modal-template">
-        <div class="modal-mask">
+        <div class="modal-mask" @click="$emit('close')">
           <button class="modal-default-button" @click="$emit('close')">
             ×
           </button>
@@ -14,11 +14,11 @@
               </div>
 
               <div class="relative z-50 w-full modal-body">
-                <a v-if="galleryPosition !== 0" href="#" class="previous" @click.prevent="goToPrevious()">
+                <a v-if="galleryPosition !== 0" href="#" class="previous" @click.prevent.stop="goToPrevious()">
                   <i class="fa fa-angle-left" aria-hidden="true" />
                 </a>
                 <img :src="gallery[galleryPosition].full_image_url" :srcset="gallery[galleryPosition].large_srcset">
-                <a v-if="galleryPosition !== gallery.length - 1" href="#" class="next" @click.prevent="goToNext()">
+                <a v-if="galleryPosition !== gallery.length - 1" href="#" class="next" @click.prevent.stop="goToNext()">
                   <i class="fa fa-angle-right" aria-hidden="true" />
                 </a>
               </div>
@@ -138,6 +138,9 @@ export default {
         margin-top: 0;
         color: white;
         text-align: center;
+        max-width: 95vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
@@ -153,16 +156,17 @@ export default {
     }
   }
   a {
-      color: white;
-        position: absolute;
-        top: 40%;
-        font-size: 4rem;
-      &.previous {
-          left: 0;
-      }
-      &.next {
-          right: 0;
-      }
+    color: white;
+    position: absolute;
+    top: 40%;
+    font-size: 3rem;
+    padding: 1rem;
+    &.previous {
+        left: 0;
+    }
+    &.next {
+        right: 0;
+    }
   }
 }
 
@@ -176,11 +180,12 @@ export default {
 }
 
 .modal-default-button {
-  position: fixed;
-  right: 0;
-  color: white;
-  font-size: 2rem;
-  padding: 0.5rem;
+    position: fixed;
+    right: 0;
+    color: white;
+    font-size: 2rem;
+    padding: 1.5rem 1rem;
+    line-height: 0;
 }
 
 </style>
