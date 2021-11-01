@@ -113,7 +113,7 @@
         </div>
 
         <div class="sand-clock">
-          <img src="@/assets/img/sand-clock-full.svg" alt="">
+          <IconSandclock :progress="time_percent" :live="np.live.is_live" />
         </div>
       </div>
     </div>
