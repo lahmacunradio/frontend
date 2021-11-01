@@ -43,8 +43,8 @@ export default {
   */
   plugins: [
     '~/plugins/mixinCommonMethods',
-    { src: '~/plugins/vuex-persist', mode: 'client', ssr: false },
-    { src: '~/plugins/vue-awesome-swiper', mode: 'client', ssr: false }
+    { src: '~/plugins/vuex-persist', mode: 'client' },
+    { src: '~/plugins/vue-awesome-swiper', mode: 'client' }
   ],
   /*
   ** Nuxt.js dev-modules
