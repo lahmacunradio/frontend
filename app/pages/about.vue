@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div id="about-page-content" class="container">
     <div v-if="$fetchState.pending" class="py-8 center w-100">
       Loading...
     </div>
@@ -8,7 +8,7 @@
     </div>
     <div v-if="aboutUs">
       <h1>{{ aboutUs.title.rendered }}</h1>
-      <div v-sanitize="aboutUsResults" />
+      <div v-sanitize="[ sanitizeOptions, aboutUsResults]" />
     </div>
   </div>
 </template>
@@ -21,7 +21,13 @@ export default {
   },
   data () {
     return {
-      aboutUs: null
+      aboutUs: null,
+      sanitizeOptions: {
+        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption'],
+        allowedAttributes: {
+          img: ['src', 'srcset']
+        }
+      }
     }
   },
   async fetch () {
@@ -43,8 +49,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container{
+.container {
   margin-bottom: 1rem;
   line-height: 3;
+}
+</style>
+
+<style lang="scss">
+#about-page-content {
+  img {
+    width: 100%;
+  }
 }
 </style>
