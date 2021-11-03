@@ -143,6 +143,13 @@ a {
 .scheduleblock {
   height: calc(100% - 50px);
   max-height: 450px;
+  overflow: auto;
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $lahma-pink;
+  }
   .dayname {
     border-bottom: 1px solid;
     padding-bottom: 0.25rem;
@@ -207,3 +214,4 @@ a {
 }
 
 </style>
+
