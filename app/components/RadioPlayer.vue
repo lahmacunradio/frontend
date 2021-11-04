@@ -179,6 +179,7 @@ export default {
       np_timeout: null,
       np_interval: null,
       clock_interval: null,
+      timeOutHelper: null,
 
       // rework the checks
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
@@ -321,14 +322,14 @@ export default {
     this.audio.onerror = (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_NETWORK && this.audio.src !== '') {
         console.log('Network interrupted stream. Automatically reconnecting shortly...')
-        setTimeout(this.play, 5000)
+        this.timeOutHelper = setTimeout(this.play, 5000)
       }
     }
     this.audio.onended = () => {
       if (this.is_playing) {
         this.stop()
         console.log('Network interrupted stream. Automatically reconnecting shortly...')
-        setTimeout(this.play, 5000)
+        this.timeOutHelper = setTimeout(this.play, 5000)
       } else {
         this.stop()
       }
@@ -348,7 +349,13 @@ export default {
   },
   beforeDestroy () {
     clearInterval(this.np_interval)
+    clearInterval(this.clock_interval)
+    clearTimeout(this.np_timeout)
+    clearTimeout(this.timeOutHelper)
     this.np_interval = null
+    this.np_timeout = null
+    this.clock_interval = null
+    this.timeOutHelper = null
   },
   methods: {
     play () {
