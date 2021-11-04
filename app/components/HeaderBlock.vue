@@ -23,19 +23,12 @@
 import { streamServer } from '~/constants'
 
 export default {
-
-  components: {
-  },
-
   data () {
     return {
       streamServer,
       timestamp: '',
       interval: null
     }
-  },
-  computed: {
-
   },
   mounted () {
     this.interval = setInterval(this.getNow, 1000)
