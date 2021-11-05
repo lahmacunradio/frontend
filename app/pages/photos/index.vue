@@ -1,17 +1,21 @@
 <template>
-  <div class="container mb-8">
-    <h1>Photos</h1>
-    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      <p>Loading...</p>
-    </div>
-    <div v-else class="relative grid gap-8 py-8 lg:grid-cols-2 xl:grid-cols-3 galleries-container">
-      <div v-for="(gallery, i) in photoGalleries" :key="i" class="gallery">
-        <GalleryListItem :gallery="gallery" />
+  <div>
+    <h3 class="title-block">
+      Photos
+    </h3>
+    <div class="container mb-8">
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
       </div>
-    </div>
-    <div v-if="$fetchState.error" class="py-32 text-center">
-      Error happened
+      <div v-else class="relative grid gap-8 py-8 lg:grid-cols-2 xl:grid-cols-3 galleries-container">
+        <div v-for="(gallery, i) in photoGalleries" :key="i" class="gallery">
+          <GalleryListItem :gallery="gallery" />
+        </div>
+      </div>
+      <div v-if="$fetchState.error" class="py-32 text-center">
+        Error happened
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +33,7 @@ export default {
     this.photoGalleries = await this.$axios.get(`${lahmaGaleriesURL}`)
       .then(res => res.data)
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Photos not reachable' })
       })
   },
   head () {

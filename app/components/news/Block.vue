@@ -8,7 +8,7 @@
           sizes="(max-width: 640px) 480px,
             800px"
           :alt="news.title.rendered"
-          class="mb-4 rounded-md"
+          class="mb-4"
         >
       </div>
       <h5 class="py-4">

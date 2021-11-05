@@ -98,7 +98,7 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.error(error)
+        error({ statusCode: 500, message: 'Stream not reachable' })
       })
     },
     groupShowsByDay (shows) {

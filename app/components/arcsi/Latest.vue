@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h3>Arcsi's Latest</h3>
+    <h3 class="title-block">Arcsi's Latest</h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div v-else class="container relative py-8 latest-container">
+    <div v-else class="container relative py-10 latest-container">
       <div v-swiper="swiperOption" class="relative" :loadtheme="false">
         <div class="swiper-wrapper">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i" class="swiper-slide">
@@ -71,7 +71,7 @@ export default {
     this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
   },
   computed: {
@@ -106,16 +106,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h3 {
-    width: 100%;
-    padding: 0.5rem;
-    margin: 0;
-    text-transform: uppercase;
-    background: $black-color;
-    color: white;
-    font-weight: 400;
-    text-align: center;
-}
 .swiper-button-prev {
   left: -20px;
 }
@@ -131,6 +121,7 @@ h3 {
   }
 }
 .swiper-button-next, .swiper-button-prev {
+  top: calc(50% - 3rem);
   img {
     width: 3rem;
     max-width: none;

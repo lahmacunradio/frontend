@@ -1,14 +1,18 @@
 <template>
-  <div id="about-page-content" class="container">
-    <div v-if="$fetchState.pending" class="py-8 center w-100">
-      Loading...
-    </div>
-    <div v-if="$fetchState.error" class="py-8 center w-100">
-      Some error happened...
-    </div>
-    <div v-if="aboutUs">
-      <h1>{{ aboutUs.title.rendered }}</h1>
-      <div v-sanitize="[ sanitizeOptions, aboutUsResults]" />
+  <div>
+    <h3 class="title-block">
+      About us
+    </h3>
+    <div id="about-page-content" class="container mt-8">
+      <div v-if="$fetchState.pending" class="py-8 center w-100">
+        Loading...
+      </div>
+      <div v-if="$fetchState.error" class="py-8 center w-100">
+        Some error happened...
+      </div>
+      <div v-if="aboutUs">
+        <div v-sanitize="[ sanitizeOptions, aboutUsResults]" />
+      </div>
     </div>
   </div>
 </template>
@@ -34,7 +38,7 @@ export default {
     this.aboutUs = await this.$axios.get(`${aboutUsURL}`)
       .then(res => res.data)
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'About page not available' })
       })
   },
   computed: {
