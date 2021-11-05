@@ -55,11 +55,7 @@ export default {
       .catch((error) => {
         console.error('Error:', error)
       })
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
-      .then(res => res.data)
-      .catch((error) => {
-        console.error('Error:', error)
-      })
+    this.arcsiEpisodes = this.defaultEpisodes
   },
   computed: {
     getToday () {

@@ -23,24 +23,19 @@
 import { streamServer } from '~/constants'
 
 export default {
-
-  components: {
-  },
-
   data () {
     return {
       streamServer,
-      timestamp: ''
+      timestamp: '',
+      interval: null
     }
   },
-  computed: {
-
-  },
-  created () {
-    setInterval(this.getNow, 1000)
-  },
-
   mounted () {
+    this.interval = setInterval(this.getNow, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
+    this.interval = null
   },
   methods: {
     getNow () {

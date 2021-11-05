@@ -49,7 +49,7 @@
             </div>
           </div>
 
-          <div class="now-playing-main">
+          <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
             <div class="media-body">
               <div v-if="np.now_playing.song.title !== ''">
                 <h4 :title="show_title" class="now-playing-title">
@@ -179,6 +179,7 @@ export default {
       np_timeout: null,
       np_interval: null,
       clock_interval: null,
+      timeOutHelper: null,
 
       // rework the checks
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
@@ -321,14 +322,14 @@ export default {
     this.audio.onerror = (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_NETWORK && this.audio.src !== '') {
         console.log('Network interrupted stream. Automatically reconnecting shortly...')
-        setTimeout(this.play, 5000)
+        this.timeOutHelper = setTimeout(this.play, 5000)
       }
     }
     this.audio.onended = () => {
       if (this.is_playing) {
         this.stop()
         console.log('Network interrupted stream. Automatically reconnecting shortly...')
-        setTimeout(this.play, 5000)
+        this.timeOutHelper = setTimeout(this.play, 5000)
       } else {
         this.stop()
       }
@@ -348,7 +349,13 @@ export default {
   },
   beforeDestroy () {
     clearInterval(this.np_interval)
+    clearInterval(this.clock_interval)
+    clearTimeout(this.np_timeout)
+    clearTimeout(this.timeOutHelper)
     this.np_interval = null
+    this.np_timeout = null
+    this.clock_interval = null
+    this.timeOutHelper = null
   },
   methods: {
     play () {
@@ -485,17 +492,24 @@ export default {
         display: flex;
         align-items: center;
         .now-playing-art {
-              margin-right: 0.7rem;
-
+          margin-right: 0.7rem;
         }
         .now-playing-main {
             flex: 1;
             min-width: 0;
             position: relative;
-            max-height: 70px;
-            @media (max-width: $mobile-width) {
-              max-width: 50vw;
+            height: 70px;
+            .media-body {
+              overflow: auto;
             }
+          &.player-no-volume-touch {
+            @media (max-width: $mobile-width) {
+              max-width: 60vw;
+              .now-playing-title, .now-playing-artist {
+                  white-space: normal;
+              }
+            }
+          }
         }
         h4, h5 {
             margin: 0;
@@ -650,9 +664,6 @@ a.programimage {
     }
 }
 
-.now-playing-main .media-body {
-    overflow: auto;
-}
 .play-volume-controls {
   position: relative;
 }
@@ -700,6 +711,9 @@ a.programimage {
   display: flex;
   align-content: center;
   align-items: center;
+  @media (max-width: $mobile-width) {
+      width: 5rem;
+    }
   img {
     padding: 0 1rem;
     max-height: 65px;

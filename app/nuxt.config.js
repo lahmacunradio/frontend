@@ -31,6 +31,10 @@ export default {
   ** Customize the progress-bar color
   */
   loading: { color: '#fff' },
+  /* disable link prefetch */
+  router: {
+    prefetchLinks: false
+  },
   /*
   ** Global CSS
   */

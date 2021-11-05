@@ -136,3 +136,14 @@ span.moresign {
 .rotate-element {
   animation: infiniterotate 6s linear infinite;
 }
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: black;
+  width: 0.5rem;
+}

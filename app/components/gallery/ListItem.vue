@@ -3,7 +3,9 @@
     <NuxtLink :to="gallery.slug" class="relative gallery-preview preload-block">
       <img :src="previewImage.full_image_url" :srcset="previewImage.medium_srcset" :alt="htmlDecoder(gallery.title.rendered)">
       <div class="absolute bottom-0 flex flex-col justify-end w-full text-center text-white gallery-title">
-        <h3 class="text-lg">{{ htmlDecoder(gallery.title.rendered) }}</h3>
+        <h3 class="text-lg">
+          {{ htmlDecoder(gallery.title.rendered) }}
+        </h3>
       </div>
     </NuxtLink>
   </div>

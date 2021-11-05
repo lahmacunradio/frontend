@@ -28,7 +28,7 @@
     <article id="donate-page" ref="donate">
       <div v-if="donateContent">
         <h2>{{ donateContent.title.rendered }}</h2>
-        <div v-sanitize="donateContentResults" class="donate-content" />
+        <div v-sanitize="[sanitizeOptions, donateContentResults]" class="donate-content" />
       </div>
     </article>
     <article id="projects-page" ref="projects">
@@ -51,7 +51,16 @@ export default {
   data () {
     return {
       donateContent: null,
-      favouritesContent: null
+      favouritesContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          form: ['*'],
+          input: ['*']
+        }
+      }
     }
   },
   async fetch () {

@@ -625,7 +625,7 @@ export default {
     }
   },
   mounted () {
-    this.dropInterval = setInterval(this.triggerDrop, 500)
+    this.dropInterval = setInterval(this.triggerDrop, 550)
 	this.showProgress (this.computedProgress)
   },
   beforeDestroy () {
@@ -684,7 +684,7 @@ export default {
         z-index: 10;
     }
 	.drop-anim {
-		transition: transform 1s;
+		transition: transform 1s ease-out;
 		transform: translateY(0px);
 		opacity: 0;
 		&.active {
