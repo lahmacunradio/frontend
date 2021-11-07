@@ -81,7 +81,7 @@ export default {
             position: absolute;
             bottom: 0;
             padding: 2rem;
-            color: black;
+            color: $black-color;
             font-size: 1.4rem;
             background: linear-gradient(45deg, white 0%, #fff0 100%);
             width: 100%;

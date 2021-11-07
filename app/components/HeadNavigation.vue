@@ -53,7 +53,8 @@ export default {
 
 <style lang="scss" scoped>
   nav {
-      font-size: 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
       ul {
         padding:0;
         margin: 0;
@@ -65,7 +66,7 @@ export default {
             margin: -1.5rem;
             text-transform: uppercase;
             position: relative;
-            padding: 1rem 2rem;
+            padding: 1.2rem 2.2rem;
             @media (max-width: $mobile-width) {
               padding: 1.8rem 2rem;
             }

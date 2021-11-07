@@ -447,7 +447,7 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        console.error(error)
+        error({ statusCode: 500, message: 'Stream not available' })
       }).then(() => {
         clearTimeout(this.np_timeout)
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -512,7 +512,6 @@ export default {
           }
         }
         h4, h5 {
-            margin: 0;
             line-height: 1.3;
         }
         h4 {
@@ -690,6 +689,8 @@ a.programimage {
 }
 
 .now-playing-title {
+  font-weight: 500;
+  margin-bottom: 0.2rem;
   a i {
     color: #8d769f;
     -webkit-transition: 0.7s all linear;
@@ -698,7 +699,7 @@ a.programimage {
     transform: rotate(90deg);
   }
   a:hover i {
-    color: black;
+    color: $black-color;
   }
 }
 

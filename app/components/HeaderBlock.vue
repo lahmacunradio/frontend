@@ -13,7 +13,7 @@
     <HeadNavigation />
     <div id="time">
       <div class="currenttime">
-        {{ timestamp }} CET
+        {{ timestamp }} <br>CET
       </div>
     </div>
   </header>
@@ -56,9 +56,11 @@ export default {
         min-width: 6rem;
       }
       .currenttime {
-        font-size: 1.4rem;
-        font-weight: 600;
+        font-size: 1.2rem;
+        font-weight: 500;
         white-space: nowrap;
+        line-height: 1.1em;
+        text-align: center;
       }
   }
   @media (max-width: $tablet-width) {

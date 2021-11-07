@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container mt-8">
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
@@ -27,7 +27,7 @@ export default {
     this.selectedNews = await this.$axios.get(`${contentApiURL}/posts?slug=${this.slug}`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'News not found' })
       })
   },
   head () {
