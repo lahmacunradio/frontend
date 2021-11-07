@@ -313,6 +313,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h5 {
+  a {
+    color: $lahma-pink;
+    &:hover {
+      color: $black-color;
+    }
+  }
+  span {
+    font-weight: normal;
+  }
+}
 #myProgress {
   width: 100%;
   background-color: $black-color;
