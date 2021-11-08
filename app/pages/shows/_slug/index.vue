@@ -8,9 +8,11 @@
         </a>
       </div>
       <div class="mb-4 show-description">
-        <h2 class="mt-0 font-bold">{{ arcsiInfosBlock.name }}</h2>
+        <h2 class="mt-0 font-bold">
+          {{ arcsiInfosBlock.name }}
+        </h2>
         <div class="show-infos">
-          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language" /></p>
           <p>
             Last episode:
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
@@ -132,17 +134,32 @@ export default {
         showText = 'New Episode: Weekly'
       }
       return showText
+    },
+    getLanguageGraph (type) {
+      if (type === 'music') {
+        return '🎵'
+      }
+      if (type === 'hu_hu') {
+        return '🇭🇺'
+      }
+      if (type === 'en_uk') {
+        return '🇬🇧'
+      }
     }
   }
 }
 </script>
 
-<style scoped>
-  .show-image {
-      min-width: 300px;
-      max-width: 360px;
-  }
-  .show-infos {
-    margin-bottom: 1rem;
-  }
+<style lang="scss" scoped>
+.show-image {
+    min-width: 300px;
+    max-width: 360px;
+}
+.show-infos {
+  margin-bottom: 1rem;
+}
+.language {
+  display: inline-block;
+  vertical-align: middle;
+}
 </style>
