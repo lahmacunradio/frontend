@@ -105,7 +105,8 @@ export default {
       currentVolume: '1',
       currentProgress: '0',
       duration: 0,
-      seek: 0
+      seek: 0,
+      timeOutHelper: null
     }
   },
   computed: {
@@ -176,6 +177,8 @@ export default {
     this.audio = document.getElementById('arcsiplayer')
   },
   beforeDestroy () {
+    clearTimeout(this.timeOutHelper)
+    this.timeOutHelper = null
     if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
     }
@@ -292,12 +295,12 @@ export default {
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
       if (arcsiReady && this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
-        setTimeout(() => {
+        this.timeOutHelper = setTimeout(() => {
           this.setSeek(arcsiPlayPosition)
           this.playArcsi()
         }, 3000)
       } else if (arcsiReady && this.arcsiIsPlaying) {
-        setTimeout(() => {
+        this.timeOutHelper = setTimeout(() => {
           this.setSeek(0)
           this.playArcsi()
         }, 1000)
@@ -310,6 +313,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+h5 {
+  a {
+    color: $lahma-pink;
+    &:hover {
+      color: $black-color;
+    }
+  }
+  span {
+    font-weight: normal;
+  }
+}
 #myProgress {
   width: 100%;
   background-color: $black-color;

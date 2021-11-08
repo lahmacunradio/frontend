@@ -22,6 +22,33 @@
   margin: 0;
 }
 
+html {  
+  font-size: 16px; 
+  @media (min-width: 2160px) {
+    font-size: 18px;
+  }
+  @media (min-width: 2400px) {
+      font-size: 20px;
+  }
+  @media (min-width: 2640px) {
+      font-size: 22px;
+  }
+  @media (min-width: 2880px) {
+      font-size: 24px;
+  }
+  @media (min-width: 3120px) {
+      font-size: 26px;
+  }
+  @media (min-width: 3360px) {
+      font-size: 28px;
+  }
+  @media (min-width: 3600px) {
+      font-size: 30px;
+  }
+  @media (min-width: 3840px) {
+      font-size: 32px;
+  }
+}
 
 body {
   font-family: $lahma-type;
@@ -48,7 +75,7 @@ h1 {
   @media (max-width: $mobile-width) { 
     font-size: 2.4rem;
   }
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.2em;
 }
 h2 {
@@ -56,7 +83,7 @@ h2 {
   @media (max-width: $mobile-width) { 
     font-size: 2.1rem;
   }
-  font-weight: bold;
+  font-weight: 600;
   line-height: 1.2em;
   margin: 1rem 0;
 }
@@ -65,7 +92,7 @@ h3 {
   @media (max-width: $mobile-width) { 
     font-size: 1.8rem;
   }
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1.2em;
   margin: 1rem 0;
 }
@@ -74,7 +101,7 @@ h4 {
   @media (max-width: $mobile-width) { 
     font-size: 1.3rem;
   }
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1.4em;
 }
 
@@ -83,7 +110,7 @@ h5 {
   @media (max-width: $mobile-width) { 
     font-size: 1.2rem;
   }
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1.4em;
 }
 
@@ -155,4 +182,28 @@ span.moresign {
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
   opacity: 1;
+}
+
+/* Scrollbar styling */
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: $black-color;
+  width: 0.5rem;
+}
+
+h3.title-block {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0;
+  text-transform: uppercase;
+  background: $black-color;
+  color: white;
+  font-weight: 500;
+  text-align: center;
 }

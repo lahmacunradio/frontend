@@ -1,14 +1,14 @@
 <template>
-  <div class="container">
+  <div class="container mt-8">
     <NuxtLink :to="`/shows/${slug}`">
-      <div class="pb-4">
-        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to {{ showTitle }}
+      <div class="pb-6">
+        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
       </div>
     </NuxtLink>
     <div class="flex-row sm:flex">
-      <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
+      <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
         <a class="cursor-pointer" @click="arcsiItemShadowbox = !arcsiItemShadowbox">
-          <img :src="arcsiEpisode.image_url" alt="" class="rounded-md">
+          <img :src="arcsiEpisode.image_url" :alt="arcsiEpisode.name">
           <Modal :media="arcsiEpisode.image_url" :title="arcsiEpisode.name" :description="arcsiEpisode.description" :visibility="arcsiItemShadowbox" />
         </a>
       </div>

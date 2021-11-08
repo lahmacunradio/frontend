@@ -1,19 +1,21 @@
 <template>
-  <div class="mb-2">
-    <h2>{{ htmlDecoder(news.title.rendered) }}</h2>
-    <p class="mb-4 news-time">
-      {{ format(new Date(news.date), 'yyyy. MMMM dd.') }}
-    </p>
-    <div class="grid-cols-2 gap-4 sm:grid">
+  <div class="py-4">
+    <div class="grid-cols-2 gap-8 sm:grid">
       <img
         :src="newsImage"
         :srcset="`${newsImageSmall} 480w`"
         sizes="(max-width: 640px) 480px,
             800px"
         :alt="news.title.rendered"
-        class="mb-4 rounded-md"
+        class="mb-4"
       >
-      <div v-sanitize="news.content.rendered" class="text-content news-text" />
+      <div>
+        <h2 class="mt-0 font-bold">{{ htmlDecoder(news.title.rendered) }}</h2>
+        <p class="mb-4 news-time">
+          {{ format(new Date(news.date), 'yyyy. MMMM dd.') }}
+        </p>
+        <div v-sanitize="news.content.rendered" class="text-content news-text" />
+      </div>
     </div>
   </div>
 </template>

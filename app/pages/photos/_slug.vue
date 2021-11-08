@@ -1,5 +1,5 @@
 <template>
-  <div class="container mb-8">
+  <div class="container my-8">
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
@@ -39,7 +39,7 @@ export default {
     this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Photos not available' })
       })
   },
   head () {

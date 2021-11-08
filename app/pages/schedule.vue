@@ -1,38 +1,40 @@
 <template>
-  <div class="container">
-    <header>
-      <h2>Schedule</h2>
-    </header>
-    <div class="">
-      <div class="mb-4 border-b days">
-        <ul>
-          <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
-            <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
-              <h4 class="block">
-                {{ day }}
-              </h4>
-              {{ format(add(todayDate, { days: dayIndex} ), 'MMM do') }}
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div class="col-span-2 selectday">
-        <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-          <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
-            <div class="onairshow">
-              <span class="text-red-600">●</span>
-              On Air
-            </div>
-            <div class="show-basic-infos">
-              {{ removeSeconds(show.start) }}
-              <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-              {{ removeSeconds(show.end) }}
-              <span class="hidden md:inline-block"> - </span>
-              <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url" class="block md:inline-block">
-                <b>{{ show.name }}</b>
-              </nuxt-link>
-              {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
-              <div v-if="!isTouchEnabled" class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
+  <div>
+    <h3 class="title-block">
+      Schedule
+    </h3>
+    <div class="container mt-8">
+      <div class="">
+        <div class="mb-4 border-b days">
+          <ul>
+            <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
+              <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
+                <h4 class="block">
+                  {{ day }}
+                </h4>
+                {{ format(add(todayDate, { days: dayIndex} ), 'MMM do') }}
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="col-span-2 selectday">
+          <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+              <div class="onairshow">
+                <span class="text-red-600">●</span>
+                On Air
+              </div>
+              <div class="show-basic-infos">
+                {{ removeSeconds(show.start) }}
+                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+                {{ removeSeconds(show.end) }}
+                <span class="hidden md:inline-block"> - </span>
+                <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url" class="block md:inline-block">
+                  <b>{{ show.name }}</b>
+                </nuxt-link>
+                {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
+                <div v-if="!isTouchEnabled" class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
+              </div>
             </div>
           </div>
         </div>
@@ -124,7 +126,7 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.error(error)
+        error({ statusCode: 500, message: 'Stream not available at the moment' })
       })
     },
     groupShowsByDay (shows) {

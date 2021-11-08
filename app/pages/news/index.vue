@@ -1,40 +1,40 @@
 <template>
-  <div class="container">
-    <header class="flex flex-row items-center justify-between">
-      <h1 class="mb-8">
-        News
-      </h1>
-    </header>
-    <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-      <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
-        <NewsBlock :news="news" />
-      </div>
-    </article>
-    <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
-      <div :class="{disabled: startOffset === 0}">
-        <a href="#" @click.prevent="fetchNewsPaginationFirst">
-          <i class="fa fa-angle-double-left" aria-hidden="true" /> First
-        </a>
-        <span class="mx-2">|</span>
-      </div>
-      <div :class="{disabled: startOffset === 0}">
-        <a href="#" @click.prevent="fetchNewsPaginationPrevious">
-          <i class="fa fa-angle-left" aria-hidden="true" /> Previous
-        </a>
-        <span class="mx-2">|</span>
-      </div>
-      <div :class="{disabled: startOffset === lastPage}">
-        <a href="#" @click.prevent="fetchNewsPaginationNext">
-          Next <i class="fa fa-angle-right" aria-hidden="true" />
-        </a>
-      </div>
-      <div :class="{disabled: startOffset === lastPage}">
-        <span class="mx-2">|</span>
-        <a href="#" @click.prevent="fetchNewsPaginationLast">
-          Last <i class="fa fa-angle-double-right" aria-hidden="true" />
-        </a>
-      </div>
-    </footer>
+  <div>
+    <h3 class="title-block">
+      News
+    </h3>
+    <div class="container mt-8">
+      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
+          <NewsBlock :news="news" />
+        </div>
+      </article>
+      <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
+        <div :class="{disabled: startOffset === 0}">
+          <a href="#" @click.prevent="fetchNewsPaginationFirst">
+            <i class="fa fa-angle-double-left" aria-hidden="true" /> First
+          </a>
+          <span class="mx-2">|</span>
+        </div>
+        <div :class="{disabled: startOffset === 0}">
+          <a href="#" @click.prevent="fetchNewsPaginationPrevious">
+            <i class="fa fa-angle-left" aria-hidden="true" /> Previous
+          </a>
+          <span class="mx-2">|</span>
+        </div>
+        <div :class="{disabled: startOffset === lastPage}">
+          <a href="#" @click.prevent="fetchNewsPaginationNext">
+            Next <i class="fa fa-angle-right" aria-hidden="true" />
+          </a>
+        </div>
+        <div :class="{disabled: startOffset === lastPage}">
+          <span class="mx-2">|</span>
+          <a href="#" @click.prevent="fetchNewsPaginationLast">
+            Last <i class="fa fa-angle-double-right" aria-hidden="true" />
+          </a>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 

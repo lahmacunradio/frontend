@@ -1,9 +1,11 @@
 <template>
-  <div class="container">
-    <header>
-      <h1>Lahmacun Community</h1>
-      <nav class="py-4">
-        <ul class="comunity-navigation">
+  <div>
+    <h3 class="title-block">
+      Lahmacun Community
+    </h3>
+    <div class="container">
+      <nav class="pt-8">
+        <ul class="text-center comunity-navigation">
           <li>
             <a href="#" @click.prevent="scrollToRef('donate')">
               Donate
@@ -24,23 +26,23 @@
       <div v-if="$fetchState.pending" class="center">
         Loading...
       </div>
-    </header>
-    <article id="donate-page" ref="donate">
-      <div v-if="donateContent">
-        <h2>{{ donateContent.title.rendered }}</h2>
-        <div v-sanitize="donateContentResults" class="donate-content" />
-      </div>
-    </article>
-    <article id="projects-page" ref="projects">
-      <h2>Projects</h2>
-      <div class="projects-content">
-        Our projects, coming soon...
-      </div>
-    </article>
-    <article id="favourite-page" ref="favourite">
-      <h2>Favourite radio stations</h2>
-      <div v-sanitize="favouritesContentResults" class="favourite-radios-content" />
-    </article>
+      <article id="donate-page" ref="donate">
+        <div v-if="donateContent">
+          <h2>{{ donateContent.title.rendered }}</h2>
+          <div v-sanitize="[sanitizeOptions, donateContentResults]" class="donate-content" />
+        </div>
+      </article>
+      <article id="projects-page" ref="projects">
+        <h2>Projects</h2>
+        <div class="projects-content">
+          Our projects, coming soon...
+        </div>
+      </article>
+      <article id="favourite-page" ref="favourite">
+        <h2>Favourite radio stations</h2>
+        <div v-sanitize="favouritesContentResults" class="favourite-radios-content" />
+      </article>
+    </div>
   </div>
 </template>
 
@@ -51,7 +53,16 @@ export default {
   data () {
     return {
       donateContent: null,
-      favouritesContent: null
+      favouritesContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          form: ['*'],
+          input: ['*']
+        }
+      }
     }
   },
   async fetch () {
@@ -62,7 +73,7 @@ export default {
         }
       })
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Donate not available' })
       })
     this.favouritesContent = await this.$axios.get(`${favouriteRadiosURL}`)
       .then((res) => {
@@ -71,7 +82,7 @@ export default {
         }
       })
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Favourites not available' })
       })
   },
   computed: {

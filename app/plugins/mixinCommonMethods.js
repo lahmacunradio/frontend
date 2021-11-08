@@ -18,8 +18,9 @@ export function scrollToRef (ref) {
 export function scrollToAnchor (elem) {
   const target = document.getElementById(elem)
   target.scrollIntoView({ behavior: 'smooth' })
-  setTimeout(() => {
+  const timeout = setTimeout(() => {
     history.replaceState(null, null, `#${elem}`)
+    clearTimeout(timeout)
   }, 1000)
 }
 

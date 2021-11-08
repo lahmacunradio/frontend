@@ -1,35 +1,37 @@
 <template>
-  <div class="container">
-    <h1 class="mb-4">
+  <div>
+    <h3 class="title-block">
       Arcsi Episodes
-    </h1>
-    <div v-if="defaultEpisodes">
-      <AutoCompleteSearch
-        :default-items="defaultEpisodes"
-        suggestion-attribute="name"
-        :search-fields="searchFields"
-        place-holder="Search"
-        @update="onUpdate"
-      />
-    </div>
-    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      <p>Loading...</p>
-    </div>
-    <div v-if="$fetchState.error" class="py-8 text-center">
-      Error happened
-    </div>
-    <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
-      <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
-        <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
+    </h3>
+    <div class="container mt-8">
+      <div v-if="defaultEpisodes">
+        <AutoCompleteSearch
+          :default-items="defaultEpisodes"
+          suggestion-attribute="name"
+          :search-fields="searchFields"
+          place-holder="Search"
+          @update="onUpdate"
+        />
       </div>
-    </article>
-    <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
-      <a href="#" @click.prevent="loadMoreEpisodes">
-        <b>Load {{ startNumberofEpisodes }} more episodes</b>
-        <br>
-        (showing {{ numberOfEpisodes }} episodes)
-      </a>
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
+      </div>
+      <div v-if="$fetchState.error" class="py-8 text-center">
+        Error happened
+      </div>
+      <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
+        <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+          <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
+        </div>
+      </article>
+      <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
+        <a href="#" @click.prevent="loadMoreEpisodes">
+          <b>Load {{ startNumberofEpisodes }} more episodes</b>
+          <br>
+          (showing {{ numberOfEpisodes }} episodes)
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -53,13 +55,9 @@ export default {
     this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.error('Error:', error)
+        error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
       })
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
-      .then(res => res.data)
-      .catch((error) => {
-        console.error('Error:', error)
-      })
+    this.arcsiEpisodes = this.defaultEpisodes
   },
   computed: {
     getToday () {
