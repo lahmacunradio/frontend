@@ -23,8 +23,8 @@
                 </a>
               </div>
 
-              <div v-if="gallery[galleryPosition].description" class="modal-footer">
-                {{ gallery[galleryPosition].description }}
+              <div v-if="gallery[galleryPosition].caption" class="modal-footer">
+                {{ gallery[galleryPosition].caption }}
               </div>
             </div>
           </div>
@@ -171,9 +171,9 @@ export default {
 }
 
 .modal-footer {
-    padding: 0 3rem;
+    padding: 1rem 3rem;
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: white;
     overflow: auto;
     max-height: 4rem;

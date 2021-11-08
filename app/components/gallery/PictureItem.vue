@@ -8,7 +8,7 @@
         </div>
       </div>
     </a>
-    <ModalGallery :visibility="shadowbox" :gallery="gallery" :gallery-item-id="galleryPosition" @close="shadowbox = false" />
+    <GalleryModal :visibility="shadowbox" :gallery="gallery" :gallery-item-id="galleryPosition" @close="shadowbox = false" />
   </div>
 </template>
 
