@@ -1,13 +1,17 @@
 <template>
-  <div>
+  <div class="container text-center error-page">
     <h1 v-if="error.statusCode === 404">
       Page not found
+    </h1>
+    <h1 v-else-if="error.statusCode === 500">
+      Server error
     </h1>
     <h1 v-else>
       An error occurred
     </h1>
     <NuxtLink to="/">
-      Home page
+      <img src="@/assets/img/lahmacun-logo.png" alt="" class="h-48 py-8 mx-auto">
+      Try the Home page
     </NuxtLink>
   </div>
 </template>
@@ -18,3 +22,10 @@ export default {
   props: ['error'] // you can set a custom layout for the error page
 }
 </script>
+
+<style lang="scss" scoped>
+.error-page {
+  background: $lahma-pink;
+  @apply flex flex-col align-middle justify-items-center;
+}
+</style>

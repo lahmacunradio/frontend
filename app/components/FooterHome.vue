@@ -6,7 +6,7 @@
           <p>Lahmacun.hu is an online music & more radio from Budapest.</p>
           <p>Lahmacun is listener supported. If you enjoy what we do, please consider donating to us.</p>
         </div>
-        <img src="/img/Lahmacun-Team-2020.jpg" alt="">
+        <img src="@/assets/img/Lahmacun-Team-2020.jpg" alt="">
       </div>
       <div class="justify-between py-8 md:flex">
         <div class="infos">
@@ -45,13 +45,13 @@
         </div>
         <div class="py-8 md:py-4 logos">
           <a href="http://golyapresszo.hu/" target="_blank">
-            <img src="/img/golyalogo-1.png" alt="">
+            <img src="@/assets/img/golyalogo-1.png" alt="">
           </a>
           <a href="https://inclust.com/" target="_blank">
-            <img src="/img/inclust_logo.png" alt="">
+            <img src="@/assets/img/inclust_logo.png" alt="">
           </a>
           <a href="https://rogueamoeba.com/" target="_blank">
-            <img src="/img/rogue-amoeba-logo.png" alt="">
+            <img src="@/assets/img/rogue-amoeba-logo.png" alt="">
           </a>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default {
 
 <style lang="scss" scoped>
 .homefooter {
-    background: url('/img/footer-back-home.png') no-repeat bottom center;
+    background: url('@/assets/img/footer-back-home.png') no-repeat bottom center;
     background-size: cover;
     .container {
         color: white;
@@ -81,7 +81,7 @@ export default {
             position: absolute;
             bottom: 0;
             padding: 2rem;
-            color: black;
+            color: $black-color;
             font-size: 1.4rem;
             background: linear-gradient(45deg, white 0%, #fff0 100%);
             width: 100%;

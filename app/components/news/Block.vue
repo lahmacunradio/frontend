@@ -1,6 +1,6 @@
 <template>
   <div class="mb-2">
-    <nuxt-link :to="'/news/' + news.slug">
+    <NuxtLink :to="'/news/' + news.slug">
       <div class="news-image">
         <img
           :src="newsImage"
@@ -8,15 +8,15 @@
           sizes="(max-width: 640px) 480px,
             800px"
           :alt="news.title.rendered"
-          class="mb-4 rounded-md"
+          class="mb-4"
         >
       </div>
       <h5 class="py-4">
         {{ htmlDecoder(news.title.rendered) }}
       </h5>
-    </nuxt-link>
+    </NuxtLink>
     <div class="news-text">
-      <div v-html="truncatedNews" />
+      <div v-sanitize="truncatedNews" />
     </div>
   </div>
 </template>
@@ -35,8 +35,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo-dummy.png',
-      newsImageSmall: '/img/lahmacun-logo-dummy.png'
+      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
     }
   },
   computed: {

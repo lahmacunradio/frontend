@@ -1,7 +1,7 @@
 <template>
   <div :class="arcsiVisible && 'pb-16'">
     <HeaderBlock />
-    <nuxt :class="$route.name === 'index' ? '' : 'py-8'" />
+    <nuxt :class="$route.name === 'index' ? '' : 'pb-8'" />
     <FooterHome v-if="$route.name === 'index'" />
     <BottomArcsiPlayer />
   </div>

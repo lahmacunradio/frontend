@@ -9,14 +9,14 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-for="(show, index) in showsByDate[0]" :key="show.id * index + index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+        <div v-for="(show, index) in showsByDate[0]" :key="show.id * (index + index) * index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
             On Air
           </div>
           <div class="show-basic-infos">
             {{ removeSeconds(show.start) }}
-            <img src="/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+            <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
             {{ removeSeconds(show.end) }} -
             <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}
@@ -98,7 +98,7 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.error(error)
+        error({ statusCode: 500, message: 'Stream not reachable' })
       })
     },
     groupShowsByDay (shows) {
@@ -143,6 +143,13 @@ a {
 .scheduleblock {
   height: calc(100% - 50px);
   max-height: 450px;
+  overflow: auto;
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $lahma-pink;
+  }
   .dayname {
     border-bottom: 1px solid;
     padding-bottom: 0.25rem;
@@ -207,3 +214,4 @@ a {
 }
 
 </style>
+

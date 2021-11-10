@@ -8,10 +8,10 @@
       </div>
       <div class="absolute z-10 flex items-center justify-between w-full h-full px-4 my-4">
         <div class="cursor-pointer" @click="$emit('changenews', 'previous')">
-          <img src="/img/arrow-left.svg" alt="">
+          <img src="@/assets/img/arrow-left.svg" alt="">
         </div>
         <div class="cursor-pointer" @click="$emit('changenews', 'next')">
-          <img src="/img/arrow-right.svg" alt="">
+          <img src="@/assets/img/arrow-right.svg" alt="">
         </div>
       </div>
       <nuxt-link :to="'/news/' + news.slug">
@@ -28,13 +28,13 @@
       </nuxt-link>
     </div>
     <div class="news-infos">
-      <div class="p-4 news-info-details">
-        <h5 class="pb-4">
+      <div class="p-8 news-info-details">
+        <h5 class="pb-2 text-2xl font-bold">
           <nuxt-link :to="'/news/' + news.slug">
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
         </h5>
-        <div v-html="truncatedNews" />
+        <div v-sanitize="truncatedNews" />
       </div>
     </div>
   </div>
@@ -55,8 +55,8 @@ export default {
   },
   data () {
     return {
-      newsImage: '/img/lahmacun-logo-dummy.png',
-      newsImageSmall: '/img/lahmacun-logo-dummy.png',
+      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       format
     }
   },

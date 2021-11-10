@@ -2,7 +2,7 @@
   <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
     <div class="items-center md:flex">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
-        <img src="/img/lahmacun-logo.png" alt="" class="w-24 logo">
+        <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
       <div class="my-4 md:mr-8">
         <client-only>
@@ -13,7 +13,7 @@
     <HeadNavigation />
     <div id="time">
       <div class="currenttime">
-        {{ timestamp }} CET
+        {{ timestamp }} <br>CET
       </div>
     </div>
   </header>
@@ -23,24 +23,19 @@
 import { streamServer } from '~/constants'
 
 export default {
-
-  components: {
-  },
-
   data () {
     return {
       streamServer,
-      timestamp: ''
+      timestamp: '',
+      interval: null
     }
   },
-  computed: {
-
-  },
-  created () {
-    setInterval(this.getNow, 1000)
-  },
-
   mounted () {
+    this.interval = setInterval(this.getNow, 1000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
+    this.interval = null
   },
   methods: {
     getNow () {
@@ -61,9 +56,11 @@ export default {
         min-width: 6rem;
       }
       .currenttime {
-        font-size: 1.4rem;
-        font-weight: 600;
+        font-size: 1.2rem;
+        font-weight: 500;
         white-space: nowrap;
+        line-height: 1.1em;
+        text-align: center;
       }
   }
   @media (max-width: $tablet-width) {

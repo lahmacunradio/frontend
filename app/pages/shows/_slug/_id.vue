@@ -1,30 +1,32 @@
 <template>
-  <div class="container">
+  <div class="container mt-8">
     <NuxtLink :to="`/shows/${slug}`">
-      <div class="pb-4">
-        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to Show
+      <div class="pb-6">
+        <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
       </div>
     </NuxtLink>
     <div class="flex-row sm:flex">
-      <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
+      <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
         <a class="cursor-pointer" @click="arcsiItemShadowbox = !arcsiItemShadowbox">
-          <img :src="arcsiEpisode.image_url" alt="" class="rounded-md">
+          <img :src="arcsiEpisode.image_url" :alt="arcsiEpisode.name">
           <Modal :media="arcsiEpisode.image_url" :title="arcsiEpisode.name" :description="arcsiEpisode.description" :visibility="arcsiItemShadowbox" />
         </a>
       </div>
       <div class="mb-4 show-description">
         <h3>{{ arcsiEpisode.name }}</h3>
         <div>{{ arcsiEpisode.description }}</div>
-        <div class="py-4">
-          <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
-            <i>Episode is now in the Arcsi player...</i>
+        <client-only>
+          <div class="py-4">
+            <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
+              <i>Episode is now in the Arcsi player...</i>
+            </div>
+            <div v-else>
+              <a href="#" @click.prevent="playArcsi()">
+                <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
+              </a>
+            </div>
           </div>
-          <div v-else>
-            <a href="#" @click.prevent="playArcsi()">
-              <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
-            </a>
-          </div>
-        </div>
+        </client-only>
       </div>
     </div>
   </div>
@@ -51,10 +53,36 @@ export default {
   },
   head () {
     return {
-      title: this.fullEpisodeTitle
+      title: this.fullEpisodeTitle,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.fullEpisodeTitle
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.arcsiEpisode?.description
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.arcsiEpisode?.image_url
+        }
+      ]
     }
   },
   computed: {
+    showTitle () {
+      if (!this.arcsiEpisode) { return 'Show' }
+      return this.arcsiEpisode?.shows?.[0].name
+    },
     fullEpisodeTitle () {
       if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
@@ -74,6 +102,9 @@ export default {
       }
       return this.$store.state.player.arcsiEpisode
     }
+  },
+  beforeDestroy () {
+    this.arcsiEpisode = null
   },
   methods: {
     playArcsi () {

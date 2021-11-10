@@ -1,29 +1,37 @@
 <template>
   <div class="bottomarcsiplayer">
-    <div class="relative playerblock">
-      <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
-        <div v-if="arcsiEpisode">
-          <ArcsiPlayer :sources="arcsiAudio" :html5="true" :episode="arcsiEpisode" :autoplay="false" />
-        </div>
-        <div v-else>
-          <div class="py-8">
-            No arcsi episode selected
+    <client-only>
+      <div class="relative playerblock">
+        <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
+          <div v-if="arcsiEpisode && arcsiAudio">
+            <client-only>
+              <ArcsiPlayer :source="arcsiAudio" :episode="arcsiEpisode" />
+            </client-only>
+          </div>
+          <div v-else>
+            <div class="py-4">
+              No arcsi episode selected. Go to
+              <NuxtLink to="archive" class="font-bold">
+                archive page
+              </NuxtLink>
+              for the full list
+            </div>
           </div>
         </div>
+        <div class="close">
+          <a href="#" class="block px-4 py-1 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+            <span v-if="arcsiVisible">
+              X
+            </span>
+            <div v-else class="text-xl">
+              <b class="block" :class="isArcsiPlaying && 'rotate-element'">
+                A
+              </b>
+            </div>
+          </a>
+        </div>
       </div>
-      <div class="close">
-        <a href="#" class="block px-4 py-1 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
-          <span v-if="arcsiVisible">
-            X
-          </span>
-          <div v-else class="text-xl">
-            <b class="block -mt-1" :class="isArcsiPlaying && 'rotate-element'">
-              A
-            </b>
-          </div>
-        </a>
-      </div>
-    </div>
+    </client-only>
   </div>
 </template>
 
@@ -31,6 +39,10 @@
 import { mediaServerURL } from '~/constants'
 
 export default {
+  validate ({ params, store }) {
+    // Check if arcsiShows exists
+    return store.state.arcsiShows.length
+  },
   data () {
     return {
     }
@@ -52,12 +64,12 @@ export default {
       return [...this.$store.state.arcsiShows]
     },
     arcsiAudio () {
-      if (!this.arcsiEpisode || !this.arcsiList) {
+      if (!this.arcsiEpisode?.archive_lahmastore_canonical_url || !this.arcsiList) {
         return false
       }
       const showID = this.arcsiEpisode?.shows?.[0].id
       const showObject = this.arcsiList?.find(show => show.id === showID)
-      return [`${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`]
+      return `${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`
     }
   },
   methods: {
@@ -68,11 +80,11 @@ export default {
       this.$store.commit('player/isArcsiVisible', state)
     }
   }
+
 }
 </script>
 
 <style lang="scss" scoped>
-@import "/assets/css/variables";
 .bottomarcsiplayer {
     bottom: 0;
     left: 0;
@@ -81,7 +93,7 @@ export default {
 }
 .close {
     position: absolute;
-    top: -1.75rem;
+    top: -2rem;
     right: 1rem;
 }
 </style>

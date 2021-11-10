@@ -1,14 +1,14 @@
 <template>
-  <div class="container">
+  <div class="container mt-12">
     <div class="flex-row sm:flex">
-      <div class="mb-4 sm:w-128 xsm:mr-4 show-image">
+      <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
         <a class="cursor-pointer" @click="shadowbox = !shadowbox">
-          <img :src="arcsiInfosBlock.cover_image_url" alt="" class="rounded-md">
+          <img :src="arcsiInfosBlock.cover_image_url" :alt="arcsiInfosBlock.name">
           <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name" :description="arcsiInfosBlock.description" :visibility="shadowbox" />
         </a>
       </div>
       <div class="mb-4 show-description">
-        <h3>{{ arcsiInfosBlock.name }}</h3>
+        <h2 class="mt-0 font-bold">{{ arcsiInfosBlock.name }}</h2>
         <div class="show-infos">
           <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
           <p>
@@ -30,7 +30,7 @@
         <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
           <div>
             <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
-              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 rounded-md image-fit">
+              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
             </NuxtLink>
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
               <h5 class="mt-4">
@@ -63,24 +63,58 @@ export default {
   },
   head () {
     return {
-      title: this.arcsiInfosBlock.name
+      title: this.arcsiInfosBlock?.name,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: this.arcsiInfosBlock?.name
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: this.arcsiInfosBlock?.description
+        },
+        {
+          hid: 'og:image',
+          property: 'og:image',
+          content: this.arcsiInfosBlock?.cover_image_url
+        }
+      ]
     }
   },
   computed: {
+    getToday () {
+      const d = new Date()
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      return `${year}-${month}-${day}`
+    },
     arcsiShows () {
       return this.$store.state.arcsiShows
     },
     arcsiInfosBlock () {
       if (this.arcsiShows) {
         const allShows = [...this.arcsiShows]
-        return allShows.filter(show => show.archive_lahmastore_base_url === this.$route.params.slug).shift()
+        return allShows
+          .filter(show => show.archive_lahmastore_base_url === this.$route.params.slug)
+          .shift()
       }
       return null
     },
     arcsiShowsList () {
       if (this.arcsiShows) {
         const showslist = [...this.arcsiInfosBlock.items]
-        return showslist.filter(show => show.archived).sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        return showslist
+          .filter(show => show.play_date < this.getToday)
+          .filter(show => show.archived === true)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
     }

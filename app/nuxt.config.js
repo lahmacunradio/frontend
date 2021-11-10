@@ -14,7 +14,10 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'Budapest online radio and more' }
+      { hid: 'description', name: 'description', content: 'Budapest online radio and more' },
+      { hid: 'og:title', name: 'og:title', content: 'Lahmacun Radio' },
+      { hid: 'og:description', name: 'og:description', content: 'Budapest online radio and more' },
+      { hid: 'og:image', name: 'og:image', content: '@/assets/img/lahmacun.png' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -28,6 +31,10 @@ export default {
   ** Customize the progress-bar color
   */
   loading: { color: '#fff' },
+  /* disable link prefetch */
+  router: {
+    prefetchLinks: false
+  },
   /*
   ** Global CSS
   */
@@ -55,7 +62,8 @@ export default {
   ** Nuxt.js modules
   */
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    'v-sanitize/nuxt'
   ],
   axios: {
     // proxyHeaders: false
@@ -75,12 +83,6 @@ export default {
       ]
     }
   },
-  vue: {
-    config: {
-      productionTip: false,
-      devtools: true
-    }
-  },
   styleResources: {
     // your settings here
     scss: [
@@ -88,5 +90,11 @@ export default {
     ],
     hoistUseStatements: true
     // Hoists the "@use" imports. Applies only to "sass", "scss" and "less". Default: false.
+  },
+  messages: {
+    server_error: '🧐 Oh no! 🧤 Server is down 🤖',
+    nuxtjs: 'What happened? 🙀🐁',
+    back_to_home: '🗣 Back home! 🎅🧨👉',
+    server_error_details: 'Server errorrrrr or unreachable 🤯'
   }
 }

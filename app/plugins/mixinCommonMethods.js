@@ -18,8 +18,9 @@ export function scrollToRef (ref) {
 export function scrollToAnchor (elem) {
   const target = document.getElementById(elem)
   target.scrollIntoView({ behavior: 'smooth' })
-  setTimeout(() => {
+  const timeout = setTimeout(() => {
     history.replaceState(null, null, `#${elem}`)
+    clearTimeout(timeout)
   }, 1000)
 }
 
@@ -78,6 +79,11 @@ export function convertHourMinuteSecond (value) {
   return hours + ':' + minutes + ':' + seconds // Return is HH : MM : SS
 }
 
+export function stripHTMLTags (htmlString) {
+  if (!htmlString) { return false }
+  return htmlString.replace(/(<([^>]+)>)/gi, '')
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -93,7 +99,8 @@ if (!Vue.__my_mixin__) {
       htmlDecoder,
       slugify,
       debounceFunction,
-      convertHourMinuteSecond
+      convertHourMinuteSecond,
+      stripHTMLTags
     }
   })
 }
