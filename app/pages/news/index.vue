@@ -1,32 +1,34 @@
 <template>
-  <div class="container">
-    <header class="flex flex-row items-center justify-between">
-      <h1 class="mb-8">
-        News
-      </h1>
-      <input
-        v-model="search"
-        class="input"
-        type="search"
-        @input="onChange"
-        :placeholder="placeholder"
-      >
-    </header>
-    <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-      <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
-        <NewsBlock :news="news" />
+  <div>
+    <h3 class="title-block">
+      News
+    </h3>
+    <div class="container">
+      <header class="flex flex-row items-center justify-between">
+        <input
+          v-model="search"
+          class="input"
+          type="search"
+          @input="onChange"
+          :placeholder="placeholder"
+        >
+      </header>
+      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
+          <NewsBlock :news="news" />
+        </div>
+      </article>
+      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">
+        <a href="#" @click.prevent="fetchNews">
+          <b>Load {{ numberOfItems }} more episodes</b>
+          <br>
+          (showing {{ newsFilteredList.length }} episodes)
+        </a>
       </div>
-    </article>
-    <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">
-      <a href="#" @click.prevent="fetchNews">
-        <b>Load {{ numberOfItems }} more episodes</b>
-        <br>
-        (showing {{ newsFilteredList.length }} episodes)
-      </a>
-    </div>
-    <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      <p>Loading...</p>
+      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +66,10 @@ export default {
     this.newsFilteredList = await this.useFetch()
     this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
   },
+  beforeDestroy () {
+    this.newsFilteredList = null
+    this.numberOfTotal = null
+  },
   methods: {
     async useFetch({
       type = 'fetchNews',
@@ -83,8 +89,8 @@ export default {
           }`)
         this.isLoading = false
         return callback(response)
-      } catch (e) {
-        console.log(e)
+      } catch (error) {
+        error({ statusCode: 500, message: 'News is not available' })
       }
     },
     async fetchNews () {
@@ -104,9 +110,7 @@ export default {
 
 <style lang="scss" scoped>
 header {
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 15px 0 15px 0;
+  padding: 2rem 0 2rem 0;
 }
 .news-block {
   max-width: 100%;
