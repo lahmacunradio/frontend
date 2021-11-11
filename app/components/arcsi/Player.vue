@@ -315,9 +315,9 @@ export default {
 <style lang="scss" scoped>
 h5 {
   a {
-    color: $lahma-pink;
+    color: $black-color;
     &:hover {
-      color: $black-color;
+      text-decoration: underline;
     }
   }
   span {
