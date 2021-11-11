@@ -3,37 +3,32 @@
     <h3 class="title-block">
       News
     </h3>
-    <div class="container mt-8">
+    <div class="container">
+      <header class="flex flex-row items-center justify-between">
+        <input
+          v-model="search"
+          class="input"
+          type="search"
+          @input="onChange"
+          :placeholder="placeholder"
+        >
+      </header>
       <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
           <NewsBlock :news="news" />
         </div>
       </article>
-      <footer class="flex flex-row justify-center py-4 align-middle news-pagination">
-        <div :class="{disabled: startOffset === 0}">
-          <a href="#" @click.prevent="fetchNewsPaginationFirst">
-            <i class="fa fa-angle-double-left" aria-hidden="true" /> First
-          </a>
-          <span class="mx-2">|</span>
-        </div>
-        <div :class="{disabled: startOffset === 0}">
-          <a href="#" @click.prevent="fetchNewsPaginationPrevious">
-            <i class="fa fa-angle-left" aria-hidden="true" /> Previous
-          </a>
-          <span class="mx-2">|</span>
-        </div>
-        <div :class="{disabled: startOffset === lastPage}">
-          <a href="#" @click.prevent="fetchNewsPaginationNext">
-            Next <i class="fa fa-angle-right" aria-hidden="true" />
-          </a>
-        </div>
-        <div :class="{disabled: startOffset === lastPage}">
-          <span class="mx-2">|</span>
-          <a href="#" @click.prevent="fetchNewsPaginationLast">
-            Last <i class="fa fa-angle-double-right" aria-hidden="true" />
-          </a>
-        </div>
-      </footer>
+      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">
+        <a href="#" @click.prevent="fetchNews">
+          <b>Load {{ numberOfItems }} more episodes</b>
+          <br>
+          (showing {{ newsFilteredList.length }} episodes)
+        </a>
+      </div>
+      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -45,10 +40,16 @@ export default {
   components: {},
   data () {
     return {
-      newsFilteredList: null,
+      newsFilteredList: [],
       numberOfItems: 12,
       numberOfTotal: 0,
-      startOffset: 0
+      search: '',
+      callBacks: {
+        totalNumber: res => parseInt(res.headers['x-wp-total']),
+        fetchNews: res => res.data
+      },
+      placeholder: 'search',
+      isLoading: false
     }
   },
   head () {
@@ -57,54 +58,72 @@ export default {
     }
   },
   computed: {
-    lastPage () {
-      return Math.round(this.numberOfTotal / this.numberOfItems - 1)
+    fetchCount () {
+      return this.newsFilteredList.length + this.numberOfItems
     }
   },
   async mounted () {
-    this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
-      .then(res => res.data)
-    this.numberOfTotal = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}`)
-      .then(res => parseInt(res.headers['x-wp-total']))
+    this.newsFilteredList = await this.useFetch()
+    this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
+  },
+  beforeDestroy () {
+    this.newsFilteredList = null
+    this.numberOfTotal = null
   },
   methods: {
-    async fetchNewsPaginationFirst () {
-      if (this.startOffset === 0) {
-        return false
+    async useFetch({
+      type = 'fetchNews',
+    } = {}) {
+      const callback = this.callBacks[type]
+      try {
+        this.isLoading = true
+        const response = await this.$axios.get(
+          `${newsBaseURL}${
+            type === 'fetchNews'
+              ? `&per_page=${this.fetchCount}`
+              : ''
+          }${
+            this.search.length > 2
+              ? `&search=${this.search}`
+              : ''
+          }`)
+        this.isLoading = false
+        return callback(response)
+      } catch (error) {
+        error({ statusCode: 500, message: 'News is not available' })
       }
-      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=0`)
-        .then(res => res.data)
-      this.startOffset = 0
     },
-    async fetchNewsPaginationPrevious () {
-      if (this.startOffset === 0) {
-        return false
+    async fetchNews () {
+      this.newsFilteredList = await this.useFetch()
+    },
+    async onChange () {
+      if (this.search.length > 2 || !this.search) {
+        this.newsFilteredList = []
+        this.numberOfTotal = 0
+        await this.fetchNews()
+        this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
       }
-      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset - 1)}`)
-        .then(res => res.data)
-      this.startOffset = this.startOffset - 1
-    },
-    async fetchNewsPaginationNext () {
-      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * (this.startOffset + 1)}`)
-        .then(res => res.data)
-      this.startOffset = this.startOffset + 1
-    },
-    async fetchNewsPaginationLast () {
-      this.newsFilteredList = await this.$axios.get(`${newsBaseURL}&per_page=${this.numberOfItems}&offset=${this.numberOfItems * this.lastPage}`)
-        .then(res => res.data)
-      this.startOffset = this.lastPage
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.disabled a {
-  pointer-events: none;
-  opacity: 0.5;
-  cursor: default;
+header {
+  padding: 2rem 0 2rem 0;
 }
 .news-block {
   max-width: 100%;
+}
+.input {
+  display: block;
+  width: 350px;
+  @media (max-width: $mobile-width) {
+    width: 100%;
+  }
+  height: 30px;
+  border-radius: 0.25rem;
+  outline: none;
+  padding: 0 10px;
 }
 </style>
