@@ -1,22 +1,24 @@
 <template>
-  <div v-if="showModal" id="modal-template">
+  <div>
     <transition name="modal">
-      <div class="modal-mask" @click="$emit('close')">
-        <button class="modal-default-button" @click="$emit('close')">
-          ×
-        </button>
-        <div class="modal-wrapper">
-          <div class="modal-container">
-            <div v-if="title" class="modal-header">
-              <h3>{{ title }}</h3>
-            </div>
+      <div v-if="showModal" id="modal-template">
+        <div class="modal-mask" @click="$emit('close')">
+          <button class="modal-default-button" @click="$emit('close')">
+            ×
+          </button>
+          <div class="modal-wrapper">
+            <div class="modal-container">
+              <div v-if="title" class="modal-header">
+                <h3>{{ title }}</h3>
+              </div>
 
-            <div v-if="media" class="modal-body">
-              <img :src="media">
-            </div>
+              <div v-if="media" class="modal-body">
+                <img :src="media">
+              </div>
 
-            <div v-if="description" class="modal-footer">
-              {{ description }}
+              <div v-if="description" class="modal-footer">
+                {{ description }}
+              </div>
             </div>
           </div>
         </div>
@@ -119,34 +121,12 @@ export default {
 }
 
 .modal-default-button {
-  position: fixed;
-  right: 0;
-  color: white;
-  font-size: 2rem;
-  padding: 0.5rem;
-}
-
-/*
- * The following styles are auto-applied to elements with
- * transition="modal" when their visibility is toggled
- * by Vue.js.
- *
- * You can easily play with the modal transition by editing
- * these styles.
- */
-
-.modal-enter {
-  opacity: 0;
-}
-
-.modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+    position: fixed;
+    right: 0;
+    color: white;
+    font-size: 2rem;
+    padding: 1.5rem 1rem;
+    line-height: 0;
 }
 
 </style>

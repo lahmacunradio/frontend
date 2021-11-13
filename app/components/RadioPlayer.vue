@@ -113,7 +113,7 @@
         </div>
 
         <div class="sand-clock">
-          <IconSandclock :progress="time_percent" :live="np.live.is_live" />
+          <IconSandclock :progress="time_percent" :live="np.live.is_live.length ? true : false" />
         </div>
       </div>
     </div>
@@ -670,7 +670,6 @@ a.programimage {
     position: absolute;
     background: white;
     bottom: 3px;
-    z-index: 500;
     padding-left: 3px;
     line-height: 1;
     > div {
