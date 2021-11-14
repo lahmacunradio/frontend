@@ -9,7 +9,6 @@ RUN apt install -y yarn
 
 ENV APP_ROOT=/src
 
-
 WORKDIR ${APP_ROOT}
 COPY . ${APP_ROOT}
 
