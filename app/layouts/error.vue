@@ -1,5 +1,5 @@
 <template>
-  <div class="container text-center error-page">
+  <div class="container pt-8 text-center error-page">
     <h1 v-if="error.statusCode === 404">
       Page not found
     </h1>
