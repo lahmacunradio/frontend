@@ -90,7 +90,8 @@ export default {
         this.isLoading = false
         return callback(response)
       } catch (error) {
-        error({ statusCode: 500, message: 'News is not available' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
     },
     async fetchNews () {

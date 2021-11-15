@@ -126,7 +126,8 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        error({ statusCode: 500, message: 'Stream not available at the moment' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Stream not available at the moment' })
       })
     },
     groupShowsByDay (shows) {

@@ -71,7 +71,8 @@ export default {
     this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        error({ statusCode: 500, message: 'Arcsi latest not found' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
   },
   computed: {

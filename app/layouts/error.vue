@@ -1,10 +1,10 @@
 <template>
-  <div class="container text-center error-page">
+  <div class="container pt-8 text-center error-page">
     <h1 v-if="error.statusCode === 404">
       Page not found
     </h1>
     <h1 v-else-if="error.statusCode === 500">
-      Server error
+      {{ error.message || 'Server error' }}
     </h1>
     <h1 v-else>
       An error occurred

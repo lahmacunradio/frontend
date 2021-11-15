@@ -447,7 +447,8 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        error({ statusCode: 500, message: 'Stream not available' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Stream not available' })
       }).then(() => {
         clearTimeout(this.np_timeout)
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)

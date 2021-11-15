@@ -73,7 +73,8 @@ export default {
         }
       })
       .catch((error) => {
-        error({ statusCode: 500, message: 'Donate not available' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Donate not available' })
       })
     this.favouritesContent = await this.$axios.get(`${favouriteRadiosURL}`)
       .then((res) => {
@@ -82,7 +83,8 @@ export default {
         }
       })
       .catch((error) => {
-        error({ statusCode: 500, message: 'Favourites not available' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Favourites not available' })
       })
   },
   computed: {
