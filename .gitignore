@@ -88,3 +88,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Sentry config file
+.sentryclirc
