@@ -91,4 +91,3 @@ sw.*
 
 # Sentry config file
 .sentryclirc
-.sentry_env
