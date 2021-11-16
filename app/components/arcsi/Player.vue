@@ -229,8 +229,10 @@ export default {
       this.setMetaData()
     },
     pauseArcsi () {
+      if (this.arcsiIsPlaying) {
+        this.audio?.pause()
+      }
       this.setPauseState()
-      this.audio?.pause()
       this.setMetaData()
     },
     toggleArcsi () {

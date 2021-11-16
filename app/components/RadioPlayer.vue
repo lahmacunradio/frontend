@@ -362,7 +362,9 @@ export default {
   methods: {
     play () {
       this.audio.src = this.current_stream.url
-      this.audio.play()
+      if (!this.is_playing) {
+        this.audio.play()
+      }
       this.is_playing = true
       this.showCurrentMetadata()
 
@@ -401,7 +403,9 @@ export default {
     },
     stop () {
       this.is_playing = false
-      this.audio.pause()
+      if (this.is_playing) {
+        this.audio.pause()
+      }
       this.audio.src = ''
       this.$store.commit('player/isStreamPlaying', false)
 
