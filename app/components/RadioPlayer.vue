@@ -37,17 +37,7 @@
               </div>
             </div>
 
-            <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
-              <div class="radio-control-volume-slider">
-                <vue-slider
-                  v-model="volume"
-                  :height="25"
-                  tooltip="none"
-                  :dot-size="25"
-                />
-              </div>
-            </div>
-          </div>
+            
 
           <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
             <div class="media-body">
@@ -75,6 +65,18 @@
                 </h4>
               </div>
             </div>
+<div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+              <div class="radio-control-volume-slider">
+                <vue-slider
+                  v-model="volume"
+                  :height="25"
+                  tooltip="none"
+                  :dot-size="25"
+                />
+              </div>
+            </div>
+          </div>
+
 
             <div v-if="time_display_played" class="time-display" style="display:none;">
               <div class="time-display-played text-secondary">
@@ -727,7 +729,7 @@ a.programimage {
 
 .sand-clock {
   position: relative;
-  min-width: 48px;
+  min-width: 45px;
   img {
     height: 80px;
     @media (max-width: $mobile-width) {
