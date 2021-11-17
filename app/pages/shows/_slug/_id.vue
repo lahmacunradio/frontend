@@ -14,6 +14,17 @@
       </div>
       <div class="mb-4 show-description">
         <h3>{{ arcsiEpisode.name }}</h3>
+
+        <div class="show-infos">
+          <p v-if="arcsiEpisode.play_date">
+            Original air date:
+            {{ format(new Date(arcsiEpisode.play_date), 'yyyy. MMMM dd.') }}
+          </p>
+          <p>
+            Episode number: {{ arcsiEpisode.number }}, 
+            Language: <span v-sanitize.nothing="getLanguageGraph(arcsiEpisode.language)" class="language" />
+          </p>
+        </div>
         <div>{{ arcsiEpisode.description }}</div>
         <client-only>
           <div class="py-4">
@@ -21,7 +32,7 @@
               <i>Episode is now in the Arcsi player...</i>
             </div>
             <div v-else>
-              <a href="#" @click.prevent="playArcsi()">
+              <a v-if="fullEpisodeTitle" href="#" @click.prevent="playArcsi()">
                 <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
               </a>
             </div>
@@ -33,6 +44,8 @@
 </template>
 
 <script>
+import { format } from 'date-fns'
+
 import { arcsiItemBaseURL } from '~/constants'
 
 export default {
@@ -40,16 +53,22 @@ export default {
   },
   data () {
     return {
+      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       arcsiItemShadowbox: false,
       slug: this.$route.params.slug,
       id: this.$route.params.id,
       arcsiEpisode: {},
-      playEpisode: false
+      playEpisode: false,
+      format
     }
   },
   async fetch () {
     this.arcsiEpisode = await this.$axios.get(`${arcsiItemBaseURL}/${this.id}`)
       .then(res => res.data)
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Arcsi server not available' })
+      })
   },
   head () {
     return {
@@ -79,6 +98,13 @@ export default {
     }
   },
   computed: {
+    getToday () {
+      const d = new Date()
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      return `${year}-${month}-${day}`
+    },
     showTitle () {
       if (!this.arcsiEpisode) { return 'Show' }
       return this.arcsiEpisode?.shows?.[0].name
@@ -111,14 +137,32 @@ export default {
       this.$store.commit('player/isArcsiPlaying', true)
       this.$store.commit('player/isArcsiVisible', true)
       this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
+    },
+    getLanguageGraph (type) {
+      if (type === 'music') {
+        return '🎵'
+      }
+      if (type === 'hu_hu') {
+        return '🇭🇺'
+      }
+      if (type === 'en_uk') {
+        return '🇬🇧'
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .show-image {
-      min-width: 300px;
-      max-width: 360px;
-  }
+.show-image {
+    min-width: 300px;
+    max-width: 360px;
+}
+.show-infos {
+margin-bottom: 1rem;
+}
+.language {
+  display: inline-block;
+  vertical-align: middle;
+}
 </style>
