@@ -6,12 +6,12 @@
           Schedule
         </NuxtLink>
       </li>
-      <li :class="baseRoute === '/shows/' && 'selected'">
+      <li :class="baseRoute === '/shows/' && routeArray.length < 4 && 'selected'">
         <NuxtLink to="/shows/">
           Shows
         </NuxtLink>
       </li>
-      <li :class="baseRoute === '/archive/' && 'selected'">
+      <li :class="(baseRoute === '/archive/' || (baseRoute === '/shows/' && routeArray.length === 4)) && 'selected'">
         <NuxtLink to="/archive/">
           Archive
         </NuxtLink>
@@ -43,8 +43,11 @@
 <script>
 export default {
   computed: {
+    routeArray () {
+      return this.$route.path.split('/')
+    },
     baseRoute () {
-      const basicRoute = this.$route.path.split('/')[1]
+      const basicRoute = this.routeArray[1]
       return `/${basicRoute}/`
     }
   }
