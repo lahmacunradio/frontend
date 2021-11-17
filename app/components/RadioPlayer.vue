@@ -672,6 +672,7 @@ a.programimage {
 
 .play-volume-controls {
   position: relative;
+  width: 250px;
 }
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
@@ -713,7 +714,7 @@ a.programimage {
 
 /* New Player styles */
 .bigplay-button {
-  width: 6rem;
+  min-width: 5.5rem;
   height: 4rem;
   display: flex;
   align-content: center;
@@ -722,7 +723,7 @@ a.programimage {
       width: 5rem;
     }
   img {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
     max-height: 65px;
     @media (max-width: $mobile-width) {
       height: 65px;
@@ -733,7 +734,7 @@ a.programimage {
 
 .sand-clock {
   position: relative;
-  min-width: 45px;
+  min-width: 43px;
   img {
     height: 80px;
     @media (max-width: $mobile-width) {
