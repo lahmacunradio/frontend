@@ -87,18 +87,6 @@ export default {
     .show-basic-infos {
         position: relative;
         width: 100%;
-        .show-image {
-            width: 150px;
-            height: 150px;
-            background: center center no-repeat;
-            background-size: cover;
-            border-radius: 5px;
-            display: none;
-            position: absolute;
-            z-index: 100;
-            top: calc(50% - 75px);
-            right: 0;
-        }
     }
     &:hover {
       @media (min-width: $tablet-width) {
