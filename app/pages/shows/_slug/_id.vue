@@ -48,10 +48,10 @@
         </div>
       </div>
     </div>
-    <div v-if="arcsiShow">
-      <h3 class="pb-1 mb-4 text-center border-b border-current">
-        Other Shows from {{ arcsiShow.name }}
-      </h3>
+    <div v-if="arcsiShow" class="py-8">
+      <h4 class="pb-1 mb-4 text-center border-b border-current">
+        Other Episodes from {{ arcsiShow.name }}
+      </h4>
       <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         <div v-for="arcsi in otherEpisodes" :key="arcsi.id">
           <div>
