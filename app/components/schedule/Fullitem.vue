@@ -1,18 +1,41 @@
 <template>
-  <div :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
-    <div class="onairshow">
-      <span class="text-red-600">●</span>
-      On Air
-    </div>
-    <div class="show-basic-infos">
-      {{ removeSeconds(show.start) }}
-      <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-      {{ removeSeconds(show.end) }}
-      <span class="hidden md:inline-block"> - </span>
-      <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url" class="block md:inline-block">
-        <b>{{ show.name }}</b>
-      </nuxt-link>
-      {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
+  <div v-if="show && nowPlaying" class="dayblock" :class="showAirCheck(show.name) ? 'onair' : ''">
+    <div class="container mx-auto sm:flex show-basic-infos">
+      <div class="mr-4 timing-infos">
+        <div class="mb-2 time-block sm:mb-0">
+          {{ removeSeconds(show.start) }}
+          <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+          {{ removeSeconds(show.end) }}
+        </div>
+        <div class="onairshow">
+          <span class="text-red-600">●</span>
+          On Air
+        </div>
+      </div>
+      <div class="schedule-infos">
+        <div v-if="showAirCheck(show.name)" class="flex">
+          <div class="mr-4 onair-image">
+            <img :src="onAirImage" :alt="show.name">
+          </div>
+          <div class="onair-infos">
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url" class="block mb-2">
+              <b>{{ show.name }} {{ showAirCheck(show.name) && ' | ' + streamEpisodeTitle }} </b>
+            </NuxtLink>
+            <div class="mb-2 text-sm onair-meta">
+              {{ showFrequency(show.frequency, show.week) }} | 
+              Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
+            </div>
+            <div class="text-sm description">
+              {{ onAirDescription }}
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url" class="block">
+            <b>{{ show.name }}</b>
+          </NuxtLink>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -23,12 +46,14 @@ export default {
     show: {
       type: Object,
       required: true
+    },
+    nowPlaying: {
+      type: Object,
+      required: true
     }
   },
   data () {
     return {
-      interval: null,
-      nowPlaying: {}
     }
   },
   computed: {
@@ -52,30 +77,28 @@ export default {
       } else {
         return this.nowPlaying?.now_playing?.song?.title
       }
+    },
+    onAirImage () {
+      if (!this.nowPlaying) {
+        return false
+      }
+      const streamImage = this.nowPlaying.now_playing?.song?.art
+      return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
+    },
+    onAirDescription () {
+      if (!this.nowPlaying && this.show) {
+        return false
+      }
+      const getLastIndex = this.show.items.length - 1
+      const descriptionFromArcsi = this.show.items?.[getLastIndex]?.description
+      return descriptionFromArcsi || this.show.description
     }
   },
-  beforeDestroy () {
-    // prevent memory leak
-    clearInterval(this.interval)
-  },
-  created () {
-    // update the time every minute
-    this.interval = setInterval(() => {
-      this.checkNowPlaying()
-    }, 60 * 1000)
-  },
   methods: {
-    showAirCheck (index, showname) {
-      if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
+    showAirCheck (showname) {
+      if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
-    },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        console.log(error)
-      })
     }
   }
 }
@@ -83,10 +106,18 @@ export default {
 
 <style lang="scss" scoped>
 .dayblock {
-    @apply flex flex-row md:px-8 py-3 px-3;
+    @apply flex flex-row py-4;
     .show-basic-infos {
         position: relative;
-        width: 100%;
+        @media (min-width: $tablet-width) {
+            max-width: $tablet-width;
+        }
+        .timing-infos {
+            min-width: 130px;
+        }
+        .time-block {
+            white-space: nowrap;
+        }
     }
     &:hover {
       @media (min-width: $tablet-width) {
@@ -94,25 +125,37 @@ export default {
       }
     }
     .onairtext {
-    text-transform: uppercase;
+        text-transform: uppercase;
+    }
+    .onair-image {
+        width: 150px;
+        flex-shrink: 0;
+        @media (max-width: $mobile-width) {
+            width: 100px;
+        }
+    }
+    .onair-infos {
+        overflow: auto;
     }
 }
+
 .onairshow {
     opacity: 0;
-    padding-right: 1rem;
+    text-transform: uppercase;
+    font-weight: bold;
     white-space: nowrap;
-    @media (max-width: $mobile-width) {
-      display: none;
-    }
+    display: none;
 }
+
 .onair {
-    @apply bg-white;
+    @apply bg-white py-8;
     .onairshow {
-    opacity: 1;
-    animation: pulse 5s infinite;
+        display: block;
+        opacity: 1;
+        animation: pulse 5s infinite;
     }
     &:hover {
-    @apply bg-white;
+        @apply bg-white;
     }
 }
 
@@ -121,5 +164,10 @@ export default {
   30% { opacity: 1; }
   70% { opacity: 1; }
   100% { opacity: 0.3; }
+}
+
+.language {
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
