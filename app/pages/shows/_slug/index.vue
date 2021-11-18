@@ -18,7 +18,8 @@
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
               <strong>{{ arcsiShowsList[0].name }}</strong>
             </NuxtLink>,
-            {{ formatDistance(new Date(arcsiShowsList[0].play_date), new Date().getTime(), { addSuffix: true }) }}
+            {{ formatDistance(new Date(arcsiShowsList[0].play_date), new Date().getTime(), { addSuffix: true }) }}.
+            {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
           </p>
         </div>
         <div>{{ arcsiInfosBlock.description }}</div>
