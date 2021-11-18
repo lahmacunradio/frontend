@@ -23,6 +23,7 @@
 }
 
 html {  
+  overscroll-behavior: none;
   font-size: 16px; 
   @media (min-width: 2160px) {
     font-size: 18px;

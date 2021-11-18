@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
 import { contentApiURL } from '~/constants'
 
 export default {
@@ -56,8 +55,7 @@ export default {
   data () {
     return {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
-      format
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
     }
   },
   computed: {

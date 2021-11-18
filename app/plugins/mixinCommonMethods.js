@@ -84,6 +84,32 @@ export function stripHTMLTags (htmlString) {
   return htmlString.replace(/(<([^>]+)>)/gi, '')
 }
 
+export function getLanguageGraph (type) {
+  if (type === 'music') {
+    return '🎵'
+  }
+  if (type === 'hu_hu') {
+    return '🇭🇺'
+  }
+  if (type === 'en_uk') {
+    return '🇬🇧'
+  }
+}
+
+export function showFrequency (frequency) {
+  let showText = 'Not defined'
+  if (frequency === 1) {
+    showText = 'New Episode: Monthly'
+  }
+  if (frequency === 2) {
+    showText = 'New Episode: Every Second Week'
+  }
+  if (frequency >= 3) {
+    showText = 'New Episode: Weekly'
+  }
+  return showText
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -100,7 +126,9 @@ if (!Vue.__my_mixin__) {
       slugify,
       debounceFunction,
       convertHourMinuteSecond,
-      stripHTMLTags
+      stripHTMLTags,
+      getLanguageGraph,
+      showFrequency
     }
   })
 }
