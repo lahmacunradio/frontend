@@ -13,7 +13,7 @@
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
       <p class="text-white">
-        Date: {{ format(new Date(episode.play_date), 'yyyy. MMMM dd.') }}
+        Date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}
       </p>
     </NuxtLink>
     <div v-if="false" class="flex items-center mt-6 tags">
@@ -32,8 +32,6 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
-
 export default {
   props: {
     episode: {
@@ -47,8 +45,7 @@ export default {
   },
   data () {
     return {
-      showslug: '',
-      format
+      showslug: ''
     }
   },
   computed: {

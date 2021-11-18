@@ -12,7 +12,7 @@
                 <h4 class="block">
                   {{ day }}
                 </h4>
-                {{ format(add(todayDate, { days: dayIndex} ), 'MMM do') }}
+                {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
               </div>
             </li>
           </ul>
@@ -44,15 +44,12 @@
 </template>
 
 <script>
-import { format, add } from 'date-fns'
 import { streamServer } from '~/constants'
 
 export default {
   data () {
     return {
       streamServer,
-      format,
-      add,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,

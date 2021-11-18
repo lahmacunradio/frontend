@@ -1,9 +1,9 @@
 import { arcsiServerURL, newsURL } from '~/constants'
 
 export const state = () => ({
-  arcsiShows: null,
+  arcsiShows: {},
+  newsList: {},
   arcsiEpisodes: null,
-  newsList: null,
   aboutUs: null
 })
 

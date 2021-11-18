@@ -18,7 +18,8 @@
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
               <strong>{{ arcsiShowsList[0].name }}</strong>
             </NuxtLink>,
-            {{ formatDistance(new Date(arcsiShowsList[0].play_date), new Date().getTime(), { addSuffix: true }) }}
+            {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
+            {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
           </p>
         </div>
         <div>{{ arcsiInfosBlock.description }}</div>
@@ -39,7 +40,7 @@
                 {{ arcsi.name }}
               </h5>
             </NuxtLink>
-            <small>Play date: {{ format(new Date(arcsi.play_date), 'yyyy. MMMM dd.') }}</small>
+            <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
           </div>
         </div>
       </div>
@@ -48,8 +49,6 @@
 </template>
 
 <script>
-import { format, formatDistance } from 'date-fns'
-
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -58,9 +57,7 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
       slug: this.$route.params.slug,
-      mediaServerURL,
-      format,
-      formatDistance
+      mediaServerURL
     }
   },
   head () {
@@ -119,32 +116,6 @@ export default {
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
-    }
-  },
-  methods: {
-    showFrequency (frequency, week) {
-      let showText = 'Not defined'
-      if (frequency === 1) {
-        showText = 'New Episode: Monthly'
-      }
-      if (frequency === 2) {
-        showText = 'New Episode: Every Second Week'
-      }
-      if (frequency >= 3) {
-        showText = 'New Episode: Weekly'
-      }
-      return showText
-    },
-    getLanguageGraph (type) {
-      if (type === 'music') {
-        return '🎵'
-      }
-      if (type === 'hu_hu') {
-        return '🇭🇺'
-      }
-      if (type === 'en_uk') {
-        return '🇬🇧'
-      }
     }
   }
 }

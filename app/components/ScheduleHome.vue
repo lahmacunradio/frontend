@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
 import { streamServer } from '~/constants'
 
 export default {
@@ -43,7 +42,6 @@ export default {
   data () {
     return {
       streamServer,
-      format,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
