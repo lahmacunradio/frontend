@@ -21,7 +21,6 @@
             <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}
             </nuxt-link>
-            <div class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
           </div>
         </div>
       </div>
@@ -159,25 +158,10 @@ a {
       .show-basic-infos {
         position: relative;
         width: 100%;
-        .show-image {
-          width: 150px;
-          height: 150px;
-          background: center center no-repeat;
-          background-size: cover;
-          border-radius: 5px;
-          display: none;
-          position: absolute;
-          z-index: 10;
-          top: calc(50% - 75px);
-          right: 0;
-        }
       }
       &:hover {
         @media (min-width: $tablet-width) {
           background: rgba(255, 255, 255, 0.5);
-          .show-image {
-            display: block;
-          }
         }
       }
       .onairtext {

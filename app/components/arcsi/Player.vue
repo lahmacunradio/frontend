@@ -5,7 +5,6 @@
         id="arcsiplayer"
         ref="arcsiplayer"
         preload="metadata"
-        loop="false"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
         @play="setPlayState()"
@@ -13,6 +12,7 @@
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
         @timeupdate.passive="debounceFunction(getPosition(), 1000)"
+        @ended="stopArcsi()"
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
@@ -21,7 +21,7 @@
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
       <div class="flex pt-4 pb-2 md:py-4">
-        <button class="mr-4" @click="toggleArcsi">
+        <button class="w-4 mr-4" @click="toggleArcsi">
           <span v-if="arcsiIsPlaying && seek === 0">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
           </span>
@@ -248,7 +248,8 @@ export default {
     },
     stopArcsi () {
       if (this.audio) {
-        this.audio?.stop()
+        this.$refs.arcsiplayer.currentTime = 0
+        this.audio.pause()
       }
       const playHistory = {
         episodeID: this.episode.id,

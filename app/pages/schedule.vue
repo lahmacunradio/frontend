@@ -4,39 +4,23 @@
       Schedule
     </h3>
     <div class="container mt-8">
-      <div class="">
-        <div class="mb-4 border-b days">
-          <ul>
-            <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
-              <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
-                <h4 class="block">
-                  {{ day }}
-                </h4>
-                {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="col-span-2 selectday">
-          <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
-              <div class="onairshow">
-                <span class="text-red-600">●</span>
-                On Air
-              </div>
-              <div class="show-basic-infos">
-                {{ removeSeconds(show.start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-                {{ removeSeconds(show.end) }}
-                <span class="hidden md:inline-block"> - </span>
-                <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url" class="block md:inline-block">
-                  <b>{{ show.name }}</b>
-                </nuxt-link>
-                {{ showAirCheck(0, show.name) && ' | ' + streamEpisodeTitle }}
-                <div v-if="!isTouchEnabled" class="show-image" :style="{ backgroundImage: `url(${show.cover_image_url})` }" />
-              </div>
+      <div class="mb-4 border-b days">
+        <ul>
+          <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
+            <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
+              <h4 class="block">
+                {{ day }}
+              </h4>
+              {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
             </div>
-          </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-span-2 selectday">
+      <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+        <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
+          <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
         </div>
       </div>
     </div>
@@ -52,9 +36,9 @@ export default {
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      selectedDay: 0,
       interval: null,
-      nowPlaying: {},
-      selectedDay: 0
+      nowPlaying: {}
     }
   },
   computed: {
@@ -74,29 +58,8 @@ export default {
     tommorrow () {
       return new Date(new Date())
     },
-    streamShowTitle () {
-      if (!this.nowPlaying) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.streamer_name
-      } else {
-        return this.nowPlaying?.now_playing?.song.artist
-      }
-    },
-    streamEpisodeTitle () {
-      if (!this.nowPlaying) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.song?.title
-      } else {
-        return this.nowPlaying?.now_playing?.song?.title
-      }
-    },
     todayName () {
       return this.dayNames[this.getToday - 1]
-    },
-    isTouchEnabled () {
-      return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   mounted () {
@@ -114,19 +77,6 @@ export default {
     }, 60 * 1000)
   },
   methods: {
-    showAirCheck (index, showname) {
-      if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
-        return true
-      }
-    },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Stream not available at the moment' })
-      })
-    },
     groupShowsByDay (shows) {
       if (!shows) { return false }
       const list = []
@@ -153,6 +103,13 @@ export default {
       this.$refs[dayindex][0].classList.add('block')
       this.$refs[dayindex][0].classList.remove('hidden')
       this.selectedDay = dayindex
+    },
+    checkNowPlaying () {
+      this.$axios.get(this.streamServer).then((response) => {
+        this.nowPlaying = response.data
+      }).catch((error) => {
+        console.log(error)
+      })
     }
   }
 
@@ -161,62 +118,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dayblock {
-    @apply flex flex-row md:px-8 py-3 px-3;
-    .show-basic-infos {
-    position: relative;
-    width: 100%;
-    .show-image {
-        width: 150px;
-        height: 150px;
-        background: center center no-repeat;
-        background-size: cover;
-        border-radius: 5px;
-        display: none;
-        position: absolute;
-        z-index: 100;
-        top: calc(50% - 75px);
-        right: 0;
-    }
-    }
-    &:hover {
-      @media (min-width: $tablet-width) {
-        background: rgba(255, 255, 255, 0.5);
-        .show-image {
-          display: block;
-        }
-      }
-    }
-    .onairtext {
-    text-transform: uppercase;
-    }
-}
-.onairshow {
-    opacity: 0;
-    padding-right: 1rem;
-    white-space: nowrap;
-    @media (max-width: $mobile-width) {
-      display: none;
-    }
-}
-.onair {
-    @apply bg-white;
-    .onairshow {
-    opacity: 1;
-    animation: pulse 5s infinite;
-    }
-    &:hover {
-    @apply bg-white;
-    }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.3; }
-  30% { opacity: 1; }
-  70% { opacity: 1; }
-  100% { opacity: 0.3; }
-}
-
 .days {
   ul {
     display: flex;
