@@ -65,10 +65,8 @@ export default {
       const adress = `${tagsURL}?post=${newsId}`
       const responseTags = await this.$axios.get(adress)
       if (responseTags.status === 200) {
-        console.log(responseTags.data)
         this.postTagsArray = responseTags.data
       }
-
     }
   }
 }
