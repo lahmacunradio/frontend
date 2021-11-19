@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      Schedule
+      Lahmacun Schedule
     </h3>
     <div class="container mt-8">
       <div class="mb-4 border-b days">

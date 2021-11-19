@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      Arcsi Episodes
+      Lahmacun Archive
     </h3>
     <div class="container mt-8">
       <div v-if="defaultEpisodes">

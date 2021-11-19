@@ -1,46 +1,60 @@
 <template>
-  <div class="container mt-12">
-    <div class="flex-row sm:flex">
-      <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
-        <a class="cursor-pointer" @click="shadowbox = !shadowbox">
-          <img :src="arcsiInfosBlock.cover_image_url" :alt="arcsiInfosBlock.name">
-          <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name" :description="arcsiInfosBlock.description" :visibility="shadowbox" />
-        </a>
-      </div>
-      <div class="mb-4 show-description">
-        <h2 class="mt-0 font-bold">
-          {{ arcsiInfosBlock.name }}
-        </h2>
-        <div class="show-infos">
-          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language" /></p>
-          <p v-if="arcsiShowsList && arcsiShowsList.length">
-            Last episode:
-            <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
-              <strong>{{ arcsiShowsList[0].name }}</strong>
-            </NuxtLink>,
-            {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
-            {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
-          </p>
+  <div>
+    <h3 class="title-block">
+      <NuxtLink :to="`/shows/`">
+        Lahmacun Shows
+      </NuxtLink>
+    </h3>
+    <div class="container mt-10">
+      <div class="flex-row sm:flex">
+        <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
+          <a class="cursor-pointer" @click="shadowbox = !shadowbox">
+            <img :src="arcsiInfosBlock.cover_image_url" :alt="arcsiInfosBlock.name">
+            <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name"
+                   :description="arcsiInfosBlock.description" :visibility="shadowbox"/>
+          </a>
         </div>
-        <div>{{ arcsiInfosBlock.description }}</div>
+        <div class="mb-4 show-description">
+          <h2 class="mt-0 font-bold">
+            {{ arcsiInfosBlock.name }}
+          </h2>
+          <div class="show-infos">
+            <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{
+                removeSeconds(arcsiInfosBlock.start)
+              }}–{{ removeSeconds(arcsiInfosBlock.end) }},
+              {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span
+                v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language"/></p>
+            <p v-if="arcsiShowsList && arcsiShowsList.length">
+              {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
+              Last episode:
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
+                <strong>{{ arcsiShowsList[0].name }}</strong>
+              </NuxtLink>
+              ,
+              {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
+            </p>
+          </div>
+          <div>{{ arcsiInfosBlock.description }}</div>
+        </div>
       </div>
-    </div>
-    <div v-if="arcsiShowsList && arcsiShowsList.length">
-      <h3 class="pb-1 mb-4 text-center border-b border-current">
-        Arcsived Shows
-      </h3>
-      <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
-          <div>
-            <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
-              <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
-            </NuxtLink>
-            <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
-              <h5 class="mt-4">
-                {{ arcsi.name }}
-              </h5>
-            </NuxtLink>
-            <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+      <div v-if="arcsiShowsList && arcsiShowsList.length">
+        <h3 class="pb-1 mb-4 text-center border-b border-current">
+          Arcsived Shows
+        </h3>
+        <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
+            <div>
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
+                        :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+                <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+              </NuxtLink>
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+                <h5 class="mt-4">
+                  {{ arcsi.name }}
+                </h5>
+              </NuxtLink>
+              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+            </div>
           </div>
         </div>
       </div>

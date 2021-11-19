@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      Photos
+      Lahmacun Photos
     </h3>
     <div class="container mb-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">

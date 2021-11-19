@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      About us
+      About Lahmacun
     </h3>
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
