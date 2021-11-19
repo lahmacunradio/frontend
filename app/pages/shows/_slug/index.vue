@@ -8,15 +8,18 @@
         </a>
       </div>
       <div class="mb-4 show-description">
-        <h2 class="mt-0 font-bold">{{ arcsiInfosBlock.name }}</h2>
+        <h2 class="mt-0 font-bold">
+          {{ arcsiInfosBlock.name }}
+        </h2>
         <div class="show-infos">
-          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}</p>
+          <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language" /></p>
           <p>
             Last episode:
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
               <strong>{{ arcsiShowsList[0].name }}</strong>
             </NuxtLink>,
-            {{ formatDistance(new Date(arcsiShowsList[0].play_date), new Date().getTime(), { addSuffix: true }) }}
+            {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
+            {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
           </p>
         </div>
         <div>{{ arcsiInfosBlock.description }}</div>
@@ -37,7 +40,7 @@
                 {{ arcsi.name }}
               </h5>
             </NuxtLink>
-            <small>Play date: {{ format(new Date(arcsi.play_date), 'yyyy. MMMM dd.') }}</small>
+            <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
           </div>
         </div>
       </div>
@@ -46,8 +49,6 @@
 </template>
 
 <script>
-import { format, formatDistance } from 'date-fns'
-
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -56,9 +57,7 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
       slug: this.$route.params.slug,
-      mediaServerURL,
-      format,
-      formatDistance
+      mediaServerURL
     }
   },
   head () {
@@ -118,31 +117,20 @@ export default {
       }
       return null
     }
-  },
-  methods: {
-    showFrequency (frequency, week) {
-      let showText = 'Not defined'
-      if (frequency === 1) {
-        showText = 'New Episode: Monthly'
-      }
-      if (frequency === 2) {
-        showText = 'New Episode: Every Second Week'
-      }
-      if (frequency >= 3) {
-        showText = 'New Episode: Weekly'
-      }
-      return showText
-    }
   }
 }
 </script>
 
-<style scoped>
-  .show-image {
-      min-width: 300px;
-      max-width: 360px;
-  }
-  .show-infos {
-    margin-bottom: 1rem;
-  }
+<style lang="scss" scoped>
+.show-image {
+    min-width: 300px;
+    max-width: 360px;
+}
+.show-infos {
+  margin-bottom: 1rem;
+}
+.language {
+  display: inline-block;
+  vertical-align: middle;
+}
 </style>

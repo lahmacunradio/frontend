@@ -1,7 +1,7 @@
 <template>
   <div class="aspect-ratio-1/1">
     <NuxtLink :to="gallery.slug" class="relative gallery-preview preload-block">
-      <img :src="previewImage.full_image_url" :srcset="previewImage.medium_srcset" :alt="htmlDecoder(gallery.title.rendered)">
+      <img :src="previewImageSrc" :srcset="previewImageSrcset" :alt="htmlDecoder(gallery.title.rendered)">
       <div class="absolute bottom-0 flex flex-col justify-end w-full text-center text-white gallery-title">
         <h3 class="text-lg">
           {{ htmlDecoder(gallery.title.rendered) }}
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { mediaURL } from '~/constants'
+
 export default {
   props: {
     gallery: {
@@ -19,13 +21,42 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      featuredImage: null
+    }
+  },
+  async fetch () {
+    if (!this.featuredImageId) {
+      return false
+    }
+    this.featuredImage = await this.$axios.get(mediaURL + `/${this.featuredImageId}`)
+      .then(res => res.data)
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+  },
   computed: {
-    previewImage () {
-    /* TODO -- check if featured image, if not fallback to first image */
-      if (!this.gallery) {
+    featuredImageId () {
+      if (!this.gallery && this.gallery.featured_media === 0) {
         return false
       }
-      return this.gallery.acf.gallery[0]
+      return this.gallery.featured_media
+    },
+    previewImageSrc () {
+      if (this.featuredImage) {
+        return this.featuredImage.source_url
+      } else {
+        return this.gallery.acf.gallery[0].full_image_url
+      }
+    },
+    previewImageSrcset () {
+      if (this.featuredImage) {
+        const srcsetAssembly = `${this.featuredImage?.media_details?.sizes?.medium?.source_url} 768w, ${this.featuredImage?.media_details?.sizes?.large?.source_url} 1024w, ${this.featuredImage?.media_details?.sizes?.full?.source_url} 1458w`
+        return srcsetAssembly
+      } else {
+        return this.gallery.acf.gallery[0].medium_srcset
+      }
     }
   }
 }
@@ -34,14 +65,14 @@ export default {
 <style lang="scss" scoped>
 .gallery-preview {
     width: 100%;
-    max-height: 450px;
+    height: 100%;
     overflow: hidden;
     display: flex;
     align-content: center;
     img {
       object-fit: cover;
-      min-width: 450px;
-      min-height: 450px;
+      min-width: 100%;
+      min-height: 100%;
     }
     .gallery-title {
       background: rgb(0,0,0);

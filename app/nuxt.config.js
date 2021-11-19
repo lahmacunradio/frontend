@@ -56,17 +56,27 @@ export default {
   buildModules: [
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    '@nuxtjs/moment'
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
     '@nuxtjs/axios',
+    '@nuxtjs/sentry',
     'v-sanitize/nuxt'
   ],
   axios: {
     // proxyHeaders: false
+  },
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    publish_release: true,
+    sourceMapStyle: 'hidden-source-map',
+    config: {
+      release: process.env.GIT_COMMIT_SHA,
+    },
   },
   /*
   ** Build configuration

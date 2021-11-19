@@ -1,5 +1,6 @@
-export const arcsiServerURL = 'https://arcsi.lahmacun.hu/arcsi/show/all'
-export const arcsiItemBaseURL = 'https://arcsi.lahmacun.hu/arcsi/item'
+export const arcsiBaseURL = 'https://arcsi.lahmacun.hu/arcsi'
+export const arcsiServerURL = arcsiBaseURL + '/show/all'
+export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
 // export const arcsiServerURL = 'https://devarcsi.lahmacun.hu' // dev server
 // export const arcsiServerURL = 'https://arcsi.lahmacun.hu' // prod server
@@ -19,3 +20,4 @@ export const aboutUsURL = contentApiURL + '/pages/228'
 export const donateURL = contentApiURL + '/pages/2'
 export const favouriteRadiosURL = contentApiURL + '/pages/2875'
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
+export const mediaURL = contentApiURL + '/media'

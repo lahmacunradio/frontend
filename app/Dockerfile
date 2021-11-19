@@ -7,7 +7,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt install -y yarn
 
-ENV APP_ROOT /src
+ENV APP_ROOT=/src
 
 WORKDIR ${APP_ROOT}
 COPY . ${APP_ROOT}

@@ -33,7 +33,8 @@ export default {
     this.photoGalleries = await this.$axios.get(`${lahmaGaleriesURL}`)
       .then(res => res.data)
       .catch((error) => {
-        error({ statusCode: 500, message: 'Photos not reachable' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Photos not reachable' })
       })
   },
   head () {

@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
 import { streamServer } from '~/constants'
 
 export default {
@@ -43,7 +42,6 @@ export default {
   data () {
     return {
       streamServer,
-      format,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
@@ -98,7 +96,8 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        error({ statusCode: 500, message: 'Stream not reachable' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Schedule not available' })
       })
     },
     groupShowsByDay (shows) {

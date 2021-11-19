@@ -111,9 +111,8 @@
             </div>
           </div>
         </div>
-
-        <div v-if="false" class="sand-clock">
-          <IconSandclock :progress="time_percent" :live="np.live.is_live" />
+        <div class="sand-clock">
+          <IconSandclock :progress="time_percent" :live="np.live.is_live.length ? true : false" />
         </div>
       </div>
     </div>
@@ -447,7 +446,8 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        error({ statusCode: 500, message: 'Stream not available' })
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Stream not available' })
       }).then(() => {
         clearTimeout(this.np_timeout)
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -670,7 +670,6 @@ a.programimage {
     position: absolute;
     background: white;
     bottom: 3px;
-    z-index: 500;
     padding-left: 3px;
     line-height: 1;
     > div {

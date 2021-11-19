@@ -12,7 +12,7 @@
       <div>
         <h2 class="mt-0 font-bold">{{ htmlDecoder(news.title.rendered) }}</h2>
         <p class="mb-4 news-time">
-          {{ format(new Date(news.date), 'yyyy. MMMM dd.') }}
+          {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
         <div v-sanitize="news.content.rendered" class="text-content news-text" />
       </div>
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import { format } from 'date-fns'
 import { contentApiURL } from '~/constants'
 
 export default {
@@ -36,11 +35,8 @@ export default {
   data () {
     return {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
-      format
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
     }
-  },
-  computed: {
   },
   mounted () {
     this.loadNewsImages(this.news.featured_media)

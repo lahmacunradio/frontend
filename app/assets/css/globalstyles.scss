@@ -23,6 +23,7 @@
 }
 
 html {  
+  overscroll-behavior: none;
   font-size: 16px; 
   @media (min-width: 2160px) {
     font-size: 18px;
@@ -163,6 +164,28 @@ span.moresign {
 .rotate-element {
   animation: infiniterotate 6s linear infinite;
 }
+
+
+/* Modal anims */
+
+.modal-enter-active, .modal-leave-active {
+  transition: opacity 0.1s ease-in;
+}
+
+.modal-enter {
+  opacity: 0;
+}
+
+.modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  opacity: 1;
+}
+
+/* Scrollbar styling */
 
 ::-webkit-scrollbar {
   width: 0.5rem;
