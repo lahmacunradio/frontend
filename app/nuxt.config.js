@@ -77,6 +77,7 @@ export default {
     config: {
       release: process.env.GIT_COMMIT_SHA,
     },
+    tracing: true
   },
   /*
   ** Build configuration
