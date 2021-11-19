@@ -64,11 +64,20 @@ export default {
   */
   modules: [
     '@nuxtjs/axios',
+    'nuxt-memwatch',
     '@nuxtjs/sentry',
     'v-sanitize/nuxt'
   ],
   axios: {
     // proxyHeaders: false
+  },
+  memwatch: {
+    averages: true,
+    gcAfterEvery: 50,
+    graph: false,
+    leakGrowthCount: 5,
+    useMovingAverage: 40,
+    verbose: true
   },
   sentry: {
     dsn: process.env.SENTRY_DSN,
