@@ -1,27 +1,36 @@
 <template>
   <div class="py-4">
-    <div class="grid-cols-2 gap-8 sm:grid">
-      <img
-        :src="newsImage"
-        :srcset="`${newsImageSmall} 480w`"
-        sizes="(max-width: 640px) 480px,
-            800px"
-        :alt="news.title.rendered"
-        class="mb-4"
-      >
+    <div class="grid-cols-2 gap-8 md:grid">
+      <div class="img-tags">
+        <img
+          :src="newsImage"
+          :srcset="`${newsImageSmall} 480w`"
+          sizes="(max-width: 640px) 480px,
+              800px"
+          :alt="news.title.rendered"
+          class="mb-4"
+        >
+        <div v-if="postTagsArray.length" class="tags mb-8">
+          <div v-for="(tag, index) in postTagsArray" :key="index + tag.id" class="tag-block">
+            {{ tag.name }}
+          </div>
+        </div>
+      </div>
       <div>
-        <h2 class="mt-0 font-bold">{{ htmlDecoder(news.title.rendered) }}</h2>
+        <h2 class="mt-0 font-bold">
+          {{ htmlDecoder(news.title.rendered) }}
+        </h2>
         <p class="mb-4 news-time">
           {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
-        <div v-sanitize="news.content.rendered" class="text-content news-text" />
+        <div v-sanitize="news.content.rendered" class="text-content news-text"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { contentApiURL } from '~/constants'
+import {contentApiURL, tagsURL} from '~/constants'
 
 export default {
   components: {
@@ -32,22 +41,34 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
+      postTagsArray: []
     }
   },
-  mounted () {
+  computed: {},
+  mounted() {
     this.loadNewsImages(this.news.featured_media)
+    this.postTags(this.news.id)
   },
   methods: {
-    async loadNewsImages (newsId) {
+    async loadNewsImages(newsId) {
       const adress = `${contentApiURL}/media/${newsId}`
       const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
       this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
       this.$emit('getimage', this.newsImageSmall)
+    },
+    async postTags(newsId) {
+      const adress = `${tagsURL}?post=${newsId}`
+      const responseTags = await this.$axios.get(adress)
+      if (responseTags.status === 200) {
+        console.log(responseTags.data)
+        this.postTagsArray = responseTags.data
+      }
+
     }
   }
 }

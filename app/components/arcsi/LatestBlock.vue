@@ -15,13 +15,13 @@
     </NuxtLink>
     <div v-if="false" class="flex items-center mt-6 tags">
       <!-- tags are not needed for now -->
-      <div class="tag">
+      <div class="tag-block">
         dub
       </div>
-      <div class="tag">
+      <div class="tag-block">
         psychedelic
       </div>
-      <div class="tag">
+      <div class="tag-block">
         experimental
       </div>
     </div>
@@ -70,10 +70,4 @@ export default {
     }
   }
 }
-.tag {
-  padding: 0.2rem 0.5rem;
-  margin-right: 0.5rem;
-  @apply bg-white;
-}
-
 </style>
