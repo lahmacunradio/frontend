@@ -11,8 +11,10 @@
           class="mb-4"
         >
         <div v-if="postTagsArray.length" class="tags mb-8">
-          <div v-for="(tag, index) in postTagsArray" :key="index + tag.id" class="tag-block">
-            {{ tag.name }}
+          <div v-for="(tag, index) in postTagsArray" :key="index + tag.id" class="inline-block">
+            <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
+              {{ tag.name }}
+            </NuxtLink>
           </div>
         </div>
       </div>

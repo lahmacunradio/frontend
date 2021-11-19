@@ -1,11 +1,13 @@
 <template>
   <div>
     <h3 class="title-block">
-      Lahmacun News Tags
+      <NuxtLink to="/news/tags">
+        Lahmacun News Tags
+      </NuxtLink>
     </h3>
     <div class="container mt-8">
       <header class="mb-8">
-        <h1>News tagged with "{{ tag }}"</h1>
+        <h2>News tagged with "{{ tag }}"</h2>
       </header>
       <section class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         <div v-for="tag in tagsPosts" :key="tag.id" class="">
