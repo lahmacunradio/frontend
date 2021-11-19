@@ -37,17 +37,7 @@
               </div>
             </div>
 
-            <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
-              <div class="radio-control-volume-slider">
-                <vue-slider
-                  v-model="volume"
-                  :height="25"
-                  tooltip="none"
-                  :dot-size="25"
-                />
-              </div>
-            </div>
-          </div>
+            
 
           <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
             <div class="media-body">
@@ -75,6 +65,18 @@
                 </h4>
               </div>
             </div>
+<div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+              <div class="radio-control-volume-slider">
+                <vue-slider
+                  v-model="volume"
+                  :height="25"
+                  tooltip="none"
+                  :dot-size="25"
+                />
+              </div>
+            </div>
+          </div>
+
 
             <div v-if="time_display_played" class="time-display" style="display:none;">
               <div class="time-display-played text-secondary">
@@ -360,7 +362,9 @@ export default {
   methods: {
     play () {
       this.audio.src = this.current_stream.url
-      this.audio.play()
+      if (!this.is_playing) {
+        this.audio.play()
+      }
       this.is_playing = true
       this.showCurrentMetadata()
 
@@ -399,7 +403,9 @@ export default {
     },
     stop () {
       this.is_playing = false
-      this.audio.pause()
+      if (this.is_playing) {
+        this.audio.pause()
+      }
       this.audio.src = ''
       this.$store.commit('player/isStreamPlaying', false)
 
@@ -666,6 +672,7 @@ a.programimage {
 
 .play-volume-controls {
   position: relative;
+  width: 250px;
 }
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
@@ -707,7 +714,7 @@ a.programimage {
 
 /* New Player styles */
 .bigplay-button {
-  width: 6rem;
+  min-width: 5.5rem;
   height: 4rem;
   display: flex;
   align-content: center;
@@ -716,7 +723,7 @@ a.programimage {
       width: 5rem;
     }
   img {
-    padding: 0 1rem;
+    padding: 0 0.75rem;
     max-height: 65px;
     @media (max-width: $mobile-width) {
       height: 65px;
@@ -727,7 +734,7 @@ a.programimage {
 
 .sand-clock {
   position: relative;
-  min-width: 48px;
+  min-width: 43px;
   img {
     height: 80px;
     @media (max-width: $mobile-width) {

@@ -27,7 +27,7 @@ export default {
     return {
       aboutUs: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
         allowedAttributes: {
           img: ['src', 'srcset']
         }
@@ -62,6 +62,10 @@ export default {
 
 <style lang="scss">
 #about-page-content {
+  p {
+    margin: 0 0 1rem;
+    line-height: 1.6em;
+  }
   img {
     width: 100%;
   }

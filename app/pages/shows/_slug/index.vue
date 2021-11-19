@@ -13,7 +13,7 @@
         </h2>
         <div class="show-infos">
           <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{ removeSeconds(arcsiInfosBlock.start) }}–{{ removeSeconds(arcsiInfosBlock.end) }}, {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language" /></p>
-          <p>
+          <p v-if="arcsiShowsList && arcsiShowsList.length">
             Last episode:
             <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
               <strong>{{ arcsiShowsList[0].name }}</strong>
@@ -25,7 +25,7 @@
         <div>{{ arcsiInfosBlock.description }}</div>
       </div>
     </div>
-    <div>
+    <div v-if="arcsiShowsList && arcsiShowsList.length">
       <h3 class="pb-1 mb-4 text-center border-b border-current">
         Arcsived Shows
       </h3>

@@ -19,7 +19,20 @@
 <script>
 export default {
   layout: 'error',
-  props: ['error'] // you can set a custom layout for the error page
+  props: ['error'],
+  data () {
+    return {
+      tryReloadInterval: null
+    }
+  },
+  mounted () {
+    this.tryReloadInterval = setInterval(() => {
+      window.location.reload()
+    }, 5000)
+  },
+  beforeDestroy () {
+    clearInterval(this.tryReloadInterval)
+  }
 }
 </script>
 
