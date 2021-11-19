@@ -39,6 +39,28 @@ export default {
         console.log(error)
         this.$nuxt.error({statusCode: 500, message: 'Tags not found'})
       })
+  },
+  head() {
+    return {
+      title: `Lahmacun News Tag: ${this.tag}`,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: `Post Tagged with ${this.tag}`
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: `Lahmacun News Tag: ${this.tag}`
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: `Post Tagged with ${this.tag}`
+        }
+      ]
+    }
   }
 }
 </script>
