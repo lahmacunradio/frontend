@@ -87,6 +87,28 @@ export default {
         this.$nuxt.error({ statusCode: 500, message: 'Favourites not available' })
       })
   },
+  head () {
+    return {
+      title: 'Lahmacun Community',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Lahmacun projects, favourites, donate and more'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Community'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Lahmacun projects, favourites, donate and more'
+        }
+      ]
+    }
+  },
   computed: {
     donateContentResults () {
       if (!this.donateContent) {

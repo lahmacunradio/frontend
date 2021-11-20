@@ -43,13 +43,16 @@
                   <h4 :title="show_title" class="now-playing-title">
                     <nuxt-link v-if="show_check == true" :to="show_url">
                       <span>{{ show_title }}&nbsp;</span>
-                      <i class="fa fa-link" aria-hidden="true"/>
+                      <i class="fa fa-link" aria-hidden="true" />
                     </nuxt-link>
 
-                    <a v-if="check_offairlink == true" :href="np.now_playing.song.custom_fields.offairlink"
-                       target="_blank">
+                    <a
+                      v-if="check_offairlink == true"
+                      :href="np.now_playing.song.custom_fields.offairlink"
+                      target="_blank"
+                    >
                       <span>{{ show_title }}&nbsp;</span>
-                      <i class="fa fa-link" aria-hidden="true"/>
+                      <i class="fa fa-link" aria-hidden="true" />
                     </a>
 
                     <span v-if="show_check == false && check_offairlink == false">{{ show_title }}</span>

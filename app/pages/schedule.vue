@@ -41,6 +41,28 @@ export default {
       nowPlaying: {}
     }
   },
+  head () {
+    return {
+      title: 'Lahmacun Schedule',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Calendar of Lahmacun stream episodes'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Schedule'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Calendar of Lahmacun stream episodes'
+        }
+      ]
+    }
+  },
   computed: {
     arcsishows () {
       return this.$store.state.arcsiShows

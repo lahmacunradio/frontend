@@ -42,6 +42,28 @@ export default {
         this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
       })
   },
+  head () {
+    return {
+      title: 'About Lahmacun',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Read about Lahmacun '
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'About Lahmacun'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Read about Lahmacun'
+        }
+      ]
+    }
+  },
   computed: {
     aboutUsResults () {
       if (!this.aboutUs) {

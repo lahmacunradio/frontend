@@ -60,6 +60,28 @@ export default {
       })
     this.arcsiEpisodes = this.defaultEpisodes
   },
+  head () {
+    return {
+      title: 'Lahmacun Archive',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'All Lahmacun episodes'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Archive'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'All Lahmacun episodes'
+        }
+      ]
+    }
+  },
   computed: {
     getToday () {
       const d = new Date()
