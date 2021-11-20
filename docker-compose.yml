@@ -5,7 +5,8 @@ services:
     build: ./app
     ports:
       - 3333:3333 
-  
+    stdin_open: true
+    tty: true
   proxy:
     image: nginx:1.19
     restart: always
