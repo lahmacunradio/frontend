@@ -8,7 +8,7 @@
       <div class="now-playing-details">
         <div class="radio-controls">
           <a class="bigplay-button" href="#" @click.prevent="toggle()">
-            <img v-if="is_playing" src="@/assets/img/pause_gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
+            <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
             <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
           </a>
           <div v-if="false">
@@ -113,7 +113,6 @@
             </div>
           </div>
         </div>
-
         <div class="sand-clock">
           <IconSandclock :progress="time_percent" :live="np.live.is_live.length ? true : false" />
         </div>
@@ -534,9 +533,9 @@ export default {
             overflow: hidden;
             white-space: nowrap;
             &:hover {
-                text-overflow: clip;
-                /* white-space: normal; */
-                word-break: break-all;
+                /* text-overflow: clip;
+                white-space: normal; 
+                word-break: break-all; */
             }
             a {
               display: block;

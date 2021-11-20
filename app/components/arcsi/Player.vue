@@ -320,7 +320,7 @@ h5 {
   a {
     color: $black-color;
     &:hover {
-      color: $lahma-pink;
+      text-decoration: underline;
     }
   }
   span {
