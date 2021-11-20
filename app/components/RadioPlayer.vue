@@ -37,46 +37,44 @@
               </div>
             </div>
 
-            
+            <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
+              <div class="media-body">
+                <div v-if="np.now_playing.song.title !== ''">
+                  <h4 :title="show_title" class="now-playing-title">
+                    <nuxt-link v-if="show_check == true" :to="show_url">
+                      <span>{{ show_title }}&nbsp;</span>
+                      <i class="fa fa-link" aria-hidden="true"/>
+                    </nuxt-link>
 
-          <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
-            <div class="media-body">
-              <div v-if="np.now_playing.song.title !== ''">
-                <h4 :title="show_title" class="now-playing-title">
-                  <nuxt-link v-if="show_check == true" :to="show_url">
-                    <span>{{ show_title }}&nbsp;</span>
-                    <i class="fa fa-link" aria-hidden="true" />
-                  </nuxt-link>
+                    <a v-if="check_offairlink == true" :href="np.now_playing.song.custom_fields.offairlink"
+                       target="_blank">
+                      <span>{{ show_title }}&nbsp;</span>
+                      <i class="fa fa-link" aria-hidden="true"/>
+                    </a>
 
-                  <a v-if="check_offairlink == true" :href="np.now_playing.song.custom_fields.offairlink" target="_blank">
-                    <span>{{ show_title }}&nbsp;</span>
-                    <i class="fa fa-link" aria-hidden="true" />
-                  </a>
-
-                  <span v-if="show_check == false && check_offairlink == false">{{ show_title }}</span>
-                </h4>
-                <h5 :title="show_subtitle" class="now-playing-artist">
-                  {{ show_subtitle }}
-                </h5>
+                    <span v-if="show_check == false && check_offairlink == false">{{ show_title }}</span>
+                  </h4>
+                  <h5 :title="show_subtitle" class="now-playing-artist">
+                    {{ show_subtitle }}
+                  </h5>
+                </div>
+                <div v-else>
+                  <h4 class="now-playing-title">
+                    {{ show_title }}
+                  </h4>
+                </div>
               </div>
-              <div v-else>
-                <h4 class="now-playing-title">
-                  {{ show_title }}
-                </h4>
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+                <div class="radio-control-volume-slider">
+                  <vue-slider
+                    v-model="volume"
+                    :height="25"
+                    tooltip="none"
+                    :dot-size="25"
+                  />
+                </div>
               </div>
             </div>
-<div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
-              <div class="radio-control-volume-slider">
-                <vue-slider
-                  v-model="volume"
-                  :height="25"
-                  tooltip="none"
-                  :dot-size="25"
-                />
-              </div>
-            </div>
-          </div>
-
 
             <div v-if="time_display_played" class="time-display" style="display:none;">
               <div class="time-display-played text-secondary">
@@ -453,8 +451,8 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Stream not available' })
+        console.log('Network interrupted stream. Automatically reconnecting shortly...')
+        this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
       }).then(() => {
         clearTimeout(this.np_timeout)
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
