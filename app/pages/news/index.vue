@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      News
+      Lahmacun News
     </h3>
     <div class="container">
       <header class="flex flex-row items-center justify-between">

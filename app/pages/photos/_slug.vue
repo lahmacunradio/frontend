@@ -1,27 +1,34 @@
 <template>
-  <div class="container my-8">
-    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      <p>Loading...</p>
-    </div>
-    <div v-else>
+  <div>
+    <h3 class="title-block">
       <NuxtLink :to="`/photos/`">
-        <div class="pb-4">
-          <i class="fa fa-toggle-left" aria-hidden="true" /> Back to Photos
-        </div>
+        Lahmacun Photos
       </NuxtLink>
-      <h1 class="mb-4">
-        {{ htmlDecoder(photoGallery.title.rendered) }}
-      </h1>
-      <div v-sanitize="photoGallery.content.rendered" />
-      <div class="gap-8 my-8 md:grid-cols-2 lg:grid-cols-4 md:grid gallery-items">
-        <div v-for="(photo, i) in photoGallery.acf.gallery" :key="i">
-          <GalleryPictureItem :photo="photo" :gallery="photoGallery.acf.gallery" :gallery-position="i" />
+    </h3>
+    <div class="container my-8">
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
+      </div>
+      <div v-else>
+        <NuxtLink :to="`/photos/`">
+          <div class="pb-4">
+            <i class="fa fa-toggle-left" aria-hidden="true"/> Back to Photos
+          </div>
+        </NuxtLink>
+        <h1 class="mb-4">
+          {{ htmlDecoder(photoGallery.title.rendered) }}
+        </h1>
+        <div v-sanitize="photoGallery.content.rendered"/>
+        <div class="gap-8 my-8 md:grid-cols-2 lg:grid-cols-4 md:grid gallery-items">
+          <div v-for="(photo, i) in photoGallery.acf.gallery" :key="i">
+            <GalleryPictureItem :photo="photo" :gallery="photoGallery.acf.gallery" :gallery-position="i"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-if="$fetchState.error" class="py-32 text-center">
-      Error happened
+      <div v-if="$fetchState.error" class="py-32 text-center">
+        Error happened
+      </div>
     </div>
   </div>
 </template>

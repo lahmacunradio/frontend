@@ -54,7 +54,24 @@ export default {
   },
   head () {
     return {
-      title: 'Lahmacun Shows'
+      title: 'Lahmacun Shows',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'All Lahmacun Shows, active and past'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Shows'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'All Lahmacun Shows, active and past'
+        }
+      ]
     }
   },
   computed: {
@@ -85,6 +102,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

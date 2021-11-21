@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="title-block">
-      About us
+      About Lahmacun
     </h3>
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
@@ -41,6 +41,28 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
       })
+  },
+  head () {
+    return {
+      title: 'About Lahmacun',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Read about Lahmacun '
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'About Lahmacun'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Read about Lahmacun'
+        }
+      ]
+    }
   },
   computed: {
     aboutUsResults () {

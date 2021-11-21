@@ -112,7 +112,9 @@ export default {
       min-width: 300px;
       width: 100%;
       object-fit: cover;
+      /*
       filter: grayscale(100%);
+       */
       transition: 1s;
     }
   }
