@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">Arcsi's Latest</h3>
+    <h3 class="title-block">
+      Arcsi's Latest
+    </h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
@@ -72,6 +74,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
+        this.$sentry.captureException(new Error('Arcsi latest not found ', error))
         this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
   },

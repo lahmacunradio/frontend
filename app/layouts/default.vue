@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name: 'Default',
   computed: {
     arcsiVisible () {
       return this.$store.state.player.isArcsiVisible
@@ -16,7 +17,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

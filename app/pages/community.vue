@@ -74,6 +74,7 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        this.$sentry.captureException(new Error('Donate not available ', error))
         this.$nuxt.error({ statusCode: 500, message: 'Donate not available' })
       })
     this.favouritesContent = await this.$axios.get(`${favouriteRadiosURL}`)
@@ -84,6 +85,7 @@ export default {
       })
       .catch((error) => {
         console.log(error)
+        this.$sentry.captureException(new Error('Favourites not available ', error))
         this.$nuxt.error({ statusCode: 500, message: 'Favourites not available' })
       })
   },

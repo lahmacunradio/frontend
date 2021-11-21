@@ -95,8 +95,9 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Schedule not available' })
+        console.log('Network interrupted stream. Automatically reconnecting shortly...', error)
+        this.$sentry.captureException(new Error('Stream interrupted ', error))
+        this.interval = setTimeout(this.checkNowPlaying, 15000)
       })
     },
     groupShowsByDay (shows) {
@@ -197,4 +198,3 @@ a {
 }
 
 </style>
-

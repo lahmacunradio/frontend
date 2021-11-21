@@ -39,6 +39,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
+        this.$sentry.captureException(new Error('About page not available ', error))
         this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
       })
   },

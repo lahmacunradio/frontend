@@ -13,7 +13,7 @@
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <NewsFull v-if="selectedNews" :news="selectedNews" @getimage="getImage"/>
+      <NewsFull v-if="selectedNews" :news="selectedNews" @getimage="getImage" />
     </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
       .then(res => res.data[0])
       .catch((error) => {
         console.log(error)
+        this.$sentry.captureException(new Error('News not found ', error))
         this.$nuxt.error({ statusCode: 500, message: 'News not found' })
       })
   },

@@ -34,6 +34,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         console.error('Error:', error)
+        this.$sentry.captureException(new Error('Featured Image not found ', error))
       })
   },
   computed: {

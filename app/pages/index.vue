@@ -1,10 +1,10 @@
 <template>
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
-      <div class="bg-white">
+      <div v-if="newsListState" class="bg-white">
         <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
       </div>
-      <div>
+      <div v-if="sortShowsForSchedule">
         <ScheduleHome :shows="sortShowsForSchedule" />
       </div>
     </section>
@@ -27,15 +27,24 @@ export default {
       return this.$store.state.arcsiShows
     },
     sortShowsForSchedule () {
+      if (!this.arcsishows) {
+        return false
+      }
       return [...this.arcsishows].sort((a, b) => parseInt(a.start) - parseInt(b.start)).sort((a, b) => a.day - b.day)
     },
     newsList () {
       return this.$store.state.newsList
     },
     newsListState () {
+      if (!this.newsList) {
+        return false
+      }
       return this.newsLimit ? this.newsList.slice(0, this.newsLimit) : this.newsList
     },
     sortNews () {
+      if (!this.newsListState) {
+        return false
+      }
       return [...this.newsListState].sort((a, b) => a.date - b.date)
     }
   },

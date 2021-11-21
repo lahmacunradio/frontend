@@ -88,9 +88,9 @@ export default {
     this.numberOfTotal = null
   },
   methods: {
-    async useFetch({
-                     type = 'fetchNews'
-                   } = {}) {
+    async useFetch ({
+      type = 'fetchNews'
+    } = {}) {
       const callback = this.callBacks[type]
       try {
         this.isLoading = true
@@ -108,6 +108,7 @@ export default {
         return callback(response)
       } catch (error) {
         console.log(error)
+        this.$sentry.captureException(new Error('News is not available ', error))
         this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
     },

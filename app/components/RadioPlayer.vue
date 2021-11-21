@@ -453,7 +453,8 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        console.log('Network interrupted stream. Automatically reconnecting shortly...')
+        console.log('Network interrupted stream. Automatically reconnecting shortly...', error)
+        this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
       }).then(() => {
         clearTimeout(this.np_timeout)
@@ -535,7 +536,7 @@ export default {
             white-space: nowrap;
             &:hover {
                 /* text-overflow: clip;
-                white-space: normal; 
+                white-space: normal;
                 word-break: break-all; */
             }
             a {
