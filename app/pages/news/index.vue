@@ -9,8 +9,8 @@
           v-model="search"
           class="input"
           type="search"
-          @input="onChange"
           :placeholder="placeholder"
+          @input="onChange"
         >
       </header>
       <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
@@ -54,7 +54,24 @@ export default {
   },
   head () {
     return {
-      title: 'Lahmacun News'
+      title: 'Lahmacun News',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Lahmacun News posts'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun News'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Lahmacun News posts'
+        }
+      ]
     }
   },
   computed: {
@@ -72,8 +89,8 @@ export default {
   },
   methods: {
     async useFetch({
-      type = 'fetchNews',
-    } = {}) {
+                     type = 'fetchNews'
+                   } = {}) {
       const callback = this.callBacks[type]
       try {
         this.isLoading = true

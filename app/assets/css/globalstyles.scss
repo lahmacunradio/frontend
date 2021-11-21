@@ -63,21 +63,6 @@ body {
   color: $black-color;
 }
 
-/* Scrollbar styling */
-
-::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: $black-color;
-  width: 0.5rem;
-}
-
 .container {
   width: 95%;
   @media (max-width: $mobile-width) {
@@ -150,28 +135,13 @@ span.moresign {
   }
 }
 
-h3.title-block {
-  width: 100%;
-  padding: 0.75rem;
-  margin: 0;
-  text-transform: uppercase;
-  background: $black-color;
-  color: white;
-  font-weight: 500;
-  text-align: center;
-  @media (max-width: $mobile-width) {
-    font-size: 1.5rem;
-  }
-}
-
 .aspect-ratio-1\/1 {
   @include aspect-ratio(1, 1);
   height: unset;
-
-  > * {
-    position: absolute;
-    top: 0;
-    left: 0;
+  >* {
+      position: absolute;
+      top: 0;
+      left: 0;
   }
 }
 
@@ -195,6 +165,7 @@ h3.title-block {
   animation: infiniterotate 6s linear infinite;
 }
 
+
 /* Modal anims */
 
 .modal-enter-active, .modal-leave-active {
@@ -212,4 +183,32 @@ h3.title-block {
 .modal-enter .modal-container,
 .modal-leave-active .modal-container {
   opacity: 1;
+}
+
+/* Scrollbar styling */
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: $black-color;
+  width: 0.5rem;
+}
+
+h3.title-block {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0;
+  text-transform: uppercase;
+  background: $black-color;
+  color: white;
+  font-weight: 500;
+  text-align: center;
+}
+
+.tag-block {
+  @apply bg-white mr-2 mb-2 px-3 py-1 inline-block;
 }

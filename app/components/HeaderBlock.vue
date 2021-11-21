@@ -13,7 +13,7 @@
     <HeadNavigation />
     <div id="time">
       <div class="currenttime">
-        {{ timestamp }} <br>CET
+        {{ timestamp }} <br class="block xl:hidden">CET
       </div>
     </div>
   </header>
