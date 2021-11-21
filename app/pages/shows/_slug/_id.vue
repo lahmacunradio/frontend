@@ -183,7 +183,10 @@ export default {
       if (!this.arcsiShow.items) {
         return false
       }
-      return this.arcsiShow.items.filter(a => a.id.toString() !== this.id)
+      return this.arcsiShow.items
+        .filter(item => item.id.toString() !== this.id)
+        .filter(item => item.play_date < this.getToday)
+        .filter(item => item.archived === true)
     }
   },
   beforeDestroy () {
