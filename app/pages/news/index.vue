@@ -1,40 +1,44 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun News
-    </h3>
-    <div class="container">
-      <header class="flex flex-row items-center justify-between">
-        <input
-          v-model="search"
-          class="input"
-          type="search"
-          :placeholder="placeholder"
-          @input="onChange"
-        >
-      </header>
-      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
-          <NewsBlock :news="news" />
-        </div>
-      </article>
-      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">
-        <a href="#" @click.prevent="fetchNews">
-          <b>Load {{ numberOfItems }} more episodes</b>
-          <br>
-          (showing {{ newsFilteredList.length }} episodes)
-        </a>
-      </div>
-      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-        <p>Loading...</p>
-      </div>
-    </div>
+    <ItemsList
+      title="Lahmacun News"
+    />
+<!--    <h3 class="title-block">-->
+<!--      Lahmacun News-->
+<!--    </h3>-->
+<!--    <div class="container">-->
+<!--      <header class="flex flex-row items-center justify-between">-->
+<!--        <input-->
+<!--          v-model="search"-->
+<!--          class="input"-->
+<!--          type="search"-->
+<!--          :placeholder="placeholder"-->
+<!--          @input="onChange"-->
+<!--        >-->
+<!--      </header>-->
+<!--      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">-->
+<!--        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">-->
+<!--          <NewsBlock :news="news" />-->
+<!--        </div>-->
+<!--      </article>-->
+<!--      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">-->
+<!--        <a href="#" @click.prevent="fetchNews">-->
+<!--          <b>Load {{ numberOfItems }} more episodes</b>-->
+<!--          <br>-->
+<!--          (showing {{ newsFilteredList.length }} episodes)-->
+<!--        </a>-->
+<!--      </div>-->
+<!--      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">-->
+<!--        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">-->
+<!--        <p>Loading...</p>-->
+<!--      </div>-->
+<!--    </div>-->
   </div>
 </template>
 
 <script>
 import { newsBaseURL } from '~/constants'
+// import ItemsList from '~/components/itemsList/ItemsList'
 
 export default {
   components: {},
@@ -107,7 +111,6 @@ export default {
         this.isLoading = false
         return callback(response)
       } catch (error) {
-        console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
     },
