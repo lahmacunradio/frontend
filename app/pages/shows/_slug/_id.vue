@@ -45,8 +45,8 @@
             </div>
 
             <div>{{ arcsiEpisode.description }}</div>
-            <client-only>
-              <div class="py-4">
+            <div v-if="arcsiEpisode.play_file_name" class="py-4">
+              <client-only>
                 <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
                   <i>Episode is now in the Arcsi player...</i>
                 </div>
@@ -55,8 +55,8 @@
                     <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
                   </a>
                 </div>
-              </div>
-            </client-only>
+              </client-only>
+            </div>
           </div>
         </div>
       </div>
@@ -185,7 +185,10 @@ export default {
       if (!this.arcsiShow.items) {
         return false
       }
-      return this.arcsiShow.items.filter(a => a.id.toString() !== this.id)
+      return this.arcsiShow.items
+        .filter(item => item.id.toString() !== this.id)
+        .filter(item => item.play_date < this.getToday)
+        .filter(item => item.archived === true)
     }
   },
   beforeDestroy () {
