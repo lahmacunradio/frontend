@@ -88,14 +88,18 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('resize', this.changeBreakpoint, { passive: true })
-    setTimeout(() => {
-      this.changeBreakpoint()
-    }, 3000)
+    if (window) {
+      window.addEventListener('resize', this.changeBreakpoint, { passive: true })
+      setTimeout(() => {
+        this.changeBreakpoint()
+      }, 3000)
+    }
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
-    window.removeEventListener('resize', this.changeBreakpoint)
+    if (window) {
+      window.removeEventListener('resize', this.changeBreakpoint)
+    }
   },
   methods: {
     changeBreakpoint () {
