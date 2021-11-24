@@ -1,7 +1,9 @@
 <template>
   <div>
     <h3 class="title-block">
-      Arcsi's Latest
+      <NuxtLink :to="`/archive/`">
+        Arcsi's Latest
+      </NuxtLink>
     </h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
@@ -12,13 +14,13 @@
         <div v-for="(episode, i) in arcsiLatestDisplay" :key="episode + i">
           <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
+        <a ref="button-prev" href="#" class="latest-nav previous" @click.prevent="previousBlock">
+          <img src="@/assets/img/arrow-left.svg" alt="">
+        </a>
+        <a ref="button-next" href="#" class="latest-nav next" @click.prevent="nextBlock">
+          <img src="@/assets/img/arrow-right.svg" alt="">
+        </a>
       </div>
-      <a ref="button-prev" href="#" class="absolute left-0 top-36" @click.prevent="previousBlock">
-        <img src="@/assets/img/arrow-left.svg" alt="">
-      </a>
-      <a ref="button-next" href="#" class="absolute right-0 top-36" @click.prevent="nextBlock">
-        <img src="@/assets/img/arrow-right.svg" alt="">
-      </a>
     </div>
     <div v-if="$fetchState.error" class="py-32 text-center">
       Error happened
@@ -27,7 +29,15 @@
 </template>
 
 <script>
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '~/tailwind.config.js'
+
 import { arcsiItemBaseURL } from '~/constants'
+
+const fullConfig = resolveConfig(tailwindConfig)
+const mobileSize = fullConfig.theme.screens.sm
+const tabletSize = fullConfig.theme.screens.md
+const desktopSize = fullConfig.theme.screens.lg
 
 export default {
   name: 'LatestArcsi',
@@ -38,6 +48,7 @@ export default {
       numberOfEpisodes: 9,
       positionStart: 0,
       positionEnd: 3,
+      visibleEpisodes: 3,
       arcsiEpisodes: null
     }
   },
@@ -69,10 +80,11 @@ export default {
       return null
     },
     arcsiLatestDisplay () {
-      if (this.arcsiEpisodesListSortedLatest) {
+      if (this.arcsiEpisodesListSortedLatest && this.positionStart <= this.positionEnd) {
         return this.arcsiEpisodesListSortedLatest.slice(this.positionStart, this.positionEnd)
+      } else {
+        return this.arcsiEpisodesListSortedLatest.slice(0, 3)
       }
-      return null
     },
     arcsiList () {
       return [...this.$store.state.arcsiShows]
@@ -80,26 +92,34 @@ export default {
   },
   mounted () {
     window.addEventListener('resize', this.changeBreakpoint)
+    this.changeBreakpoint()
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
     window.removeEventListener('resize', this.changeBreakpoint)
   },
   methods: {
-    changeBreakpoint (event) {
-      console.log(event)
+    changeBreakpoint () {
+      const windowWidth = window.innerWidth
+      if (windowWidth >= parseInt(desktopSize)) {
+        this.visibleEpisodes = 3
+      } else if (windowWidth <= parseInt(tabletSize)) {
+        this.visibleEpisodes = 1
+      } else {
+        this.visibleEpisodes = 2
+      }
     },
     previousBlock () {
       if (this.positionStart !== 0 && this.positionStart - this.positionEnd > 0) {
         this.positionStart = this.positionStart - this.positionEnd
-        this.positionEnd = this.positionEnd / 2
+        this.positionEnd = Math.round(this.positionEnd / this.visibleEpisodes)
       }
       console.log('Previous')
     },
     nextBlock () {
       if (this.positionEnd < this.numberOfEpisodes) {
         this.positionStart = this.positionStart + this.positionEnd
-        this.positionEnd = this.positionEnd * 2
+        this.positionEnd = Math.round(this.positionEnd * this.visibleEpisodes)
       }
       console.log('Next')
     }
@@ -112,6 +132,16 @@ export default {
 
 .arcsi-episodes {
   @apply grid gap-8 lg:grid-cols-3 md:grid-cols-2;
+}
+
+.latest-nav {
+  @apply absolute top-32;
+  &.previous {
+    @apply -left-4;
+  }
+  &.next {
+    @apply -right-4;
+  }
 }
 
 /* .latest-container {
