@@ -9,7 +9,7 @@
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div v-else class="container relative py-10 latest-container">
+    <div class="container relative py-10 latest-container" :class="{'opacity-0': $fetchState.pending} ">
       <div ref="slider" class="arcsi-slider-wrapper">
         <div ref="episodes" class="relative arcsi-episodes">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
@@ -62,6 +62,7 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
+    this.changeBreakpoint()
   },
   computed: {
     getToday () {
@@ -88,7 +89,9 @@ export default {
   },
   mounted () {
     window.addEventListener('resize', this.changeBreakpoint, { passive: true })
-    window.addEventListener('load', this.changeBreakpoint())
+    setTimeout(() => {
+      this.changeBreakpoint()
+    }, 3000)
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
@@ -103,7 +106,7 @@ export default {
       }
       if (windowWidth >= parseInt(desktopSize)) {
         this.visibleEpisodes = 3
-      } else if (windowWidth <= parseInt(mobileSize)) {
+      } else if (windowWidth <= parseInt(tabletSize)) {
         this.visibleEpisodes = 1
       } else {
         this.visibleEpisodes = 2
@@ -111,17 +114,19 @@ export default {
       this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
     },
     previousBlock () {
+      const episodes = this.$refs.episodes
       if (this.sliderPosition === 0) {
+        episodes.style.transform = 'translateX(0px)'
         return false
       }
-      console.log('Previous')
-      const episodes = this.$refs.episodes
       this.sliderPosition--
-      episodes.style.transform = `translateX(${this.episodeWidth}px)`
+      episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     },
     nextBlock () {
-      console.log('Next')
       const episodes = this.$refs.episodes
+      if (this.sliderPosition === this.numberOfEpisodes - this.visibleEpisodes) {
+        return false
+      }
       this.sliderPosition++
       episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     }
@@ -131,7 +136,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.latest-container {
+  min-height: 24rem;
+}
 .arcsi-slider-wrapper {
   @apply overflow-hidden w-full;
   .arcsi-episodes {
@@ -144,7 +151,7 @@ export default {
 }
 
 .latest-nav {
-  @apply absolute top-32;
+  @apply absolute top-48;
   &.previous {
     @apply -left-4;
   }
