@@ -1,24 +1,24 @@
 <template>
   <div>
-    <h3 class="title-block">Arcsi's Latest</h3>
+    <h3 class="title-block">
+      Arcsi's Latest
+    </h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
     <div v-else class="container relative py-10 latest-container">
-      <div v-swiper="swiperOption" class="relative" :loadtheme="false">
-        <div class="swiper-wrapper">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i" class="swiper-slide">
-            <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
-          </div>
+      <div class="relative arcsi-episodes">
+        <div v-for="(episode, i) in arcsiLatestDisplay" :key="episode + i">
+          <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
       </div>
-      <div slot="button-prev" class="swiper-button-prev">
+      <a ref="button-prev" href="#" class="absolute left-0 top-36" @click.prevent="previousBlock">
         <img src="@/assets/img/arrow-left.svg" alt="">
-      </div>
-      <div slot="button-next" class="swiper-button-next">
+      </a>
+      <a ref="button-next" href="#" class="absolute right-0 top-36" @click.prevent="nextBlock">
         <img src="@/assets/img/arrow-right.svg" alt="">
-      </div>
+      </a>
     </div>
     <div v-if="$fetchState.error" class="py-32 text-center">
       Error happened
@@ -27,43 +27,17 @@
 </template>
 
 <script>
-import { directive } from 'vue-awesome-swiper'
 import { arcsiItemBaseURL } from '~/constants'
 
 export default {
   name: 'LatestArcsi',
-  directives: {
-    swiper: directive
-  },
   data () {
     return {
       startIndex: 0,
       preloadImages: false,
       numberOfEpisodes: 9,
-      swiperOption: {
-        preloadImages: false,
-        slidesPerView: 3,
-        spaceBetween: 30,
-        loop: true,
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        },
-        breakpoints: {
-          1024: {
-            slidesPerView: 3,
-            spaceBetween: 30
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 30
-          },
-          0: {
-            slidesPerView: 1,
-            spaceBetween: 30
-          }
-        }
-      },
+      positionStart: 0,
+      positionEnd: 3,
       arcsiEpisodes: null
     }
   },
@@ -94,43 +68,52 @@ export default {
       }
       return null
     },
+    arcsiLatestDisplay () {
+      if (this.arcsiEpisodesListSortedLatest) {
+        return this.arcsiEpisodesListSortedLatest.slice(this.positionStart, this.positionEnd)
+      }
+      return null
+    },
     arcsiList () {
       return [...this.$store.state.arcsiShows]
     }
   },
+  mounted () {
+    window.addEventListener('resize', this.changeBreakpoint)
+  },
   beforeDestroy () {
     this.arcsiEpisodes = null
+    window.removeEventListener('resize', this.changeBreakpoint)
   },
   methods: {
+    changeBreakpoint (event) {
+      console.log(event)
+    },
+    previousBlock () {
+      if (this.positionStart !== 0 && this.positionStart - this.positionEnd > 0) {
+        this.positionStart = this.positionStart - this.positionEnd
+        this.positionEnd = this.positionEnd / 2
+      }
+      console.log('Previous')
+    },
+    nextBlock () {
+      if (this.positionEnd < this.numberOfEpisodes) {
+        this.positionStart = this.positionStart + this.positionEnd
+        this.positionEnd = this.positionEnd * 2
+      }
+      console.log('Next')
+    }
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.swiper-button-prev {
-  left: -20px;
+
+.arcsi-episodes {
+  @apply grid gap-8 lg:grid-cols-3 md:grid-cols-2;
 }
-.swiper-button-next {
-  right: -20px;
-}
-@media (max-width: $mobile-width) {
-  .swiper-button-prev {
-    left: 20px;
-  }
-  .swiper-button-next {
-    right: 20px;
-  }
-}
-.swiper-button-next, .swiper-button-prev {
-  top: calc(50% - 3rem);
-  img {
-    width: 3rem;
-    max-width: none;
-  }
-  &::after {
-    content: '';
-  }
-}
+
 /* .latest-container {
   max-height: 75vh;
 } */

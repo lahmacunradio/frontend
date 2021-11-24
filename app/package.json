@@ -26,10 +26,8 @@
     "store": "^2.0.12",
     "swiper": "^5.4.5",
     "v-sanitize": "^0.0.5",
-    "vue-awesome-swiper": "^4.1.1",
     "vue-marked": "^0.1.1",
     "vue-sanitize-directive": "^0.1.0",
-    "vue-slider-component": "^3.2.15",
     "vuex-persist": "^3.1.3",
     "webpack": "^4.46.0"
   },
