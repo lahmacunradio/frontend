@@ -10,17 +10,21 @@
       <p>Loading...</p>
     </div>
     <div v-else class="container relative py-10 latest-container">
-      <div class="relative arcsi-episodes">
-        <div v-for="(episode, i) in arcsiLatestDisplay" :key="episode + i">
-          <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+      <div ref="slider" class="arcsi-slider-wrapper">
+        <div ref="episodes" class="relative arcsi-episodes">
+          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+            <div class="episode-wrap" :style="{ 'width': episodeWidth + 'px' }">
+              <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+            </div>
+          </div>
         </div>
-        <a ref="button-prev" href="#" class="latest-nav previous" @click.prevent="previousBlock">
-          <img src="@/assets/img/arrow-left.svg" alt="">
-        </a>
-        <a ref="button-next" href="#" class="latest-nav next" @click.prevent="nextBlock">
-          <img src="@/assets/img/arrow-right.svg" alt="">
-        </a>
       </div>
+      <a ref="button-prev" href="#" class="latest-nav previous" @click.prevent="previousBlock">
+        <img src="@/assets/img/arrow-left.svg" alt="">
+      </a>
+      <a ref="button-next" href="#" class="latest-nav next" @click.prevent="nextBlock">
+        <img src="@/assets/img/arrow-right.svg" alt="">
+      </a>
     </div>
     <div v-if="$fetchState.error" class="py-32 text-center">
       Error happened
@@ -44,11 +48,10 @@ export default {
   data () {
     return {
       startIndex: 0,
-      preloadImages: false,
       numberOfEpisodes: 9,
-      positionStart: 0,
-      positionEnd: 3,
       visibleEpisodes: 3,
+      sliderPosition: 0,
+      episodeWidth: 300,
       arcsiEpisodes: null
     }
   },
@@ -79,20 +82,13 @@ export default {
       }
       return null
     },
-    arcsiLatestDisplay () {
-      if (this.arcsiEpisodesListSortedLatest && this.positionStart <= this.positionEnd) {
-        return this.arcsiEpisodesListSortedLatest.slice(this.positionStart, this.positionEnd)
-      } else {
-        return this.arcsiEpisodesListSortedLatest.slice(0, 3)
-      }
-    },
     arcsiList () {
       return [...this.$store.state.arcsiShows]
     }
   },
   mounted () {
-    window.addEventListener('resize', this.changeBreakpoint)
-    this.changeBreakpoint()
+    window.addEventListener('resize', this.changeBreakpoint, { passive: true })
+    window.addEventListener('load', this.changeBreakpoint())
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
@@ -101,27 +97,33 @@ export default {
   methods: {
     changeBreakpoint () {
       const windowWidth = window.innerWidth
+      const viewport = this.$refs.slider
+      if (!viewport) {
+        return false
+      }
       if (windowWidth >= parseInt(desktopSize)) {
         this.visibleEpisodes = 3
-      } else if (windowWidth <= parseInt(tabletSize)) {
+      } else if (windowWidth <= parseInt(mobileSize)) {
         this.visibleEpisodes = 1
       } else {
         this.visibleEpisodes = 2
       }
+      this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
     },
     previousBlock () {
-      if (this.positionStart !== 0 && this.positionStart - this.positionEnd > 0) {
-        this.positionStart = this.positionStart - this.positionEnd
-        this.positionEnd = Math.round(this.positionEnd / this.visibleEpisodes)
+      if (this.sliderPosition === 0) {
+        return false
       }
       console.log('Previous')
+      const episodes = this.$refs.episodes
+      this.sliderPosition--
+      episodes.style.transform = `translateX(${this.episodeWidth}px)`
     },
     nextBlock () {
-      if (this.positionEnd < this.numberOfEpisodes) {
-        this.positionStart = this.positionStart + this.positionEnd
-        this.positionEnd = Math.round(this.positionEnd * this.visibleEpisodes)
-      }
       console.log('Next')
+      const episodes = this.$refs.episodes
+      this.sliderPosition++
+      episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     }
 
   }
@@ -130,8 +132,15 @@ export default {
 
 <style lang="scss" scoped>
 
-.arcsi-episodes {
-  @apply grid gap-8 lg:grid-cols-3 md:grid-cols-2;
+.arcsi-slider-wrapper {
+  @apply overflow-hidden w-full;
+  .arcsi-episodes {
+    transition: all 1s;
+    @apply flex items-start w-max;
+    .episode-wrap {
+      @apply px-2;
+    }
+  }
 }
 
 .latest-nav {
