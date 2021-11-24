@@ -94,6 +94,7 @@ export default {
     checkNowPlaying () {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
+        clearInterval(this.interval)
       }).catch((error) => {
         console.log('Network interrupted stream. Automatically reconnecting shortly...', error)
         this.$sentry.captureException(new Error('Stream interrupted ', error))
