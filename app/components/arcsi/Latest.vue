@@ -62,7 +62,9 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
-    this.changeBreakpoint()
+    if (typeof window !== 'undefined') {
+      this.changeBreakpoint()
+    }
   },
   computed: {
     getToday () {
@@ -88,7 +90,7 @@ export default {
     }
   },
   mounted () {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.changeBreakpoint, { passive: true })
       setTimeout(() => {
         this.changeBreakpoint()
@@ -97,12 +99,15 @@ export default {
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.changeBreakpoint)
     }
   },
   methods: {
     changeBreakpoint () {
+      if (!window) {
+        return false
+      }
       const windowWidth = window.innerWidth
       const viewport = this.$refs.slider
       if (!viewport) {
