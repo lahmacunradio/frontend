@@ -19,10 +19,24 @@
           </div>
         </div>
       </div>
-      <a ref="button-prev" href="#" class="latest-nav previous" @click.prevent="previousBlock">
+      <a
+        v-show="sliderPosition > 0"
+        ref="button-prev"
+        href="#"
+        class="latest-nav previous"
+        :style="{ top: episodeWidth / 2 + 'px' }"
+        @click.prevent="previousBlock"
+      >
         <img src="@/assets/img/arrow-left.svg" alt="">
       </a>
-      <a ref="button-next" href="#" class="latest-nav next" @click.prevent="nextBlock">
+      <a
+        v-show="sliderPosition < numberOfEpisodes - visibleEpisodes"
+        ref="button-next"
+        href="#"
+        class="latest-nav next"
+        :style="{ top: episodeWidth / 2 + 'px' }"
+        @click.prevent="nextBlock"
+      >
         <img src="@/assets/img/arrow-right.svg" alt="">
       </a>
     </div>
@@ -37,6 +51,7 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
 
 import { arcsiItemBaseURL } from '~/constants'
+import { debounceFunction } from '~/plugins/mixinCommonMethods'
 
 const fullConfig = resolveConfig(tailwindConfig)
 const mobileSize = fullConfig.theme.screens.sm
@@ -52,7 +67,8 @@ export default {
       visibleEpisodes: 3,
       sliderPosition: 0,
       episodeWidth: 300,
-      arcsiEpisodes: null
+      arcsiEpisodes: null,
+      resizeTimeout: null
     }
   },
   async fetch () {
@@ -108,6 +124,7 @@ export default {
       if (!window) {
         return false
       }
+      clearTimeout(this.resizeTimeout)
       const windowWidth = window.innerWidth
       const viewport = this.$refs.slider
       if (!viewport) {
@@ -121,6 +138,10 @@ export default {
         this.visibleEpisodes = 2
       }
       this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
+      this.resizeTimeout = setTimeout(() => this.reInitSlider(), 300)
+    },
+    reInitSlider () {
+      this.$refs.episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     },
     previousBlock () {
       const episodes = this.$refs.episodes
@@ -160,7 +181,7 @@ export default {
 }
 
 .latest-nav {
-  @apply absolute top-48;
+  @apply absolute top-48 -mt-2;
   &.previous {
     @apply -left-4;
   }
@@ -168,9 +189,5 @@ export default {
     @apply -right-4;
   }
 }
-
-/* .latest-container {
-  max-height: 75vh;
-} */
 
 </style>
