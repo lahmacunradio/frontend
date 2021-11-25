@@ -44,6 +44,7 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
+      recheckInterval: null,
       nowPlaying: {}
     }
   },
@@ -78,6 +79,7 @@ export default {
   beforeDestroy () {
     // prevent memory leak
     clearInterval(this.interval)
+    clearInterval(this.recheckInterval)
   },
   created () {
     // update the time every minute
@@ -94,11 +96,11 @@ export default {
     checkNowPlaying () {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
-        clearInterval(this.interval)
+        clearInterval(this.recheckInterval)
       }).catch((error) => {
         console.log('Network interrupted stream. Automatically reconnecting shortly...', error)
         this.$sentry.captureException(new Error('Stream interrupted ', error))
-        this.interval = setTimeout(this.checkNowPlaying, 15000)
+        this.recheckInterval = setTimeout(this.checkNowPlaying, 15000)
       })
     },
     groupShowsByDay (shows) {
