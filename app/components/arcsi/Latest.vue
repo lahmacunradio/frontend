@@ -133,10 +133,19 @@ export default {
       }
       if (windowWidth >= parseInt(desktopSize)) {
         this.visibleEpisodes = 3
+        if (this.sliderPosition === this.numberOfEpisodes - 2) {
+          this.sliderPosition = this.sliderPosition - 1
+        }
+        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+          this.sliderPosition = this.sliderPosition - 2
+        }
       } else if (windowWidth <= parseInt(tabletSize)) {
         this.visibleEpisodes = 1
       } else {
         this.visibleEpisodes = 2
+        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+          this.sliderPosition = this.sliderPosition - 1
+        }
       }
       this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
       this.resizeTimeout = setTimeout(() => this.reInitSlider(), 1)
