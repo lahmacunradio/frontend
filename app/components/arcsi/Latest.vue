@@ -115,6 +115,7 @@ export default {
   },
   beforeDestroy () {
     this.arcsiEpisodes = null
+    clearTimeout(this.resizeTimeout)
     if (typeof window !== 'undefined') {
       window.removeEventListener('resize', this.changeBreakpoint)
     }
@@ -138,7 +139,7 @@ export default {
         this.visibleEpisodes = 2
       }
       this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
-      this.resizeTimeout = setTimeout(() => this.reInitSlider(), 300)
+      this.resizeTimeout = setTimeout(() => this.reInitSlider(), 1)
     },
     reInitSlider () {
       this.$refs.episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
@@ -172,7 +173,7 @@ export default {
 .arcsi-slider-wrapper {
   @apply overflow-hidden w-full;
   .arcsi-episodes {
-    transition: all 1s;
+    transition: transform 0.25s ease-out;
     @apply flex items-start w-max;
     .episode-wrap {
       @apply px-2;
