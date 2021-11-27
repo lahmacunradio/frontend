@@ -77,7 +77,8 @@ export default {
   },
   data () {
     return {
-      opened: false
+      opened: false,
+      loadedShow: null
     }
   },
   computed: {
@@ -113,24 +114,21 @@ export default {
       if (!this.show.items) {
         return false
       }
-      const getLastIndex = this.show.items.length - 1
-      const episodeImageFromArcsi = this.show.items?.[getLastIndex]?.image_url
+      const episodeImageFromArcsi = this.loadedShow?.[0]?.image_url
       return episodeImageFromArcsi ? `${mediaServerURL}/${this.show.archive_lahmastore_base_url}/${episodeImageFromArcsi}` : this.show.cover_image_url
     },
     onAirDescription () {
       if (!this.nowPlaying.now_playing && this.show.items) {
         return false
       }
-      const getLastIndex = this.show.items.length - 1
-      const descriptionFromArcsi = this.show.items?.[getLastIndex]?.description
+      const descriptionFromArcsi = this.loadedShow?.[0]?.description
       return descriptionFromArcsi || this.show.description
     },
     latestEpisodeTitle () {
       if (!this.show.items) {
         return this.show.name
       }
-      const getLastIndex = this.show.items.length - 1
-      const episodeTitleFromArcsi = this.show.items?.[getLastIndex]?.name
+      const episodeTitleFromArcsi = this.loadedShow?.[0]?.name
       return episodeTitleFromArcsi ? `${this.show.name} - ${episodeTitleFromArcsi}` : this.show.name
     },
     latestEpisodeLink () {
@@ -138,16 +136,22 @@ export default {
       if (!this.show.items) {
         return baseLink
       }
-      const getLastIndex = this.show.items.length - 1
-      const episodeIdFromArcsi = this.show.items?.[getLastIndex]?.id
+      const episodeIdFromArcsi = this.loadedShow?.[0]?.id
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
+  },
+  mounted () {
+    this.sortItems()
   },
   methods: {
     showAirCheck (showname) {
       if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
+    },
+    sortItems () {
+      const showItems = [...this.show.items]
+      this.loadedShow = showItems.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
     }
   }
 }
