@@ -11,18 +11,29 @@
           class="mb-4"
         >
       </div>
-      <h5 class="py-4">
-        {{ htmlDecoder(news.title.rendered) }}
-      </h5>
     </NuxtLink>
-    <div class="news-text">
-      <div v-sanitize="truncatedNews" />
+    <div class="news-infos pt-4">
+      <NuxtLink :to="'/news/' + news.slug">
+        <h5 class="mb-2">
+          {{ htmlDecoder(news.title.rendered) }}
+        </h5>
+      </NuxtLink>
+      <div class="news-text">
+        <div v-sanitize="truncatedNews" />
+      </div>
+    </div>
+    <div v-if="newsTags" class="tags mt-2">
+      <div v-for="(tag, index) in newsTags" :key="index + tag.id" class="inline-block">
+        <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
+          {{ tag.name }}
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { contentApiURL } from '~/constants'
+import { contentApiURL, tagsURL } from '~/constants'
 
 export default {
   components: {
@@ -36,7 +47,8 @@ export default {
   data () {
     return {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsTags: null
     }
   },
   computed: {
@@ -46,6 +58,9 @@ export default {
   },
   mounted () {
     this.loadNewsImages(this.news.featured_media)
+    if (this.news.tags.length) {
+      this.loadNewsTags(this.news.tags)
+    }
   },
   methods: {
     async loadNewsImages (newsId) {
@@ -53,6 +68,14 @@ export default {
       const responseNews = await this.$axios.get(adress)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
       this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
+    },
+    async loadNewsTags (tagIDs) {
+      const adress = `${tagsURL}?include=${tagIDs}`
+      this.newsTags = await this.$axios.get(adress)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }
@@ -71,6 +94,9 @@ export default {
     min-width: 300px;
     object-fit: cover;
   }
+}
+h5 {
+  line-height: 1.2em;
 }
 .news-text {
   overflow: auto;

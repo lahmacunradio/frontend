@@ -1,26 +1,44 @@
 <template>
   <div>
     <h3 class="title-block">
-      Arcsi's Latest
+      <NuxtLink :to="`/archive/`">
+        Arcsi's Latest
+      </NuxtLink>
     </h3>
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div v-else class="container relative py-10 latest-container">
-      <div v-swiper="swiperOption" class="relative" :loadtheme="false">
-        <div class="swiper-wrapper">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i" class="swiper-slide">
-            <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+    <div class="container relative py-10 latest-container" :class="{'opacity-0': $fetchState.pending} ">
+      <div ref="slider" class="arcsi-slider-wrapper">
+        <div ref="episodes" class="relative arcsi-episodes">
+          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+            <div class="episode-wrap" :style="{ 'width': episodeWidth + 'px' }">
+              <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+            </div>
           </div>
         </div>
       </div>
-      <div slot="button-prev" class="swiper-button-prev">
+      <a
+        v-show="sliderPosition > 0"
+        ref="button-prev"
+        href="#"
+        class="latest-nav previous"
+        :style="{ top: episodeWidth / 2 + 'px' }"
+        @click.prevent="previousBlock"
+      >
         <img src="@/assets/img/arrow-left.svg" alt="">
-      </div>
-      <div slot="button-next" class="swiper-button-next">
+      </a>
+      <a
+        v-show="sliderPosition < numberOfEpisodes - visibleEpisodes"
+        ref="button-next"
+        href="#"
+        class="latest-nav next"
+        :style="{ top: episodeWidth / 2 + 'px' }"
+        @click.prevent="nextBlock"
+      >
         <img src="@/assets/img/arrow-right.svg" alt="">
-      </div>
+      </a>
     </div>
     <div v-if="$fetchState.error" class="py-32 text-center">
       Error happened
@@ -29,44 +47,28 @@
 </template>
 
 <script>
-import { directive } from 'vue-awesome-swiper'
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '~/tailwind.config.js'
+
 import { arcsiItemBaseURL } from '~/constants'
+import { debounceFunction } from '~/plugins/mixinCommonMethods'
+
+const fullConfig = resolveConfig(tailwindConfig)
+const mobileSize = fullConfig.theme.screens.sm
+const tabletSize = fullConfig.theme.screens.md
+const desktopSize = fullConfig.theme.screens.lg
 
 export default {
   name: 'LatestArcsi',
-  directives: {
-    swiper: directive
-  },
   data () {
     return {
       startIndex: 0,
-      preloadImages: false,
       numberOfEpisodes: 9,
-      swiperOption: {
-        preloadImages: false,
-        slidesPerView: 3,
-        spaceBetween: 30,
-        loop: true,
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-        },
-        breakpoints: {
-          1024: {
-            slidesPerView: 3,
-            spaceBetween: 30
-          },
-          768: {
-            slidesPerView: 2,
-            spaceBetween: 30
-          },
-          0: {
-            slidesPerView: 1,
-            spaceBetween: 30
-          }
-        }
-      },
-      arcsiEpisodes: null
+      visibleEpisodes: 3,
+      sliderPosition: 0,
+      episodeWidth: 300,
+      arcsiEpisodes: null,
+      resizeTimeout: null
     }
   },
   async fetch () {
@@ -76,6 +78,9 @@ export default {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))
         this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
       })
+    if (typeof window !== 'undefined') {
+      this.changeBreakpoint()
+    }
   },
   computed: {
     getToday () {
@@ -100,41 +105,99 @@ export default {
       return [...this.$store.state.arcsiShows]
     }
   },
+  mounted () {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', this.changeBreakpoint, { passive: true })
+      setTimeout(() => {
+        this.changeBreakpoint()
+      }, 3000)
+    }
+  },
   beforeDestroy () {
     this.arcsiEpisodes = null
+    clearTimeout(this.resizeTimeout)
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', this.changeBreakpoint)
+    }
   },
   methods: {
+    changeBreakpoint () {
+      if (!window) {
+        return false
+      }
+      clearTimeout(this.resizeTimeout)
+      const windowWidth = window.innerWidth
+      const viewport = this.$refs.slider
+      if (!viewport) {
+        return false
+      }
+      if (windowWidth >= parseInt(desktopSize)) {
+        this.visibleEpisodes = 3
+        if (this.sliderPosition === this.numberOfEpisodes - 2) {
+          this.sliderPosition = this.sliderPosition - 1
+        }
+        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+          this.sliderPosition = this.sliderPosition - 2
+        }
+      } else if (windowWidth <= parseInt(tabletSize)) {
+        this.visibleEpisodes = 1
+      } else {
+        this.visibleEpisodes = 2
+        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+          this.sliderPosition = this.sliderPosition - 1
+        }
+      }
+      this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
+      this.resizeTimeout = setTimeout(() => this.reInitSlider(), 1)
+    },
+    reInitSlider () {
+      this.$refs.episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
+    },
+    previousBlock () {
+      const episodes = this.$refs.episodes
+      if (this.sliderPosition === 0) {
+        episodes.style.transform = 'translateX(0px)'
+        return false
+      }
+      this.sliderPosition--
+      episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
+    },
+    nextBlock () {
+      const episodes = this.$refs.episodes
+      if (this.sliderPosition === this.numberOfEpisodes - this.visibleEpisodes) {
+        return false
+      }
+      this.sliderPosition++
+      episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
+    }
+
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.swiper-button-prev {
-  left: -20px;
+.latest-container {
+  min-height: 24rem;
 }
-.swiper-button-next {
-  right: -20px;
-}
-@media (max-width: $mobile-width) {
-  .swiper-button-prev {
-    left: 20px;
-  }
-  .swiper-button-next {
-    right: 20px;
-  }
-}
-.swiper-button-next, .swiper-button-prev {
-  top: calc(50% - 3rem);
-  img {
-    width: 3rem;
-    max-width: none;
-  }
-  &::after {
-    content: '';
+.arcsi-slider-wrapper {
+  @apply overflow-hidden w-full;
+  .arcsi-episodes {
+    transition: transform 0.25s ease-out;
+    @apply flex items-start w-max;
+    .episode-wrap {
+      @apply px-2;
+    }
   }
 }
-/* .latest-container {
-  max-height: 75vh;
-} */
+
+.latest-nav {
+  @apply absolute top-48 -mt-2;
+  &.previous {
+    @apply -left-4;
+  }
+  &.next {
+    @apply -right-4;
+  }
+}
 
 </style>

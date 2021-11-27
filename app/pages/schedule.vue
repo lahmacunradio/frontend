@@ -3,27 +3,29 @@
     <h3 class="title-block">
       Lahmacun Schedule
     </h3>
-    <div class="container mt-8">
-      <div class="mb-4 border-b days">
-        <ul>
-          <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
-            <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
-              <h4 class="block">
-                {{ day }}
-              </h4>
-              {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-span-2 selectday">
-      <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-        <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
-          <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
+    <client-only>
+      <div class="container mt-8">
+        <div class="mb-4 border-b days">
+          <ul>
+            <li v-for="(day, dayIndex) in dayNames" :key="dayIndex">
+              <div class="px-4 py-2" :class="selectedDay === dayIndex && 'bg-white'" @click="changeDay(dayIndex)">
+                <h4 class="block">
+                  {{ day }}
+                </h4>
+                {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+      <div class="col-span-2 selectday">
+        <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+          <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
+            <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
+          </div>
+        </div>
+      </div>
+    </client-only>
   </div>
 </template>
 

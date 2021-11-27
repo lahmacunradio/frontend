@@ -5,7 +5,9 @@
         <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
       </div>
       <div v-if="sortShowsForSchedule">
-        <ScheduleHome :shows="sortShowsForSchedule" />
+        <client-only>
+          <ScheduleHome :shows="sortShowsForSchedule" />
+        </client-only>
       </div>
     </section>
     <article>
