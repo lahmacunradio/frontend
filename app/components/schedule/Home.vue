@@ -43,7 +43,7 @@ export default {
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      interval: null,
+      checkInterval: null,
       recheckInterval: null,
       nowPlaying: {}
     }
@@ -78,12 +78,12 @@ export default {
   },
   beforeDestroy () {
     // prevent memory leak
-    clearInterval(this.interval)
+    clearInterval(this.checkInterval)
     clearInterval(this.recheckInterval)
   },
   created () {
     // update the time every minute
-    this.interval = setInterval(() => {
+    this.checkInterval = setInterval(() => {
       this.checkNowPlaying()
     }, 60 * 1000)
   },

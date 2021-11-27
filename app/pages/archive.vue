@@ -55,7 +55,6 @@ export default {
     this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
         this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
         this.$nuxt.error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
       })

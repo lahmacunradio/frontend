@@ -39,15 +39,13 @@ export default {
     this.recentNews = await this.$axios.get(`${newsBaseURL}&per_page=100`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$sentry.captureException(new Error('New not found ', error))
+        this.$sentry.captureException(new Error('News not found ', error))
         this.$nuxt.error({ statusCode: 500, message: 'News not found' })
       })
     if (this.allTags) {
       this.allTagsList = await this.$axios.get(`${tagsURL}?include=${this.allTags.toString()}&per_page=100`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
           this.$sentry.captureException(new Error('Tags not found ', error))
           this.$nuxt.error({ statusCode: 500, message: 'Tags not found' })
         })
