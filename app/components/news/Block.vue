@@ -74,7 +74,7 @@ export default {
       this.newsTags = await this.$axios.get(address)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
+          this.$sentry.captureException(new Error('Tag server not available ', error))
         })
     }
   }
