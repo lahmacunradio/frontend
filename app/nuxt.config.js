@@ -47,8 +47,7 @@ export default {
   */
   plugins: [
     '~/plugins/mixinCommonMethods',
-    { src: '~/plugins/vuex-persist', mode: 'client' },
-    { src: '~/plugins/vue-awesome-swiper', mode: 'client' }
+    { src: '~/plugins/vuex-persist', mode: 'client' }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -84,7 +83,7 @@ export default {
     publish_release: true,
     sourceMapStyle: 'hidden-source-map',
     config: {
-      release: process.env.GIT_COMMIT_SHA,
+      release: process.env.GIT_COMMIT_SHA
     },
     tracing: true
   },
