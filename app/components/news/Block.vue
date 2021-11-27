@@ -64,14 +64,14 @@ export default {
   },
   methods: {
     async loadNewsImages (newsId) {
-      const adress = `${contentApiURL}/media/${newsId}`
-      const responseNews = await this.$axios.get(adress)
+      const address = `${contentApiURL}/media/${newsId}`
+      const responseNews = await this.$axios.get(address)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
       this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
     },
     async loadNewsTags (tagIDs) {
-      const adress = `${tagsURL}?include=${tagIDs}`
-      this.newsTags = await this.$axios.get(adress)
+      const address = `${tagsURL}?include=${tagIDs}`
+      this.newsTags = await this.$axios.get(address)
         .then(res => res.data)
         .catch((error) => {
           console.log(error)
