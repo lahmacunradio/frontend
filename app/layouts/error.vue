@@ -28,7 +28,7 @@ export default {
   mounted () {
     this.tryReloadInterval = setInterval(() => {
       window.location.reload()
-    }, 5000)
+    }, 30000)
   },
   beforeDestroy () {
     clearInterval(this.tryReloadInterval)
