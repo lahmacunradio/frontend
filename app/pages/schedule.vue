@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun Schedule
-    </h3>
+    <SubTitle title="Lahmacun Schedule" />
     <client-only>
       <div class="container mt-8">
         <div class="mb-4 border-b days">

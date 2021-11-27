@@ -1,8 +1,7 @@
 <template>
   <div>
-    <ItemsList
-      title="Lahmacun News"
-    />
+    <SubTitle title="Lahmacun News" />
+    <ItemsList/>
 <!--    <h3 class="title-block">-->
 <!--      Lahmacun News-->
 <!--    </h3>-->
@@ -38,10 +37,8 @@
 
 <script>
 import { newsBaseURL } from '~/constants'
-// import ItemsList from '~/components/itemsList/ItemsList'
 
 export default {
-  components: {},
   data () {
     return {
       newsFilteredList: [],

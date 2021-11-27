@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun Archive
-    </h3>
+    <SubTitle title="Lahmacun Archive" />
     <div class="container mt-8">
       <div v-if="defaultEpisodes">
         <AutoCompleteSearch

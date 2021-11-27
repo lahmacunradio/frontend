@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun Community
-    </h3>
+    <SubTitle title="Lahmacun Community" />
     <div class="container">
       <nav class="pt-8">
         <ul class="text-center comunity-navigation">

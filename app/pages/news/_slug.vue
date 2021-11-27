@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/news/`">
-        Lahmacun News
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun News" url="/news/" />
     <div class="container mt-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
@@ -22,7 +18,6 @@
 import { contentApiURL } from '~/constants'
 
 export default {
-  components: {},
   data () {
     return {
       slug: this.$route.params.slug,

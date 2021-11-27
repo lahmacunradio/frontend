@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/photos/`">
-        Lahmacun Photos
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun Photos" url="/photos/" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2">

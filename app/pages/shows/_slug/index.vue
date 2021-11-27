@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/shows/`">
-        Lahmacun Shows
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun Shows" url="/shows/" />
     <div class="container mt-10">
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
