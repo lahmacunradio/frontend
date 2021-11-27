@@ -98,7 +98,6 @@ export default {
         this.nowPlaying = response.data
         clearInterval(this.recheckInterval)
       }).catch((error) => {
-        console.log('Network interrupted stream. Automatically reconnecting shortly...', error)
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.recheckInterval = setTimeout(this.checkNowPlaying, 15000)
       })
