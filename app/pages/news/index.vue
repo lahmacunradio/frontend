@@ -1,10 +1,8 @@
 <template>
   <div>
     <SubTitle title="Lahmacun News" />
-    <ItemsList/>
-<!--    <h3 class="title-block">-->
-<!--      Lahmacun News-->
-<!--    </h3>-->
+    <ItemsList :items="newsFilteredList"/>
+
 <!--    <div class="container">-->
 <!--      <header class="flex flex-row items-center justify-between">-->
 <!--        <input-->
@@ -36,7 +34,7 @@
 </template>
 
 <script>
-import { newsBaseURL } from '~/constants'
+import { contentApiURL, newsBaseURL } from '~/constants'
 
 export default {
   data () {
@@ -47,7 +45,7 @@ export default {
       search: '',
       callBacks: {
         totalNumber: res => parseInt(res.headers['x-wp-total']),
-        fetchNews: res => res.data
+        fetchNews: async res => await this.parseData(res.data)
       },
       placeholder: 'search',
       isLoading: false
@@ -106,10 +104,25 @@ export default {
               : ''
           }`)
         this.isLoading = false
-        return callback(response)
+        return await callback(response)
       } catch (error) {
         this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
+    },
+    async getImage(idNews) {
+      const response = await this.$axios.get(`${contentApiURL}/media/${idNews}`)
+      return {
+        large: response.data?.media_details?.sizes?.large?.source_url || response.data?.source_url,
+        small: response.data?.media_details?.sizes?.medium_large?.source_url || response.data?.source_url
+      }
+    },
+    async parseData(news) {
+      return await Promise.all(news.map(async n => ({
+        title: this.htmlDecoder(n.title.rendered),
+        url: `/news/${n.slug}`,
+        image: await this.getImage(n.featured_media),
+        description: this.truncate(n.excerpt.rendered, 150)
+      })))
     },
     async fetchNews () {
       this.newsFilteredList = await this.useFetch()
