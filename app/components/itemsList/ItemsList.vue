@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h3 class="title-block">
-      {{title}}
-    </h3>
     <div class="container">
       <header class="flex flex-row items-center justify-between">
         <input class="input">
@@ -26,10 +23,10 @@
 <!--          (showing {{ items.length }} episodes)-->
 <!--        </a>-->
 <!--      </div>-->
-<!--      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">-->
-<!--        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">-->
-<!--        <p>Loading...</p>-->
-<!--      </div>-->
+      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -40,16 +37,15 @@ import { newsBaseURL } from '~/constants'
 export default {
   components: {},
   props : {
-    title: {
-      required: true,
-      type: String
+    items: {
+      type: Array,
+      request: true
     }
   },
   data () {
     return {
-      items: [],
       numberOfItems: 12,
-
+      isLoading: true
     }
   },
   // components: {},
@@ -95,13 +91,13 @@ export default {
   //   }
   // },
   async mounted () {
-    this.items = await this.useFetch()
+    this.isLoading = false
+    // this.items = await this.useFetch()
   //   this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
   },
-  // beforeDestroy () {
-  //   this.newsFilteredList = null
-  //   this.numberOfTotal = null
-  // },
+  beforeDestroy () {
+    this.isLoading = true
+  },
   methods: {
     async useFetch() {
       // const callback = this.callBacks[type]
