@@ -49,7 +49,6 @@ export default {
   width: 184.81px;
   height: 88.03px;
   background: #FFFFFF;
-  transform: matrix(0.98, -0.2, 0.22, 0.98, 0, 0);
   display: flex;
   justify-content: center;
   align-items: center;
