@@ -2,7 +2,11 @@
   <div>
     <div class="container">
       <header class="flex flex-row items-center justify-between">
-<!--        <input class="input">-->
+        <input
+          type="search"
+          :placeholder="placeholder"
+          @input="onChange"
+        >
 <!--        <input-->
 <!--          v-model="search"-->
 <!--          class="input"-->
@@ -43,6 +47,12 @@ export default {
     callback: {
       type: Function,
       required: true
+    },
+    searchText: {
+      type: String
+    },
+    placeholder: {
+      type: String
     }
   },
   data () {
@@ -50,9 +60,10 @@ export default {
       numberOfItems: 12,
     }
   },
-  computed: {
-    fetchCount () {
-      return this.newsFilteredList.length + this.numberOfItems
+  methods: {
+    onChange(event) {
+      event.preventDefault()
+      this.$emit('search', event.target.value)
     }
   },
   beforeDestroy () {
@@ -65,7 +76,7 @@ export default {
 .items-container {
   max-width: 100%;
 }
-.input {
+input {
   display: block;
   width: 350px;
   @media (max-width: $mobile-width) {

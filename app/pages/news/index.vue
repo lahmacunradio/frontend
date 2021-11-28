@@ -6,6 +6,8 @@
       :isLoading="isLoading"
       :totalCount="totalCount"
       :callback="fetchNews"
+      @search="onChange"
+      placeholder="Search"
     />
   </div>
 </template>
@@ -19,12 +21,11 @@ export default {
       newsFilteredList: [],
       numberOfItems: 12,
       totalCount: 0,
-      search: '',
+      searchText: '',
       callBacks: {
         totalNumber: res => parseInt(res.headers['x-wp-total']),
         fetchNews: async res => await this.parseData(res.data)
       },
-      placeholder: 'search',
       isLoading: false
     }
   },
@@ -74,8 +75,8 @@ export default {
               ? `&per_page=${this.fetchCount}`
               : ''
           }${
-            this.search.length > 2
-              ? `&search=${this.search}`
+            this.searchText.length > 2
+              ? `&search=${this.searchText}`
               : ''
           }`)
         const news = await callback(response)
@@ -86,10 +87,10 @@ export default {
       }
     },
     async getImage(idNews) {
-      const response = await this.$axios.get(`${contentApiURL}/media/${idNews}`)
+      const { data } = await this.$axios.get(`${contentApiURL}/media/${idNews}`)
       return {
-        large: response.data?.media_details?.sizes?.large?.source_url || response.data?.source_url,
-        small: response.data?.media_details?.sizes?.medium_large?.source_url || response.data?.source_url
+        large: data?.media_details?.sizes?.large?.source_url || data?.source_url,
+        small: data?.media_details?.sizes?.medium_large?.source_url || data?.source_url
       }
     },
     async parseData(news) {
@@ -103,8 +104,9 @@ export default {
     async fetchNews () {
       this.newsFilteredList = await this.useFetch()
     },
-    async onChange () {
-      if (this.search.length > 2 || !this.search) {
+    async onChange (e) {
+      this.searchText = e
+      if (this.searchText.length > 2 || !this.searchText) {
         this.newsFilteredList = []
         this.totalCount = 0
         await this.fetchNews()
