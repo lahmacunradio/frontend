@@ -7,13 +7,6 @@
           :placeholder="placeholder"
           @input="onChange"
         >
-<!--        <input-->
-<!--          v-model="search"-->
-<!--          class="input"-->
-<!--          type="search"-->
-<!--          :placeholder="placeholder"-->
-<!--          @input="onChange"-->
-<!--        >-->
       </header>
       <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         <div v-for="item in items" :key="items.id" class="items-container">
@@ -62,7 +55,6 @@ export default {
   },
   methods: {
     onChange(event) {
-      event.preventDefault()
       this.$emit('search', event.target.value)
     }
   },
@@ -73,6 +65,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+header {
+  padding: 1rem 0
+}
 .items-container {
   max-width: 100%;
 }
