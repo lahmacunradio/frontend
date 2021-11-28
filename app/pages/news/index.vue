@@ -1,35 +1,12 @@
 <template>
   <div>
     <SubTitle title="Lahmacun News" />
-    <ItemsList :items="newsFilteredList"/>
-
-<!--    <div class="container">-->
-<!--      <header class="flex flex-row items-center justify-between">-->
-<!--        <input-->
-<!--          v-model="search"-->
-<!--          class="input"-->
-<!--          type="search"-->
-<!--          :placeholder="placeholder"-->
-<!--          @input="onChange"-->
-<!--        >-->
-<!--      </header>-->
-<!--      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">-->
-<!--        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">-->
-<!--          <NewsBlock :news="news" />-->
-<!--        </div>-->
-<!--      </article>-->
-<!--      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">-->
-<!--        <a href="#" @click.prevent="fetchNews">-->
-<!--          <b>Load {{ numberOfItems }} more episodes</b>-->
-<!--          <br>-->
-<!--          (showing {{ newsFilteredList.length }} episodes)-->
-<!--        </a>-->
-<!--      </div>-->
-<!--      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">-->
-<!--        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">-->
-<!--        <p>Loading...</p>-->
-<!--      </div>-->
-<!--    </div>-->
+    <ItemsList
+      :items="newsFilteredList"
+      :isLoading="isLoading"
+      :totalCount="totalCount"
+      :callback="fetchNews"
+    />
   </div>
 </template>
 
@@ -41,7 +18,7 @@ export default {
     return {
       newsFilteredList: [],
       numberOfItems: 12,
-      numberOfTotal: 0,
+      totalCount: 0,
       search: '',
       callBacks: {
         totalNumber: res => parseInt(res.headers['x-wp-total']),
@@ -80,16 +57,14 @@ export default {
   },
   async mounted () {
     this.newsFilteredList = await this.useFetch()
-    this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
+    this.totalCount = await this.useFetch({ type: 'totalNumber' })
   },
   beforeDestroy () {
     this.newsFilteredList = null
-    this.numberOfTotal = null
+    this.totalCount = null
   },
   methods: {
-    async useFetch({
-                     type = 'fetchNews'
-                   } = {}) {
+    async useFetch({ type = 'fetchNews' } = {}) {
       const callback = this.callBacks[type]
       try {
         this.isLoading = true
@@ -103,8 +78,9 @@ export default {
               ? `&search=${this.search}`
               : ''
           }`)
+        const news = await callback(response)
         this.isLoading = false
-        return await callback(response)
+        return news
       } catch (error) {
         this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
@@ -130,9 +106,9 @@ export default {
     async onChange () {
       if (this.search.length > 2 || !this.search) {
         this.newsFilteredList = []
-        this.numberOfTotal = 0
+        this.totalCount = 0
         await this.fetchNews()
-        this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
+        this.totalCount = await this.useFetch({ type: 'totalNumber' })
       }
     }
   }
