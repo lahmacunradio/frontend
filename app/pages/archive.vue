@@ -12,8 +12,8 @@
           place-holder="Search"
           @update="onUpdate"
         />
-        <NuxtLink to="../weekly-archives" title="Check the latest episodes">
-          <i class="fa fa-calendar" aria-hidden="true" />
+        <NuxtLink to="../weekly-archives" title="Check the weeks' latest episodes">
+          <i class="fa fa-calendar text-2xl" aria-hidden="true" />
         </NuxtLink>
       </div>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
