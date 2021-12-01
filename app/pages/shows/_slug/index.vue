@@ -5,13 +5,17 @@
         Lahmacun Shows
       </NuxtLink>
     </h3>
-    <div class="container mt-10">
+    <div v-if="arcsiInfosBlock" class="container mt-10">
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
             <img :src="arcsiInfosBlock.cover_image_url" :alt="arcsiInfosBlock.name">
-            <Modal :media="arcsiInfosBlock.cover_image_url" :title="arcsiInfosBlock.name"
-                   :description="arcsiInfosBlock.description" :visibility="shadowbox"/>
+            <Modal
+              :media="arcsiInfosBlock.cover_image_url"
+              :title="arcsiInfosBlock.name"
+              :description="arcsiInfosBlock.description"
+              :visibility="shadowbox"
+            />
           </a>
         </div>
         <div class="mb-4 show-description">
@@ -19,33 +23,39 @@
             {{ arcsiInfosBlock.name }}
           </h2>
           <div class="show-infos">
-            <p>Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{
+            <p>
+              Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{
                 removeSeconds(arcsiInfosBlock.start)
               }}–{{ removeSeconds(arcsiInfosBlock.end) }},
               {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span
-                v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)" class="language"/></p>
-            <p v-if="arcsiShowsList && arcsiShowsList.length">
+                v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)"
+                class="language"
+              />
+            </p>
+            <p v-if="arcsiEpisodesList && arcsiEpisodesList.length">
               {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
               Last episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
-                <strong>{{ arcsiShowsList[0].name }}</strong>
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiEpisodesList[0].id.toString()}` }">
+                <strong>{{ arcsiEpisodesList[0].name }}</strong>
               </NuxtLink>
               ,
-              {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
+              {{ $moment(arcsiEpisodesList[0].play_date).fromNow() }}.
             </p>
           </div>
           <div>{{ arcsiInfosBlock.description }}</div>
         </div>
       </div>
-      <div v-if="arcsiShowsList && arcsiShowsList.length">
+      <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
         <h3 class="pb-1 mb-4 text-center border-b border-current">
           Arcsived Shows
         </h3>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">
+          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
             <div>
-              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                        :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <NuxtLink
+                class="block overflow-hidden aspect-ratio-1/1"
+                :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }"
+              >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
@@ -63,7 +73,7 @@
 </template>
 
 <script>
-import { mediaServerURL } from '~/constants'
+import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
 
 export default {
   data () {
@@ -71,8 +81,18 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
       slug: this.$route.params.slug,
+      showObject: null,
       mediaServerURL
     }
+  },
+  async fetch () {
+    /* rework if possible to fetch by slug */
+    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.arcsiInfosBlock.id)
+      .then(res => res.data)
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Episodes not found' })
+      })
   },
   head () {
     return {
@@ -121,10 +141,9 @@ export default {
       }
       return null
     },
-    arcsiShowsList () {
-      if (this.arcsiShows) {
-        const showslist = [...this.arcsiInfosBlock.items]
-        return showslist
+    arcsiEpisodesList () {
+      if (this.arcsiShows && this.showObject?.items) {
+        return this.showObject.items
           .filter(show => show.play_date < this.getToday)
           .filter(show => show.archived === true)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
