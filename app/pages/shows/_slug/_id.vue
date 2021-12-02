@@ -69,11 +69,11 @@
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }"
+                :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>
@@ -87,7 +87,6 @@
 </template>
 
 <script>
-
 import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
 
 export default {
@@ -106,18 +105,18 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisode = await this.$axios.get(`${arcsiItemBaseURL}/${this.id}`)
+    this.arcsiEpisode = await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/episode/${this.id}`)
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi server not available' })
+        this.$nuxt.error({ statusCode: 500, message: 'Arcsi episode server not available' })
       })
     if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
       this.arcsiShow = await this.$axios.get(`${arcsiBaseURL}/show/${this.arcsiEpisode.shows[0].id}`)
         .then(res => res.data)
         .catch((error) => {
           console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Arcsi server not available' })
+          this.$nuxt.error({ statusCode: 500, message: 'Arcsi show server not available' })
         })
     }
   },

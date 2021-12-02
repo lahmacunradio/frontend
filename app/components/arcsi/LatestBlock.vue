@@ -1,11 +1,11 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
-    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
+    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`">
       <div class="mb-4 arcsi-img aspect-ratio-1/1">
         <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
-    <NuxtLink :to="`/shows/${showslug}/${episode.id}`">
+    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`">
       <h5>{{ episode.name }}</h5>
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
@@ -48,6 +48,12 @@ export default {
   computed: {
     episodeImage () {
       return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
+    },
+    episodeLink () {
+      if (!this.episode.play_file_name) {
+        return false
+      }
+      return this.episode.play_file_name.replace('.mp3', '')
     }
   },
   created () {

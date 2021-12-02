@@ -35,7 +35,7 @@
             <p v-if="arcsiEpisodesList && arcsiEpisodesList.length">
               {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
               Last episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiEpisodesList[0].id.toString()}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiEpisodesList[0].play_file_name.replace('.mp3', '')}` }">
                 <strong>{{ arcsiEpisodesList[0].name }}</strong>
               </NuxtLink>
               ,
@@ -54,11 +54,11 @@
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }"
+                :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>

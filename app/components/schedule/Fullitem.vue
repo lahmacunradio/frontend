@@ -142,17 +142,12 @@ export default {
     }
   },
   mounted () {
-    this.sortItems()
   },
   methods: {
     showAirCheck (showname) {
       if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
-    },
-    sortItems () {
-      const showItems = [...this.show.items]
-      this.loadedShow = showItems.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
     }
   }
 }

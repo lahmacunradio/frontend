@@ -18,7 +18,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-span-2 selectday">
+      <div v-if="showsByDate.length" class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
