@@ -26,7 +26,7 @@
               Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
-              {{ show.description }}
+              {{ onAirDescription }}
             </div>
           </div>
         </div>
@@ -121,6 +121,9 @@ export default {
     onAirDescription () {
       if (!this.nowPlaying.now_playing && this.show.items) {
         return false
+      }
+      if (this.nowPlaying?.live?.is_live) {
+        return this.show.description
       }
       const descriptionFromArcsi = this.loadedShow?.[0]?.description
       return descriptionFromArcsi || this.show.description
