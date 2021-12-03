@@ -31,9 +31,9 @@
           Photos
         </NuxtLink>
       </li>
-      <li :class="baseRoute === '/about/' && 'selected'">
-        <NuxtLink to="/about/">
-          About
+      <li :class="baseRoute === '/donate/' && 'selected'">
+        <NuxtLink to="/donate/">
+          Donate
         </NuxtLink>
       </li>
     </ul>
