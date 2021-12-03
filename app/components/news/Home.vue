@@ -60,7 +60,11 @@ export default {
   },
   computed: {
     truncatedNews () {
-      return this.truncate(this.news.excerpt.rendered, 200)
+      if (!this.news && !this.news.excerpt.rendered) {
+        return false
+      }
+      const filterEllipsis = this.news.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
+      return this.truncate(filterEllipsis, 300)
     }
   },
   watch: {
