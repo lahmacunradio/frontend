@@ -33,17 +33,19 @@
           <p>
             <a href="mailto:contact@lahmacun.hu">contact@lahmacun.hu</a>
           </p>
+          <h5 class="mt-4">
+            Impressum
+          </h5>
+          <p>
+            <NuxtLink to="/impressum/">
+              Lahmacun impressum
+            </NuxtLink>
+          </p>
         </div>
       </div>
       <div class="py-8 md:py-4 logos">
         <a href="http://golyapresszo.hu/" target="_blank">
           <img src="@/assets/img/golyalogo-1.png" alt="">
-        </a>
-        <a href="https://inclust.com/" target="_blank">
-          <img src="@/assets/img/inclust_logo.png" alt="">
-        </a>
-        <a href="https://rogueamoeba.com/" target="_blank">
-          <img src="@/assets/img/rogue-amoeba-logo.png" alt="">
         </a>
       </div>
     </div>
