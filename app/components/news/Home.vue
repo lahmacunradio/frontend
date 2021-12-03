@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     truncatedNews () {
-      return this.truncate(this.news.excerpt.rendered, 300)
+      return this.truncate(this.news.excerpt.rendered, 200)
     }
   },
   watch: {

@@ -74,7 +74,7 @@ export default {
       if (!this.donateContent) {
         return 'No content'
       }
-      return this.donateContent.content.rendered.replace('target="_top"', 'target="_blank"')
+      return this.donateContent.content.rendered.replaceAll('target="_top"', 'target="_blank"')
     }
   }
 }
