@@ -4,7 +4,7 @@
       Lahmacun Archive
     </h3>
     <div class="container mt-8">
-      <div v-if="defaultEpisodes">
+      <div v-if="defaultEpisodes" class="flex justify-between">
         <AutoCompleteSearch
           :default-items="defaultEpisodes"
           suggestion-attribute="name"
@@ -12,6 +12,9 @@
           place-holder="Search"
           @update="onUpdate"
         />
+        <NuxtLink to="../weekly-archives" title="Check the weeks' latest episodes">
+          <i class="fa fa-calendar text-2xl" aria-hidden="true" />
+        </NuxtLink>
       </div>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
