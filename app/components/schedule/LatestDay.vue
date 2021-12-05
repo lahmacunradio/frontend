@@ -1,6 +1,6 @@
 <template>
   <div :ref="dayNamesShort[index]" class="flex justify-items-start items-stretch mb-6">
-    <a href="#" class="border-black border-t border-b px-4 py-4 w-1/3" @click.prevent="openDay()">
+    <a href="#" class="border-black border-t border-b px-4 py-4 w-1/4" @click.prevent="openDay()">
       <div class="flex justify-between items-center">
         <h5>
           <span class="md:block hidden">

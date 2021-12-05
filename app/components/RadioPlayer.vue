@@ -67,7 +67,7 @@
                   </h4>
                 </div>
               </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
                 <div class="radio-control-volume-slider">
                   <vue-slider
                     v-model="volume"
@@ -114,7 +114,7 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock hidden xsm:block">
+        <div class="sand-clock hidden sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
