@@ -317,6 +317,7 @@ export default {
 
 <style lang="scss" scoped>
 h5 {
+  line-height: 1.2em;
   a {
     color: $black-color;
     &:hover {

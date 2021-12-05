@@ -114,8 +114,8 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock">
-          <IconSandclock :progress="time_percent" :live="np.live.is_live.length ? true : false" />
+        <div class="sand-clock hidden xsm:block">
+          <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
     </div>
@@ -493,6 +493,9 @@ export default {
 <style lang="scss" scoped>
 .radio-player-widget {
     min-width: 300px;
+  @media (max-width: $small-width) {
+    min-width: auto;
+  }
     max-width: 400px;
     width: 100%;
     .now-playing-details {
@@ -535,7 +538,7 @@ export default {
             white-space: nowrap;
             &:hover {
                 /* text-overflow: clip;
-                white-space: normal; 
+                white-space: normal;
                 word-break: break-all; */
             }
             a {
@@ -673,6 +676,12 @@ a.programimage {
 .play-volume-controls {
   position: relative;
   width: 250px;
+  @media (max-width: $notebook-width) {
+    width: auto;
+  }
+  @media (max-width: $mobile-width) {
+    width: auto;
+  }
 }
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
@@ -722,12 +731,20 @@ a.programimage {
   @media (max-width: $mobile-width) {
       width: 5rem;
     }
+  @media (max-width: $small-width) {
+    min-width: auto;
+    width: 4.5rem;
+  }
   img {
     padding: 0 0.75rem;
     max-height: 65px;
     @media (max-width: $mobile-width) {
       height: 65px;
       padding: 0 1rem 0 0;
+    }
+    @media (max-width: $small-width) {
+      height: 55px;
+      padding: 0 0.5rem 0 0;
     }
   }
 }

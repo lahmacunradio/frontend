@@ -1,17 +1,17 @@
 <template>
-  <header class="flex-row-reverse items-center justify-between px-4 py-4 bg-white md:flex md:flex-row">
-    <div class="items-center md:flex">
+  <header class="flex-row-reverse items-center justify-between px-4 py-2 xsm:py-4 bg-white md:flex md:flex-row">
+    <div class="items-center flex mb-4 xsm:mb-0 xsm:overflow-visible xsm:overflow-hidden">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
-      <div class="my-4 md:mr-8">
+      <div class=" mt-2 xsm:my-4 md:mr-8">
         <client-only>
           <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
         </client-only>
       </div>
     </div>
     <HeadNavigation />
-    <div id="time">
+    <div id="time" class="hidden md:block">
       <div class="currenttime">
         {{ timestamp }} <br class="block xl:hidden">CET
       </div>
@@ -40,8 +40,7 @@ export default {
   methods: {
     getNow () {
       const today = new Date()
-      const time = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0')
-      this.timestamp = time
+      this.timestamp = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0')
     }
 
   }
@@ -54,6 +53,10 @@ export default {
       align-content: center;
       .logo {
         min-width: 6rem;
+        @media (max-width: $small-width) {
+          min-width: 4.5rem;
+          width: 4.5rem;
+        }
       }
       .currenttime {
         font-size: 1.2rem;

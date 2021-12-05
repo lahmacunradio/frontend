@@ -7,7 +7,7 @@
     </h3>
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
-        <NuxtLink :to="`/shows/${slug}`">
+        <NuxtLink :to="`/shows/${slug}`" class="block">
           <div class="pb-6">
             <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
           </div>
