@@ -32,16 +32,16 @@
         </div>
         <div v-else-if="opened" class="xsm:flex">
           <div class="mr-4 onair-image">
-            <NuxtLink :to="latestEpisodeLink" class="block mb-2">
-              <img :src="latestEpisodeImage" :alt="show.name">
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url" class="block mb-2">
+              <img :src="show.cover_image_url" :alt="show.name">
             </NuxtLink>
           </div>
           <div class="onair-infos">
-            <NuxtLink :to="latestEpisodeLink" class="block mb-2">
-              <b>{{ latestEpisodeTitle }} </b>
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url" class="block mb-2">
+              <b>{{ show.name }} </b>
             </NuxtLink>
             <div class="text-sm description">
-              {{ onAirDescription }}
+              {{ show.description }}
             </div>
           </div>
         </div>
@@ -62,8 +62,6 @@
 </template>
 
 <script>
-import { mediaServerURL } from '~/constants'
-
 export default {
   props: {
     show: {
@@ -98,7 +96,7 @@ export default {
       if (!this.nowPlaying.now_playing) {
         return false
       } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.song?.title
+        return this.nowPlaying?.live?.song?.title || 'Live stream'
       } else {
         return this.nowPlaying?.now_playing?.song?.title
       }
@@ -107,19 +105,25 @@ export default {
       if (!this.nowPlaying.now_playing) {
         return false
       }
-      const streamImage = this.nowPlaying.now_playing?.song?.art
+      let streamImage
+      streamImage = this.nowPlaying.now_playing?.song?.art
+      if (this.nowPlaying.live.is_live) {
+        streamImage = this.show.cover_image_url
+      }
       return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
     },
     latestEpisodeImage () {
       if (!this.show.items) {
         return false
       }
-      const episodeImageFromArcsi = this.loadedShow?.[0]?.image_url
-      return episodeImageFromArcsi ? `${mediaServerURL}/${this.show.archive_lahmastore_base_url}/${episodeImageFromArcsi}` : this.show.cover_image_url
+      return this.show.cover_image_url
     },
     onAirDescription () {
       if (!this.nowPlaying.now_playing && this.show.items) {
         return false
+      }
+      if (this.nowPlaying?.live?.is_live) {
+        return this.show.description
       }
       const descriptionFromArcsi = this.loadedShow?.[0]?.description
       return descriptionFromArcsi || this.show.description

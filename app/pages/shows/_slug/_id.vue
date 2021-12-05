@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-      <div v-if="arcsiShow" class="py-8">
+      <div v-if="arcsiShow && otherEpisodes.length" class="py-8">
         <h4 class="pb-1 mb-4 text-center border-b border-current">
           Other Episodes from {{ arcsiShow.name }}
         </h4>

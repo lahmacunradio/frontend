@@ -189,6 +189,7 @@ span.moresign {
 
 ::-webkit-scrollbar {
   width: 0.5rem;
+  height: 0.5rem;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -196,6 +197,8 @@ span.moresign {
 ::-webkit-scrollbar-thumb {
   background: $black-color;
   width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 2rem;
 }
 
 h3.title-block {
