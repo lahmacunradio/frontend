@@ -46,20 +46,15 @@ export default {
     },
     placeholder: {
       type: String
-    }
-  },
-  data () {
-    return {
-      numberOfItems: 12,
+    },
+    displayCount: {
+      type: Number,
     }
   },
   methods: {
     onChange(event) {
       this.$emit('search', event.target.value)
     }
-  },
-  beforeDestroy () {
-    // this.isLoading = true
   },
 }
 </script>

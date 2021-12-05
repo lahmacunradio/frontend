@@ -19,7 +19,7 @@ export default {
   data () {
     return {
       newsFilteredList: [],
-      numberOfItems: 12,
+      numberOfItems: 9,
       totalCount: 0,
       searchText: '',
       callBacks: {
