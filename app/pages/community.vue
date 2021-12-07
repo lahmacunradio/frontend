@@ -64,38 +64,63 @@
         <article id="base-page" ref="base">
           <div v-if="lahmaBase">
             <h2>{{ htmlDecoder(lahmaBase.title.rendered) }}</h2>
-            <div v-sanitize="[sanitizeOptions, lahmaBaseResults]" class="community-page-content" />
+            <div class="md:flex">
+              <div v-if="lahmaBaseFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+                <img :src="lahmaBaseFeaturedImage.source_url" :alt="htmlDecoder(lahmaBase.title.rendered)">
+              </div>
+              <div v-sanitize="[sanitizeOptions, lahmaBaseResults]" class="community-page-content" />
+            </div>
           </div>
         </article>
         <article id="community-page" ref="community">
           <div v-if="communitySection">
             <h2>{{ htmlDecoder(communitySection.title.rendered) }}</h2>
-            <div v-sanitize="[sanitizeOptions, communityResults]" class="community-page-content" />
+            <div class="md:flex">
+              <div v-if="communityFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+                <img :src="communityFeaturedImage.source_url" :alt="htmlDecoder(communitySection.title.rendered)">
+              </div>
+              <div v-sanitize="[sanitizeOptions, communityResults]" class="community-page-content" />
+            </div>
           </div>
         </article>
         <article id="events-page" ref="events">
           <div v-if="eventsSection">
             <h2>{{ htmlDecoder(eventsSection.title.rendered) }}</h2>
-            <div v-sanitize="[sanitizeOptions, eventsSectionResults]" class="community-page-content" />
+            <div class="md:flex">
+              <div v-if="eventsFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+                <img :src="eventsFeaturedImage.source_url" :alt="htmlDecoder(eventsSection.title.rendered)">
+              </div>
+              <div v-sanitize="[sanitizeOptions, eventsSectionResults]" class="community-page-content" />
+            </div>
           </div>
         </article>
         <article id="press-page" ref="press">
           <div v-if="pressSection">
             <h2>{{ htmlDecoder(pressSection.title.rendered) }}</h2>
-            <div v-sanitize="[sanitizeOptions, pressSectionResults]" class="community-page-content" />
+            <div class="md:flex">
+              <div v-if="pressFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+                <img :src="pressFeaturedImage.source_url" :alt="htmlDecoder(pressSection.title.rendered)">
+              </div>
+              <div v-sanitize="[sanitizeOptions, pressSectionResults]" class="community-page-content" />
+            </div>
           </div>
         </article>
         <article id="labs-page" ref="labs">
           <div v-if="labsSection">
             <h2>{{ htmlDecoder(labsSection.title.rendered) }}</h2>
-            <div v-sanitize="[sanitizeOptions, labsSectionResults]" class="community-page-content" />
+            <div class="md:flex">
+              <div v-if="labsFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+                <img :src="labsFeaturedImage.source_url" :alt="htmlDecoder(labsSection.title.rendered)">
+              </div>
+              <div v-sanitize="[sanitizeOptions, labsSectionResults]" class="community-page-content" />
+            </div>
           </div>
         </article>
         <article id="recipe-page" ref="recipe">
           <div v-if="recipeSection">
             <h2>{{ htmlDecoder(recipeSection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="recipeFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3">
+              <div v-if="recipeFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="recipeFeaturedImage.source_url" :alt="htmlDecoder(recipeSection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, recipeSectionResults]" class="community-page-content" />
@@ -127,13 +152,17 @@ export default {
     return {
       callForShows: null,
       lahmaBase: null,
+      lahmaBaseFeaturedImage: null,
       communitySection: null,
+      communityFeaturedImage: null,
       eventsSection: null,
+      eventsFeaturedImage: null,
       pressSection: null,
+      pressFeaturedImage: null,
       labsSection: null,
+      labsFeaturedImage: null,
       recipeSection: null,
       recipeFeaturedImage: null,
-
       favouritesContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup'],
@@ -168,6 +197,14 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Lahma Base not available' })
       })
+    if (this.lahmaBase && this.lahmaBase.featured_media !== 0) {
+      this.lahmaBaseFeaturedImage = await this.$axios.get(mediaURL + `/${this.lahmaBase.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 500, message: 'Base Image not available' })
+        })
+    }
     // communitySection
     this.communitySection = await this.$axios.get(`${communitySectionURL}`)
       .then((res) => {
@@ -179,6 +216,14 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Community Section not available' })
       })
+    if (this.communitySection && this.communitySection.featured_media !== 0) {
+      this.communityFeaturedImage = await this.$axios.get(mediaURL + `/${this.communitySection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+        })
+    }
     // eventsSection
     this.eventsSection = await this.$axios.get(`${eventsSectionURL}`)
       .then((res) => {
@@ -190,6 +235,14 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Events Section not available' })
       })
+    if (this.eventsSection && this.eventsSection.featured_media !== 0) {
+      this.eventsFeaturedImage = await this.$axios.get(mediaURL + `/${this.eventsSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+        })
+    }
     // pressSection
     this.pressSection = await this.$axios.get(`${pressSectionURL}`)
       .then((res) => {
@@ -201,6 +254,14 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Press Section not available' })
       })
+    if (this.pressSection && this.pressSection.featured_media !== 0) {
+      this.pressFeaturedImage = await this.$axios.get(mediaURL + `/${this.pressSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+        })
+    }
     // labsSection
     this.labsSection = await this.$axios.get(`${labsSectionURL}`)
       .then((res) => {
@@ -212,6 +273,15 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 500, message: 'Labs Section not available' })
       })
+    if (this.labsSection && this.labsSection.featured_media !== 0) {
+      this.labsFeaturedImage = await this.$axios.get(mediaURL + `/${this.recipeSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 500, message: 'Labs Image not available' })
+        })
+    }
+
     // recipeSection
     this.recipeSection = await this.$axios.get(`${recipeSectionURL}`)
       .then((res) => {
