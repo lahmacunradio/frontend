@@ -5,7 +5,7 @@
         <b>{{ episode.shows[0].name }}</b>
       </div>
       <div class="arcsi-img aspect-ratio-1/1">
-        <img class="block" :src="episodeImage">
+        <img class="block" :src="episodeImage" :alt="episode.name">
       </div>
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}/${episode.id}`">

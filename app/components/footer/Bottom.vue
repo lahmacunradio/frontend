@@ -34,13 +34,10 @@
             <a href="mailto:contact@lahmacun.hu">contact@lahmacun.hu</a>
           </p>
           <h5 class="mt-4">
-            Impressum
-          </h5>
-          <p>
             <NuxtLink to="/impressum/">
-              Lahmacun impressum
+              Impressum
             </NuxtLink>
-          </p>
+          </h5>
         </div>
       </div>
       <div class="py-8 md:py-4 logos">
