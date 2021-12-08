@@ -172,7 +172,7 @@ export default {
     }
     this.setMetaData()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-    if (!(navigator.vendor.match(/apple/i) || '').length > 0) {
+    if (!this.isSafari) {
       this.pauseArcsi()
     }
   },
