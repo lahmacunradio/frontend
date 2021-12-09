@@ -7,6 +7,7 @@
         preload="metadata"
         :title="episode.shows[0].name + ' - ' + episode.name"
         :src="source"
+        :autoplay="isSafari"
         @play="setPlayState()"
         @pause="setPauseState()"
         @loadedmetadata="getDuration()"
@@ -21,8 +22,8 @@
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
       <div class="flex pt-4 pb-2 md:py-4">
-        <button class="w-4 mr-4" @click="toggleArcsi">
-          <span v-if="arcsiIsPlaying && seek === 0">
+        <button class="w-4 mr-4 cursor-pointer" @click="toggleArcsi">
+          <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
           </span>
           <span v-else-if="arcsiIsPlaying">
@@ -75,7 +76,7 @@
         <input
           id="volumeRange"
           v-model="currentVolume"
-          class="align-text-top"
+          class="align-middle"
           type="range"
           min="0"
           max="1"
@@ -136,8 +137,7 @@ export default {
         return false
       }
       const showID = this.episode?.shows?.[0].id
-      const showObject = this.arcsiList?.find(show => show.id === showID)
-      return showObject
+      return this.arcsiList?.find(show => show.id === showID)
     },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
@@ -147,6 +147,9 @@ export default {
         return false
       }
       return this.$store.state.player.isArcsiPlaying
+    },
+    isSafari () {
+      return (navigator.vendor.match(/apple/i) || '').length > 0
     }
   },
   watch: {
@@ -169,6 +172,9 @@ export default {
     }
     this.setMetaData()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+    if (!this.isSafari) {
+      this.pauseArcsi()
+    }
   },
   beforeUpdate () {
     if (this.duration === 0) {
@@ -317,6 +323,7 @@ export default {
 
 <style lang="scss" scoped>
 h5 {
+  line-height: 1.2em;
   a {
     color: $black-color;
     &:hover {
@@ -373,5 +380,22 @@ h5 {
       }
     }
 }
+
+/* Only for Safari  */
+@media not all and (min-resolution:.001dpcm){ @supports (-webkit-appearance:none) {
+  #myVolume {
+    input[type="range" i]::-webkit-slider-thumb {
+      opacity: 1;
+    }
+  }
+  #volumeRange {
+    height: 0.4rem;
+    border-radius: 1rem;
+    -webkit-appearance: none !important;
+    appearance: none;
+    background-color: $black-color;
+
+  }
+}}
 
 </style>

@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="flex justify-between w-full schedule-infos">
-        <div v-if="showAirCheck(show.name)" class="flex">
+        <div v-if="showAirCheck(show.name)" class="xsm:flex">
           <div class="mr-4 onair-image">
             <img :src="onAirImage" :alt="show.name">
           </div>
@@ -26,11 +26,11 @@
               Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
-              {{ show.description }}
+              {{ onAirDescription }}
             </div>
           </div>
         </div>
-        <div v-else-if="opened" class="flex">
+        <div v-else-if="opened" class="xsm:flex">
           <div class="mr-4 onair-image">
             <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url" class="block mb-2">
               <img :src="show.cover_image_url" :alt="show.name">
@@ -122,6 +122,9 @@ export default {
       if (!this.nowPlaying.now_playing && this.show.items) {
         return false
       }
+      if (this.nowPlaying?.live?.is_live) {
+        return this.show.description
+      }
       const descriptionFromArcsi = this.loadedShow?.[0]?.description
       return descriptionFromArcsi || this.show.description
     },
@@ -179,8 +182,11 @@ export default {
     .onair-image {
         width: 150px;
         flex-shrink: 0;
-        @media (max-width: $mobile-width) {
+        @media (min-width: $small-width) and (max-width: $mobile-width) {
             width: 100px;
+        }
+        @media (max-width: $small-width) {
+            margin: 1rem 0;
         }
     }
     .onair-infos {

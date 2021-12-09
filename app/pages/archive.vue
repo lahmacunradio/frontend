@@ -23,7 +23,7 @@
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
+      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
         <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
           <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
