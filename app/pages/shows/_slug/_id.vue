@@ -69,11 +69,11 @@
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }"
+                :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.play_file_name.replace('.mp3', '')}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
+import { arcsiBaseURL, mediaServerURL } from '~/constants'
 
 export default {
   components: {
@@ -183,7 +183,7 @@ export default {
         return false
       }
       return this.arcsiShow.items
-        .filter(item => item.id.toString() !== this.id)
+        .filter(item => item.id !== this.arcsiEpisode.id)
         .filter(item => item.play_date < this.getToday)
         .filter(item => item.archived === true)
     }
@@ -196,6 +196,10 @@ export default {
       this.$store.commit('player/isArcsiPlaying', true)
       this.$store.commit('player/isArcsiVisible', true)
       this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
+    },
+    getCorrectSlug (item) {
+      const processedName = item.toLowerCase()
+      return processedName.replace('.mp3', '')
     }
   }
 }
