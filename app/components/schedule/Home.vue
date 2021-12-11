@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full overflow-hidden bg-gray-300">
+  <div class="h-full overflow-hidden">
     <div class="text-center schedule-head">
       <div class="infos title">
         <nuxt-link to="/schedule">
@@ -142,6 +142,7 @@ a {
   height: calc(100% - 50px);
   max-height: 450px;
   overflow: auto;
+  background: rgba(255, 255, 255, 0.3);
   &::-webkit-scrollbar-track {
     background: transparent;
   }
@@ -197,4 +198,3 @@ a {
 }
 
 </style>
-
