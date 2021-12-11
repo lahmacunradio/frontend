@@ -127,7 +127,8 @@ a {
   }
 }
 .schedule-head {
-  background: $lahma-pink;
+  background: $black-color;
+  color: white;
   h3 {
     margin: 0 0.5rem;
     padding: 0.5rem;
@@ -142,7 +143,6 @@ a {
   height: calc(100% - 50px);
   max-height: 450px;
   overflow: auto;
-  background: rgba(255, 255, 255, 0.3);
   &::-webkit-scrollbar-track {
     background: transparent;
   }
