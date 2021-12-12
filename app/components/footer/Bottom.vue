@@ -40,7 +40,8 @@
           </h5>
         </div>
       </div>
-      <div class="py-8 md:py-4 logos">
+      <div v-if="false" class="py-8 md:py-4 logos">
+        {{ /* no sponsors for now */ }}
         <a href="http://golyapresszo.hu/" target="_blank">
           <img src="@/assets/img/golyalogo-1.png" alt="">
         </a>

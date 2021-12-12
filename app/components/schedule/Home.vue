@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full overflow-hidden bg-gray-300">
+  <div class="h-full overflow-hidden">
     <div class="text-center schedule-head">
       <div class="infos title">
         <nuxt-link to="/schedule">
@@ -127,7 +127,8 @@ a {
   }
 }
 .schedule-head {
-  background: $lahma-pink;
+  background: $black-color;
+  color: white;
   h3 {
     margin: 0 0.5rem;
     padding: 0.5rem;
@@ -197,4 +198,3 @@ a {
 }
 
 </style>
-

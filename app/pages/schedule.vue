@@ -26,13 +26,6 @@
         </div>
       </div>
     </client-only>
-    <div class="mt-8 p-8 container text-center border-t">
-      <NuxtLink to="../weekly-archives" class="">
-        <h4 class="font-bold">
-          Latest Episodes in Weekly view
-        </h4>
-      </NuxtLink>
-    </div>
   </div>
 </template>
 
