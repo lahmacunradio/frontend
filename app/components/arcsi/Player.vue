@@ -233,6 +233,14 @@ export default {
       await this.audio?.play()
       this.setPlayState()
       this.setMetaData()
+
+      //Google Analytics 4 event
+      gtag('event', 'Arcsi play', {
+        'Show': this.episode.name,
+        'Episode': this.episode.shows[0].name
+      });
+
+
     },
     pauseArcsi () {
       if (this.arcsiIsPlaying) {
