@@ -593,7 +593,6 @@ export default {
         flex-direction: row;
         width: 100%;
         min-width: 300px;
-        margin-right: 1rem;
         @media (max-width: $mobile-width) {
           margin-right: 0;
           min-width: auto;

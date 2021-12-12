@@ -48,8 +48,9 @@
           </li>
         </ul>
       </nav>
-      <div v-if="$fetchState.pending" class="text-center">
-        Loading...
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <p>Loading...</p>
       </div>
       <div class="italic text-center my-8 px-4">
         <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018.</h4>
@@ -274,7 +275,7 @@ export default {
         this.$nuxt.error({ statusCode: 500, message: 'Labs Section not available' })
       })
     if (this.labsSection && this.labsSection.featured_media !== 0) {
-      this.labsFeaturedImage = await this.$axios.get(mediaURL + `/${this.recipeSection.featured_media}`)
+      this.labsFeaturedImage = await this.$axios.get(mediaURL + `/${this.labsSection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
           console.log(error)
