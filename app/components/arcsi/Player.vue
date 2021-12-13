@@ -236,8 +236,8 @@ export default {
 
       //Google Analytics 4 event
       gtag('event', 'Arcsi play', {
-        'Show': this.episode.name,
-        'Episode': this.episode.shows[0].name
+        'Show': this.episode.shows[0].name,
+        'Episode': this.episode.name
       });
 
 
