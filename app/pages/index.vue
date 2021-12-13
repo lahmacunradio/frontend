@@ -29,7 +29,7 @@ export default {
       return this.$store.state.arcsiShows
     },
     sortShowsForSchedule () {
-      return [...this.arcsishows].sort((a, b) => parseInt(a.start) - parseInt(b.start)).sort((a, b) => a.day - b.day)
+      return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
     newsList () {
       return this.$store.state.newsList

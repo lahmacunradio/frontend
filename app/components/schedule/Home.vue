@@ -103,9 +103,12 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
+      const latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut')).sort((a, b) => b.items[0].id - a.items[0].id).splice(1)
+      const latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek')).sort((a, b) => b.items[0].id - a.items[0].id).splice(1)
+      const filteredShows = shows.filter(val => !latestRareThursday.includes(val)).filter(val => !latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
-        shows.forEach((show) => {
+        filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
           if (show.day - 1 === i) {
             list[i].push(show)

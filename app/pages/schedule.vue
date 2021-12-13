@@ -70,7 +70,7 @@ export default {
       return this.$store.state.arcsiShows
     },
     sortShowsForSchedule () {
-      return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start, 10) - parseInt(b.start, 10))
+      return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
     getToday () {
       const d = new Date()
