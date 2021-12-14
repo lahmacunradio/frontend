@@ -4,7 +4,7 @@
       Lahmacun Archive
     </h3>
     <div class="container mt-8">
-      <div v-if="defaultEpisodes">
+      <div v-if="defaultEpisodes" class="flex justify-between">
         <AutoCompleteSearch
           :default-items="defaultEpisodes"
           suggestion-attribute="name"
@@ -20,7 +20,7 @@
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <article class="grid gap-4 py-8 md:grid-cols-2 lg:grid-cols-4">
+      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
         <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
           <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>

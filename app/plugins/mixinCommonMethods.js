@@ -29,7 +29,11 @@ export function removeSeconds (time) {
 }
 
 export function truncate (text, limit = 200) {
-  return text.slice(0, limit) + (limit < text.length ? '...' : '')
+  if (text.length <= limit) {
+    return text
+  }
+  return text.slice(0, limit).split(' ').slice(0, -1).join(' ') +
+    (limit < text.length ? '...' : '')
 }
 
 export function htmlDecoder (string) {

@@ -14,6 +14,9 @@
         />
       </div>
       <!-- Make a listing component -->
+      <div class="mt-8 mb-4 title">
+        <h2>Active Shows</h2>
+      </div>
       <div v-if="arcsiShowsList.length">
         <ShowsLister :shows="arcsiShowsList" />
       </div>
@@ -22,8 +25,8 @@
           No matching Shows found
         </p>
       </div>
-      <div class="my-8 title">
-        <h1>Past Shows</h1>
+      <div class="mt-8 mb-4 title">
+        <h2>Past Shows</h2>
       </div>
       <div v-if="pastShowsList.length">
         <ShowsLister :shows="pastShowsList" />

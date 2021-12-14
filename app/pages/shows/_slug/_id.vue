@@ -7,7 +7,7 @@
     </h3>
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
-        <NuxtLink :to="`/shows/${slug}`">
+        <NuxtLink :to="`/shows/${slug}`" class="block">
           <div class="pb-6">
             <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
           </div>
@@ -51,7 +51,7 @@
                   <i>Episode is now in the Arcsi player...</i>
                 </div>
                 <div v-else>
-                  <a v-if="fullEpisodeTitle" href="#" @click.prevent="playArcsi()">
+                  <a v-if="fullEpisodeTitle" href="#" class="cursor-pointer" @click.prevent="playArcsi()">
                     <i class="fa fa-play" aria-hidden="true" /> Play {{ fullEpisodeTitle }}
                   </a>
                 </div>
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-      <div v-if="arcsiShow" class="py-8">
+      <div v-if="arcsiShow && otherEpisodes.length" class="py-8">
         <h4 class="pb-1 mb-4 text-center border-b border-current">
           Other Episodes from {{ arcsiShow.name }}
         </h4>

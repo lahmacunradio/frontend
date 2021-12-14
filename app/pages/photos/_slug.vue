@@ -43,7 +43,7 @@ export default {
     }
   },
   async fetch () {
-    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}`)
+    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}?per_page=100`)
       .then(res => res.data[0])
       .catch((error) => {
         this.$sentry.captureException(new Error('Photos not found ', error))

@@ -67,7 +67,7 @@
                   </h4>
                 </div>
               </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos">
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
                 <div class="radio-control-volume-slider">
                   <vue-slider
                     v-model="volume"
@@ -114,8 +114,8 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock">
-          <IconSandclock :progress="time_percent" :live="np.live.is_live.length ? true : false" />
+        <div class="sand-clock hidden sm:block">
+          <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
     </div>
@@ -371,15 +371,14 @@ export default {
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      /* Google tags
-            if (this.show_check) {
-                gtag('event', 'Radio play', {
-                    'event_category': this.show_title,
-                    'event_label': 'Play state',
-                    'value': 1,
-                });
-            }
-            */
+      //Google Analytics 4 event: only send if it's a regular show on air
+      if(this.show_check){
+        gtag('event', 'Radio play', {
+          'Show': this.show_title,
+          'Episode': this.show_subtitle
+        });
+      }
+      
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
@@ -493,6 +492,9 @@ export default {
 <style lang="scss" scoped>
 .radio-player-widget {
     min-width: 300px;
+  @media (max-width: $small-width) {
+    min-width: auto;
+  }
     max-width: 400px;
     width: 100%;
     .now-playing-details {
@@ -590,7 +592,6 @@ export default {
         flex-direction: row;
         width: 100%;
         min-width: 300px;
-        margin-right: 1rem;
         @media (max-width: $mobile-width) {
           margin-right: 0;
           min-width: auto;
@@ -673,6 +674,12 @@ a.programimage {
 .play-volume-controls {
   position: relative;
   width: 250px;
+  @media (max-width: $notebook-width) {
+    width: auto;
+  }
+  @media (max-width: $mobile-width) {
+    width: auto;
+  }
 }
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
@@ -722,12 +729,20 @@ a.programimage {
   @media (max-width: $mobile-width) {
       width: 5rem;
     }
+  @media (max-width: $small-width) {
+    min-width: auto;
+    width: 4.5rem;
+  }
   img {
     padding: 0 0.75rem;
     max-height: 65px;
     @media (max-width: $mobile-width) {
       height: 65px;
       padding: 0 1rem 0 0;
+    }
+    @media (max-width: $small-width) {
+      height: 55px;
+      padding: 0 0.5rem 0 0;
     }
   }
 }
