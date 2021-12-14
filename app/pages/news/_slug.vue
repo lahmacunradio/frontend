@@ -35,7 +35,7 @@ export default {
       .then(res => res.data[0])
       .catch((error) => {
         this.$sentry.captureException(new Error('News not found ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'News not found' })
+        this.$nuxt.error({ statusCode: 404, message: 'News not found' })
       })
   },
   head () {

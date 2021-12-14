@@ -33,13 +33,13 @@ export default {
       .then(res => res.data[0].id)
       .catch((error) => {
         this.$sentry.captureException(new Error('No tags ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'No tags' })
+        this.$nuxt.error({ statusCode: 404, message: 'No tags' })
       })
     this.tagsPosts = await this.$axios.get(`${contentApiURL}/posts?tags=${tagId}&per_page=100`)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('No tags ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'No tags' })
+        this.$nuxt.error({ statusCode: 404, message: 'No tags' })
       })
   },
   head () {

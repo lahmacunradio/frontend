@@ -47,7 +47,7 @@ export default {
       .then(res => res.data[0])
       .catch((error) => {
         this.$sentry.captureException(new Error('Photos not found ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'Photos not available' })
+        this.$nuxt.error({ statusCode: 404, message: 'Photos not available' })
       })
   },
   head () {

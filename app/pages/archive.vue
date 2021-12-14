@@ -56,7 +56,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
       })
     this.arcsiEpisodes = this.defaultEpisodes
   },

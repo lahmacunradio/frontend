@@ -34,7 +34,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Photo Galleries not found ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'Photos not reachable' })
+        this.$nuxt.error({ statusCode: 404, message: 'Photos not reachable' })
       })
   },
   head () {

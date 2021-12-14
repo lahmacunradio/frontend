@@ -76,7 +76,7 @@ export default {
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
       })
     if (typeof window !== 'undefined') {
       this.changeBreakpoint()

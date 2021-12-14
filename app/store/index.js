@@ -15,7 +15,7 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 500, message: 'Post not found' })
+        error({ statusCode: 404, message: 'Post not found' })
       })
     await this.$axios.get(newsURL)
       .then((res) => {
@@ -23,7 +23,7 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 500, message: 'Latest news not found' })
+        error({ statusCode: 404, message: 'Latest news not found' })
       })
   }
 }

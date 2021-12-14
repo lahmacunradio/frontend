@@ -108,7 +108,7 @@ export default {
         return callback(response)
       } catch (error) {
         this.$sentry.captureException(new Error('News is not available ', error))
-        this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
+        this.$nuxt.error({ statusCode: 404, message: 'News is not available' })
       }
     },
     async fetchNews () {
