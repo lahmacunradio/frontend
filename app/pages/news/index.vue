@@ -88,10 +88,11 @@ export default {
     },
     async getImage(idNews) {
       const { data } = await this.$axios.get(`${contentApiURL}/media/${idNews}`)
-      return {
-        large: data?.media_details?.sizes?.large?.source_url || data?.source_url,
-        small: data?.media_details?.sizes?.medium_large?.source_url || data?.source_url
-      }
+      return data?.media_details?.sizes?.large?.source_url || data?.source_url
+      // return {
+      //   large: data?.media_details?.sizes?.large?.source_url || data?.source_url,
+      //   small: data?.media_details?.sizes?.medium_large?.source_url || data?.source_url
+      // }
     },
     async parseData(news) {
       return await Promise.all(news.map(async n => ({
