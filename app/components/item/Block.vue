@@ -1,24 +1,25 @@
 <template>
-  <div class="mb-2">
-    <NuxtLink :to="item.url">
+  <NuxtLink :to="item.url">
+    <div class="container">
       <div class="item-image">
         <img
           :src="image"
-          :srcset="`${smallImage} 480w`"
           sizes="(max-width: 640px) 480px,
             800px"
           :alt="item.title"
-          class="mb-4"
         >
       </div>
-      <h5 class="py-4">
+      <h5 v-if="item.title" class="mt-2">
         {{ item.title }}
       </h5>
-    </NuxtLink>
-    <div class="item-text">
-      <div v-sanitize="item.description" />
+      <h5 v-if="item.subTitle" class="text-white mt-2">
+        {{ item.subTitle }}
+      </h5>
+      <div v-if="item.description" class="item-text mt-2">
+        <div v-sanitize="item.description" />
+      </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <script>
@@ -45,8 +46,8 @@ export default {
   },
   methods: {
     async loadNewsImages() {
-      this.image = this.item.image.large || this.image
-      this.smallImage = this.item.image.small || this.smallImage
+      this.image = this.item.image || this.image
+      this.smallImage = this.item.image || this.smallImage
     }
   }
 }
@@ -60,15 +61,25 @@ export default {
   overflow: hidden;
   display: flex;
   align-content: center;
+  pagging-bottom: 0.5rem 0;
   img {
     min-height: 300px;
     min-width: 300px;
     object-fit: cover;
   }
 }
+
 .item-text {
   overflow: auto;
   max-width: calc(100vw - 3rem);
+}
+
+.container {
+  padding: 1rem;
+}
+
+.container:hover {
+  outline: solid #FFFFFF;
 }
 
 </style>
