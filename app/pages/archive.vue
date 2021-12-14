@@ -24,7 +24,7 @@ export default {
       numberOfEpisodes: 9,
       arcsiEpisodes: [],
       displayedEpisodes: [],
-      searchFields: ['name', 'description'],
+      searchFields: ['title', 'subTitle'],
       isLoading: false,
     }
   },
@@ -97,15 +97,14 @@ export default {
       return `/shows/${this.arcsiList.find(item => item.id === episode.shows[0].id).archive_lahmastore_base_url}/${episode.id}`
     },
     async parseEpisodes (episodes) {
+      console.log(this.arcsiList, episodes)
       return episodes.map(episode => ({
-        show: episode.shows[0].name,
         title: episode.name,
         url: this.getUrl(episode),
-        image: {
-          large: episode.image_url
+        subTitle: episode.shows[0].name,
+        image: Boolean(episode.image_url)
             ? episode.image_url
             : this.arcsiList.find(item => item.id === episode.shows[0].id).cover_image_url,
-        },
         date: episode.play_date,
         archived: episode.archived
       }))
@@ -116,10 +115,11 @@ export default {
       this.isLoading = false
     },
     onUpdate (result) {
+      console.log(result)
       this.isLoading = true
-      this.arcsiEpisodes = this.searchFields.some(field => (
-        this.arcsiEpisodes[field].toLowerCase().includes(result.toLowerCase()))
-      )
+      this.displayedEpisodes = this.arcsiEpisodes.filter(episode => {
+        return this.searchFields.some(field => episode[field].toLowerCase().includes(result.toLowerCase()))
+      })
       this.isLoading = false
     }
   }
