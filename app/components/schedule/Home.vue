@@ -9,43 +9,51 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-if="getToday === 4" class="dayblock">
-          <div class="onairshow">
-            <span class="text-red-600">●</span>
-            On Air
-          </div>
-          <div v-if="latestRareThursday">
-            <div class="show-basic-infos">
-              {{ removeSeconds(latestRareThursday[0].start) }}
-              <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-              {{ removeSeconds(latestRareThursday[0].end) }}
+        <div v-if="getToday === 4 && latestRareThursday">
+          <div class="dayblock">
+            <div class="onairshow">
+              <span class="text-red-600">●</span>
+              On Air
             </div>
-          </div>
-          <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
-            <span v-if="index !== 0" class="mx-1"> | </span>
-            <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url" class="mx-1 inline-block">
-              {{ rare.name }}
-            </NuxtLink>
+            <div>
+              <div class="show-basic-infos">
+                {{ removeSeconds(latestRareThursday[0].start) }}
+                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+                {{ removeSeconds(latestRareThursday[0].end) }} -
+                <i> Alternating shows</i>
+              </div>
+              <div class="mt-2">
+                <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
+                  <span v-if="index !== 0" class="mx-1"> | </span>
+                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
+                    {{ rare.name }}
+                  </NuxtLink>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div v-if="getToday === 5" class="dayblock">
-          <div class="onairshow">
-            <span class="text-red-600">●</span>
-            On Air
-          </div>
-          <div v-if="latestRareFriday">
-            <div class="show-basic-infos">
-              {{ removeSeconds(latestRareFriday[0].start) }}
-              <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
-              {{ removeSeconds(latestRareFriday[0].end) }}
+        <div v-if="getToday === 5 && latestRareFriday">
+          <div class="dayblock">
+            <div class="onairshow">
+              <span class="text-red-600">●</span>
+              On Air
             </div>
-          </div>
-          <div>
-            <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
-              <span v-if="index !== 0" class="mx-1"> | </span>
-              <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url" class="mx-1 inline-block">
-                {{ rare.name }}
-              </NuxtLink>
+            <div>
+              <div class="show-basic-infos">
+                {{ removeSeconds(latestRareFriday[0].start) }}
+                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+                {{ removeSeconds(latestRareFriday[0].end) }} -
+                <i> Alternating shows</i>
+              </div>
+              <div class="mt-2">
+                <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
+                  <span v-if="index !== 0" class="mx-1"> | </span>
+                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
+                    {{ rare.name }}
+                  </NuxtLink>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -206,6 +214,7 @@ a {
       .show-basic-infos {
         position: relative;
         width: 100%;
+        min-width: 140px;
       }
       &:hover {
         @media (min-width: $tablet-width) {
