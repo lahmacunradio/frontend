@@ -9,6 +9,47 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
+        <div v-if="getToday === 4" class="dayblock">
+          <div class="onairshow">
+            <span class="text-red-600">●</span>
+            On Air
+          </div>
+          <div v-if="latestRareThursday">
+            <div class="show-basic-infos">
+              {{ removeSeconds(latestRareThursday[0].start) }}
+              <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+              {{ removeSeconds(latestRareThursday[0].end) }}
+            </div>
+          </div>
+          <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
+            <span v-if="index !== 0" class="mx-1"> | </span>
+            <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url" class="mx-1 inline-block">
+              {{ rare.name }}
+            </NuxtLink>
+          </div>
+        </div>
+        <div v-if="getToday === 5" class="dayblock">
+          <div class="onairshow">
+            <span class="text-red-600">●</span>
+            On Air
+          </div>
+          <div v-if="latestRareFriday">
+            <div class="show-basic-infos">
+              {{ removeSeconds(latestRareFriday[0].start) }}
+              <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+              {{ removeSeconds(latestRareFriday[0].end) }}
+            </div>
+          </div>
+          <div>
+            <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
+              <span v-if="index !== 0" class="mx-1"> | </span>
+              <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url" class="mx-1 inline-block">
+                {{ rare.name }}
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+
         <div v-for="(show, index) in showsByDate[0]" :key="show.id * (index + index) * index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
@@ -44,7 +85,10 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
-      nowPlaying: {}
+      nowPlaying: {},
+      latestRareThursday: null,
+      latestRareFriday: null
+
     }
   },
   computed: {
@@ -103,9 +147,12 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
+      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
+      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
+      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
-        shows.forEach((show) => {
+        filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
           if (show.day - 1 === i) {
             list[i].push(show)
@@ -195,6 +242,10 @@ a {
   30% { opacity: 1; }
   70% { opacity: 1; }
   100% { opacity: 0.3; }
+}
+
+.time-block {
+  width: 280px;
 }
 
 </style>

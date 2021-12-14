@@ -20,6 +20,12 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+          <div v-if="day === 'Thursday'">
+            <ScheduleFullitemRare :show="latestRareThursday" />
+          </div>
+          <div v-if="day === 'Friday'">
+            <ScheduleFullitemRare :show="latestRareFriday" />
+          </div>
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
           </div>
@@ -40,7 +46,9 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
       interval: null,
-      nowPlaying: {}
+      nowPlaying: {},
+      latestRareThursday: null,
+      latestRareFriday: null
     }
   },
   head () {
@@ -70,7 +78,7 @@ export default {
       return this.$store.state.arcsiShows
     },
     sortShowsForSchedule () {
-      return [...this.arcsishows].sort((a, b) => parseInt(a.start) - parseInt(b.start)).sort((a, b) => a.day - b.day)
+      return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
     getToday () {
       const d = new Date()
@@ -106,9 +114,12 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
+      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
+      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
+      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
-        shows.forEach((show) => {
+        filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
           if (show.day - 1 === i) {
             list[i].push(show)
