@@ -32,7 +32,7 @@
         <p class="mb-4 news-time">
           {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
-        <div v-sanitize="news.content.rendered" class="text-content news-text" />
+        <div v-sanitize="[ sanitizeOptions, news.content.rendered]" class="text-content news-text" />
       </div>
     </div>
   </div>
@@ -55,7 +55,15 @@ export default {
       newsImageShadowbox: false,
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
-      postTagsArray: []
+      postTagsArray: [],
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
+        }
+      }
     }
   },
   computed: {},
