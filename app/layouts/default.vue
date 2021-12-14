@@ -1,8 +1,9 @@
 <template>
-  <div :class="arcsiVisible && 'pb-16'">
+  <div class="flex flex-col min-h-screen" :class="{ 'pb-12': arcsiVisible }">
     <HeaderBlock />
-    <nuxt :class="$route.name === 'index' ? '' : 'pb-8'" />
+    <nuxt class="flex-grow pb-12" />
     <FooterHome v-if="$route.name === 'index'" />
+    <FooterBottom v-else />
     <BottomArcsiPlayer />
   </div>
 </template>
@@ -16,7 +17,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

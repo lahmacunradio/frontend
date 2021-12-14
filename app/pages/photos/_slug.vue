@@ -9,16 +9,16 @@
       <div v-else>
         <NuxtLink :to="`/photos/`">
           <div class="pb-4">
-            <i class="fa fa-toggle-left" aria-hidden="true"/> Back to Photos
+            <i class="fa fa-toggle-left" aria-hidden="true" /> Back to Photos
           </div>
         </NuxtLink>
         <h1 class="mb-4">
           {{ htmlDecoder(photoGallery.title.rendered) }}
         </h1>
-        <div v-sanitize="photoGallery.content.rendered"/>
+        <div v-sanitize="photoGallery.content.rendered" />
         <div class="gap-8 my-8 md:grid-cols-2 lg:grid-cols-4 md:grid gallery-items">
           <div v-for="(photo, i) in photoGallery.acf.gallery" :key="i">
-            <GalleryPictureItem :photo="photo" :gallery="photoGallery.acf.gallery" :gallery-position="i"/>
+            <GalleryPictureItem :photo="photo" :gallery="photoGallery.acf.gallery" :gallery-position="i" />
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@ export default {
     }
   },
   async fetch () {
-    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}`)
+    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}&per_page=100`)
       .then(res => res.data[0])
       .catch((error) => {
         console.log(error)

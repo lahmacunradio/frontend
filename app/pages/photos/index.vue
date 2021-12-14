@@ -28,7 +28,7 @@ export default {
     }
   },
   async fetch () {
-    this.photoGalleries = await this.$axios.get(`${lahmaGaleriesURL}`)
+    this.photoGalleries = await this.$axios.get(`${lahmaGaleriesURL}?per_page=100`)
       .then(res => res.data)
       .catch((error) => {
         console.log(error)

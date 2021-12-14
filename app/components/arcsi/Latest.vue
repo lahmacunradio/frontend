@@ -5,7 +5,7 @@
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
       <p>Loading...</p>
     </div>
-    <div class="container relative py-10 latest-container" :class="{'opacity-0': $fetchState.pending} ">
+    <div class="container relative pt-12 latest-container" :class="{'opacity-0': $fetchState.pending} ">
       <div ref="slider" class="arcsi-slider-wrapper">
         <div ref="episodes" class="relative arcsi-episodes">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
