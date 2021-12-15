@@ -20,6 +20,7 @@
 
 <script>
 import { contentApiURL } from '~/constants'
+import { truncate } from '~/plugins/mixinCommonMethods'
 
 export default {
   components: {},
@@ -70,7 +71,8 @@ export default {
       if (!this.selectedNews) {
         return false
       }
-      return this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      const shortenMeta = this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      return this.truncate(shortenMeta, 150)
     }
   },
   methods: {
