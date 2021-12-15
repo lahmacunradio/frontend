@@ -102,12 +102,14 @@ export default {
   },
   data () {
     return {
+      pageTitle: document?.title || '',
       audio: null,
       currentVolume: '1',
       currentProgress: '0',
       duration: 0,
       seek: 0,
-      timeOutHelper: null
+      timeOutHelper: null,
+      docTitleSetter: null
     }
   },
   computed: {
@@ -184,6 +186,7 @@ export default {
   },
   beforeDestroy () {
     clearTimeout(this.timeOutHelper)
+    clearInterval(this.docTitleSetter)
     this.timeOutHelper = null
     if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -234,13 +237,20 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      //Google Analytics 4 event
+      document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+      this.docTitleSetter = setInterval(() => {
+        if (this.arcsiIsPlaying) {
+          document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+        } else {
+          clearInterval(this.docTitleSetter)
+        }
+      }, 3000)
+
+      // Google Analytics 4 event
       gtag('event', 'Arcsi play', {
-        'Show': this.episode.shows[0].name,
-        'Episode': this.episode.name
-      });
-
-
+        Show: this.episode.shows[0].name,
+        Episode: this.episode.name
+      })
     },
     pauseArcsi () {
       if (this.arcsiIsPlaying) {
@@ -248,6 +258,10 @@ export default {
       }
       this.setPauseState()
       this.setMetaData()
+
+      clearInterval(this.docTitleSetter)
+      const ogTitle = document.querySelector("meta[property='og:title']")
+      document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
     },
     toggleArcsi () {
       const arcsiReady = this.$refs.arcsiplayer?.readyState > 2

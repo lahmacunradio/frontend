@@ -186,8 +186,8 @@ export default {
       // rework the checks
       default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
       default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
-      showsURLList_lookup: [],
-      showsList_lookup: []
+      docTitleSetter: null
+
     }
   },
   computed: {
@@ -352,6 +352,7 @@ export default {
   beforeDestroy () {
     clearInterval(this.np_interval)
     clearInterval(this.clock_interval)
+    clearInterval(this.docTitleSetter)
     clearTimeout(this.np_timeout)
     clearTimeout(this.timeOutHelper)
     this.np_interval = null
@@ -368,17 +369,25 @@ export default {
       this.is_playing = true
       this.showCurrentMetadata()
 
+      document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+      this.docTitleSetter = setInterval(() => {
+        if (this.is_playing) {
+          document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+        } else {
+          clearInterval(this.docTitleSetter)
+        }
+      }, 3000)
+
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      //Google Analytics 4 event: only send if it's a regular show on air
-      if(this.show_check){
+      // Google Analytics 4 event: only send if it's a regular show on air
+      if (this.show_check) {
         gtag('event', 'Radio play', {
-          'Show': this.show_title,
-          'Episode': this.show_subtitle
-        });
+          Show: this.show_title,
+          Episode: this.show_subtitle
+        })
       }
-      
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
@@ -407,6 +416,10 @@ export default {
       }
       this.audio.src = ''
       this.$store.commit('player/isStreamPlaying', false)
+
+      clearInterval(this.docTitleSetter)
+      const ogTitle = document.querySelector("meta[property='og:title']")
+      document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
 
       /* Google tags
             if (this.show_check) {
