@@ -32,7 +32,7 @@
         <p class="mb-4 news-time">
           {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
-        <div v-sanitize="[ sanitizeOptions, news.content.rendered]" class="text-content news-text" />
+        <div v-sanitize="[ sanitizeOptions, news.content.rendered ]" class="text-content news-text" />
       </div>
     </div>
   </div>
