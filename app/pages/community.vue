@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Community
-    </h3>
+    </h2>
     <div>
       <nav class="pt-8 px-4">
         <ul class="text-center comunity-navigation">

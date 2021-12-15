@@ -201,7 +201,11 @@ span.moresign {
   border-radius: 2rem;
 }
 
-h3.title-block {
+h2.title-block {
+  font-size: 2rem;
+  @media (max-width: $mobile-width) {
+    font-size: 1.8rem;
+  }
   width: 100%;
   padding: 0.75rem;
   margin: 0;

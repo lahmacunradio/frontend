@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun News
-    </h3>
+    </h2>
     <section class="container mt-8">
       <header class="mb-8">
         <h1>News tags</h1>
@@ -26,32 +26,32 @@
 </template>
 
 <script>
-import {newsBaseURL, tagsURL} from '~/constants'
+import { newsBaseURL, tagsURL } from '~/constants'
 
 export default {
-  data() {
+  data () {
     return {
       recentNews: null,
       allTagsList: []
     }
   },
-  async fetch() {
+  async fetch () {
     this.recentNews = await this.$axios.get(`${newsBaseURL}&per_page=100`)
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
-        this.$nuxt.error({statusCode: 500, message: 'News not found'})
+        this.$nuxt.error({ statusCode: 500, message: 'News not found' })
       })
     if (this.allTags) {
       this.allTagsList = await this.$axios.get(`${tagsURL}?include=${this.allTags.toString()}&per_page=100`)
         .then(res => res.data)
         .catch((error) => {
           console.log(error)
-          this.$nuxt.error({statusCode: 500, message: 'Tags not found'})
+          this.$nuxt.error({ statusCode: 500, message: 'Tags not found' })
         })
     }
   },
-  head() {
+  head () {
     return {
       title: 'Lahmacun News Tags',
       meta: [
@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    allTags() {
+    allTags () {
       if (!this.recentNews) {
         return false
       }

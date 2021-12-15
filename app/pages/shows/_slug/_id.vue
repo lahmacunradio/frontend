@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       <NuxtLink :to="`/archive/`">
         Lahmacun Archive
       </NuxtLink>
-    </h3>
+    </h2>
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
         <NuxtLink :to="`/shows/${slug}`" class="block">
