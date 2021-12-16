@@ -53,7 +53,7 @@
         <p>Loading...</p>
       </div>
       <div class="italic text-center my-8 px-4">
-        <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018.</h4>
+        <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018</h4>
       </div>
       <div id="community-content" class="container">
         <article id="call-page" ref="call">

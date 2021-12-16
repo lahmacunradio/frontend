@@ -20,6 +20,12 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+          <div v-if="day === 'Thursday'">
+            <ScheduleFullitemRare :show="latestRareThursday" />
+          </div>
+          <div v-if="day === 'Friday'">
+            <ScheduleFullitemRare :show="latestRareFriday" />
+          </div>
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
           </div>
@@ -40,7 +46,9 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
       interval: null,
-      nowPlaying: {}
+      nowPlaying: {},
+      latestRareThursday: null,
+      latestRareFriday: null
     }
   },
   head () {
@@ -106,9 +114,9 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-      const latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut')).sort((a, b) => b.items[0].id - a.items[0].id).splice(1)
-      const latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek')).sort((a, b) => b.items[0].id - a.items[0].id).splice(1)
-      const filteredShows = shows.filter(val => !latestRareThursday.includes(val)).filter(val => !latestRareFriday.includes(val))
+      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
+      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
+      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
         filteredShows.forEach((show) => {
