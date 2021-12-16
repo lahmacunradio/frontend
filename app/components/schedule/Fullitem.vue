@@ -42,6 +42,12 @@
             </NuxtLink>
             <div class="text-sm description">
               {{ show.description }}
+              <p class="mt-2">
+                Latest Episode:
+                <NuxtLink :to="latestEpisodeLink">
+                  <b>{{ latestEpisodeTitle }}</b>
+                </NuxtLink>
+              </p>
             </div>
           </div>
         </div>
@@ -112,12 +118,6 @@ export default {
       }
       return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
     },
-    latestEpisodeImage () {
-      if (!this.show.items) {
-        return false
-      }
-      return this.show.cover_image_url
-    },
     onAirDescription () {
       if (!this.nowPlaying.now_playing && this.show.items) {
         return false
@@ -128,12 +128,18 @@ export default {
       const descriptionFromArcsi = this.loadedShow?.[0]?.description
       return descriptionFromArcsi || this.show.description
     },
+    latestEpisodeImage () {
+      if (!this.show.items) {
+        return false
+      }
+      return this.show.cover_image_url
+    },
     latestEpisodeTitle () {
       if (!this.show.items) {
         return this.show.name
       }
       const episodeTitleFromArcsi = this.loadedShow?.[0]?.name
-      return episodeTitleFromArcsi ? `${this.show.name} - ${episodeTitleFromArcsi}` : this.show.name
+      return episodeTitleFromArcsi ? `${episodeTitleFromArcsi}` : this.show.name
     },
     latestEpisodeLink () {
       const baseLink = '/shows/' + this.show.archive_lahmastore_base_url

@@ -371,15 +371,14 @@ export default {
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      /* Google tags
-            if (this.show_check) {
-                gtag('event', 'Radio play', {
-                    'event_category': this.show_title,
-                    'event_label': 'Play state',
-                    'value': 1,
-                });
-            }
-            */
+      //Google Analytics 4 event: only send if it's a regular show on air
+      if(this.show_check){
+        gtag('event', 'Radio play', {
+          'Show': this.show_title,
+          'Episode': this.show_subtitle
+        });
+      }
+      
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
@@ -593,7 +592,6 @@ export default {
         flex-direction: row;
         width: 100%;
         min-width: 300px;
-        margin-right: 1rem;
         @media (max-width: $mobile-width) {
           margin-right: 0;
           min-width: auto;
