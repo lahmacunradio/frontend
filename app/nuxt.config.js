@@ -16,6 +16,7 @@ export default {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' },
       { hid: 'keywords', name: 'keywords', content: 'budapest online radio' },
+      { hid: 'og:site_name', name: 'og:site_name', content: 'Lahmacun Radio Budapest' },
       { hid: 'og:title', name: 'og:title', content: 'Lahmacun Radio' },
       { hid: 'og:description', name: 'og:description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' },
       { hid: 'og:image', name: 'og:image', content: '/lahmacun-logo-share.jpg' }
