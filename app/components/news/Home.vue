@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full news-home-container">
+  <div v-if="news" class="w-full news-home-container">
     <div class="relative newsimage-slider">
       <div class="absolute top-0 right-0 news-badge">
         <nuxt-link to="/news">
@@ -106,7 +106,7 @@ export default {
 .news-home-container {
   .news-image {
     width: 100%;
-    max-height: 300px;
+    max-height: 20rem;
     overflow: hidden;
     display: flex;
     align-content: center;

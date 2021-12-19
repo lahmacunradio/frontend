@@ -15,7 +15,7 @@
             <!-- old show image -->
             <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
               <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-                <div v-if="show_check == true" class="onair">On air</div>
+                <div v-if="show_check === true" class="onair">On air</div>
                 <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
               </a>
               <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
@@ -41,13 +41,13 @@
               <div class="media-body">
                 <div v-if="np.now_playing.song.title !== ''">
                   <h4 :title="show_title" class="now-playing-title">
-                    <nuxt-link v-if="show_check == true" :to="show_url">
+                    <nuxt-link v-if="show_check === true" :to="show_url">
                       <span>{{ show_title }}&nbsp;</span>
                       <i class="fa fa-link" aria-hidden="true" />
                     </nuxt-link>
 
                     <a
-                      v-if="check_offairlink == true"
+                      v-if="check_offairlink === true"
                       :href="np.now_playing.song.custom_fields.offairlink"
                       target="_blank"
                     >
@@ -55,7 +55,7 @@
                       <i class="fa fa-link" aria-hidden="true" />
                     </a>
 
-                    <span v-if="show_check == false && check_offairlink == false">{{ show_title }}</span>
+                    <span v-if="show_check === false && check_offairlink === false">{{ show_title }}</span>
                   </h4>
                   <h5 :title="show_subtitle" class="now-playing-artist">
                     {{ show_subtitle }}
@@ -692,8 +692,9 @@ a.programimage {
     }
     .radio-control-volume-slider {
         width: 14rem;
-        height: 1rem;
+        height: 0.5rem;
         overflow: hidden;
+        border-radius: 0.25rem;
     }
 }
 
