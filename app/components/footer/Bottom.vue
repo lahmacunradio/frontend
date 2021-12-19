@@ -17,8 +17,7 @@
             </li>
             <li>
               <a href="https://www.mixcloud.com/LahmacunRadio/" target="_blank" rel="noopener noreferrer">
-                Soundcloud
-
+                Mixcloud
               </a>
             </li>
             <li>
