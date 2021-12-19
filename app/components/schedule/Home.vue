@@ -18,7 +18,7 @@
             <div>
               <div class="show-basic-infos">
                 {{ removeSeconds(latestRareThursday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
                 {{ removeSeconds(latestRareThursday[0].end) }} -
                 <i> Alternating shows</i>
               </div>
@@ -42,7 +42,7 @@
             <div>
               <div class="show-basic-infos">
                 {{ removeSeconds(latestRareFriday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
                 {{ removeSeconds(latestRareFriday[0].end) }} -
                 <i> Alternating shows</i>
               </div>
@@ -65,7 +65,7 @@
           </div>
           <div class="show-basic-infos">
             {{ removeSeconds(show.start) }}
-            <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+            <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
             <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
               {{ show.name }}

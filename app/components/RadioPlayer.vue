@@ -691,9 +691,9 @@ a.programimage {
         vertical-align: top;
     }
     .radio-control-volume-slider {
-        width: 200px;
-        height: 25px;
-        clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+        width: 14rem;
+        height: 1rem;
+        overflow: hidden;
     }
 }
 
