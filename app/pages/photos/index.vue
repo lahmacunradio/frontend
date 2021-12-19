@@ -8,7 +8,7 @@
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
         <p>Loading...</p>
       </div>
-      <div v-else class="relative grid gap-8 py-8 lg:grid-cols-2 xl:grid-cols-3 galleries-container">
+      <div v-else class="relative grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 galleries-container">
         <div v-for="(gallery, i) in photoGalleries" :key="i" class="gallery">
           <GalleryListItem :gallery="gallery" />
         </div>

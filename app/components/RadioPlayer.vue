@@ -68,14 +68,16 @@
                 </div>
               </div>
               <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
+                <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
                   <vue-slider
                     v-model="volume"
-                    :height="25"
+                    :height="16"
                     tooltip="none"
-                    :dot-size="25"
+                    :dot-size="16"
                   />
                 </div>
+                <i class="fa fa-volume-up" />
               </div>
             </div>
 
@@ -691,8 +693,9 @@ a.programimage {
         vertical-align: top;
     }
     .radio-control-volume-slider {
-        width: 14rem;
+        width: 8rem;
         height: 0.5rem;
+        margin: 0.25rem 0.4rem;
         overflow: hidden;
         border-radius: 0.25rem;
     }
