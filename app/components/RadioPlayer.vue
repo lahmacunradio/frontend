@@ -114,7 +114,7 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock hidden sm:block">
+        <div v-if="false" class="sand-clock hidden sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
@@ -184,8 +184,8 @@ export default {
       timeOutHelper: null,
 
       // rework the checks
-      default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
-      default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
+      default_art_url: require('@/assets/img/stream/defaultshowart.jpg'),
+      default_azuracast_art_url: require('@/assets/img/stream/generic_song.jpg'),
       showsURLList_lookup: [],
       showsList_lookup: []
     }
@@ -371,14 +371,13 @@ export default {
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      //Google Analytics 4 event: only send if it's a regular show on air
-      if(this.show_check){
+      // Google Analytics 4 event: only send if it's a regular show on air
+      if (this.show_check) {
         gtag('event', 'Radio play', {
-          'Show': this.show_title,
-          'Episode': this.show_subtitle
-        });
+          Show: this.show_title,
+          Episode: this.show_subtitle
+        })
       }
-      
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.

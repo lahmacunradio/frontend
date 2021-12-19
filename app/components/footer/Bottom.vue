@@ -42,7 +42,7 @@
       <div v-if="false" class="py-8 md:py-4 logos">
         {{ /* no sponsors for now */ }}
         <a href="http://golyapresszo.hu/" target="_blank">
-          <img src="@/assets/img/golyalogo-1.png" alt="">
+          <img src="@/assets/img/sponsors/golyalogo-1.png" alt="">
         </a>
       </div>
     </div>
