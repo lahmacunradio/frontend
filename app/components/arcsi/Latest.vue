@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="title-block">
-      <NuxtLink :to="`/archive/`">
+      <NuxtLink :to="`/arcsive/`">
         Arcsi's Latest
       </NuxtLink>
     </h2>

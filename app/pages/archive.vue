@@ -62,7 +62,7 @@ export default {
   },
   head () {
     return {
-      title: 'Lahmacun Archive',
+      title: 'Lahmacun Arcsive',
       meta: [
         {
           hid: 'description',
@@ -72,7 +72,7 @@ export default {
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Lahmacun Archive'
+          content: 'Lahmacun Arcsive'
         },
         {
           hid: 'og:description',
