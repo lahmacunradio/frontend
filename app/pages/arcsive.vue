@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="title-block">
-      Lahmacun Archive
+      Lahmacun Arcsive
     </h2>
     <div class="container mt-8">
       <div v-if="defaultEpisodes" class="flex justify-between">
