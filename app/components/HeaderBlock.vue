@@ -5,7 +5,7 @@
         <h1 class="main-title">
           Lahmacun Radio
         </h1>
-        <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
+        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
       </div>
       <div class=" mt-2 xsm:my-4 md:mr-8">
         <client-only>
