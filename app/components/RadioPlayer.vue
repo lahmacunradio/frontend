@@ -688,6 +688,7 @@ a.programimage {
     bottom: 3px;
     padding-left: 3px;
     line-height: 1;
+    white-space: nowrap;
     > div {
         display: inline-block;
         vertical-align: top;
