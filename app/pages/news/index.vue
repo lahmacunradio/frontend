@@ -26,7 +26,7 @@
         </a>
       </div>
       <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
     </div>

@@ -17,7 +17,7 @@
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
-      <img src="@/assets/img/preloader.svg" class="h-4 mr-4">
+      <img src="@/assets/img/preloader.svg" class="h-4 mr-4" alt="preload">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
@@ -234,13 +234,11 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      //Google Analytics 4 event
+      // Google Analytics 4 event
       gtag('event', 'Arcsi play', {
-        'Show': this.episode.shows[0].name,
-        'Episode': this.episode.name
-      });
-
-
+        Show: this.episode.shows[0].name,
+        Episode: this.episode.name
+      })
     },
     pauseArcsi () {
       if (this.arcsiIsPlaying) {
