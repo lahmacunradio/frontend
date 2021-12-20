@@ -26,7 +26,7 @@
                 <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
                   <span v-if="index !== 0" class="mx-1"> | </span>
                   <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    {{ rare.name }}
+                    <b>{{ rare.name }}</b>
                   </NuxtLink>
                 </div>
               </div>
@@ -50,7 +50,7 @@
                 <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
                   <span v-if="index !== 0" class="mx-1"> | </span>
                   <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    {{ rare.name }}
+                    <b>{{ rare.name }}</b>
                   </NuxtLink>
                 </div>
               </div>
@@ -67,9 +67,9 @@
             {{ removeSeconds(show.start) }}
             <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
-            <nuxt-link :to="'/shows/' + show.archive_lahmastore_base_url">
-              {{ show.name }}
-            </nuxt-link>
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url">
+              <b>{{ show.name }}</b>
+            </NuxtLink>
           </div>
         </div>
       </div>

@@ -60,23 +60,22 @@ export default {
   },
   computed: {
     truncatedNews () {
-      if (!this.news && !this.news.excerpt.rendered) {
+      if (!this.news && !this.news?.excerpt?.rendered) {
         return false
       }
-      const filterEllipsis = this.news.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
+      const filterEllipsis = this.news?.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
       return this.truncate(filterEllipsis, 300)
     }
   },
   watch: {
     news: {
       handler () {
-        this.loadNewsImages(this.news.featured_media)
+        this.loadNewsImages(this.news?.featured_media)
       }
-
     }
   },
   mounted () {
-    this.loadNewsImages(this.news.featured_media)
+    this.loadNewsImages(this.news?.featured_media)
   },
   methods: {
     async loadNewsImages (newsId) {
