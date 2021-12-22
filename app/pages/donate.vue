@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Donate
-    </h3>
+    </h2>
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     donateContentResults () {
-      if (!this.donateContent) {
+      if (!this.donateContent?.content?.rendered) {
         return 'No content'
       }
       return this.donateContent.content.rendered.replaceAll('target="_top"', 'target="_blank"')

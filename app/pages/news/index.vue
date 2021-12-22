@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun News
-    </h3>
+    </h2>
     <div class="container">
       <header class="flex flex-row items-center justify-between">
         <input
@@ -88,9 +88,9 @@ export default {
     this.numberOfTotal = null
   },
   methods: {
-    async useFetch({
-                     type = 'fetchNews'
-                   } = {}) {
+    async useFetch ({
+      type = 'fetchNews'
+    } = {}) {
       const callback = this.callBacks[type]
       try {
         this.isLoading = true

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Photos
-    </h3>
+    </h2>
     <div class="container mb-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
