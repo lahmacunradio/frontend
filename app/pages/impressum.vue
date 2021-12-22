@@ -31,9 +31,9 @@ export default {
       impressum: null,
       impressumFeaturedImage: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p', 'a'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p', 'br', 'a'],
         allowedAttributes: {
-          img: ['src', 'srcset'],
+          img: ['*'],
           a: ['*']
         }
       }
