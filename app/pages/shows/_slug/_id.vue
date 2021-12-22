@@ -1,8 +1,8 @@
 <template>
   <div>
     <h2 class="title-block">
-      <NuxtLink :to="`/arcsive/`">
-        Lahmacun Arcsive
+      <NuxtLink :to="`/archive/`">
+        Lahmacun Archive
       </NuxtLink>
     </h2>
     <div class="container mt-8">

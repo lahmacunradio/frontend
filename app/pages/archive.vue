@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="title-block">
-      Lahmacun Arcsive
+      Lahmacun Archive
     </h2>
     <div class="container mt-8">
       <div v-if="defaultEpisodes" class="flex justify-between">
@@ -62,7 +62,7 @@ export default {
   },
   head () {
     return {
-      title: 'Lahmacun Arcsive',
+      title: 'Lahmacun Archive',
       meta: [
         {
           hid: 'description',
@@ -72,7 +72,7 @@ export default {
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Lahmacun Arcsive'
+          content: 'Lahmacun Archive'
         },
         {
           hid: 'og:description',

@@ -1,5 +1,5 @@
 <template>
-  <header class="flex-row-reverse items-center justify-between px-4 py-2 xsm:py-4 bg-white md:flex md:flex-row">
+  <header class="flex-row-reverse items-center justify-between px-4 py-2 bg-white md:flex md:flex-row">
     <div class="items-center flex mb-4 xsm:mb-0 xsm:overflow-visible xsm:overflow-hidden">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <h1 class="main-title">

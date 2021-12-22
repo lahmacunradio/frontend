@@ -11,9 +11,9 @@
           Shows
         </NuxtLink>
       </li>
-      <li :class="(baseRoute === '/arcsive/' || (baseRoute === '/shows/' && routeArray.length === 4)) && 'selected'">
-        <NuxtLink to="/arcsive/">
-          Arcsive
+      <li :class="(baseRoute === '/archive/' || (baseRoute === '/shows/' && routeArray.length === 4)) && 'selected'">
+        <NuxtLink to="/archive/">
+          Archive
         </NuxtLink>
       </li>
       <li :class="baseRoute === '/news/' && 'selected'">

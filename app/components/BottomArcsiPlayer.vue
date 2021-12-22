@@ -11,8 +11,8 @@
           <div v-else>
             <div class="py-4">
               No arcsi episode selected. Go to
-              <NuxtLink to="arcsive" class="font-bold">
-                arcsive page
+              <NuxtLink to="archive" class="font-bold">
+                archive page
               </NuxtLink>
               for the full list
             </div>
