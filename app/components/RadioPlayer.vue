@@ -116,7 +116,7 @@
             </div>
           </div>
         </div>
-        <div v-if="false" class="sand-clock hidden sm:block">
+        <div class="sand-clock hidden sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
@@ -252,18 +252,10 @@ export default {
       if (this.np.live.is_live) { return this.np.now_playing.song.title } else { return this.np.now_playing.song.title }
     },
     show_check () {
-      if (this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== '')) {
-        return true
-      } else {
-        return false
-      }
+      return !!(this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== ''))
     },
     check_offairlink () {
-      if (this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3) {
-        return true
-      } else {
-        return false
-      }
+      return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
     },
     show_url () {
       const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
