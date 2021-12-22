@@ -47,7 +47,7 @@
         </h5>
       </div>
       <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
-        <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward">
+        <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
           <i class="fa fa-fast-backward" aria-hidden="true" />
         </a>
         <div class="text-sm seek-time">
@@ -68,7 +68,7 @@
         <div class="text-sm">
           {{ currentDuration }}
         </div>
-        <a href="#" class="ml-2 text-xs" @click.prevent="seekForward">
+        <a href="#" class="ml-2 text-xs" @click.prevent="seekForward(10)" @dblclick.prevent="seekForward(20)">
           <i class="fa fa-fast-forward" aria-hidden="true" />
         </a>
       </div>
@@ -329,17 +329,17 @@ export default {
         this.pauseArcsi()
       }
     },
-    seekBackward () {
-      if (this.seek === 0) {
+    seekBackward (time) {
+      if (this.seek < time) {
         return false
       }
-      this.setSeek(this.seek - 10)
+      this.setSeek(this.seek - time)
     },
-    seekForward () {
-      if (this.seek > this.duration - 10) {
+    seekForward (time) {
+      if (this.seek > this.duration - time) {
         return false
       }
-      this.setSeek(this.seek + 10)
+      this.setSeek(this.seek + time)
     }
   }
 }
