@@ -27,6 +27,7 @@ export default {
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
         allowedAttributes: {
+          a: ['*'],
           img: ['*'],
           div: ['style', 'class', 'id'],
           form: ['*'],

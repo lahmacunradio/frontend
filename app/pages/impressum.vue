@@ -27,9 +27,10 @@ export default {
     return {
       impressum: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p', 'br', 'a'],
         allowedAttributes: {
-          img: ['src', 'srcset']
+          img: ['*'],
+          a: ['*']
         }
       }
     }
