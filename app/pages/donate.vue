@@ -72,7 +72,7 @@ export default {
   },
   computed: {
     donateContentResults () {
-      if (!this.donateContent) {
+      if (!this.donateContent?.content?.rendered) {
         return 'No content'
       }
       return this.donateContent.content.rendered.replaceAll('target="_top"', 'target="_blank"')

@@ -90,7 +90,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.arcsiInfosBlock?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:title',
@@ -100,7 +100,7 @@ export default {
         {
           hid: 'og:description',
           name: 'og:description',
-          content: this.arcsiInfosBlock?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:image',
@@ -139,7 +139,14 @@ export default {
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
+    },
+    metaDescription () {
+      if (!this.arcsiInfosBlock?.description) {
+        return ''
+      }
+      return this.truncate(this.arcsiInfosBlock?.description, 150)
     }
+
   }
 }
 </script>

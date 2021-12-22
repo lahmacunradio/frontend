@@ -30,7 +30,7 @@
               <p v-if="arcsiEpisode.play_date">
                 Episode Nr. {{ arcsiEpisode.number }},
                 Original air date:
-                {{ $moment(arcsiEpisode.play_date).format('yyyy. MMMM Do.') }}
+                {{ airDate }}
                 Language: <span v-sanitize.nothing="getLanguageGraph(arcsiEpisode.language)" class="language" />
               </p>
             </div>
@@ -128,7 +128,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.arcsiEpisode?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:title',
@@ -138,7 +138,7 @@ export default {
         {
           hid: 'og:description',
           name: 'og:description',
-          content: this.arcsiEpisode?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:image',
@@ -187,6 +187,18 @@ export default {
         .filter(item => item.id.toString() !== this.id)
         .filter(item => item.play_date < this.getToday)
         .filter(item => item.archived === true)
+    },
+    airDate () {
+      if (!this.arcsiEpisode?.play_date) {
+        return ''
+      }
+      return this.$moment(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
+    },
+    metaDescription () {
+      if (!this.arcsiEpisode?.description) {
+        return `Aired on ${this.airDate}`
+      }
+      return this.truncate(this.arcsiEpisode?.description, 150)
     }
   },
   beforeDestroy () {
