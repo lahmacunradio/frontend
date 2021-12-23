@@ -4,7 +4,7 @@
       <div class="mr-4 timing-infos">
         <div class="mb-2 time-block sm:mb-0">
           {{ removeSeconds(show[0].start) }}
-          <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-10">
+          <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
           {{ removeSeconds(show[0].end) }}
         </div>
         <div class="onairshow">
@@ -71,7 +71,7 @@ export default {
             max-width: $tablet-width;
         }
         .timing-infos {
-            min-width: 130px;
+            min-width: 9rem;
         }
         .time-block {
             white-space: nowrap;

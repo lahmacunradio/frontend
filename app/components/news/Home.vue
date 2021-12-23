@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full news-home-container">
+  <div v-if="news" class="w-full news-home-container">
     <div class="relative newsimage-slider">
       <div class="absolute top-0 right-0 news-badge">
         <nuxt-link to="/news">
@@ -67,23 +67,22 @@ export default {
   },
   computed: {
     truncatedNews () {
-      if (!this.news && !this.news.excerpt.rendered) {
+      if (!this.news && !this.news?.excerpt?.rendered) {
         return false
       }
-      const filterEllipsis = this.news.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
+      const filterEllipsis = this.news?.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
       return this.truncate(filterEllipsis, 300)
     }
   },
   watch: {
     news: {
       handler () {
-        this.loadNewsImages(this.news.featured_media)
+        this.loadNewsImages(this.news?.featured_media)
       }
-
     }
   },
   mounted () {
-    this.loadNewsImages(this.news.featured_media)
+    this.loadNewsImages(this.news?.featured_media)
   },
   methods: {
     async loadNewsImages (newsId) {
@@ -113,7 +112,7 @@ export default {
 .news-home-container {
   .news-image {
     width: 100%;
-    max-height: 300px;
+    max-height: 20rem;
     overflow: hidden;
     display: flex;
     align-content: center;

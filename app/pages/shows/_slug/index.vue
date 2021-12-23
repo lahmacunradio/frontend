@@ -46,7 +46,7 @@
       </div>
       <div v-if="arcsiShowsList && arcsiShowsList.length">
         <h3 class="pb-1 mb-4 text-center border-b border-current">
-          Arcsived Shows
+          Archived Shows
         </h3>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="arcsi in arcsiShowsList" :key="arcsi.id">

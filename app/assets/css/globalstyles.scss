@@ -61,6 +61,7 @@ body {
 
   background-color: $lahma-pink !important;
   color: $black-color;
+  overflow: overlay;
 }
 
 .container {
@@ -113,6 +114,10 @@ h5 {
   }
   font-weight: 500;
   line-height: 1.4em;
+}
+
+b, strong {
+  font-weight: 600;
 }
 
 button:focus {

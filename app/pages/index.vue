@@ -17,12 +17,22 @@
 </template>
 
 <script>
+import { newsURL } from '~/constants'
+
 export default {
   data () {
     return {
       newsLimit: 9,
-      newsStart: 0
+      newsStart: 0,
+      newsList: null
     }
+  },
+  async fetch () {
+    this.newsList = await this.$axios.get(newsURL)
+      .then(res => res.data)
+      .catch((error) => {
+        this.$nuxt.error({ statusCode: 404, message: error + ' not found' })
+      })
   },
   computed: {
     arcsishows () {
@@ -31,13 +41,16 @@ export default {
     sortShowsForSchedule () {
       return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
-    newsList () {
-      return this.$store.state.newsList
-    },
     newsListState () {
+      if (!this.newsList) {
+        return false
+      }
       return this.newsLimit ? this.newsList.slice(0, this.newsLimit) : this.newsList
     },
     sortNews () {
+      if (!this.newsList) {
+        return false
+      }
       return [...this.newsListState].sort((a, b) => a.date - b.date)
     }
   },
