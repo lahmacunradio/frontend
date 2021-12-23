@@ -6,7 +6,7 @@
         <h1>News tags</h1>
       </header>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-if="$fetchState.error" class="py-8 text-center">
@@ -24,32 +24,32 @@
 </template>
 
 <script>
-import {newsBaseURL, tagsURL} from '~/constants'
+import { newsBaseURL, tagsURL } from '~/constants'
 
 export default {
-  data() {
+  data () {
     return {
       recentNews: null,
       allTagsList: []
     }
   },
-  async fetch() {
+  async fetch () {
     this.recentNews = await this.$axios.get(`${newsBaseURL}&per_page=100`)
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
-        this.$nuxt.error({statusCode: 500, message: 'News not found'})
+        this.$nuxt.error({ statusCode: 500, message: 'News not found' })
       })
     if (this.allTags) {
       this.allTagsList = await this.$axios.get(`${tagsURL}?include=${this.allTags.toString()}&per_page=100`)
         .then(res => res.data)
         .catch((error) => {
           console.log(error)
-          this.$nuxt.error({statusCode: 500, message: 'Tags not found'})
+          this.$nuxt.error({ statusCode: 500, message: 'Tags not found' })
         })
     }
   },
-  head() {
+  head () {
     return {
       title: 'Lahmacun News Tags',
       meta: [
@@ -72,7 +72,7 @@ export default {
     }
   },
   computed: {
-    allTags() {
+    allTags () {
       if (!this.recentNews) {
         return false
       }

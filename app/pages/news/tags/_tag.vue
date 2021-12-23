@@ -1,13 +1,13 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun News Tags" url="/news/tags"
+    <SubTitle title="Lahmacun News Tags" url="/news/tags" />
     <div class="container mt-8">
       <header class="mb-8">
         <h2>News tagged with "{{ tag }}"</h2>
       </header>
       <section class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         <div v-for="tag in tagsPosts" :key="tag.id" class="">
-          <NewsBlock :news="tag"/>
+          <NewsBlock :news="tag" />
         </div>
       </section>
     </div>
@@ -15,30 +15,30 @@
 </template>
 
 <script>
-import {contentApiURL, tagsURL} from '~/constants'
+import { contentApiURL, tagsURL } from '~/constants'
 
 export default {
-  data() {
+  data () {
     return {
       tag: this.$route.params.tag,
       tagsPosts: null
     }
   },
-  async fetch() {
+  async fetch () {
     const tagId = await this.$axios.get(`${tagsURL}?slug=${this.tag}`)
       .then(res => res.data[0].id)
       .catch((error) => {
         console.log(error)
-        this.$nuxt.error({statusCode: 500, message: 'Tags not found'})
+        this.$nuxt.error({ statusCode: 500, message: 'Tags not found' })
       })
     this.tagsPosts = await this.$axios.get(`${contentApiURL}/posts?tags=${tagId}&per_page=100`)
       .then(res => res.data)
       .catch((error) => {
         console.log(error)
-        this.$nuxt.error({statusCode: 500, message: 'Tags not found'})
+        this.$nuxt.error({ statusCode: 500, message: 'Tags not found' })
       })
   },
-  head() {
+  head () {
     return {
       title: `Lahmacun News Tag: ${this.tag}`,
       meta: [

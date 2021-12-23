@@ -27,7 +27,9 @@ export default {
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
         allowedAttributes: {
-          img: ['src', 'srcset']
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
         }
       }
     }

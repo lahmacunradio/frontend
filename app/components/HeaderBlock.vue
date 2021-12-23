@@ -1,8 +1,11 @@
 <template>
-  <header class="flex-row-reverse items-center justify-between px-4 py-2 xsm:py-4 bg-white md:flex md:flex-row">
+  <header class="flex-row-reverse items-center justify-between px-4 py-2 bg-white md:flex md:flex-row">
     <div class="items-center flex mb-4 xsm:mb-0 xsm:overflow-visible xsm:overflow-hidden">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
-        <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
+        <h1 class="main-title">
+          Lahmacun Radio
+        </h1>
+        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
       </div>
       <div class=" mt-2 xsm:my-4 md:mr-8">
         <client-only>
@@ -51,6 +54,10 @@ export default {
   header {
       justify-content: space-between;
       align-content: center;
+      h1.main-title {
+        text-indent: -99em;
+        font-size: 0.1px;
+      }
       .logo {
         min-width: 6rem;
         @media (max-width: $small-width) {

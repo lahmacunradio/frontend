@@ -2,35 +2,33 @@
   <div>
     <SubTitle title="Lahmacun Archive" />
     <div class="container mt-8">
-      <div class="container mt-8">
-        <div v-if="defaultEpisodes" class="flex justify-between">
-          <AutoCompleteSearch
-            :default-items="defaultEpisodes"
-            suggestion-attribute="name"
-            :search-fields="searchFields"
-            place-holder="Search"
-            @update="onUpdate"
-          />
+      <div v-if="defaultEpisodes" class="flex justify-between">
+        <AutoCompleteSearch
+          :default-items="defaultEpisodes"
+          suggestion-attribute="name"
+          :search-fields="searchFields"
+          place-holder="Search"
+          @update="onUpdate"
+        />
+      </div>
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
+        <p>Loading...</p>
+      </div>
+      <div v-if="$fetchState.error" class="py-8 text-center">
+        Error happened
+      </div>
+      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
+        <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+          <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
-        <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-          <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-          <p>Loading...</p>
-        </div>
-        <div v-if="$fetchState.error" class="py-8 text-center">
-          Error happened
-        </div>
-        <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
-            <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
-          </div>
-        </article>
-        <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
-          <a href="#" @click.prevent="loadMoreEpisodes">
-            <b>Load {{ startNumberofEpisodes }} more episodes</b>
-            <br>
-            (showing {{ numberOfEpisodes }} episodes)
-          </a>
-        </div>
+      </article>
+      <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
+        <a href="#" @click.prevent="loadMoreEpisodes">
+          <b>Load {{ startNumberofEpisodes }} more episodes</b>
+          <br>
+          (showing {{ numberOfEpisodes }} episodes)
+        </a>
       </div>
     </div>
   </div>

@@ -61,26 +61,29 @@ export default {
       ul {
         padding:0;
         margin: 0;
+        @media (max-width: $tablet-width) {
+          margin: 0.5rem 0;
+        }
         @media (max-width: $mobile-width) {
           text-align: center;
         }
         li {
-            display: inline-block;
-            margin: -1.5rem;
-            text-transform: uppercase;
+          display: inline-block;
+          margin: 0.5rem 0.5rem 0.25rem;
+          text-transform: uppercase;
+          position: relative;
+          padding: 0;
+          border-bottom: 0.25rem solid transparent;
+          @media (max-width: $notebook-width) {
+            margin: 0 0.5rem;
+          }
+          &.selected {
+            border-bottom-color: $lahma-pink;
+          }
+          a {
+            z-index: 5;
             position: relative;
-            padding: 1.2rem 2.2rem;
-            @media (max-width: $mobile-width) {
-              padding: 1.8rem 2rem;
-            }
-            &.selected {
-                background: url('@/assets/img/selected-menu.svg') no-repeat center center;
-                background-size: 7rem;
-            }
-            a {
-              z-index: 5;
-              position: relative;
-            }
+          }
         }
       }
   }

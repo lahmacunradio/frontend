@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       <NuxtLink v-if="url" :to="url">
         {{title}}
       </NuxtLink>
       <span v-else>{{title}}</span>
-    </h3>
+    </h2>
   </div>
 </template>
 

@@ -2,7 +2,7 @@
   <div>
     <SubTitle title="Arcsi's Latest" url="/archive/" />
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
     </div>
     <div class="container relative pt-12 latest-container" :class="{'opacity-0': $fetchState.pending} ">
