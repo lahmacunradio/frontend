@@ -1,7 +1,7 @@
 <template>
   <div>
     <SubTitle title="Lahmacun News" />
-    <ItemsList
+    <ItemList
       :items="newsFilteredList"
       :isLoading="isLoading"
       :totalCount="totalCount"
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { contentApiURL, newsBaseURL } from '~/constants'
+import { contentApiURL, newsBaseURL, tagsURL } from '~/constants'
 
 export default {
   data () {
@@ -22,11 +22,7 @@ export default {
       numberOfItems: 9,
       totalCount: 0,
       searchText: '',
-      callBacks: {
-        totalNumber: res => parseInt(res.headers['x-wp-total']),
-        fetchNews: async res => await this.parseData(res.data)
-      },
-      isLoading: false
+      isLoading: false,
     }
   },
   head () {
@@ -54,56 +50,50 @@ export default {
   computed: {
     fetchCount () {
       return this.newsFilteredList.length + this.numberOfItems
+    },
+    newsUrl () {
+      return `${newsBaseURL}&per_page=${this.fetchCount}${this.searchText ? `&search=${this.searchText}` : ''}`
     }
   },
   async mounted () {
-    this.newsFilteredList = await this.useFetch()
-    this.totalCount = await this.useFetch({ type: 'totalNumber' })
+    await this.fetchNews()
   },
   beforeDestroy () {
     this.newsFilteredList = null
     this.totalCount = null
   },
   methods: {
-    async useFetch({ type = 'fetchNews' } = {}) {
-      const callback = this.callBacks[type]
+    async useFetch(url) {
       try {
-        this.isLoading = true
-        const response = await this.$axios.get(
-          `${newsBaseURL}${
-            type === 'fetchNews'
-              ? `&per_page=${this.fetchCount}`
-              : ''
-          }${
-            this.searchText.length > 2
-              ? `&search=${this.searchText}`
-              : ''
-          }`)
-        const news = await callback(response)
-        this.isLoading = false
-        return news
+        const response = await this.$axios.get(`${url}`)
+        return response
       } catch (error) {
         this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
       }
     },
     async getImage(idNews) {
-      const { data } = await this.$axios.get(`${contentApiURL}/media/${idNews}`)
+      const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
       return data?.media_details?.sizes?.large?.source_url || data?.source_url
-      // return {
-      //   large: data?.media_details?.sizes?.large?.source_url || data?.source_url,
-      //   small: data?.media_details?.sizes?.medium_large?.source_url || data?.source_url
-      // }
+    },
+    async getTags(idNews) {
+      const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
+      return data
     },
     async parseData(news) {
       return await Promise.all(news.map(async n => ({
         title: this.htmlDecoder(n.title.rendered),
         url: `/news/${n.slug}`,
         image: await this.getImage(n.featured_media),
-        description: this.truncate(n.excerpt.rendered, 150)
+        description: this.truncate(n.excerpt.rendered, 150),
+        tags: n.tags.length ? await this.getTags(n.tags) : null
       })))
     },
     async fetchNews () {
-      this.newsFilteredList = await this.useFetch()
+      this.isLoading = true
+      const response = await this.useFetch(this.newsUrl)
+      this.newsFilteredList = await this.parseData(response.data)
+      this.totalCount = parseInt(response.headers['x-wp-total'])
+      this.isLoading = false
     },
     async onChange (e) {
       this.searchText = e
@@ -111,7 +101,6 @@ export default {
         this.newsFilteredList = []
         this.totalCount = 0
         await this.fetchNews()
-        this.totalCount = await this.useFetch({ type: 'totalNumber' })
       }
     }
   }
