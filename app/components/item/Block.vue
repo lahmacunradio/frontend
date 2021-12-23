@@ -1,6 +1,6 @@
 <template>
   <NuxtLink :to="item.url">
-    <div class="container">
+    <div class="item-container">
       <div class="item-image">
         <img
           :src="image"
@@ -18,6 +18,7 @@
       <div v-if="item.description" class="item-text mt-2">
         <div v-sanitize="item.description" />
       </div>
+      <TagList v-if="item.tags" :tags="item.tags" class="mt-2" />
     </div>
   </NuxtLink>
 </template>
@@ -25,8 +26,6 @@
 <script>
 
 export default {
-  components: {
-  },
   props: {
     item: {
       type: Object,
@@ -74,12 +73,13 @@ export default {
   max-width: calc(100vw - 3rem);
 }
 
-.container {
+.item-container {
   padding: 1rem;
+  border: $lahma-pink 4px solid;
 }
 
-.container:hover {
-  outline: solid #FFFFFF;
+.item-container:hover {
+  border-color: #FFFFFF;
 }
 
 </style>
