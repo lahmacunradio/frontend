@@ -1,15 +1,17 @@
 <template>
   <div>
-    <div class="container">
-      <header class="flex flex-row items-center justify-between">
-        <input
-          type="search"
-          :placeholder="placeholder"
-          @input="onChange"
-        >
+    <div class="container items-container">
+      <header class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+        <div class="input-container">
+          <input
+            type="search"
+            :placeholder="placeholder"
+            @input="onChange"
+          >
+        </div>
       </header>
       <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-        <div v-for="item in items" :key="items.id" class="items-container">
+        <div v-for="(item, index) in items" :key="`${item.id}-${index}`">
           <ItemBlock :item="item" />
         </div>
       </article>
@@ -63,18 +65,25 @@ export default {
 header {
   padding: 1rem 0
 }
+
 .items-container {
   max-width: 100%;
 }
+
+.input-container {
+  width: 100%;
+  padding: 0 1rem;
+}
+
 input {
   display: block;
-  width: 350px;
+  width: 100%;
   @media (max-width: $mobile-width) {
     width: 100%;
   }
   height: 30px;
   border-radius: 0.25rem;
   outline: none;
-  padding: 0 10px;
+  padding: 1rem;
 }
 </style>
