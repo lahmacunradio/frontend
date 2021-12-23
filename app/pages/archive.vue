@@ -2,14 +2,36 @@
   <div>
     <SubTitle title="Lahmacun Archive" />
     <div class="container mt-8">
-      <ItemsList
-        :items="displayedEpisodes"
-        :isLoading="isLoading"
-        :totalCount="arcsiEpisodes.length"
-        :callback="loadMoreEpisodes"
-        @search="onUpdate"
-        placeholder="Search"
-      />
+      <div class="container mt-8">
+        <div v-if="defaultEpisodes" class="flex justify-between">
+          <AutoCompleteSearch
+            :default-items="defaultEpisodes"
+            suggestion-attribute="name"
+            :search-fields="searchFields"
+            place-holder="Search"
+            @update="onUpdate"
+          />
+        </div>
+        <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
+          <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+          <p>Loading...</p>
+        </div>
+        <div v-if="$fetchState.error" class="py-8 text-center">
+          Error happened
+        </div>
+        <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
+          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+            <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
+          </div>
+        </article>
+        <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
+          <a href="#" @click.prevent="loadMoreEpisodes">
+            <b>Load {{ startNumberofEpisodes }} more episodes</b>
+            <br>
+            (showing {{ numberOfEpisodes }} episodes)
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -21,19 +43,22 @@ export default {
   data () {
     return {
       startIndex: 0,
-      numberOfEpisodes: 9,
-      arcsiEpisodes: [],
-      displayedEpisodes: [],
-      searchFields: ['title', 'subTitle'],
-      isLoading: false,
+      preloadImages: false,
+      numberOfEpisodes: 12,
+      startNumberofEpisodes: 12,
+      arcsiEpisodes: null,
+      defaultEpisodes: null,
+      searchFields: ['name', 'description']
     }
   },
-  async mounted () {
-    const allEpisodes = await this.useFetch(`${arcsiItemBaseURL}/all`)
-    const parsedEpisodes = await this.parseEpisodes(allEpisodes)
-    this.arcsiEpisodes = parsedEpisodes.filter(item => item.date < this.getToday && item.archived === true)
-      .sort((a, b) => new Date(b.date) - new Date(a.date))
-    this.displayedEpisodes = this.getDisplayedEpisodes()
+  async fetch () {
+    this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+      .then(res => res.data)
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
+      })
+    this.arcsiEpisodes = this.defaultEpisodes
   },
   head () {
     return {
@@ -57,13 +82,6 @@ export default {
       ]
     }
   },
-  watch: {
-    startIndex: function () {
-      this.isLoading = true
-      this.displayedEpisodes = [...this.displayedEpisodes, ...this.getDisplayedEpisodes()]
-      this.isLoading = false
-    },
-  },
   computed: {
     getToday () {
       const d = new Date()
@@ -72,55 +90,31 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
+    arcsiEpisodesListSortedLatest () {
+      if (this.arcsiEpisodes) {
+        const showslist = [...this.arcsiEpisodes]
+        return showslist
+          .filter(item => item.play_date < this.getToday)
+          .filter(item => item.archived === true)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+          .slice(this.startIndex, this.numberOfEpisodes)
+      }
+      return null
+    },
     arcsiList () {
-      return this.$store.state.arcsiShows
+      return [...this.$store.state.arcsiShows]
     }
   },
   beforeDestroy () {
+    this.defaultEpisodes = null
     this.arcsiEpisodes = null
   },
   methods: {
-    getDisplayedEpisodes () {
-      return this.arcsiEpisodes.slice(this.startIndex, this.startIndex + this.numberOfEpisodes)
-    },
-    async useFetch (url) {
-      try {
-        this.isLoading = true
-        const response = await this.$axios.get(url)
-        this.isLoading = false
-        return response.data
-      } catch (e) {
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
-      }
-    },
-    getUrl (episode) {
-      return `/shows/${this.arcsiList.find(item => item.id === episode.shows[0].id).archive_lahmastore_base_url}/${episode.id}`
-    },
-    async parseEpisodes (episodes) {
-      console.log(this.arcsiList, episodes)
-      return episodes.map(episode => ({
-        title: episode.name,
-        url: this.getUrl(episode),
-        subTitle: episode.shows[0].name,
-        image: Boolean(episode.image_url)
-            ? episode.image_url
-            : this.arcsiList.find(item => item.id === episode.shows[0].id).cover_image_url,
-        date: episode.play_date,
-        archived: episode.archived
-      }))
-    },
     loadMoreEpisodes () {
-      this.isLoading = true
-      this.startIndex = this.startIndex + this.numberOfEpisodes
-      this.isLoading = false
+      this.numberOfEpisodes = this.numberOfEpisodes + this.startNumberofEpisodes
     },
     onUpdate (result) {
-      console.log(result)
-      this.isLoading = true
-      this.displayedEpisodes = this.arcsiEpisodes.filter(episode => {
-        return this.searchFields.some(field => episode[field].toLowerCase().includes(result.toLowerCase()))
-      })
-      this.isLoading = false
+      this.arcsiEpisodes = result
     }
   }
 }
