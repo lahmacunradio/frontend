@@ -50,8 +50,8 @@ export default {
       this.impressumFeaturedImage = await this.$axios.get(mediaURL + `/${this.impressum.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Impressum Image not available' })
+          this.$sentry.captureException(new Error('Impressum Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Impressum Image not available' })
         })
     }
   },
