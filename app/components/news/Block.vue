@@ -23,7 +23,7 @@
       </div>
     </div>
     <div v-if="newsTags" class="tags mt-2">
-      <div v-for="(tag, index) in newsTags" :key="index + tag.id" class="inline-block">
+      <div v-for="(tag, index) in newsTags" :key="index + tag.id + tag.slug" class="inline-block">
         <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
           {{ tag.name }}
         </NuxtLink>
