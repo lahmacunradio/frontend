@@ -7,7 +7,6 @@
       :totalCount="totalCount"
       :callback="fetchNews"
       @search="onChange"
-      placeholder="Search"
     />
   </div>
 </template>
@@ -23,6 +22,7 @@ export default {
       totalCount: 0,
       searchText: '',
       isLoading: false,
+      page: 1,
     }
   },
   head () {
@@ -48,11 +48,8 @@ export default {
     }
   },
   computed: {
-    fetchCount () {
-      return this.newsFilteredList.length + this.numberOfItems
-    },
     newsUrl () {
-      return `${newsBaseURL}&per_page=${this.fetchCount}${this.searchText ? `&search=${this.searchText}` : ''}`
+      return `${newsBaseURL}&per_page=${this.numberOfItems}&page=${this.page}${this.searchText ? `&search=${this.searchText}` : ''}`
     }
   },
   async mounted () {
@@ -77,7 +74,7 @@ export default {
     },
     async getTags(idNews) {
       const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
-      return data
+      return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
     },
     async parseData(news) {
       return await Promise.all(news.map(async n => ({
@@ -91,8 +88,9 @@ export default {
     async fetchNews () {
       this.isLoading = true
       const response = await this.useFetch(this.newsUrl)
-      this.newsFilteredList = await this.parseData(response.data)
+      this.newsFilteredList = [...this.newsFilteredList, ...(await this.parseData(response.data))]
       this.totalCount = parseInt(response.headers['x-wp-total'])
+      this.page++
       this.isLoading = false
     },
     async onChange (e) {
@@ -100,6 +98,7 @@ export default {
       if (this.searchText.length > 2 || !this.searchText) {
         this.newsFilteredList = []
         this.totalCount = 0
+        this.page = 1
         await this.fetchNews()
       }
     }
