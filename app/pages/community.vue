@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Community
-    </h3>
+    </h2>
     <div>
       <nav class="pt-8 px-4">
         <ul class="text-center comunity-navigation">
@@ -48,12 +48,12 @@
           </li>
         </ul>
       </nav>
-      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-        <p>Loading...</p>
-      </div>
       <div class="italic text-center my-8 px-4">
         <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018</h4>
+      </div>
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
+        <p>Loading...</p>
       </div>
       <div id="community-content" class="container">
         <article id="call-page" ref="call">

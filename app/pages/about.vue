@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       About Lahmacun
-    </h3>
+    </h2>
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
@@ -29,7 +29,9 @@ export default {
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
         allowedAttributes: {
-          img: ['src', 'srcset']
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
         }
       }
     }

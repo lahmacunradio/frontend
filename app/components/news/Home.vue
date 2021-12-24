@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full news-home-container">
+  <div v-if="news" class="w-full news-home-container">
     <div class="relative newsimage-slider">
       <div class="absolute top-0 right-0 news-badge">
         <nuxt-link to="/news">
@@ -34,7 +34,7 @@
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
         </h5>
-        <div v-sanitize="truncatedNews" />
+        <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
       </div>
     </div>
   </div>
@@ -55,28 +55,34 @@ export default {
   data () {
     return {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png')
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
+      sanitizeOptions: {
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedAttributes: {
+          a: ['*']
+        }
+      }
+
     }
   },
   computed: {
     truncatedNews () {
-      if (!this.news && !this.news.excerpt.rendered) {
+      if (!this.news && !this.news?.excerpt?.rendered) {
         return false
       }
-      const filterEllipsis = this.news.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
+      const filterEllipsis = this.news?.excerpt.rendered.replace('<span class="moresign"> ... </span>', '')
       return this.truncate(filterEllipsis, 300)
     }
   },
   watch: {
     news: {
       handler () {
-        this.loadNewsImages(this.news.featured_media)
+        this.loadNewsImages(this.news?.featured_media)
       }
-
     }
   },
   mounted () {
-    this.loadNewsImages(this.news.featured_media)
+    this.loadNewsImages(this.news?.featured_media)
   },
   methods: {
     async loadNewsImages (newsId) {
@@ -106,7 +112,7 @@ export default {
 .news-home-container {
   .news-image {
     width: 100%;
-    max-height: 300px;
+    max-height: 20rem;
     overflow: hidden;
     display: flex;
     align-content: center;

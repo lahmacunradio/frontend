@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       <NuxtLink to="/news/tags">
         Lahmacun News Tags
       </NuxtLink>
-    </h3>
+    </h2>
     <div class="container mt-8">
       <header class="mb-8">
         <h2>News tagged with "{{ tag }}"</h2>

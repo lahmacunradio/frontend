@@ -15,7 +15,7 @@
             <!-- old show image -->
             <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
               <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-                <div v-if="show_check == true" class="onair">On air</div>
+                <div v-if="show_check === true" class="onair">On air</div>
                 <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
               </a>
               <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
@@ -41,13 +41,13 @@
               <div class="media-body">
                 <div v-if="np.now_playing.song.title !== ''">
                   <h4 :title="show_title" class="now-playing-title">
-                    <nuxt-link v-if="show_check == true" :to="show_url">
+                    <nuxt-link v-if="show_check === true" :to="show_url">
                       <span>{{ show_title }}&nbsp;</span>
                       <i class="fa fa-link" aria-hidden="true" />
                     </nuxt-link>
 
                     <a
-                      v-if="check_offairlink == true"
+                      v-if="check_offairlink === true"
                       :href="np.now_playing.song.custom_fields.offairlink"
                       target="_blank"
                     >
@@ -55,7 +55,7 @@
                       <i class="fa fa-link" aria-hidden="true" />
                     </a>
 
-                    <span v-if="show_check == false && check_offairlink == false">{{ show_title }}</span>
+                    <span v-if="show_check === false && check_offairlink === false">{{ show_title }}</span>
                   </h4>
                   <h5 :title="show_subtitle" class="now-playing-artist">
                     {{ show_subtitle }}
@@ -68,14 +68,16 @@
                 </div>
               </div>
               <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
+                <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
                   <vue-slider
                     v-model="volume"
-                    :height="25"
+                    :height="16"
                     tooltip="none"
-                    :dot-size="25"
+                    :dot-size="16"
                   />
                 </div>
+                <i class="fa fa-volume-up" />
               </div>
             </div>
 
@@ -184,10 +186,9 @@ export default {
       timeOutHelper: null,
 
       // rework the checks
-      default_art_url: 'https://www.lahmacun.hu/wp-content/uploads/defaultshowart.jpg',
-      default_azuracast_art_url: 'https://streaming.lahmacun.hu/static/img/generic_song.jpg',
-      showsURLList_lookup: [],
-      showsList_lookup: []
+      default_art_url: require('@/assets/img/stream/defaultshowart.jpg'),
+      default_azuracast_art_url: require('@/assets/img/stream/generic_song.jpg'),
+      docTitleSetter: null
     }
   },
   computed: {
@@ -250,18 +251,10 @@ export default {
       if (this.np.live.is_live) { return this.np.now_playing.song.title } else { return this.np.now_playing.song.title }
     },
     show_check () {
-      if (this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== '')) {
-        return true
-      } else {
-        return false
-      }
+      return !!(this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== ''))
     },
     check_offairlink () {
-      if (this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3) {
-        return true
-      } else {
-        return false
-      }
+      return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
     },
     show_url () {
       const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
@@ -352,6 +345,7 @@ export default {
   beforeDestroy () {
     clearInterval(this.np_interval)
     clearInterval(this.clock_interval)
+    clearInterval(this.docTitleSetter)
     clearTimeout(this.np_timeout)
     clearTimeout(this.timeOutHelper)
     this.np_interval = null
@@ -368,17 +362,25 @@ export default {
       this.is_playing = true
       this.showCurrentMetadata()
 
+      document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+      this.docTitleSetter = setInterval(() => {
+        if (this.is_playing) {
+          document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+        } else {
+          clearInterval(this.docTitleSetter)
+        }
+      }, 3000)
+
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      //Google Analytics 4 event: only send if it's a regular show on air
-      if(this.show_check){
+      // Google Analytics 4 event: only send if it's a regular show on air
+      if (this.show_check) {
         gtag('event', 'Radio play', {
-          'Show': this.show_title,
-          'Episode': this.show_subtitle
-        });
+          Show: this.show_title,
+          Episode: this.show_subtitle
+        })
       }
-      
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
@@ -407,6 +409,10 @@ export default {
       }
       this.audio.src = ''
       this.$store.commit('player/isStreamPlaying', false)
+
+      clearInterval(this.docTitleSetter)
+      const ogTitle = document.querySelector("meta[property='og:title']")
+      document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
 
       /* Google tags
             if (this.show_check) {
@@ -687,14 +693,17 @@ a.programimage {
     bottom: 3px;
     padding-left: 3px;
     line-height: 1;
+    white-space: nowrap;
     > div {
         display: inline-block;
         vertical-align: top;
     }
     .radio-control-volume-slider {
-        width: 200px;
-        height: 25px;
-        clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+        width: 8rem;
+        height: 0.5rem;
+        margin: 0.25rem 0.4rem;
+        overflow: hidden;
+        border-radius: 0.25rem;
     }
 }
 

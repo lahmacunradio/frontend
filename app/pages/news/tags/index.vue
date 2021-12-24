@@ -1,14 +1,14 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun News
-    </h3>
+    </h2>
     <section class="container mt-8">
       <header class="mb-8">
         <h1>News tags</h1>
       </header>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-if="$fetchState.error" class="py-8 text-center">

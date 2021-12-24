@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       <NuxtLink :to="`/photos/`">
         Lahmacun Photos
       </NuxtLink>
-    </h3>
+    </h2>
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-else>
@@ -43,7 +43,7 @@ export default {
     }
   },
   async fetch () {
-    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}?per_page=100`)
+    this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}&per_page=100`)
       .then(res => res.data[0])
       .catch((error) => {
         this.$sentry.captureException(new Error('Photos not found ', error))

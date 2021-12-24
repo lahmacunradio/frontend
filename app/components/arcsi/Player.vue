@@ -17,7 +17,7 @@
       />
     </template>
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
-      <img src="@/assets/img/preloader.svg" class="h-4 mr-4">
+      <img src="@/assets/img/preloader.svg" class="h-4 mr-4" alt="preload">
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
@@ -47,6 +47,9 @@
         </h5>
       </div>
       <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
+        <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
+          <i class="fa fa-fast-backward" aria-hidden="true" />
+        </a>
         <div class="text-sm seek-time">
           {{ seek && seek > 1 ? currentSeek : '0:00:00' }}
         </div>
@@ -65,6 +68,9 @@
         <div class="text-sm">
           {{ currentDuration }}
         </div>
+        <a href="#" class="ml-2 text-xs" @click.prevent="seekForward(10)" @dblclick.prevent="seekForward(20)">
+          <i class="fa fa-fast-forward" aria-hidden="true" />
+        </a>
       </div>
       <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap">
         <div class="inline-block w-4 align-middle">
@@ -102,12 +108,14 @@ export default {
   },
   data () {
     return {
+      pageTitle: document?.title || '',
       audio: null,
       currentVolume: '1',
       currentProgress: '0',
       duration: 0,
       seek: 0,
-      timeOutHelper: null
+      timeOutHelper: null,
+      docTitleSetter: null
     }
   },
   computed: {
@@ -184,6 +192,7 @@ export default {
   },
   beforeDestroy () {
     clearTimeout(this.timeOutHelper)
+    clearInterval(this.docTitleSetter)
     this.timeOutHelper = null
     if (this.arcsiIsPlaying) {
       this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -234,13 +243,21 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      //Google Analytics 4 event
+      // Google Analytics 4 event
+      document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+      this.docTitleSetter = setInterval(() => {
+        if (this.arcsiIsPlaying) {
+          document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+        } else {
+          clearInterval(this.docTitleSetter)
+        }
+      }, 3000)
+
+      // Google Analytics 4 event
       gtag('event', 'Arcsi play', {
-        'Show': this.episode.shows[0].name,
-        'Episode': this.episode.name
-      });
-
-
+        Show: this.episode.shows[0].name,
+        Episode: this.episode.name
+      })
     },
     pauseArcsi () {
       if (this.arcsiIsPlaying) {
@@ -248,6 +265,10 @@ export default {
       }
       this.setPauseState()
       this.setMetaData()
+
+      clearInterval(this.docTitleSetter)
+      const ogTitle = document.querySelector("meta[property='og:title']")
+      document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
     },
     toggleArcsi () {
       const arcsiReady = this.$refs.arcsiplayer?.readyState > 2
@@ -324,6 +345,18 @@ export default {
       } else {
         this.pauseArcsi()
       }
+    },
+    seekBackward (time) {
+      if (this.seek < time) {
+        return false
+      }
+      this.setSeek(this.seek - time)
+    },
+    seekForward (time) {
+      if (this.seek > this.duration - time) {
+        return false
+      }
+      this.setSeek(this.seek + time)
     }
   }
 }

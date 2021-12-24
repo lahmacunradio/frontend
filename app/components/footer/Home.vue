@@ -4,7 +4,12 @@
       <div class="image">
         <div class="gradient">
           <p>Lahmacun.hu is an online music & more radio from Budapest.</p>
-          <p>Lahmacun is listener supported. If you enjoy what we do, please consider donating to us.</p>
+          <p>
+            Lahmacun is listener supported. If you enjoy what we do, please consider
+            <NuxtLink to="/donate">
+              <b>donating to us</b>
+            </NuxtLink>.
+          </p>
         </div>
         <img src="@/assets/img/Lahmacun-Team-2020.jpg" alt="">
       </div>

@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       <NuxtLink :to="`/news/`">
         Lahmacun News
       </NuxtLink>
-    </h3>
+    </h2>
     <div class="container mt-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-if="$fetchState.error" class="py-8 text-center">
@@ -20,6 +20,7 @@
 
 <script>
 import { contentApiURL } from '~/constants'
+import { truncate } from '~/plugins/mixinCommonMethods'
 
 export default {
   components: {},
@@ -70,7 +71,8 @@ export default {
       if (!this.selectedNews) {
         return false
       }
-      return this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      const shortenMeta = this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      return this.truncate(shortenMeta, 150)
     }
   },
   methods: {
