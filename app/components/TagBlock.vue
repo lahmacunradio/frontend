@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="link" class="tag-item">
+  <NuxtLink :to="tag.link" class="tag-item">
     {{ tag.name }}
   </NuxtLink>
 </template>
@@ -11,10 +11,6 @@ export default {
       type: Object,
       required: true
     },
-    link: {
-      type: String,
-      required: true
-    }
   },
 }
 </script>

@@ -3,7 +3,6 @@
     <TagBlock
       v-for="(tag, index) in tags" :key="`${tag.id}-${index}`"
       :tag="tag"
-      :link="`/news/tags/${tag.slug}`"
       class="tag"
     />
   </div>
