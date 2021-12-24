@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container items-container">
-      <header class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+      <header v-if="isFilter" class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
         <div class="input-container">
           <input
             type="search"
@@ -37,21 +37,21 @@ export default {
       type: Boolean
     },
     totalCount: {
-      type: Number
+      type: Number,
+      required: true
     },
     callback: {
       type: Function,
       required: true
     },
-    searchText: {
-      type: String
-    },
     placeholder: {
-      type: String
+      type: String,
+      default: 'Search'
     },
-    displayCount: {
-      type: Number,
-    }
+    isFilter: {
+      type: Boolean,
+      default: true
+    },
   },
   methods: {
     onChange(event) {
