@@ -72,7 +72,7 @@ header {
 
 .input-container {
   width: 100%;
-  padding: 0 1rem;
+  padding: 0 calc(1rem + 4px);
 }
 
 input {
