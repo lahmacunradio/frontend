@@ -7,13 +7,14 @@ export const state = () => ({
 })
 
 export const actions = {
-  async nuxtServerInit ({ state }, { req, error }) {
+  async nuxtServerInit ({ state }, { $sentry, error }) {
     await this.$axios.get(arcsiServerURL)
       .then((res) => {
         state.arcsiShows = res.data
       })
       .catch((e) => {
-        error({ statusCode: 500, message: 'Post not found' })
+        $sentry.captureException(e)
+        error({ statusCode: 404, message: 'Latest news not found' })
       })
   }
 }

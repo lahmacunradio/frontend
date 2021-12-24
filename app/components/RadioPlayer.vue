@@ -316,14 +316,14 @@ export default {
     // Handle audio errors.
     this.audio.onerror = (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_NETWORK && this.audio.src !== '') {
-        console.log('Network interrupted stream. Automatically reconnecting shortly...')
+        this.$sentry.captureException(new Error('Stream interrupted ', e))
         this.timeOutHelper = setTimeout(this.play, 5000)
       }
     }
     this.audio.onended = () => {
       if (this.is_playing) {
         this.stop()
-        console.log('Network interrupted stream. Automatically reconnecting shortly...')
+        this.$sentry.captureException(new Error('Stream interrupted '))
         this.timeOutHelper = setTimeout(this.play, 5000)
       } else {
         this.stop()
@@ -458,7 +458,7 @@ export default {
         }
         // Vue.prototype.$eventHub.$emit('np_updated', npNew);
       }).catch((error) => {
-        console.log('Network interrupted stream. Automatically reconnecting shortly...')
+        this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
       }).then(() => {
         clearTimeout(this.np_timeout)

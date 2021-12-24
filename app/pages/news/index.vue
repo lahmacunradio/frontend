@@ -65,7 +65,8 @@ export default {
         const response = await this.$axios.get(`${url}`)
         return response
       } catch (error) {
-        this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
+        this.$sentry.captureException(new Error('News is not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'News is not available' })
       }
     },
     async getImage(idNews) {

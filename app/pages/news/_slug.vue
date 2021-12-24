@@ -30,8 +30,8 @@ export default {
     this.selectedNews = await this.$axios.get(`${contentApiURL}/posts?slug=${this.slug}`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'News not found' })
+        this.$sentry.captureException(new Error('News not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'News not found' })
       })
   },
   head () {

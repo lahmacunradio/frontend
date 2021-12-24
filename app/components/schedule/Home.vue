@@ -147,8 +147,8 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Schedule not available' })
+        this.$sentry.captureException(new Error('Schedule not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Schedule not available' })
       })
     },
     groupShowsByDay (shows) {

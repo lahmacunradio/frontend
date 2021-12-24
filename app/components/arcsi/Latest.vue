@@ -71,8 +71,8 @@ export default {
     this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
+        this.$sentry.captureException(new Error('Arcsi latest not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
       })
     if (typeof window !== 'undefined') {
       this.changeBreakpoint()

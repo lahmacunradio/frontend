@@ -23,7 +23,7 @@
       </div>
     </div>
     <div v-if="newsTags" class="tags mt-2">
-      <div v-for="(tag, index) in newsTags" :key="index + tag.id" class="inline-block">
+      <div v-for="(tag, index) in newsTags" :key="index + tag.id + tag.slug" class="inline-block">
         <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
           {{ tag.name }}
         </NuxtLink>
@@ -70,17 +70,17 @@ export default {
   },
   methods: {
     async loadNewsImages (newsId) {
-      const adress = `${contentApiURL}/media/${newsId}`
-      const responseNews = await this.$axios.get(adress)
+      const address = `${contentApiURL}/media/${newsId}`
+      const responseNews = await this.$axios.get(address)
       this.newsImage = responseNews.data?.media_details?.sizes?.large?.source_url || responseNews.data?.source_url || this.newsImage
       this.newsImageSmall = responseNews.data?.media_details?.sizes?.medium_large?.source_url || responseNews.data?.source_url || this.newsImage
     },
     async loadNewsTags (tagIDs) {
-      const adress = `${tagsURL}?include=${tagIDs}`
-      this.newsTags = await this.$axios.get(adress)
+      const address = `${tagsURL}?include=${tagIDs}`
+      this.newsTags = await this.$axios.get(address)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
+          this.$sentry.captureException(new Error('Tag server not available ', error))
         })
     }
   }
