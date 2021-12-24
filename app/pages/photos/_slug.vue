@@ -46,8 +46,8 @@ export default {
     this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}&per_page=100`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Photos not available' })
+        this.$sentry.captureException(new Error('Photos not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Photos not available' })
       })
   },
   head () {

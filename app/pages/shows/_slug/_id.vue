@@ -109,15 +109,15 @@ export default {
     this.arcsiEpisode = await this.$axios.get(`${arcsiItemBaseURL}/${this.id}`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
       })
     if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
       this.arcsiShow = await this.$axios.get(`${arcsiBaseURL}/show/${this.arcsiEpisode.shows[0].id}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Arcsi server not available' })
+          this.$sentry.captureException(new Error('Arcsi server not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
         })
     }
   },

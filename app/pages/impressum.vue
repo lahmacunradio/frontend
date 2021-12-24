@@ -43,15 +43,15 @@ export default {
     this.impressum = await this.$axios.get(`${impressumURL}`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
+        this.$sentry.captureException(new Error('About page not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'About page not available' })
       })
     if (this.impressum && this.impressum.featured_media !== 0) {
       this.impressumFeaturedImage = await this.$axios.get(mediaURL + `/${this.impressum.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Impressum Image not available' })
+          this.$sentry.captureException(new Error('Impressum Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Impressum Image not available' })
         })
     }
   },

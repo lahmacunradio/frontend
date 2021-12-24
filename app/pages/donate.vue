@@ -44,8 +44,8 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Donate not available' })
+        this.$sentry.captureException(new Error('Donate not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
       })
   },
   head () {
