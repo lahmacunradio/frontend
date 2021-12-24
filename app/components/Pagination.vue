@@ -7,9 +7,9 @@
         </div>
       </a>
     </div>
-    <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
+    <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      <p>Loading...</p>
+      Loading...
     </div>
   </div>
 </template>
