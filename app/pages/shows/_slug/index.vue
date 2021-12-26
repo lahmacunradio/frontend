@@ -1,11 +1,7 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/shows/`">
-        Lahmacun Shows
-      </NuxtLink>
-    </h3>
-    <div v-if="arcsiInfosBlock" class="container mt-10">
+    <SubTitle title="Lahmacun Shows" url="/shows/" />
+    <div v-if="arcsiInfosBlock"  class="container mt-10">
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
@@ -47,7 +43,7 @@
       </div>
       <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
         <h3 class="pb-1 mb-4 text-center border-b border-current">
-          Arcsived Shows
+          Archived Shows
         </h3>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
@@ -101,7 +97,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.arcsiInfosBlock?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:title',
@@ -111,7 +107,7 @@ export default {
         {
           hid: 'og:description',
           name: 'og:description',
-          content: this.arcsiInfosBlock?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:image',
@@ -149,7 +145,14 @@ export default {
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
+    },
+    metaDescription () {
+      if (!this.arcsiInfosBlock?.description) {
+        return ''
+      }
+      return this.truncate(this.arcsiInfosBlock?.description, 150)
     }
+
   }
 }
 </script>

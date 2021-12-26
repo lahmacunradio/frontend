@@ -109,7 +109,7 @@ export default {
   .show-basic-infos {
     position: relative;
     .timing-infos {
-      min-width: 130px;
+      min-width: 9rem;
     }
   }
   &:hover:not(.opened) {

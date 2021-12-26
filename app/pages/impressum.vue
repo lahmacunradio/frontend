@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Impressum
-    </h3>
+    </h2>
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
@@ -10,7 +10,10 @@
       <div v-if="$fetchState.error" class="py-8 center w-100">
         Some error happened...
       </div>
-      <div v-if="impressum">
+      <div v-if="impressum" class="md:flex">
+        <div v-if="impressumFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+          <img :src="impressumFeaturedImage.source_url" alt="Lahmacun Impressum">
+        </div>
         <div v-sanitize="[ sanitizeOptions, impressumResults]" />
       </div>
     </div>
@@ -18,7 +21,7 @@
 </template>
 
 <script>
-import { impressumURL } from '~/constants'
+import { impressumURL, mediaURL } from '~/constants'
 
 export default {
   components: {
@@ -26,10 +29,12 @@ export default {
   data () {
     return {
       impressum: null,
+      impressumFeaturedImage: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p', 'br', 'a'],
         allowedAttributes: {
-          img: ['src', 'srcset']
+          img: ['*'],
+          a: ['*']
         }
       }
     }
@@ -38,9 +43,17 @@ export default {
     this.impressum = await this.$axios.get(`${impressumURL}`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
+        this.$sentry.captureException(new Error('About page not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'About page not available' })
       })
+    if (this.impressum && this.impressum.featured_media !== 0) {
+      this.impressumFeaturedImage = await this.$axios.get(mediaURL + `/${this.impressum.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Impressum Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Impressum Image not available' })
+        })
+    }
   },
   head () {
     return {

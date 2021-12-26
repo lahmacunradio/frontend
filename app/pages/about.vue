@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      About Lahmacun
-    </h3>
+    <SubTitle title="About Lahmacun" />
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
@@ -29,7 +27,9 @@ export default {
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'img', 'figcaption', 'p'],
         allowedAttributes: {
-          img: ['src', 'srcset']
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
         }
       }
     }
@@ -38,8 +38,8 @@ export default {
     this.aboutUs = await this.$axios.get(`${aboutUsURL}`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'About page not available' })
+        this.$sentry.captureException(new Error('About page not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'About page not available' })
       })
   },
   head () {

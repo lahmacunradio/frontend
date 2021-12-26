@@ -1,55 +1,28 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun News
-    </h3>
-    <div class="container">
-      <header class="flex flex-row items-center justify-between">
-        <input
-          v-model="search"
-          class="input"
-          type="search"
-          :placeholder="placeholder"
-          @input="onChange"
-        >
-      </header>
-      <article class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
-        <div v-for="news in newsFilteredList" :key="news.id" class="news-block">
-          <NewsBlock :news="news" />
-        </div>
-      </article>
-      <div v-if="numberOfTotal > newsFilteredList.length && !isLoading" id="loadmore" class="p-4 text-center">
-        <a href="#" @click.prevent="fetchNews">
-          <b>Load {{ numberOfItems }} more episodes</b>
-          <br>
-          (showing {{ newsFilteredList.length }} episodes)
-        </a>
-      </div>
-      <div v-if="isLoading" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-        <p>Loading...</p>
-      </div>
-    </div>
+    <SubTitle title="Lahmacun News" />
+    <ItemList
+      :items="newsFilteredList"
+      :isLoading="isLoading"
+      :totalCount="totalCount"
+      :callback="fetchNews"
+      @search="onChange"
+    />
   </div>
 </template>
 
 <script>
-import { newsBaseURL } from '~/constants'
+import { contentApiURL, newsBaseURL, tagsURL } from '~/constants'
 
 export default {
-  components: {},
   data () {
     return {
       newsFilteredList: [],
-      numberOfItems: 12,
-      numberOfTotal: 0,
-      search: '',
-      callBacks: {
-        totalNumber: res => parseInt(res.headers['x-wp-total']),
-        fetchNews: res => res.data
-      },
-      placeholder: 'search',
-      isLoading: false
+      numberOfItems: 9,
+      totalCount: 0,
+      searchText: '',
+      isLoading: false,
+      page: 1,
     }
   },
   head () {
@@ -75,51 +48,59 @@ export default {
     }
   },
   computed: {
-    fetchCount () {
-      return this.newsFilteredList.length + this.numberOfItems
+    newsUrl () {
+      return `${newsBaseURL}&per_page=${this.numberOfItems}&page=${this.page}${this.searchText ? `&search=${this.searchText}` : ''}`
     }
   },
   async mounted () {
-    this.newsFilteredList = await this.useFetch()
-    this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
+    await this.fetchNews()
   },
   beforeDestroy () {
     this.newsFilteredList = null
-    this.numberOfTotal = null
+    this.totalCount = null
   },
   methods: {
-    async useFetch({
-                     type = 'fetchNews'
-                   } = {}) {
-      const callback = this.callBacks[type]
+    async useFetch(url) {
       try {
-        this.isLoading = true
-        const response = await this.$axios.get(
-          `${newsBaseURL}${
-            type === 'fetchNews'
-              ? `&per_page=${this.fetchCount}`
-              : ''
-          }${
-            this.search.length > 2
-              ? `&search=${this.search}`
-              : ''
-          }`)
-        this.isLoading = false
-        return callback(response)
+        const response = await this.$axios.get(`${url}`)
+        return response
       } catch (error) {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'News is not available' })
+        this.$sentry.captureException(new Error('News is not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'News is not available' })
       }
     },
-    async fetchNews () {
-      this.newsFilteredList = await this.useFetch()
+    async getImage(idNews) {
+      const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
+      return data?.media_details?.sizes?.large?.source_url || data?.source_url
     },
-    async onChange () {
-      if (this.search.length > 2 || !this.search) {
+    async getTags(idNews) {
+      const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
+      return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
+    },
+    async parseData(news) {
+      return await Promise.all(news.map(async n => ({
+        title: this.htmlDecoder(n.title.rendered),
+        url: `/news/${n.slug}`,
+        image: await this.getImage(n.featured_media),
+        description: this.truncate(n.excerpt.rendered, 150),
+        tags: n.tags.length ? await this.getTags(n.tags) : null
+      })))
+    },
+    async fetchNews () {
+      this.isLoading = true
+      const response = await this.useFetch(this.newsUrl)
+      this.newsFilteredList = [...this.newsFilteredList, ...(await this.parseData(response.data))]
+      this.totalCount = parseInt(response.headers['x-wp-total'])
+      this.page++
+      this.isLoading = false
+    },
+    async onChange (e) {
+      this.searchText = e
+      if (this.searchText.length > 2 || !this.searchText) {
         this.newsFilteredList = []
-        this.numberOfTotal = 0
+        this.totalCount = 0
+        this.page = 1
         await this.fetchNews()
-        this.numberOfTotal = await this.useFetch({ type: 'totalNumber' })
       }
     }
   }

@@ -19,14 +19,14 @@
           </div>
         </div>
         <div class="close">
-          <a href="#" class="block px-4 py-1 bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
-            <span v-if="arcsiVisible">
+          <a href="#" class="block control-ear bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+            <div v-if="arcsiVisible">
               X
-            </span>
-            <div v-else class="text-xl">
-              <b class="block" :class="isArcsiPlaying && 'rotate-element'">
-                A
-              </b>
+            </div>
+            <div v-else class="arcsi-logo">
+              <span class="block" :class="isArcsiPlaying && 'rotate-element'">
+                <img src="@/assets/img/arcsi-icon.svg" alt="arcsi player">
+              </span>
             </div>
           </a>
         </div>
@@ -90,6 +90,18 @@ export default {
     left: 0;
     width: 100%;
     @apply z-50 bg-white fixed;
+}
+.control-ear {
+  width: 2rem;
+  text-align: center;
+  > div {
+    padding: 0.3rem 0;
+    height: 2rem;
+  }
+}
+.arcsi-logo {
+  width: 1.4rem;
+  margin: auto;
 }
 .close {
     position: absolute;

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun Archive
-    </h3>
+    <SubTitle title="Lahmacun Archive" />
     <div class="container mt-8">
       <div v-if="defaultEpisodes" class="flex justify-between">
         <AutoCompleteSearch
@@ -14,7 +12,7 @@
         />
       </div>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-if="$fetchState.error" class="py-8 text-center">
@@ -55,8 +53,8 @@ export default {
     this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi is not available at the moment' })
+        this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
       })
     this.arcsiEpisodes = this.defaultEpisodes
   },

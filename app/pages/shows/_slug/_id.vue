@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/archive/`">
-        Lahmacun Archive
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun Archive" url="/archive" />
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
         <NuxtLink :to="`/shows/${slug}`" class="block">
@@ -30,7 +26,7 @@
               <p v-if="arcsiEpisode.play_date">
                 Episode Nr. {{ arcsiEpisode.number }},
                 Original air date:
-                {{ $moment(arcsiEpisode.play_date).format('yyyy. MMMM Do.') }}
+                {{ airDate }}
                 Language: <span v-sanitize.nothing="getLanguageGraph(arcsiEpisode.language)" class="language" />
               </p>
             </div>
@@ -90,8 +86,6 @@
 import { arcsiBaseURL, mediaServerURL } from '~/constants'
 
 export default {
-  components: {
-  },
   data () {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -108,15 +102,15 @@ export default {
     this.arcsiEpisode = await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/episode/${this.id}`)
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi episode server not available' })
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
       })
     if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
       this.arcsiShow = await this.$axios.get(`${arcsiBaseURL}/show/${this.arcsiEpisode.shows[0].id}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Arcsi show server not available' })
+          this.$sentry.captureException(new Error('Arcsi server not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
         })
     }
   },
@@ -127,7 +121,7 @@ export default {
         {
           hid: 'description',
           name: 'description',
-          content: this.arcsiEpisode?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:title',
@@ -137,7 +131,7 @@ export default {
         {
           hid: 'og:description',
           name: 'og:description',
-          content: this.arcsiEpisode?.description
+          content: this.metaDescription
         },
         {
           hid: 'og:image',
@@ -186,6 +180,18 @@ export default {
         .filter(item => item.id !== this.arcsiEpisode.id)
         .filter(item => item.play_date < this.getToday)
         .filter(item => item.archived === true)
+    },
+    airDate () {
+      if (!this.arcsiEpisode?.play_date) {
+        return ''
+      }
+      return this.$moment(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
+    },
+    metaDescription () {
+      if (!this.arcsiEpisode?.description) {
+        return `Aired on ${this.airDate}`
+      }
+      return this.truncate(this.arcsiEpisode?.description, 150)
     }
   },
   beforeDestroy () {

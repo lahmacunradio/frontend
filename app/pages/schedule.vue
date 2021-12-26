@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h3 class="title-block">
-      Lahmacun Schedule
-    </h3>
+    <SubTitle title="Lahmacun Schedule" />
     <client-only>
       <div class="container mt-8">
         <div class="mb-4 border-b days">
@@ -143,7 +141,8 @@ export default {
       this.$axios.get(this.streamServer).then((response) => {
         this.nowPlaying = response.data
       }).catch((error) => {
-        console.log(error)
+        this.$sentry.captureException(new Error('Stream interrupted ', error))
+        this.interval = setTimeout(this.checkNowPlaying, 15000)
       })
     }
   }

@@ -1,13 +1,9 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/photos/`">
-        Lahmacun Photos
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun Photos" url="/photos/" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-else>
@@ -46,8 +42,8 @@ export default {
     this.photoGallery = await this.$axios.get(`${lahmaGaleriesURL}?slug=${this.$route.params.slug}&per_page=100`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Photos not available' })
+        this.$sentry.captureException(new Error('Photos not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Photos not available' })
       })
   },
   head () {

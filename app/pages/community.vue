@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Lahmacun Community
-    </h3>
+    </h2>
     <div>
       <nav class="pt-8 px-4">
         <ul class="text-center comunity-navigation">
@@ -184,8 +184,8 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Call For Shows not available' })
+        this.$sentry.captureException(new Error('Call For Shows not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Call For Shows not available' })
       })
     // lahmaBaseURL
     this.lahmaBase = await this.$axios.get(`${lahmaBaseURL}`)
@@ -195,15 +195,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Lahma Base not available' })
+        this.$sentry.captureException(new Error('Lahma Base not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Lahma Base not available' })
       })
     if (this.lahmaBase && this.lahmaBase.featured_media !== 0) {
       this.lahmaBaseFeaturedImage = await this.$axios.get(mediaURL + `/${this.lahmaBase.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Base Image not available' })
+          this.$sentry.captureException(new Error('Lahma Base not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Lahma Base not available' })
         })
     }
     // communitySection
@@ -214,15 +214,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Community Section not available' })
+        this.$sentry.captureException(new Error('Community Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Community Section not available' })
       })
     if (this.communitySection && this.communitySection.featured_media !== 0) {
       this.communityFeaturedImage = await this.$axios.get(mediaURL + `/${this.communitySection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+          this.$sentry.captureException(new Error('Featured Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Featured Image not available' })
         })
     }
     // eventsSection
@@ -233,15 +233,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Events Section not available' })
+        this.$sentry.captureException(new Error('Events Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Events Section not available' })
       })
     if (this.eventsSection && this.eventsSection.featured_media !== 0) {
       this.eventsFeaturedImage = await this.$axios.get(mediaURL + `/${this.eventsSection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+          this.$sentry.captureException(new Error('Press Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Press Image not available' })
         })
     }
     // pressSection
@@ -252,15 +252,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Press Section not available' })
+        this.$sentry.captureException(new Error('Press Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Press Section not available' })
       })
     if (this.pressSection && this.pressSection.featured_media !== 0) {
       this.pressFeaturedImage = await this.$axios.get(mediaURL + `/${this.pressSection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'press Image not available' })
+          this.$sentry.captureException(new Error('Press Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Press Image not available' })
         })
     }
     // labsSection
@@ -271,15 +271,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Labs Section not available' })
+        this.$sentry.captureException(new Error('Labs Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Labs Section not available' })
       })
     if (this.labsSection && this.labsSection.featured_media !== 0) {
       this.labsFeaturedImage = await this.$axios.get(mediaURL + `/${this.labsSection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Labs Image not available' })
+          this.$sentry.captureException(new Error('Labs Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Labs Image not available' })
         })
     }
 
@@ -291,15 +291,15 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Recipe Section not available' })
+        this.$sentry.captureException(new Error('Recipe Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Recipe Section not available' })
       })
     if (this.recipeSection && this.recipeSection.featured_media !== 0) {
       this.recipeFeaturedImage = await this.$axios.get(mediaURL + `/${this.recipeSection.featured_media}`)
         .then(res => res.data)
         .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 500, message: 'Recipe Image not available' })
+          this.$sentry.captureException(new Error('Recipe Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Recipe Image not available' })
         })
     }
     // favourite radios
@@ -310,8 +310,8 @@ export default {
         }
       })
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Favourites not available' })
+        this.$sentry.captureException(new Error('Favourites not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Favourites not available' })
       })
   },
   head () {

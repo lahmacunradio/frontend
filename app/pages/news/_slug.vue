@@ -1,28 +1,24 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/news/`">
-        Lahmacun News
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Lahmacun News" url="/news/" />
     <div class="container mt-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <NewsFull v-if="selectedNews" :news="selectedNews" @getimage="getImage"/>
+      <NewsFull v-if="selectedNews" :news="selectedNews" @getimage="getImage" />
     </div>
   </div>
 </template>
 
 <script>
 import { contentApiURL } from '~/constants'
+import { truncate } from '~/plugins/mixinCommonMethods'
 
 export default {
-  components: {},
   data () {
     return {
       slug: this.$route.params.slug,
@@ -34,8 +30,8 @@ export default {
     this.selectedNews = await this.$axios.get(`${contentApiURL}/posts?slug=${this.slug}`)
       .then(res => res.data[0])
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'News not found' })
+        this.$sentry.captureException(new Error('News not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'News not found' })
       })
   },
   head () {
@@ -70,7 +66,8 @@ export default {
       if (!this.selectedNews) {
         return false
       }
-      return this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      const shortenMeta = this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
+      return this.truncate(shortenMeta, 150)
     }
   },
   methods: {

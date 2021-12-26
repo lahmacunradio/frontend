@@ -22,6 +22,10 @@
   margin: 0;
 }
 
+*:hover {
+  transition: 150ms linear;
+}
+
 html {
   overscroll-behavior: none;
   font-size: 16px;
@@ -61,6 +65,7 @@ body {
 
   background-color: $lahma-pink !important;
   color: $black-color;
+  overflow: overlay;
 }
 
 .container {
@@ -113,6 +118,10 @@ h5 {
   }
   font-weight: 500;
   line-height: 1.4em;
+}
+
+b, strong {
+  font-weight: 600;
 }
 
 button:focus {
@@ -201,7 +210,11 @@ span.moresign {
   border-radius: 2rem;
 }
 
-h3.title-block {
+h2.title-block {
+  font-size: 2rem;
+  @media (max-width: $mobile-width) {
+    font-size: 1.8rem;
+  }
   width: 100%;
   padding: 0.75rem;
   margin: 0;

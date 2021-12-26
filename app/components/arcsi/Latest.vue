@@ -1,12 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
-      <NuxtLink :to="`/archive/`">
-        Arcsi's Latest
-      </NuxtLink>
-    </h3>
+    <SubTitle title="Arcsi's Latest" url="/archive/" />
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
     </div>
     <div class="container relative pt-12 latest-container" :class="{'opacity-0': $fetchState.pending} ">
@@ -75,8 +71,8 @@ export default {
     this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 500, message: 'Arcsi latest not found' })
+        this.$sentry.captureException(new Error('Arcsi latest not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
       })
     if (typeof window !== 'undefined') {
       this.changeBreakpoint()
