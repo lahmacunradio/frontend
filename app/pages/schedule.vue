@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="false">
     <SubTitle title="Lahmacun Schedule" />
     <client-only>
       <div class="container mt-8">
@@ -18,10 +18,10 @@
       </div>
       <div v-if="showsByDate.length" class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-          <div v-if="day === 'Thursday'">
+          <div v-if="day === 'Thursday' && latestRareThursday">
             <ScheduleFullitemRare :show="latestRareThursday" />
           </div>
-          <div v-if="day === 'Friday'">
+          <div v-if="day === 'Friday' && latestRareFriday">
             <ScheduleFullitemRare :show="latestRareFriday" />
           </div>
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { streamServer } from '~/constants'
+import { arcsiShowsBaseURL, streamServer } from '~/constants'
 
 export default {
   data () {
@@ -45,10 +45,21 @@ export default {
       selectedDay: 0,
       interval: null,
       nowPlaying: {},
+      loadedSchedule: null,
       latestRareThursday: null,
       latestRareFriday: null
     }
   },
+  /* gives error ???  WARN  Cannot stringify arbitrary non-POJOs Timeout
+  async fetch () {
+    this.loadedSchedule = await this.$axios.get(arcsiShowsBaseURL + '/schedule')
+      .then(res => res.data)
+      .catch((error) => {
+        this.$nuxt.error({ statusCode: 404, message: error + ' not found' })
+      })
+  },
+
+   */
   head () {
     return {
       title: 'Lahmacun Schedule',

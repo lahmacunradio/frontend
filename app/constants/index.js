@@ -1,5 +1,6 @@
 // export const arcsiBaseURL = 'https://arcsi.lahmacun.hu/arcsi'
 export const arcsiBaseURL = 'https://devarcsi.lahmacun.hu/arcsi'
+export const arcsiShowsBaseURL = arcsiBaseURL + '/show'
 export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
