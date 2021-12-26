@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      Lahmacun News
-    </h2>
+    <SubTitle title="Lahmacun News" />
     <section class="container mt-8">
       <header class="mb-8">
         <h1>News tags</h1>

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      Lahmacun Archive
-    </h2>
+    <SubTitle title="Lahmacun Archive" />
     <div class="container mt-8">
       <div v-if="defaultEpisodes" class="flex justify-between">
         <AutoCompleteSearch

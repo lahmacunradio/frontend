@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      Lahmacun Shows
-    </h2>
+    <SubTitle title="Lahmacun Shows" />
     <div class="container mt-8">
       <div class="mb-8">
         <AutoCompleteSearch
@@ -45,8 +43,6 @@
 import { mediaServerURL } from '~/constants'
 
 export default {
-  components: {},
-
   data () {
     return {
       mediaServerURL,

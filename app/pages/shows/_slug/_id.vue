@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      <NuxtLink :to="`/archive/`">
-        Lahmacun Archive
-      </NuxtLink>
-    </h2>
+    <SubTitle title="Lahmacun Archive" url="/archive" />
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
         <NuxtLink :to="`/shows/${slug}`" class="block">
@@ -91,8 +87,6 @@
 import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
 
 export default {
-  components: {
-  },
   data () {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],

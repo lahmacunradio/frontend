@@ -1,10 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      <NuxtLink to="/news/tags">
-        Lahmacun News Tags
-      </NuxtLink>
-    </h2>
+    <SubTitle title="Lahmacun News Tags" url="/news/tags" />
     <div class="container mt-8">
       <header class="mb-8">
         <h2>News tagged with "{{ tag }}"</h2>

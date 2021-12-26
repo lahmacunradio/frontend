@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      About Lahmacun
-    </h2>
+    <SubTitle title="About Lahmacun" />
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
