@@ -1,12 +1,15 @@
 <template>
   <div>
     <SubTitle title="Lahmacun News" />
+    <FilterInput @search="onChange" />
     <ItemList
       :items="newsFilteredList"
-      :isLoading="isLoading"
+    />
+    <Pagination
+      :itemsCount="newsFilteredList.length"
       :totalCount="totalCount"
-      :callback="fetchNews"
-      @search="onChange"
+      :isLoading="isLoading"
+      @click="fetchNews"
     />
   </div>
 </template>
@@ -106,23 +109,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-header {
-  padding: 2rem 0 2rem 0;
-}
-.news-block {
-  max-width: 100%;
-}
-.input {
-  display: block;
-  width: 350px;
-  @media (max-width: $mobile-width) {
-    width: 100%;
-  }
-  height: 30px;
-  border-radius: 0.25rem;
-  outline: none;
-  padding: 0 10px;
-}
-</style>
