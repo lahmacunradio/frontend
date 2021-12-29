@@ -60,10 +60,6 @@ export default {
   async mounted () {
     await this.fetchNews()
   },
-  beforeDestroy () {
-    this.newsFilteredList = null
-    this.totalCount = null
-  },
   methods: {
     async useFetch(url) {
       try {
