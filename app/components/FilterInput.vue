@@ -1,13 +1,15 @@
 <template>
-  <header class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 container">
-    <div class="input-container">
-      <input
-        type="search"
-        :placeholder="placeholder"
-        @input="onChange"
-      >
-    </div>
-  </header>
+  <div class="search-container">
+    <header class="grid gap-8 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+      <div class="input-container">
+        <input
+          type="search"
+          :placeholder="placeholder"
+          @input="onChange"
+        >
+      </div>
+    </header>
+  </div>
 </template>
 
 <script>
@@ -29,6 +31,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.search-container {
+  width: 100%;
+}
+
 header {
   padding: 1rem 0
 }
@@ -41,9 +48,6 @@ header {
 input {
   display: block;
   width: 100%;
-  @media (max-width: $mobile-width) {
-    width: 100%;
-  }
   height: 30px;
   border-radius: 0.25rem;
   outline: none;
