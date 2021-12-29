@@ -4,9 +4,6 @@
       <div class="item-image">
         <img
           :src="image"
-          sizes="(max-width: 640px) 480px,
-            800px"
-          :alt="item.title"
         >
       </div>
       <h5 v-if="item.title" class="mt-2">
@@ -32,23 +29,11 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      image: require('@/assets/img/lahmacun-logo-dummy.png'),
-      smallImage: require('@/assets/img/lahmacun-logo-dummy.png')
-    }
-  },
   computed: {
-  },
-  mounted () {
-    this.loadNewsImages()
-  },
-  methods: {
-    async loadNewsImages() {
-      this.image = this.item.image || this.image
-      this.smallImage = this.item.image || this.smallImage
+    image () {
+      return this.item.image || require('@/assets/img/lahmacun-logo-dummy.png')
     }
-  }
+  },
 }
 
 </script>
