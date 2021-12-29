@@ -5,7 +5,7 @@
         <div v-for="(item, index) in items" :key="`${item.id}-${index}`">
           <ItemBlock :item="item" />
         </div>
-        <p v-if="items.length <= 0 && !isLoading" class="italic text-container">
+        <p v-show="items.length <= 0 && !isLoading" class="italic text-container">
           {{ noFoundMessage }}
         </p>
       </article>
