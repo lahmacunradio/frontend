@@ -4,6 +4,8 @@
     <FilterInput @search="onChange" />
     <ItemList
       :items="newsFilteredList"
+      :noFoundMessage="'No matching news found'"
+      :isLoading="isLoading"
     />
     <Pagination
       :itemsCount="newsFilteredList.length"
