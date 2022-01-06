@@ -6,6 +6,7 @@
 #### Node
 At least `>=12.13.0`
 Recommended `>=14.17.0`
+Latest supported = 15.14.0 (fibers incompatibility)
 #### Yarn
 At least `>=1.22.10`
 
