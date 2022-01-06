@@ -132,6 +132,7 @@ export default {
         return showslist
           .filter(show => show.play_date < this.getToday)
           .filter(show => show.archived === true)
+          .sort((a, b) => new Date(b.number) - new Date(a.number))
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
