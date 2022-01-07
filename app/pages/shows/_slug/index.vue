@@ -44,10 +44,10 @@
         <h3 class="pb-1 mb-4 text-center border-b border-current">
           Archived Shows
         </h3>
-        <div class="change-order text-right py-4">
+        <div class="change-order text-right pt-4 pb-6">
           <a id="bydate" ref="bydate" href="#" class="selected change-order-button mr-2" @click.prevent="sortAirtime">
-            <i v-if="airtimeAsc" class="fa fa-sort-numeric-asc" aria-hidden="true" />
-            <i v-else class="fa fa-sort-numeric-desc" aria-hidden="true" />
+            <i v-if="airtimeAsc" class="fa fa-sort-numeric-desc" aria-hidden="true" />
+            <i v-else class="fa fa-sort-numeric-asc" aria-hidden="true" />
             Order by Air time
           </a>
           <a id="alphabetical" ref="alphabetical" class="change-order-button" href="#" @click.prevent="sortAlphabeticaly">
@@ -147,7 +147,7 @@ export default {
         return showslist
           .filter(show => show.play_date < this.getToday)
           .filter(show => show.archived === true)
-          .sort((a, b) => new Date(b.number) - new Date(a.number))
+          .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       }
       return null
@@ -165,21 +165,31 @@ export default {
   methods: {
     sortAlphabeticaly () {
       if (this.alphabeticAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => new Date(a.number) - new Date(b.number))
+        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
         this.alphabeticAsc = false
       } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => new Date(b.number) - new Date(a.number))
+        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
         this.alphabeticAsc = true
       }
+      this.$refs.alphabetical.classList.add('selected')
+      this.$refs.bydate.classList.remove('selected')
+      this.airtimeAsc = false
     },
     sortAirtime () {
       if (this.airtimeAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
+        this.arcsiShowListFiltered = this.arcsiShowListFiltered
+          .sort((a, b) => a.number - b.number)
+          .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
         this.airtimeAsc = false
       } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        this.arcsiShowListFiltered = this.arcsiShowListFiltered
+          .sort((a, b) => b.number - a.number)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         this.airtimeAsc = true
       }
+      this.$refs.alphabetical.classList.remove('selected')
+      this.$refs.bydate.classList.add('selected')
+      this.alphabeticAsc = false
     }
   }
 }
