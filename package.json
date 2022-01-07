@@ -1,0 +1,13 @@
+{
+  "name": "lahmacun",
+  "version": "1.0.0",
+  "description": "Lahmacun Radio Site",
+  "author": "Lahma team",
+  "private": true,
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^8.0.0"
+  },
+  "dependencies": {
+    "eslint": "^8.6.0"
+  }
+}
