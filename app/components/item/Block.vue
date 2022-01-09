@@ -45,6 +45,7 @@ export default {
   overflow: hidden;
   display: flex;
   align-content: center;
+  justify-content: center;
   pagging-bottom: 0.5rem 0;
   img {
     min-height: 300px;
