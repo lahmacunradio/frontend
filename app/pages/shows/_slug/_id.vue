@@ -60,7 +60,7 @@
         <h4 class="pb-1 mb-4 text-center border-b border-current">
           Other Episodes from {{ arcsiShow.name }}
         </h4>
-        <div class="change-order text-right pt-4 pb-6">
+        <div class="change-order text-center xsm:text-right pt-4 pb-6">
           <a id="bydate" ref="bydate" href="#" class="selected change-order-button mr-2" @click.prevent="sortAirtime">
             <i v-if="airtimeAsc" class="fa fa-sort-numeric-desc" aria-hidden="true" />
             <i v-else class="fa fa-sort-numeric-asc" aria-hidden="true" />
@@ -271,9 +271,12 @@ margin-bottom: 1rem;
 }
 .change-order-button {
   border: 1px solid #775a8f;
-  @apply py-2 px-4 rounded;
+  @apply py-2 px-4 rounded whitespace-nowrap;
   &.selected, &:hover {
     @apply bg-white bg-opacity-25;
+  }
+  @media (max-width: $mobile-width) {
+    @apply text-sm px-2;
   }
 }
 </style>
