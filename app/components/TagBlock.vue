@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="tag.link" class="tag-item">
+  <NuxtLink :to="`${tag.link}?id=${tag.id}`" class="tag-item">
     {{ tag.name }}
   </NuxtLink>
 </template>
