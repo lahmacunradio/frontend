@@ -1,18 +1,20 @@
 <template>
   <div>
     <SubTitle title="Lahmacun News" />
-    <FilterInput @search="onChange" />
-    <ItemList
-      :items="newsFilteredList"
-      :noFoundMessage="'No matching news found'"
-      :isLoading="isLoading"
-    />
-    <Pagination
-      :itemsCount="newsFilteredList.length"
-      :totalCount="totalCount"
-      :isLoading="isLoading"
-      @click="fetchNews"
-    />
+    <article class="container">
+      <FilterInput @search="onChange" />
+      <ItemList
+        :items="newsFilteredList"
+        :noFoundMessage="'No matching news found'"
+        :isLoading="isLoading"
+      />
+      <Pagination
+        :itemsCount="newsFilteredList.length"
+        :totalCount="totalCount"
+        :isLoading="isLoading"
+        @click="fetchNews"
+      />
+    </article>
   </div>
 </template>
 
@@ -74,8 +76,8 @@ export default {
       const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
       return data?.media_details?.sizes?.large?.source_url || data?.source_url
     },
-    async getTags(idNews) {
-      const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
+    async getTags(tags) {
+      const { data } = await this.useFetch(`${tagsURL}?include=${tags}`)
       return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
     },
     async parseData(news) {

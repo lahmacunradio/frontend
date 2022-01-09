@@ -1,31 +1,33 @@
 <template>
   <div>
     <SubTitle title="Lahmacun Shows" />
-    <FilterInput @search="onChange" />
-    <div class="mt-8 mb-4 title">
-      <h2>Active Shows</h2>
-    </div>
-    <ItemList
-      :items="liveShows"
-      :noFoundMessage="'No matching shows found'"
-      :isLoading="isLoading"
-    />
-    <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      Loading...
-    </div>
-    <div class="mt-8 mb-4 title">
-      <h2>Past Shows</h2>
-    </div>
-    <ItemList
-      :items="formerShows"
-      :noFoundMessage="'No matching shows found'"
-      :isLoading="isLoading"
-    />
-    <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
-      <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-      Loading...
-    </div>
+    <article class="container">
+      <FilterInput @search="onChange" />
+      <div class="mt-8 mb-4 title">
+        <h2>Active Shows</h2>
+      </div>
+      <ItemList
+        :items="liveShows"
+        :noFoundMessage="'No matching shows found'"
+        :isLoading="isLoading"
+      />
+      <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        Loading...
+      </div>
+      <div class="mt-8 mb-4 title">
+        <h2>Past Shows</h2>
+      </div>
+      <ItemList
+        :items="formerShows"
+        :noFoundMessage="'No matching shows found'"
+        :isLoading="isLoading"
+      />
+      <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
+        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
+        Loading...
+      </div>
+    </article>
   </div>
 </template>
 
