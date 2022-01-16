@@ -17,6 +17,7 @@
       </h5>
       <div v-if="item.description" class="item-text mt-2">
         <div v-sanitize="item.description" />
+        Hello
       </div>
       <TagList v-if="item.tags" :tags="item.tags" class="mt-2" />
     </div>

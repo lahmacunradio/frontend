@@ -15,7 +15,7 @@
           </div>
           <div class="show-desc p-6">
             <div class="showdescription">
-              {{ truncate(show.description, 200) }}
+              {{ show.description && truncate(stripHTMLTags(show.description, 200)) }}
             </div>
           </div>
         </div>
