@@ -8,9 +8,9 @@
     <div class="container relative pt-12 latest-container" :class="{'opacity-0': $fetchState.pending} ">
       <div ref="slider" class="arcsi-slider-wrapper">
         <div ref="episodes" class="relative arcsi-episodes">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+          <div v-for="(episode, i) in latestEpisodes" :key="episode + i">
             <div class="episode-wrap" :style="{ 'width': episodeWidth + 'px' }">
-              <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+              <ItemBlock :item="episode" />
             </div>
           </div>
         </div>
@@ -46,8 +46,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
 
-import { arcsiItemBaseURL } from '~/constants'
-import { debounceFunction } from '~/plugins/mixinCommonMethods'
+import { arcsiItemBaseURL, tagsURL } from '~/constants'
 
 const fullConfig = resolveConfig(tailwindConfig)
 const mobileSize = fullConfig.theme.screens.sm
@@ -63,17 +62,18 @@ export default {
       visibleEpisodes: 3,
       sliderPosition: 0,
       episodeWidth: 300,
-      arcsiEpisodes: null,
+      latestEpisodes: [],
       resizeTimeout: null
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi latest not found ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
-      })
+    try {
+      const { data } = await this.$axios.get(arcsiItemBaseURL + '/all')
+      this.latestEpisodes = await this.getLatestEpisodes(data)
+    } catch (e) {
+      this.$sentry.captureException(new Error('Arcsi latest not found ', error))
+      this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
+    }
     if (typeof window !== 'undefined') {
       this.changeBreakpoint()
     }
@@ -85,17 +85,6 @@ export default {
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
-    },
-    arcsiEpisodesListSortedLatest () {
-      if (this.arcsiEpisodes) {
-        const showslist = [...this.arcsiEpisodes]
-        return showslist
-          .filter(item => item.play_date < this.getToday)
-          .filter(item => item.archived === true)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-          .slice(this.startIndex, this.numberOfEpisodes)
-      }
-      return null
     },
     arcsiList () {
       return [...this.$store.state.arcsiShows]
@@ -117,6 +106,30 @@ export default {
     }
   },
   methods: {
+    async getLatestEpisodes (episodes) {
+      const episodeArray =  episodes
+        .filter(item => item.play_date < this.getToday && item.archived === true)
+        .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        .slice(this.startIndex, this.numberOfEpisodes)
+      return await Promise.all(episodeArray.map(async e => await this.parseEpisode(e)))
+    },
+    async getImage (episode) {
+      return episode.image_url.length > 0
+        ? episode.image_url
+        : this.arcsilist.find(item => item.id === episode.shows[0].id).cover_image_url
+    },
+    getUrl (episode) {
+      const slug = this.arcsiList.find(item => item.id === episode.shows[0].id).archive_lahmastore_base_url
+      return `/shows/${slug}/${episode.id}`
+    },
+    async parseEpisode (episode) {
+      return {
+        title: episode.name,
+        subTitle: episode.shows[0].name,
+        url: this.getUrl(episode),
+        image: await this.getImage(episode),
+      }
+    },
     changeBreakpoint () {
       if (!window) {
         return false
