@@ -44,8 +44,8 @@
         <h3 class="pb-1 mb-4 text-center border-b border-current">
           Archived Shows
         </h3>
-        <div class="change-order text-right pt-4 pb-6">
-          <a id="bydate" ref="bydate" href="#" class="selected change-order-button mr-2" @click.prevent="sortAirtime">
+        <div class="pt-4 pb-6 text-center change-order xsm:text-right">
+          <a id="bydate" ref="bydate" href="#" class="mr-2 selected change-order-button" @click.prevent="sortAirtime">
             <i v-if="airtimeAsc" class="fa fa-sort-numeric-desc" aria-hidden="true" />
             <i v-else class="fa fa-sort-numeric-asc" aria-hidden="true" />
             Order by Air time
@@ -212,6 +212,9 @@ export default {
   @apply py-2 px-4 rounded;
   &.selected, &:hover {
     @apply bg-white bg-opacity-25;
+  }
+  @media (max-width: $mobile-width) {
+    @apply text-sm px-2;
   }
 }
 </style>
