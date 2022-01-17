@@ -77,6 +77,11 @@ export default {
     nowPlaying: {
       type: Object,
       required: true
+    },
+    // TODO connect custom schedule to template
+    customSchedule: {
+      type: Boolean,
+      required: false
     }
   },
   data () {
