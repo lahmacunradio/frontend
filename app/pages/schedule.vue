@@ -46,7 +46,6 @@ import { streamServer } from '~/constants'
 export default {
   data () {
     return {
-      currentHost: typeof window !== 'undefined' ? window.location.origin : '',
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
