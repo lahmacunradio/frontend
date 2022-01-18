@@ -19,8 +19,10 @@
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
           <div v-if="customPosition === index">
-              Custom Schedule
+            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
+              <ScheduleCustom :show="show" />
             </div>
+          </div>
           <div v-else>  
           <div v-if="day === 'Thursday'">
             <ScheduleFullitemRare :show="latestRareThursday" />
@@ -140,12 +142,14 @@ export default {
       const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
+        if (this.customScheduleDay - 1 === i) {
+            this.customScheduleEntries.forEach((entry) => {
+              list[i].push(entry)
+            })
+          }
         filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          /* loop in custom Schedule
-          if (this.customScheduleDay - 1 === i) {
-            list[i].push(this.customScheduleEntries)
-          } else */ if (show.day - 1 === i) {
+          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
             list[i].push(show)
           }
         })
