@@ -18,6 +18,10 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
+          <div v-if="customPosition === index">
+              Custom Schedule
+            </div>
+          <div v-else>  
           <div v-if="day === 'Thursday'">
             <ScheduleFullitemRare :show="latestRareThursday" />
           </div>
@@ -25,7 +29,8 @@
             <ScheduleFullitemRare :show="latestRareFriday" />
           </div>
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
-            <ScheduleFullitem :show="show" :now-playing="nowPlaying" :custom-schedule="customPosition === index" />
+              <ScheduleFullitem :show="show" :now-playing="nowPlaying" :custom-schedule="customPosition === index" />
+            </div>
           </div>
         </div>
       </div>
@@ -129,7 +134,7 @@ export default {
         this.customScheduleDay = parseInt(this.customSchedule.acf.day_number, 10)
         this.customScheduleEntries = this.customSchedule.acf.schedule
         // TODO fix the correct index
-        this.customPosition = this.customScheduleDay - dayIndex - 1
+        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
 
       const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
