@@ -27,7 +27,7 @@
             <div v-if="show.image" class="mr-4 onair-image">
               <img :src="show.image" :alt="show.name">
             </div>
-            <div v-sanitize="show.description" />
+            <div v-sanitize="[sanitizeOptions, show.description]" />
           </div>
         </div>
         <div v-if="show.description">
@@ -52,8 +52,13 @@ export default {
   data () {
     return {
       currentHost: typeof window !== 'undefined' ? window.location.origin : null,
-      opened: false
-
+      opened: false,
+      sanitizeOptions: {
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedAttributes: {
+          a: ['*']
+        }
+      }
     }
   }
 }
