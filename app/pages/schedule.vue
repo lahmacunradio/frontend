@@ -23,14 +23,14 @@
               <ScheduleCustom :show="show" />
             </div>
           </div>
-          <div v-else>  
-          <div v-if="day === 'Thursday'">
-            <ScheduleFullitemRare :show="latestRareThursday" />
-          </div>
-          <div v-if="day === 'Friday'">
-            <ScheduleFullitemRare :show="latestRareFriday" />
-          </div>
-          <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
+          <div v-else>
+            <div v-if="day === 'Thursday'">
+              <ScheduleFullitemRare :show="latestRareThursday" />
+            </div>
+            <div v-if="day === 'Friday'">
+              <ScheduleFullitemRare :show="latestRareFriday" />
+            </div>
+            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
               <ScheduleFullitem :show="show" :now-playing="nowPlaying" :custom-schedule="customPosition === index" />
             </div>
           </div>
@@ -142,10 +142,10 @@ export default {
       for (let i = 0; i < 7; i++) {
         list.push([])
         if (this.customScheduleDay - 1 === i) {
-            this.customScheduleEntries.forEach((entry) => {
-              list[i].push(entry)
-            })
-          }
+          this.customScheduleEntries.forEach((entry) => {
+            list[i].push(entry)
+          })
+        }
         filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
           if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {

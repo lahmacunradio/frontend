@@ -23,7 +23,10 @@
           <div v-else>
             <b>{{ show.name }}</b>
           </div>
-          <div v-if="opened" class="mt-4">
+          <div v-if="opened" class="flex mt-4">
+            <div v-if="show.image" class="mr-4 onair-image">
+              <img :src="show.image" :alt="show.name">
+            </div>
             <div v-sanitize="show.description" />
           </div>
         </div>
