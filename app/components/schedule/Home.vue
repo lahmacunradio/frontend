@@ -67,8 +67,18 @@
             {{ removeSeconds(show.start) }}
             <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
-            <div v-if="show.archive_lahmastore_base_url" class="inline">
-              <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url">
+            <div v-if="show.archive_lahmastore_base_url.includes(currentHost)" class="inline">
+              <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url.includes('http')" class="inline">
+              <a :href="show.archive_lahmastore_base_url" target="_blank">
+                <b>{{ show.name }}</b>
+              </a>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url" class="inline">
+              <NuxtLink :to="'shows/' + show.archive_lahmastore_base_url.replace(currentHost, '')">
                 <b>{{ show.name }}</b>
               </NuxtLink>
             </div>
@@ -94,6 +104,7 @@ export default {
   },
   data () {
     return {
+      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],

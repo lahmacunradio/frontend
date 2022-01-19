@@ -11,7 +11,7 @@
       <div class="flex justify-between w-full schedule-infos">
         <div class="onair-infos">
           <div v-if="show.archive_lahmastore_base_url.includes(currentHost)">
-            <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')" class="block mb-2">
+            <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')">
               <b>{{ show.name }}</b>
             </NuxtLink>
           </div>
