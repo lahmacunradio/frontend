@@ -9,7 +9,7 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-if="getToday === 4 && latestRareThursday">
+        <div v-if="getToday === 4 && latestRareThursday && !customSchedule.acf.is_active">
           <div class="dayblock">
             <div class="onairshow">
               <span class="text-red-600">●</span>
@@ -33,7 +33,7 @@
             </div>
           </div>
         </div>
-        <div v-if="getToday === 5 && latestRareFriday">
+        <div v-if="getToday === 5 && latestRareFriday && !customSchedule.acf.is_active">
           <div class="dayblock">
             <div class="onairshow">
               <span class="text-red-600">●</span>
