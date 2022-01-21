@@ -5,8 +5,9 @@
 ## Dev env
 #### Node
 At least `>=12.13.0`
-Recommended `>=14.17.0`
-Latest supported = 15.14.0 (fibers incompatibility)
+Recommended `=14.17.0`
+
+Node Version Manager (.nvmrc) has 14.11.0 as recommended, run `nvm install` and `nvm use` in `app` folder
 #### Yarn
 At least `>=1.22.10`
 
