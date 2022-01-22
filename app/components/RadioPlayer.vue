@@ -506,12 +506,20 @@ export default {
         align-items: center;
         .now-playing-art {
           margin-right: 0.7rem;
+          @media (max-width: $extra-small-width) {
+            display: none;
+          }
         }
         .now-playing-main {
             flex: 1;
             min-width: 0;
             position: relative;
             height: 70px;
+            @media (max-width: $extra-small-width) {
+              height: auto;
+              margin-top: 0.25rem;
+              padding-right: 0.5rem;
+            }
             .media-body {
               overflow: auto;
             }
@@ -689,7 +697,7 @@ a.programimage {
 }
 #radio-player-controls.radio-controls-standalone {
     position: absolute;
-    background: white;
+    background: transparent;
     bottom: 3px;
     padding-left: 3px;
     line-height: 1;

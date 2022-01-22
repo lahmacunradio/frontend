@@ -1,13 +1,13 @@
 <template>
   <header class="flex-row-reverse items-center justify-between px-4 py-2 bg-white md:flex md:flex-row">
-    <div class="items-center flex mb-4 xsm:mb-0 xsm:overflow-visible xsm:overflow-hidden">
+    <div class="flex items-start mb-4 xxsm:items-center xsm:mb-0 xsm:overflow-hidden">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <h1 class="main-title">
           Lahmacun Radio
         </h1>
         <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
       </div>
-      <div class=" mt-2 xsm:my-4 md:mr-8">
+      <div class="xxsm:mt-2 xsm:my-4 md:mr-8">
         <client-only>
           <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
         </client-only>
