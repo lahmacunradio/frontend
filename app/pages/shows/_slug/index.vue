@@ -37,7 +37,7 @@
               {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
             </p>
           </div>
-          <div>{{ arcsiInfosBlock.description }}</div>
+          <div v-sanitize="[ sanitizeOptions, arcsiInfosBlock.description ]" />
         </div>
       </div>
       <div v-if="arcsiShowsList && arcsiShowsList.length">
@@ -89,6 +89,14 @@ export default {
       shadowbox: false,
       slug: this.$route.params.slug,
       mediaServerURL,
+      sanitizeOptions: {
+        allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
+        allowedAttributes: {
+          img: ['*'],
+          iframe: ['*'],
+          a: ['*']
+        }
+      },
       arcsiShowListFiltered: null,
       alphabeticAsc: false,
       airtimeAsc: true

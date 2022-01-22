@@ -40,7 +40,8 @@
               </p>
             </div>
 
-            <div>{{ arcsiEpisode.description }}</div>
+            <div v-sanitize="[ sanitizeOptions, arcsiEpisode.description ]" />
+
             <div v-if="arcsiEpisode.play_file_name" class="py-4">
               <client-only>
                 <div v-if="arcsiCurrentEpisode.id === arcsiEpisode.id">
@@ -109,6 +110,14 @@ export default {
       arcsiShow: null,
       playEpisode: false,
       mediaServerURL,
+      sanitizeOptions: {
+        allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
+        allowedAttributes: {
+          img: ['*'],
+          iframe: ['*'],
+          a: ['*']
+        }
+      },
       arcsiShowListFiltered: null,
       alphabeticAsc: false,
       airtimeAsc: true
