@@ -11,15 +11,13 @@
             <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
             <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
           </a>
-          <div v-if="false">
-            <!-- old show image -->
-            <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-              <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-                <div v-if="show_check === true" class="onair">On air</div>
-                <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
-              </a>
-              <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
-            </div>
+          <!-- old show image -->
+          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
+            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
+              <div v-if="show_check === true" class="onair">On air</div>
+              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
+            </a>
+            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="play-volume-controls">
@@ -67,7 +65,7 @@
                   </h4>
                 </div>
               </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="hidden radio-controls-standalone volumecontrolos sm:block">
                 <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
                   <vue-slider
@@ -116,7 +114,7 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock hidden sm:block">
+        <div v-if="false" class="hidden sand-clock sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
@@ -541,10 +539,8 @@ export default {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
-            &:hover {
-                /* text-overflow: clip;
-                white-space: normal;
-                word-break: break-all; */
+            @media (max-width: $small-width) {
+              white-space: normal;
             }
             a {
               display: block;
@@ -633,6 +629,10 @@ export default {
 a.programimage {
     width: 70px;
     height: 70px;
+    @media (max-width: $small-width) {
+      width: 60px;
+      height: 60px;
+    }
     display: block;
     overflow: hidden;
     position: relative;
@@ -740,7 +740,6 @@ a.programimage {
     }
   @media (max-width: $small-width) {
     min-width: auto;
-    width: 4.5rem;
   }
   img {
     padding: 0 0.75rem;
