@@ -15,6 +15,11 @@
               <b>{{ show.name }}</b>
             </NuxtLink>
           </div>
+          <div v-else-if="show.archive_lahmastore_base_url.includes('lahmacun.hu/shows/')">
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url.substring(show.archive_lahmastore_base_url.lastIndexOf('/') + 1)">
+              <b>{{ show.name }}</b>
+            </NuxtLink>
+          </div>
           <div v-else-if="show.archive_lahmastore_base_url.includes('http')">
             <a :href="show.archive_lahmastore_base_url" target="_blank">
               <b>{{ show.name }}</b>
