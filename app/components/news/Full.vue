@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div id="news-content">
         <h2 class="mt-0 font-bold">
           {{ htmlDecoder(news.title.rendered) }}
         </h2>
@@ -57,9 +57,10 @@ export default {
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       postTagsArray: [],
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
         allowedAttributes: {
           img: ['*'],
+          iframe: ['*'],
           div: ['style', 'class', 'id'],
           a: ['*']
         }
