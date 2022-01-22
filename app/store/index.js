@@ -1,9 +1,8 @@
-import { arcsiServerURL } from '~/constants'
+import { arcsiServerURL, rareShowsURL } from '~/constants'
 
 export const state = () => ({
   arcsiShows: {},
-  arcsiEpisodes: null,
-  aboutUs: null
+  rareShows: {}
 })
 
 export const actions = {
@@ -15,6 +14,14 @@ export const actions = {
       .catch((e) => {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'Latest news not found' })
+      })
+    await this.$axios.get(rareShowsURL)
+      .then((res) => {
+        state.rareShows = res.data.acf
+      })
+      .catch((e) => {
+        $sentry.captureException(e)
+        error({ statusCode: 404, message: 'Rare shows not found' })
       })
   }
 }

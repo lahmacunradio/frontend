@@ -18,12 +18,6 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-          <div v-if="day === 'Thursday'">
-            <ScheduleFullitemRare :show="latestRareThursday" />
-          </div>
-          <div v-if="day === 'Friday'">
-            <ScheduleFullitemRare :show="latestRareFriday" />
-          </div>
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
           </div>
@@ -75,6 +69,12 @@ export default {
     arcsishows () {
       return this.$store.state.arcsiShows
     },
+    rareShowThursday () {
+      return this.$store.state.rareShows.rare_thursday.find(item => item.active === true)
+    },
+    rareShowFriday () {
+      return this.$store.state.rareShows.rare_friday.find(item => item.active === true)
+    },
     sortShowsForSchedule () {
       return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
@@ -94,7 +94,9 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.sortShowsForSchedule)
-    this.checkNowPlaying()
+    setTimeout(() => {
+      this.checkNowPlaying()
+    }, 1000)
   },
   beforeDestroy () {
     // prevent memory leak
@@ -112,9 +114,18 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
-      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
-      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
+
+      this.latestRareThursday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka csut'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+      this.latestRareFriday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+
+      const filteredShows = shows
+        .filter(val => !this.latestRareThursday.includes(val))
+        .filter(val => !this.latestRareFriday.includes(val))
+
       for (let i = 0; i < 7; i++) {
         list.push([])
         filteredShows.forEach((show) => {
