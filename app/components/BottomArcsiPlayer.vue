@@ -11,7 +11,7 @@
           <div v-else>
             <div class="py-4">
               No arcsi episode selected. Go to
-              <NuxtLink to="archive" class="font-bold">
+              <NuxtLink to="/archive" class="font-bold">
                 archive page
               </NuxtLink>
               for the full list
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="close">
-          <a href="#" class="block control-ear bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+          <a href="#" class="block bg-white rounded-t-lg control-ear" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
             <div v-if="arcsiVisible">
               X
             </div>

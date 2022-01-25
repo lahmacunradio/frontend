@@ -27,7 +27,10 @@ export const eventsSectionURL = contentApiURL + '/pages/3085'
 export const pressSectionURL = contentApiURL + '/pages/3087'
 export const labsSectionURL = contentApiURL + '/pages/3091'
 export const recipeSectionURL = contentApiURL + '/pages/3093'
+export const rareShowsURL = contentApiURL + '/pages/3721'
 
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
 export const mediaURL = contentApiURL + '/media'
 export const tagsURL = contentApiURL + '/tags'
+
+export const customScheduleURL = contentApiURL + '/pages/3679'
