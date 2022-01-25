@@ -37,7 +37,7 @@
               {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
             </p>
           </div>
-          <div v-sanitize="[ sanitizeOptions, arcsiInfosBlock.description ]" />
+          <div v-sanitize="[ sanitizeOptions, arcsiInfosBlock.description ]" class="description-text" />
         </div>
       </div>
       <div v-if="arcsiShowsList && arcsiShowsList.length">

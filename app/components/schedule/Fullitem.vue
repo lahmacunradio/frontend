@@ -41,7 +41,7 @@
               <b>{{ show.name }} </b>
             </NuxtLink>
             <div class="text-sm description">
-              <div v-sanitize="[ sanitizeOptions, show.description ]" />
+              <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
               <p class="mt-2">
                 Latest Episode:
                 <NuxtLink :to="latestEpisodeLink">
