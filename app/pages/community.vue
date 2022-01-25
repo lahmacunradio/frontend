@@ -166,7 +166,7 @@ export default {
       recipeFeaturedImage: null,
       favouritesContent: null,
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           img: ['*'],
           div: ['style', 'class', 'id'],

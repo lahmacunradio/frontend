@@ -57,7 +57,7 @@ export default {
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       postTagsArray: [],
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
           img: ['*'],
           iframe: ['*'],

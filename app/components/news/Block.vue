@@ -50,7 +50,7 @@ export default {
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       newsTags: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           a: ['*']
         }

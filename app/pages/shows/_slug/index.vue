@@ -90,7 +90,7 @@ export default {
       slug: this.$route.params.slug,
       mediaServerURL,
       sanitizeOptions: {
-        allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
+        allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
           img: ['*'],
           iframe: ['*'],

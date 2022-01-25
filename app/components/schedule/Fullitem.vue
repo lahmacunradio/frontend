@@ -41,7 +41,7 @@
               <b>{{ show.name }} </b>
             </NuxtLink>
             <div class="text-sm description">
-              {{ show.description }}
+              <div v-sanitize="[ sanitizeOptions, show.description ]" />
               <p class="mt-2">
                 Latest Episode:
                 <NuxtLink :to="latestEpisodeLink">
@@ -82,7 +82,13 @@ export default {
   data () {
     return {
       opened: false,
-      loadedShow: null
+      loadedShow: null,
+      sanitizeOptions: {
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
+        allowedAttributes: {
+          a: ['*']
+        }
+      }
     }
   },
   computed: {
