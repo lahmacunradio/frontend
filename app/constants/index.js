@@ -31,3 +31,5 @@ export const recipeSectionURL = contentApiURL + '/pages/3093'
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
 export const mediaURL = contentApiURL + '/media'
 export const tagsURL = contentApiURL + '/tags'
+
+export const customScheduleURL = contentApiURL + '/pages/3679'
