@@ -18,21 +18,8 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
-          <div v-if="customPosition === index">
-            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
-              <ScheduleCustom :show="show" />
-            </div>
-          </div>
-          <div v-else>
-            <div v-if="day === 'Thursday'">
-              <ScheduleFullitemRare :show="latestRareThursday" />
-            </div>
-            <div v-if="day === 'Friday'">
-              <ScheduleFullitemRare :show="latestRareFriday" />
-            </div>
-            <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
-              <ScheduleFullitem :show="show" :now-playing="nowPlaying" :custom-schedule="customPosition === index" />
-            </div>
+          <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
+            <ScheduleFullitem :show="show" :now-playing="nowPlaying" :custom-schedule="customPosition === index" />
           </div>
         </div>
       </div>
@@ -85,6 +72,12 @@ export default {
     arcsishows () {
       return this.$store.state.arcsiShows
     },
+    rareShowThursday () {
+      return this.$store.state.rareShows.rare_thursday.find(item => item.active === true)
+    },
+    rareShowFriday () {
+      return this.$store.state.rareShows.rare_friday.find(item => item.active === true)
+    },
     customSchedule () {
       return this.$store.state.customSchedule
     },
@@ -109,7 +102,9 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.sortShowsForSchedule)
-    this.checkNowPlaying()
+    setTimeout(() => {
+      this.checkNowPlaying()
+    }, 1000)
   },
   beforeDestroy () {
     // prevent memory leak
@@ -127,8 +122,17 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
-      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
+
+      this.latestRareThursday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka csut'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+      this.latestRareFriday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+
+      const filteredShows = shows
+        .filter(val => !this.latestRareThursday.includes(val))
+        .filter(val => !this.latestRareFriday.includes(val))
 
       // custom Schedule Day
       if (this.customSchedule?.acf?.is_active) {
@@ -138,7 +142,6 @@ export default {
         this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
 
-      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
         if (this.customScheduleDay - 1 === i) {

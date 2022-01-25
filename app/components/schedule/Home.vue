@@ -9,55 +9,6 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-if="getToday === 4 && latestRareThursday && !customSchedule.acf.is_active">
-          <div class="dayblock">
-            <div class="onairshow">
-              <span class="text-red-600">●</span>
-              On Air
-            </div>
-            <div>
-              <div class="show-basic-infos">
-                {{ removeSeconds(latestRareThursday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
-                {{ removeSeconds(latestRareThursday[0].end) }} -
-                <i> Alternating shows</i>
-              </div>
-              <div class="mt-2">
-                <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
-                  <span v-if="index !== 0" class="mx-1"> | </span>
-                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    <b>{{ rare.name }}</b>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="getToday === 5 && latestRareFriday && !customSchedule.acf.is_active">
-          <div class="dayblock">
-            <div class="onairshow">
-              <span class="text-red-600">●</span>
-              On Air
-            </div>
-            <div>
-              <div class="show-basic-infos">
-                {{ removeSeconds(latestRareFriday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
-                {{ removeSeconds(latestRareFriday[0].end) }} -
-                <i> Alternating shows</i>
-              </div>
-              <div class="mt-2">
-                <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
-                  <span v-if="index !== 0" class="mx-1"> | </span>
-                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    <b>{{ rare.name }}</b>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div v-for="(show, index) in showsByDate[0]" :key="show.id * (index + index) * index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
@@ -123,6 +74,12 @@ export default {
     }
   },
   computed: {
+    rareShowThursday () {
+      return this.$store.state.rareShows.rare_thursday.find(item => item.active === true)
+    },
+    rareShowFriday () {
+      return this.$store.state.rareShows.rare_friday.find(item => item.active === true)
+    },
     getToday () {
       const d = new Date()
       return d.getDay()
@@ -152,7 +109,9 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.shows)
-    this.checkNowPlaying()
+    setTimeout(() => {
+      this.checkNowPlaying()
+    }, 1000)
   },
   beforeDestroy () {
     // prevent memory leak
@@ -179,11 +138,21 @@ export default {
       })
     },
     groupShowsByDay (shows) {
+      if (!shows) { return false }
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
-      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
+
+      this.latestRareThursday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka csut'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+      this.latestRareFriday = shows
+        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
+        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+
+      const filteredShows = shows
+        .filter(val => !this.latestRareThursday.includes(val))
+        .filter(val => !this.latestRareFriday.includes(val))
 
       // custom Schedule Day
       if (this.customSchedule?.acf?.is_active) {
@@ -193,7 +162,6 @@ export default {
         this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
 
-      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
       for (let i = 0; i < 7; i++) {
         list.push([])
         if (this.customScheduleDay - 1 === i) {
