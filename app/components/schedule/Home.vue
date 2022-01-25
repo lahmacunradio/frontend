@@ -18,9 +18,29 @@
             {{ removeSeconds(show.start) }}
             <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
-            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url">
+            <div v-if="show.archive_lahmastore_base_url.includes(currentHost)" class="inline">
+              <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url.includes('lahmacun.hu/shows/')" class="inline">
+              <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url.substring(show.archive_lahmastore_base_url.lastIndexOf('/') + 1)">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url.includes('http')" class="inline">
+              <a :href="show.archive_lahmastore_base_url" target="_blank">
+                <b>{{ show.name }}</b>
+              </a>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url" class="inline">
+              <NuxtLink :to="'shows/' + show.archive_lahmastore_base_url.replace(currentHost, '')">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else class="inline">
               <b>{{ show.name }}</b>
-            </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
@@ -40,13 +60,17 @@ export default {
   },
   data () {
     return {
+      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
       nowPlaying: {},
       latestRareThursday: null,
-      latestRareFriday: null
+      latestRareFriday: null,
+      customScheduleDay: null,
+      customScheduleEntries: null,
+      customPosition: null
     }
   },
   computed: {
@@ -77,7 +101,11 @@ export default {
     },
     todayName () {
       return this.dayNames[this.getToday - 1]
+    },
+    customSchedule () {
+      return this.$store.state.customSchedule
     }
+
   },
   mounted () {
     this.groupShowsByDay(this.shows)
@@ -126,11 +154,25 @@ export default {
         .filter(val => !this.latestRareThursday.includes(val))
         .filter(val => !this.latestRareFriday.includes(val))
 
+      // custom Schedule Day
+      if (this.customSchedule?.acf?.is_active) {
+        this.customScheduleDay = parseInt(this.customSchedule.acf.day_number, 10)
+        this.customScheduleEntries = this.customSchedule.acf.schedule
+        // TODO fix the correct index
+        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
+      }
+
       for (let i = 0; i < 7; i++) {
         list.push([])
+        if (this.customScheduleDay - 1 === i) {
+          this.customScheduleEntries.forEach((entry) => {
+            list[i].push(entry)
+          })
+        }
+
         filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          if (show.day - 1 === i) {
+          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
             list[i].push(show)
           }
         })

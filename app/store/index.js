@@ -1,8 +1,9 @@
-import { arcsiServerURL, rareShowsURL } from '~/constants'
+import { arcsiServerURL, rareShowsURL, customScheduleURL } from '~/constants'
 
 export const state = () => ({
   arcsiShows: {},
-  rareShows: {}
+  rareShows: {},
+  customSchedule: {}
 })
 
 export const actions = {
@@ -22,6 +23,14 @@ export const actions = {
       .catch((e) => {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'Rare shows not found' })
+      })
+    await this.$axios.get(customScheduleURL)
+      .then((res) => {
+        state.customSchedule = res.data
+      })
+      .catch((e) => {
+        $sentry.captureException(e)
+        error({ statusCode: 404, message: 'Custom Schedule not found' })
       })
   }
 }

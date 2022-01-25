@@ -32,3 +32,5 @@ export const rareShowsURL = contentApiURL + '/pages/3721'
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
 export const mediaURL = contentApiURL + '/media'
 export const tagsURL = contentApiURL + '/tags'
+
+export const customScheduleURL = contentApiURL + '/pages/3679'
