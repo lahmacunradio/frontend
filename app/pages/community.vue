@@ -4,7 +4,7 @@
       Lahmacun Community
     </h2>
     <div>
-      <nav class="pt-8 px-4">
+      <nav class="px-4 pt-8">
         <ul class="text-center comunity-navigation">
           <li>
             <a href="#" @click.prevent="scrollToRef('call')">
@@ -48,7 +48,7 @@
           </li>
         </ul>
       </nav>
-      <div class="italic text-center my-8 px-4">
+      <div class="px-4 my-8 italic text-center">
         <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018</h4>
       </div>
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
@@ -66,7 +66,7 @@
           <div v-if="lahmaBase">
             <h2>{{ htmlDecoder(lahmaBase.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="lahmaBaseFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="lahmaBaseFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="lahmaBaseFeaturedImage.source_url" :alt="htmlDecoder(lahmaBase.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, lahmaBaseResults]" class="community-page-content" />
@@ -77,7 +77,7 @@
           <div v-if="communitySection">
             <h2>{{ htmlDecoder(communitySection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="communityFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="communityFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="communityFeaturedImage.source_url" :alt="htmlDecoder(communitySection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, communityResults]" class="community-page-content" />
@@ -88,7 +88,7 @@
           <div v-if="eventsSection">
             <h2>{{ htmlDecoder(eventsSection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="eventsFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="eventsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="eventsFeaturedImage.source_url" :alt="htmlDecoder(eventsSection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, eventsSectionResults]" class="community-page-content" />
@@ -99,7 +99,7 @@
           <div v-if="pressSection">
             <h2>{{ htmlDecoder(pressSection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="pressFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="pressFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="pressFeaturedImage.source_url" :alt="htmlDecoder(pressSection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, pressSectionResults]" class="community-page-content" />
@@ -110,7 +110,7 @@
           <div v-if="labsSection">
             <h2>{{ htmlDecoder(labsSection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="labsFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="labsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="labsFeaturedImage.source_url" :alt="htmlDecoder(labsSection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, labsSectionResults]" class="community-page-content" />
@@ -121,7 +121,7 @@
           <div v-if="recipeSection">
             <h2>{{ htmlDecoder(recipeSection.title.rendered) }}</h2>
             <div class="md:flex">
-              <div v-if="recipeFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+              <div v-if="recipeFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="recipeFeaturedImage.source_url" :alt="htmlDecoder(recipeSection.title.rendered)">
               </div>
               <div v-sanitize="[sanitizeOptions, recipeSectionResults]" class="community-page-content" />
@@ -166,7 +166,7 @@ export default {
       recipeFeaturedImage: null,
       favouritesContent: null,
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           img: ['*'],
           div: ['style', 'class', 'id'],
