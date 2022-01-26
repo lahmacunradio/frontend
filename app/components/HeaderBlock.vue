@@ -88,7 +88,7 @@ export default {
     async refreshCustomSchedule () {
       await this.$axios.get(customScheduleURL)
         .then((res) => {
-          this.$store.commit('refreshCustomSchedule', res.data)
+          this.$store.commit('refreshCustomSchedule', res.data?.acf)
           console.log(this.$store.getters.returnCustomSchedule)
         })
         .catch((e) => {

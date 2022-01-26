@@ -26,7 +26,7 @@ export const actions = {
       })
     await this.$axios.get(customScheduleURL)
       .then((res) => {
-        state.customSchedule = res.data
+        state.customSchedule = res.data.acf
       })
       .catch((e) => {
         $sentry.captureException(e)
