@@ -138,7 +138,7 @@ export default {
       }
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     },
     arcsiShow () {
       if (!this.arcsiList) {

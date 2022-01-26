@@ -138,7 +138,7 @@ export default {
       return `${year}-${month}-${day}`
     },
     arcsiShows () {
-      return this.$store.state.arcsiShows
+      return this.$store.getters.returnArcsiShows
     },
     arcsiInfosBlock () {
       if (this.arcsiShows) {

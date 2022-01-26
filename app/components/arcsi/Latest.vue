@@ -98,7 +98,7 @@ export default {
       return null
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     }
   },
   mounted () {

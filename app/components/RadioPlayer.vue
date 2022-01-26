@@ -67,7 +67,7 @@
                   </h4>
                 </div>
               </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls" class="radio-controls-standalone volumecontrolos sm:block hidden">
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="hidden radio-controls-standalone volumecontrolos sm:block">
                 <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
                   <vue-slider
@@ -116,7 +116,7 @@
             </div>
           </div>
         </div>
-        <div class="sand-clock hidden sm:block">
+        <div class="hidden sand-clock sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>
@@ -209,7 +209,7 @@ export default {
       return allStreams
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
       if (this.np.live.is_live) { // live show
