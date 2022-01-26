@@ -21,8 +21,8 @@
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex pt-4 pb-2 md:py-4 md:pr-4">
-        <button class="w-4 mr-4 cursor-pointer" @click="toggleArcsi">
+      <div class="flex items-center pt-4 pb-2 md:py-4 md:pr-4">
+        <button class="w-5 h-5 mr-3 text-left cursor-pointer" @click="toggleArcsi">
           <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
           </span>
