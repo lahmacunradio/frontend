@@ -51,17 +51,17 @@ export default {
       const minutes = today.getMinutes()
 
       // refresh arcsiShows every 10 minutes
-      if (minutes % 1 === 0) {
+      if (minutes % 10 === 0) {
         this.refreshArcsiShows()
       }
 
       // refresh arcsiShows every 3 minutes
-      if (minutes % 1 === 0) {
+      if (minutes % 3 === 0) {
         this.refreshRareShows()
       }
 
       // refresh arcsiShows every 4 minutes
-      if (minutes % 1 === 0) {
+      if (minutes % 4 === 0) {
         this.refreshCustomSchedule()
       }
     },
