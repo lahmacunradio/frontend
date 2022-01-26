@@ -296,7 +296,7 @@ export default {
   watch: {
     volume (volume) {
       if (isNaN(volume)) {
-        volume = this.$store.player.streamVolume || 50
+        volume = this.$store.state.player.streamVolume || 50
       }
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
       this.$store.commit('player/setStreamVolume', volume)
