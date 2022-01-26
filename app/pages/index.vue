@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
-      <div class="bg-white">
+      <div v-if="sortNews" class="bg-white">
         <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
       </div>
       <div>
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     arcsishows () {
-      return this.$store.state.arcsiShows
+      return this.$store.getters.returnArcsiShows
     },
     sortShowsForSchedule () {
       return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))

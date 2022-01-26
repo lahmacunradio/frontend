@@ -207,7 +207,7 @@ export default {
       return allStreams
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
       if (this.np.live.is_live) { // live show
@@ -294,14 +294,14 @@ export default {
   watch: {
     volume (volume) {
       if (isNaN(volume)) {
-        volume = this.$store.player.streamVolume || 50
+        volume = this.$store.getters['player/getStreamVolume'] || 50
       }
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
       this.$store.commit('player/setStreamVolume', volume)
     },
     '$store.state.player.isArcsiPlaying': {
       handler () {
-        if (this.$store.state.player.isArcsiPlaying) {
+        if (this.$store.getters['player/getArcsiPlayState']) {
           this.stop()
         }
       },
@@ -328,8 +328,8 @@ export default {
       }
     }
     // Check webstorage for existing volume preference.
-    if (this.volume !== this.$store.state.player.streamVolume) {
-      this.volume = this.$store.state.player.streamVolume
+    if (this.volume !== this.$store.getters['player/getStreamVolume']) {
+      this.volume = this.$store.getters['player/getStreamVolume']
     }
     // Check the query string if browser supports easy query string access.
     if (typeof URLSearchParams !== 'undefined') {

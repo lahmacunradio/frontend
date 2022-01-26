@@ -14,7 +14,7 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Latest news not found' })
+        error({ statusCode: 404, message: 'Arcsi Shows not found' })
       })
     await this.$axios.get(rareShowsURL)
       .then((res) => {
@@ -26,11 +26,35 @@ export const actions = {
       })
     await this.$axios.get(customScheduleURL)
       .then((res) => {
-        state.customSchedule = res.data
+        state.customSchedule = res.data.acf
       })
       .catch((e) => {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'Custom Schedule not found' })
       })
+  }
+}
+
+export const mutations = {
+  refreshArcsiShows (state, payload) {
+    state.arcsiShows = payload
+  },
+  refreshRareShows (state, payload) {
+    state.rareShows = payload
+  },
+  refreshCustomSchedule (state, payload) {
+    state.customSchedule = payload
+  }
+}
+
+export const getters = {
+  returnArcsiShows (state) {
+    return state.arcsiShows
+  },
+  returnRareShows (state) {
+    return state.rareShows
+  },
+  returnCustomSchedule (state) {
+    return state.customSchedule
   }
 }

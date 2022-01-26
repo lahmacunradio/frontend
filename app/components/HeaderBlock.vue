@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { streamServer } from '~/constants'
+import { streamServer, arcsiServerURL, rareShowsURL, customScheduleURL } from '~/constants'
 
 export default {
   data () {
@@ -33,8 +33,11 @@ export default {
       interval: null
     }
   },
+  created () {
+    this.getNow()
+  },
   mounted () {
-    this.interval = setInterval(this.getNow, 1000)
+    this.interval = setInterval(this.getNow, 60 * 1000)
   },
   beforeDestroy () {
     clearInterval(this.interval)
@@ -44,6 +47,53 @@ export default {
     getNow () {
       const today = new Date()
       this.timestamp = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0')
+
+      const minutes = today.getMinutes()
+
+      // refresh arcsiShows every 10 minutes
+      if (minutes % 10 === 0) {
+        this.refreshArcsiShows()
+      }
+
+      // refresh arcsiShows every 3 minutes
+      if (minutes % 3 === 0) {
+        this.refreshRareShows()
+      }
+
+      // refresh arcsiShows every 4 minutes
+      if (minutes % 4 === 0) {
+        this.refreshCustomSchedule()
+      }
+    },
+    async refreshArcsiShows () {
+      await this.$axios.get(arcsiServerURL)
+        .then((res) => {
+          this.$store.commit('refreshArcsiShows', res.data)
+        })
+        .catch((e) => {
+          this.$sentry.captureException(e)
+          this.error({ statusCode: 404, message: 'Latest news not found' })
+        })
+    },
+    async refreshRareShows () {
+      await this.$axios.get(rareShowsURL)
+        .then((res) => {
+          this.$store.commit('refreshRareShows', res.data?.acf)
+        })
+        .catch((e) => {
+          this.$sentry.captureException(e)
+          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+        })
+    },
+    async refreshCustomSchedule () {
+      await this.$axios.get(customScheduleURL)
+        .then((res) => {
+          this.$store.commit('refreshCustomSchedule', res.data?.acf)
+        })
+        .catch((e) => {
+          this.$sentry.captureException(e)
+          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+        })
     }
 
   }

@@ -38,3 +38,27 @@ export const mutations = {
   }
 
 }
+
+export const getters = {
+  getArcsiEpisode (state) {
+    return state.arcsiEpisode
+  },
+  getArcsiPlayHistory (state) {
+    return state.arcsiPlayHistory
+  },
+  getArcsiVolume (state) {
+    return state.arcsiVolume
+  },
+  getArcsiPlayState (state) {
+    return state.isArcsiPlaying
+  },
+  getArcsiVisibility (state) {
+    return state.isArcsiVisible
+  },
+  getStreamVolume (state) {
+    return state.streamVolume
+  },
+  getStreamPlayState (state) {
+    return state.isStreamPlaying
+  }
+}
