@@ -61,7 +61,7 @@ export default {
       return this.$store.state.player.arcsiEpisode
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     },
     arcsiAudio () {
       if (!this.arcsiEpisode?.archive_lahmastore_canonical_url || !this.arcsiList) {
