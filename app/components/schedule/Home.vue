@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { streamServer } from '~/constants'
 
 export default {
@@ -74,11 +75,20 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      rareShows: 'returnRareShows'
+    }),
     rareShowThursday () {
-      return this.$store.state.rareShows.rare_thursday.find(item => item.active === true)
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_thursday.find(item => item.active === true)
     },
     rareShowFriday () {
-      return this.$store.state.rareShows.rare_friday.find(item => item.active === true)
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_friday.find(item => item.active === true)
     },
     getToday () {
       const d = new Date()
@@ -155,9 +165,9 @@ export default {
         .filter(val => !this.latestRareFriday.includes(val))
 
       // custom Schedule Day
-      if (this.customSchedule?.acf?.is_active) {
-        this.customScheduleDay = parseInt(this.customSchedule.acf.day_number, 10)
-        this.customScheduleEntries = this.customSchedule.acf.schedule
+      if (this.customSchedule?.is_active) {
+        this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
+        this.customScheduleEntries = this.customSchedule.schedule
         // TODO fix the correct index
         this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
