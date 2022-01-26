@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -48,18 +49,12 @@ export default {
     }
   },
   computed: {
-    arcsiVisible () {
-      return this.$store.state.player.isArcsiVisible
-    },
-    isArcsiPlaying () {
-      if (!this.$store.state.player.isArcsiPlaying) {
-        return false
-      }
-      return this.$store.state.player.isArcsiPlaying
-    },
-    arcsiEpisode () {
-      return this.$store.state.player.arcsiEpisode
-    },
+    ...mapGetters('player', {
+      arcsiEpisode: 'getArcsiEpisode',
+      arcsiVisible: 'getArcsiVisibility',
+      isArcsiPlaying: 'getArcsiPlayState'
+
+    }),
     arcsiList () {
       return [...this.$store.getters.returnArcsiShows]
     },

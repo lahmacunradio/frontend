@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     episode: {
@@ -119,6 +121,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('player', {
+      arcsiIsPlaying: 'getArcsiPlayState',
+      isStreamPlaying: 'getStreamPlayState',
+      arcsiVolume: 'getArcsiVolume',
+      arcsiPlayHistory: 'getArcsiPlayHistory'
+    }),
     progress () {
       if (!this.audio) {
         return false
@@ -150,12 +158,6 @@ export default {
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
-    arcsiIsPlaying () {
-      if (!this.$store.state.player.isArcsiPlaying) {
-        return false
-      }
-      return this.$store.state.player.isArcsiPlaying
-    },
     isSafari () {
       return (navigator.vendor.match(/apple/i) || '').length > 0
     }
@@ -163,7 +165,7 @@ export default {
   watch: {
     '$store.state.player.isStreamPlaying': {
       handler () {
-        if (this.$store.state.player.isStreamPlaying) {
+        if (this.isStreamPlaying) {
           this.audio?.pause()
         }
       },
@@ -174,9 +176,9 @@ export default {
     this.audio = document.getElementById('arcsiplayer')
   },
   mounted () {
-    if (this.currentVolume !== this.$store.state.player.arcsiVolume) {
-      this.currentVolume = this.$store.state.player.arcsiVolume
-      this.setVolume(parseFloat(this.$store.state.player.arcsiVolume))
+    if (this.currentVolume !== this.arcsiVolume) {
+      this.currentVolume = this.arcsiVolume
+      this.setVolume(parseFloat(this.arcsiVolume))
     }
     this.setMetaData()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -329,7 +331,7 @@ export default {
         return false
       }
       const arcsiReady = await this.$refs.arcsiplayer?.readyState > 2
-      const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
+      const arcsiPlayerSeek = await this.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
       if (arcsiReady && this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {

@@ -96,7 +96,7 @@
 </template>
 
 <script>
-
+import { mapGetters } from 'vuex'
 import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
 
 export default {
@@ -167,6 +167,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('player', {
+      arcsiCurrentEpisode: 'getArcsiEpisode',
+      arcsiVisible: 'getArcsiVisibility',
+      arcsiEpisodePlaying: 'getArcsiPlayState'
+
+    }),
     getToday () {
       const d = new Date()
       const year = d.getFullYear()
@@ -181,21 +187,6 @@ export default {
     fullEpisodeTitle () {
       if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
-    },
-    arcsiVisible () {
-      return this.$store.state.player.isArcsiVisible
-    },
-    arcsiEpisodePlaying () {
-      if (!this.$store.state.player.isArcsiPlaying) {
-        return false
-      }
-      return this.$store.state.player.isArcsiPlaying
-    },
-    arcsiCurrentEpisode () {
-      if (!this.$store.state.player.arcsiEpisode) {
-        return false
-      }
-      return this.$store.state.player.arcsiEpisode
     },
     otherEpisodes () {
       if (!this.arcsiShow && !this.arcsiShow?.items) {

@@ -9,12 +9,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'Default',
+  name: 'DefaultLayout',
   computed: {
-    arcsiVisible () {
-      return this.$store.state.player.isArcsiVisible
-    }
+    ...mapGetters('player', {
+      arcsiVisible: 'getArcsiVisibility'
+    })
   }
 }
 </script>
