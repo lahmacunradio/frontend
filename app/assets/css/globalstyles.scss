@@ -140,6 +140,12 @@ button:focus {
   }
 }
 
+.description-text {
+  a {
+    text-decoration: underline;
+  }
+}
+
 span.moresign {
   display: none;
 }

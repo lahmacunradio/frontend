@@ -44,7 +44,7 @@ export default {
     this.loadNewsImages()
   },
   methods: {
-    async loadNewsImages() {
+    loadNewsImages () {
       this.image = this.item.image || this.image
       this.smallImage = this.item.image || this.smallImage
     }
@@ -60,7 +60,7 @@ export default {
   overflow: hidden;
   display: flex;
   align-content: center;
-  pagging-bottom: 0.5rem 0;
+  padding-bottom: 0.5rem 0;
   img {
     min-height: 300px;
     min-width: 300px;

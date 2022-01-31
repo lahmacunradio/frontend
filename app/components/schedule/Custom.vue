@@ -64,7 +64,7 @@ export default {
       currentHost: typeof window !== 'undefined' ? window.location.origin : null,
       opened: false,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           a: ['*']
         }
