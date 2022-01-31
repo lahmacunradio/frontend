@@ -6,6 +6,11 @@ server {
             allow all;
             root /var/www/html;
     }
+
+    location / {
+        rewrite ^ https://$host$request_uri? permanent;
+    }
+
 }
 
 server {
