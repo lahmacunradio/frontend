@@ -37,7 +37,7 @@
             <div v-if="show.image" class="mr-4 onair-image">
               <img :src="show.image" :alt="show.name">
             </div>
-            <div v-sanitize="[sanitizeOptions, show.description]" />
+            <div v-sanitize="[sanitizeOptions, show.description]" class="description-text" />
           </div>
         </div>
         <div v-if="show.description">
