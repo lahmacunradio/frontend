@@ -12,7 +12,7 @@ export const mediaServerURL = 'https://media.lahmacun.hu/'
 
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'
 
-export const contentApiURL = 'https://www.lahmacun.hu/wp-json/wp/v2'
+export const contentApiURL = 'https://cms.lahmacun.hu/wp-json/wp/v2'
 // wp queries
 export const newsBaseURL = contentApiURL + '/posts?categories=5'
 export const newsURL = contentApiURL + '/posts?categories=5&per_page=12'
