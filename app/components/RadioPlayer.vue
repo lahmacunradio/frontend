@@ -374,11 +374,13 @@ export default {
       this.$store.commit('player/isArcsiPlaying', false)
       this.$store.commit('player/isStreamPlaying', true)
 
-      // Google Analytics 4 event: only send if it's a regular show on air
+      // Google Analytics 3 play
       if (this.show_check) {
+        // eslint-disable-next-line no-undef
         gtag('event', 'Radio play', {
-          Show: this.show_title,
-          Episode: this.show_subtitle
+          event_category: this.show_title,
+          event_label: this.show_subtitle,
+          value: 1
         })
       }
 
@@ -413,16 +415,6 @@ export default {
       clearInterval(this.docTitleSetter)
       const ogTitle = document.querySelector("meta[property='og:title']")
       document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
-
-      /* Google tags
-            if (this.show_check) {
-                gtag('event', 'Radio play', {
-                    'event_category': this.show_title,
-                    'event_label': 'Play state',
-                    'value': 0,
-                });
-            }
-            */
 
       clearInterval(this.np_interval)
       this.np_interval = null

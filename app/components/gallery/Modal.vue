@@ -68,7 +68,9 @@ export default {
       val ? document.body.style.overflow = 'hidden' : document.body.style.overflow = ''
     }
   },
-  destroyed () {
+  beforeDestroy () {
+    // avoid stuck overflow hidden
+    document.body.style.overflow = ''
     document.removeEventListener('keydown', this.bindControls)
   },
   mounted () {

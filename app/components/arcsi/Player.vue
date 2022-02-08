@@ -245,20 +245,23 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      // Google Analytics 4 event
       document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
       this.docTitleSetter = setInterval(() => {
         if (this.arcsiIsPlaying) {
           document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
         } else {
           clearInterval(this.docTitleSetter)
+          const currentPageTitle = document.querySelector("meta[property='og:title']").getAttribute('content')
+          currentPageTitle ? document.title = currentPageTitle : document.title = 'Lahmacun Radio'
         }
       }, 3000)
 
-      // Google Analytics 4 event
+      // Google Analytics 3 play event
+      // eslint-disable-next-line no-undef
       gtag('event', 'Arcsi play', {
-        Show: this.episode.shows[0].name,
-        Episode: this.episode.name
+        event_category: this.episode.shows[0].name,
+        event_label: this.episode.name,
+        value: 1
       })
     },
     pauseArcsi () {
