@@ -256,14 +256,6 @@ export default {
         }
       }, 3000)
 
-      // Google Analytics 4 event
-      /*
-      gtag('event', 'Arcsi play', {
-        Show: this.episode.shows[0].name,
-        Episode: this.episode.name
-      })
-      */
-
       // Google Analytics 3 play event
       // eslint-disable-next-line no-undef
       gtag('event', 'Arcsi play', {
