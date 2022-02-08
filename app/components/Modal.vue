@@ -70,6 +70,10 @@ export default {
     showModal (val) {
       val ? document.body.style.overflow = 'hidden' : document.body.style.overflow = ''
     }
+  },
+  beforeDestroy () {
+    // avoid stuck overflow hidden
+    document.body.style.overflow = ''
   }
 }
 </script>
