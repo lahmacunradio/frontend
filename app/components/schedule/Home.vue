@@ -62,6 +62,7 @@ export default {
   data () {
     return {
       currentHost: typeof window !== 'undefined' ? window.location.origin : null,
+      isClient: typeof window !== 'undefined' && window.document,
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -129,9 +130,11 @@ export default {
   },
   created () {
     // update the time every minute
-    this.interval = setInterval(() => {
-      this.checkNowPlaying()
-    }, 60 * 1000)
+    if (this.isClient) {
+      this.interval = setInterval(() => {
+        this.checkNowPlaying()
+      }, 60 * 1000)
+    }
   },
   methods: {
     showAirCheck (index, showname) {
