@@ -58,7 +58,7 @@ export default {
   data () {
     return {
       startIndex: 0,
-      numberOfEpisodes: 9,
+      numberOfEpisodes: 12,
       visibleEpisodes: 3,
       sliderPosition: 0,
       episodeWidth: 300,
@@ -67,7 +67,7 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/latest')
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))

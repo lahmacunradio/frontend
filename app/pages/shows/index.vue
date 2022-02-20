@@ -40,16 +40,25 @@
 
 <script>
 
-import { mediaServerURL } from '~/constants'
+import { mediaServerURL, arcsiShowsBaseURL } from '~/constants'
 
 export default {
   data () {
     return {
       mediaServerURL,
-      defaultArcsiShows: this.$store.getters.returnArcsiShows,
-      arcsiShows: this.$store.getters.returnArcsiShows,
+      arcsiShows: null,
+      defaultArcsiShows: null,
       searchFields: ['name', 'description']
     }
+  },
+  async fetch () {
+    this.arcsiShows = await this.$axios.get(arcsiShowsBaseURL + '/list')
+      .then(res => res.data)
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Shows list not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Shows list not found' })
+      })
+    this.defaultArcsiShows = [...this.arcsiShows]
   },
   head () {
     return {
