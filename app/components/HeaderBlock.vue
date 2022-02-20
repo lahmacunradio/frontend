@@ -1,6 +1,6 @@
 <template>
   <header class="flex-row-reverse items-center justify-between px-4 py-2 bg-white md:flex md:flex-row">
-    <div class="flex items-center mb-4 xsm:mb-0 xsm:overflow-visible xsm:overflow-hidden">
+    <div class="flex items-center mb-4 xsm:mb-0 xsm:overflow-hidden">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <h1 class="main-title">
           Lahmacun Radio
@@ -30,14 +30,17 @@ export default {
     return {
       streamServer,
       timestamp: '',
-      interval: null
+      interval: null,
+      isClient: typeof window !== 'undefined' && window.document
     }
   },
   created () {
     this.getNow()
   },
   mounted () {
-    this.interval = setInterval(this.getNow, 60 * 1000)
+    if (this.isClient) {
+      this.interval = setInterval(this.getNow, 60 * 1000)
+    }
   },
   beforeDestroy () {
     clearInterval(this.interval)

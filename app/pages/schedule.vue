@@ -40,6 +40,7 @@ export default {
   data () {
     return {
       streamServer,
+      isClient: typeof window !== 'undefined' && window.document,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
@@ -123,9 +124,11 @@ export default {
   },
   created () {
     // update the time every minute
-    this.interval = setInterval(() => {
-      this.checkNowPlaying()
-    }, 60 * 1000)
+    if (this.isClient) {
+      this.interval = setInterval(() => {
+        this.checkNowPlaying()
+      }, 60 * 1000)
+    }
   },
   methods: {
     groupShowsByDay (shows) {

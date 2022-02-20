@@ -27,13 +27,16 @@ export default {
   props: ['error'],
   data () {
     return {
-      tryReloadInterval: null
+      tryReloadInterval: null,
+      isClient: typeof window !== 'undefined' && window.document
     }
   },
   mounted () {
-    this.tryReloadInterval = setInterval(() => {
-      window.location.reload()
-    }, 30000)
+    if (this.isClient) {
+      this.tryReloadInterval = setInterval(() => {
+        window.location.reload()
+      }, 30000)
+    }
   },
   beforeDestroy () {
     clearInterval(this.tryReloadInterval)
