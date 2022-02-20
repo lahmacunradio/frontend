@@ -14,7 +14,7 @@ export const mediaServerURL = 'https://media.lahmacun.hu/'
 
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'
 
-export const contentApiURL = 'https://www.lahmacun.hu/wp-json/wp/v2'
+export const contentApiURL = 'https://cms.lahmacun.hu/wp-json/wp/v2'
 // wp queries
 export const newsBaseURL = contentApiURL + '/posts?categories=5'
 export const newsURL = contentApiURL + '/posts?categories=5&per_page=12'
@@ -29,7 +29,10 @@ export const eventsSectionURL = contentApiURL + '/pages/3085'
 export const pressSectionURL = contentApiURL + '/pages/3087'
 export const labsSectionURL = contentApiURL + '/pages/3091'
 export const recipeSectionURL = contentApiURL + '/pages/3093'
+export const rareShowsURL = contentApiURL + '/pages/3721'
 
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
 export const mediaURL = contentApiURL + '/media'
 export const tagsURL = contentApiURL + '/tags'
+
+export const customScheduleURL = contentApiURL + '/pages/3679'

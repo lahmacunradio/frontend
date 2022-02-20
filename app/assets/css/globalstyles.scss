@@ -132,6 +132,18 @@ button:focus {
   p {
     margin-bottom: 0.5rem;
   }
+  a {
+    text-decoration: underline;
+  }
+  iframe {
+    margin: 2rem 0;
+  }
+}
+
+.description-text {
+  a {
+    text-decoration: underline;
+  }
 }
 
 span.moresign {

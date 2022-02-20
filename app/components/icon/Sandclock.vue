@@ -621,11 +621,14 @@ export default {
     return {
       dropInterval: null,
       dropActive: true,
-	  dropAnimated: true
+	  dropAnimated: true,
+	  isClient: typeof window !== 'undefined' && window.document
     }
   },
   mounted () {
-    this.dropInterval = setInterval(this.triggerDrop, 550)
+	if (this.isClient) {
+		this.dropInterval = setInterval(this.triggerDrop, 550)
+	}
 	this.showProgress (this.computedProgress)
   },
   beforeDestroy () {

@@ -12,7 +12,7 @@
         >
       </div>
     </NuxtLink>
-    <div class="news-infos pt-4">
+    <div class="pt-4 news-infos">
       <NuxtLink :to="'/news/' + news.slug">
         <h5 class="mb-2">
           {{ htmlDecoder(news.title.rendered) }}
@@ -22,7 +22,7 @@
         <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
       </div>
     </div>
-    <div v-if="newsTags" class="tags mt-2">
+    <div v-if="newsTags" class="mt-2 tags">
       <div v-for="(tag, index) in newsTags" :key="index + tag.id + tag.slug" class="inline-block">
         <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
           {{ tag.name }}
@@ -50,7 +50,7 @@ export default {
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       newsTags: null,
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           a: ['*']
         }

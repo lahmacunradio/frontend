@@ -47,12 +47,11 @@ import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
 
 import { arcsiItemBaseURL } from '~/constants'
-import { debounceFunction } from '~/plugins/mixinCommonMethods'
 
 const fullConfig = resolveConfig(tailwindConfig)
-const mobileSize = fullConfig.theme.screens.sm
 const tabletSize = fullConfig.theme.screens.md
 const desktopSize = fullConfig.theme.screens.lg
+const largeScreenSize = fullConfig.theme.screens['2xl']
 
 export default {
   name: 'LatestArcsi',
@@ -99,7 +98,7 @@ export default {
       return null
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     }
   },
   mounted () {
@@ -128,19 +127,22 @@ export default {
       if (!viewport) {
         return false
       }
-      if (windowWidth >= parseInt(desktopSize)) {
-        this.visibleEpisodes = 3
-        if (this.sliderPosition === this.numberOfEpisodes - 2) {
+      if (windowWidth >= parseInt(largeScreenSize)) {
+        this.visibleEpisodes = 4
+        // refactor the checks
+        if (this.sliderPosition < this.numberOfEpisodes) {
           this.sliderPosition = this.sliderPosition - 1
         }
-        if (this.sliderPosition === this.numberOfEpisodes - 1) {
-          this.sliderPosition = this.sliderPosition - 2
+      } else if (windowWidth >= parseInt(desktopSize) && windowWidth < parseInt(largeScreenSize)) {
+        this.visibleEpisodes = 3
+        if (this.sliderPosition < this.numberOfEpisodes) {
+          this.sliderPosition = this.sliderPosition - 1
         }
       } else if (windowWidth <= parseInt(tabletSize)) {
         this.visibleEpisodes = 1
       } else {
         this.visibleEpisodes = 2
-        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+        if (this.sliderPosition < this.numberOfEpisodes) {
           this.sliderPosition = this.sliderPosition - 1
         }
       }

@@ -12,10 +12,10 @@
       <h5 v-if="item.title" class="mt-2">
         {{ item.title }}
       </h5>
-      <h5 v-if="item.subTitle" class="text-white mt-2">
+      <h5 v-if="item.subTitle" class="mt-2 text-white">
         {{ item.subTitle }}
       </h5>
-      <div v-if="item.description" class="item-text mt-2">
+      <div v-if="item.description" class="mt-2 item-text">
         <div v-sanitize="item.description" />
       </div>
       <TagList v-if="item.tags" :tags="item.tags" class="mt-2" />
@@ -44,7 +44,7 @@ export default {
     this.loadNewsImages()
   },
   methods: {
-    async loadNewsImages() {
+    loadNewsImages () {
       this.image = this.item.image || this.image
       this.smallImage = this.item.image || this.smallImage
     }
@@ -60,7 +60,7 @@ export default {
   overflow: hidden;
   display: flex;
   align-content: center;
-  pagging-bottom: 0.5rem 0;
+  padding-bottom: 0.5rem 0;
   img {
     min-height: 300px;
     min-width: 300px;

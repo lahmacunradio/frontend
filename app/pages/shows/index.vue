@@ -46,8 +46,8 @@ export default {
   data () {
     return {
       mediaServerURL,
-      defaultArcsiShows: this.$store.state.arcsiShows,
-      arcsiShows: this.$store.state.arcsiShows,
+      defaultArcsiShows: this.$store.getters.returnArcsiShows,
+      arcsiShows: this.$store.getters.returnArcsiShows,
       searchFields: ['name', 'description']
     }
   },
