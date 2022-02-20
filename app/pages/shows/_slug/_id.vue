@@ -251,6 +251,10 @@ export default {
       this.$refs.alphabetical.classList.remove('selected')
       this.$refs.bydate.classList.add('selected')
       this.alphabeticAsc = false
+    },
+    getCorrectSlug (item) {
+      const processedName = item.toLowerCase()
+      return processedName.replace('.mp3', '')
     }
   }
 
