@@ -106,6 +106,7 @@ export default {
       window.addEventListener('resize', this.changeBreakpoint, { passive: true })
       setTimeout(() => {
         this.changeBreakpoint()
+        this.numberOfEpisodes = this.arcsiEpisodesListSortedLatest?.length
       }, 3000)
     }
   },
@@ -150,6 +151,7 @@ export default {
       this.resizeTimeout = setTimeout(() => this.reInitSlider(), 1)
     },
     reInitSlider () {
+
       this.$refs.episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     },
     previousBlock () {
