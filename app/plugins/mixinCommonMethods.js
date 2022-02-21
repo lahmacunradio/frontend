@@ -114,6 +114,11 @@ export function showFrequency (frequency) {
   return showText
 }
 
+export function getCorrectSlug (item) {
+  const processedName = item.toLowerCase()
+  return processedName.replace('.mp3', '')
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -132,7 +137,8 @@ if (!Vue.__my_mixin__) {
       convertHourMinuteSecond,
       stripHTMLTags,
       getLanguageGraph,
-      showFrequency
+      showFrequency,
+      getCorrectSlug
     }
   })
 }
