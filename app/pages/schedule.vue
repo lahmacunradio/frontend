@@ -40,30 +40,15 @@ export default {
   data () {
     return {
       streamServer,
-      isClient: typeof window !== 'undefined' && window.document,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
       interval: null,
       nowPlaying: {},
-      loadedSchedule: null,
       latestRareThursday: null,
-      latestRareFriday: null,
-      customScheduleDay: null,
-      customScheduleEntries: null,
-      customPosition: null
+      latestRareFriday: null
     }
   },
-  /* gives error ???  WARN  Cannot stringify arbitrary non-POJOs Timeout
-  async fetch () {
-    this.loadedSchedule = await this.$axios.get(arcsiShowsBaseURL + '/schedule')
-      .then(res => res.data)
-      .catch((error) => {
-        this.$nuxt.error({ statusCode: 404, message: error + ' not found' })
-      })
-  },
-
-   */
   head () {
     return {
       title: 'Lahmacun Schedule',
@@ -88,7 +73,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      arcsishows: 'returnArcsiShows',
+      fullSchedule: 'returnSchedule',
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule'
     }),
@@ -105,7 +90,10 @@ export default {
       return this.rareShows.rare_friday.find(item => item.active === true)
     },
     sortShowsForSchedule () {
-      return [...this.arcsishows]
+      if (!this.fullSchedule) {
+        return false
+      }
+      return [...this.fullSchedule]
         .sort((a, b) => a.day - b.day)
         .sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
@@ -147,18 +135,15 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-
       this.latestRareThursday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka csut'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
       this.latestRareFriday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
-
+        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
       const filteredShows = shows
         .filter(val => !this.latestRareThursday.includes(val))
         .filter(val => !this.latestRareFriday.includes(val))
-
       // custom Schedule Day
       if (this.customSchedule?.is_active) {
         this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
@@ -166,7 +151,6 @@ export default {
         // TODO fix the correct index
         this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
-
       for (let i = 0; i < 7; i++) {
         list.push([])
         if (this.customScheduleDay - 1 === i) {
@@ -203,36 +187,9 @@ export default {
       })
     }
   }
-
 }
-
 </script>
 
-<style lang="scss" scoped>
-.days {
-  ul {
-    display: flex;
-    width: 100%;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    overflow: auto;
-    &::-webkit-scrollbar {
-      height: 0.5rem;
-    }
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: white;
-    }
-    li {
-        cursor: pointer;
-        width: 100%;
-        white-space: nowrap;
-        h4 {
-          font-size: 1.2rem;
-        }
-    }
-  }
-}
+<style scoped>
+
 </style>
