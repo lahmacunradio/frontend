@@ -1,14 +1,14 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Donate" :maintitle="true" />
+    <SubTitle title="Lahmacun membership" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
       </div>
-      <article id="donate-page" ref="donate">
-        <div v-if="donateContent">
-          <h2>{{ donateContent.title.rendered }}</h2>
-          <div v-sanitize="[sanitizeOptions, donateContentResults]" class="donate-content" />
+      <article id="membership-page" ref="membership">
+        <div v-if="membershipContent">
+          <h2>{{ membershipContent.title.rendered }}</h2>
+          <div v-sanitize="[sanitizeOptions, membershipContentResults]" class="donate-content" />
         </div>
       </article>
     </div>
@@ -16,12 +16,12 @@
 </template>
 
 <script>
-import { donateURL } from '~/constants'
+import { membershipURL } from '~/constants'
 
 export default {
   data () {
     return {
-      donateContent: null,
+      membershipContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
         allowedAttributes: {
@@ -35,45 +35,45 @@ export default {
     }
   },
   async fetch () {
-    this.donateContent = await this.$axios.get(`${donateURL}`)
+    this.membershipContent = await this.$axios.get(`${membershipURL}`)
       .then((res) => {
         if (res) {
           return res.data
         }
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Donate not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
+        this.$sentry.captureException(new Error('Membership not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
       })
   },
   head () {
     return {
-      title: 'Lahmacun Donate',
+      title: 'Lahmacun Membership',
       meta: [
         {
           hid: 'description',
           name: 'description',
-          content: 'This is a not-for-profit webradio with various starting and running costs. Without financial help we won’t be able to provide quality content for long.'
+          content: 'We have a monthly membership fee. We will use this money for monthy costs and development (e.g.buy new studio gear).'
         },
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Lahmacun Donate'
+          content: 'Lahmacun membership'
         },
         {
           hid: 'og:description',
           name: 'og:description',
-          content: 'This is a not-for-profit webradio with various starting and running costs. Without financial help we won’t be able to provide quality content for long.'
+          content: 'We have a monthly membership fee. We will use this money for monthy costs and development (e.g.buy new studio gear).'
         }
       ]
     }
   },
   computed: {
-    donateContentResults () {
-      if (!this.donateContent?.content?.rendered) {
+    membershipContentResults () {
+      if (!this.membershipContent?.content?.rendered) {
         return 'No content'
       }
-      return this.donateContent.content.rendered.replace(/target="_top"/g, 'target="_blank"')
+      return this.membershipContent?.content?.rendered.replace(/target="_top"/g, 'target="_blank"')
     }
   }
 }
@@ -98,7 +98,6 @@ export default {
     h4 {
       margin-bottom: 1rem;
       font-size: 1.2rem;
-      white-space: nowrap;
       text-transform: uppercase;
     }
   }

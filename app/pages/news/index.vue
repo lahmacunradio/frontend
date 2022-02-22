@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun News" maintitle="true" />
+    <SubTitle title="Lahmacun News" :maintitle="true" />
     <ItemList
       :items="newsFilteredList"
       :is-loading="isLoading"

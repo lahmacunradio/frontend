@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Archive" maintitle="true" />
+    <SubTitle title="Lahmacun Archive" :maintitle="true" />
     <div class="container mt-8">
       <!-- no search for now, is buggy
       <div v-if="defaultEpisodes" class="flex justify-between">

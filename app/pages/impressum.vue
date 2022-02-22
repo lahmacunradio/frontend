@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Impressum" maintitle="true" />
+    <SubTitle title="Lahmacun Impressum" :maintitle="true" />
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
