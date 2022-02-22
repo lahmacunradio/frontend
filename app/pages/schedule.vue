@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Schedule" />
+    <SubTitle title="Lahmacun Schedule" maintitle="true" />
     <client-only>
       <div class="container mt-8">
         <div class="mb-4 border-b days">

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      Lahmacun Donate
-    </h2>
+    <SubTitle title="Lahmacun Donate" maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...

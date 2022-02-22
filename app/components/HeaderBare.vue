@@ -5,9 +5,9 @@
         <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
     </div>
-    <h2>
+    <div class="h2">
       Lahmacun radio
-    </h2>
+    </div>
   </header>
 </template>
 

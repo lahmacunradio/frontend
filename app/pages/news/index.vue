@@ -1,10 +1,10 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun News" />
+    <SubTitle title="Lahmacun News" maintitle="true" />
     <ItemList
       :items="newsFilteredList"
-      :isLoading="isLoading"
-      :totalCount="totalCount"
+      :is-loading="isLoading"
+      :total-count="totalCount"
       :callback="fetchNews"
       @search="onChange"
     />
@@ -22,7 +22,7 @@ export default {
       totalCount: 0,
       searchText: '',
       isLoading: false,
-      page: 1,
+      page: 1
     }
   },
   head () {
@@ -60,7 +60,7 @@ export default {
     this.totalCount = null
   },
   methods: {
-    async useFetch(url) {
+    async useFetch (url) {
       try {
         const response = await this.$axios.get(`${url}`)
         return response
@@ -69,15 +69,15 @@ export default {
         this.$nuxt.error({ statusCode: 404, message: 'News is not available' })
       }
     },
-    async getImage(idNews) {
+    async getImage (idNews) {
       const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
       return data?.media_details?.sizes?.large?.source_url || data?.source_url
     },
-    async getTags(idNews) {
+    async getTags (idNews) {
       const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
       return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
     },
-    async parseData(news) {
+    async parseData (news) {
       return await Promise.all(news.map(async n => ({
         title: this.htmlDecoder(n.title.rendered),
         url: `/news/${n.slug}`,

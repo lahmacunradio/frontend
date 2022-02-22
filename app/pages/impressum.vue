@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2 class="title-block">
-      Lahmacun Impressum
-    </h2>
+    <SubTitle title="Lahmacun Impressum" maintitle="true" />
     <div id="about-page-content" class="container mt-8">
       <div v-if="$fetchState.pending" class="py-8 center w-100">
         Loading...
@@ -11,10 +9,10 @@
         Some error happened...
       </div>
       <div v-if="impressum" class="md:flex">
-        <div v-if="impressumFeaturedImage" class="md:mr-8 mb-4 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
+        <div v-if="impressumFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
           <img :src="impressumFeaturedImage.source_url" alt="Lahmacun Impressum">
         </div>
-        <div v-sanitize="[ sanitizeOptions, impressumResults]" />
+        <div v-sanitize="[ sanitizeOptions, impressumResults]" class="text-content" />
       </div>
     </div>
   </div>

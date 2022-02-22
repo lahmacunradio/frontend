@@ -16,7 +16,6 @@
 
 <script>
 import { contentApiURL } from '~/constants'
-import { truncate } from '~/plugins/mixinCommonMethods'
 
 export default {
   data () {
