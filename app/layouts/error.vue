@@ -1,8 +1,8 @@
 <template>
   <div>
-    <h3 class="title-block">
+    <h2 class="title-block">
       Error page
-    </h3>
+    </h2>
     <div class="container pt-8 text-center error-page">
       <h1 v-if="error.statusCode === 404">
         Page not found
@@ -14,7 +14,7 @@
         An error occurred
       </h1>
       <NuxtLink to="/">
-        <img src="@/assets/img/lahmacun-logo.png" alt="" class="h-48 py-8 mx-auto">
+        <img src="@/assets/img/lahma_citrom_transparent.png" alt="" class="w-full py-8 mx-auto md:w-96">
         Try the Home page
       </NuxtLink>
     </div>
