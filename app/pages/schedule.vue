@@ -43,7 +43,7 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
-      customPosition: 0,
+      customPosition: null,
       interval: null,
       nowPlaying: {},
       latestRareThursday: null,

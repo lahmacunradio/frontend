@@ -42,7 +42,7 @@
             </NuxtLink>
             <div class="text-sm description">
               <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
-              <p class="mt-2">
+              <p v-if="latestEpisodeData" class="mt-2">
                 Latest Episode:
                 <NuxtLink :to="latestEpisodeLink">
                   <b>{{ latestEpisodeTitle }}</b>
@@ -57,7 +57,7 @@
           </NuxtLink>
         </div>
         <div v-if="!showAirCheck(show.name)">
-          <a href="#" @click.prevent="opened = !opened">
+          <a href="#" @click.prevent="openShowDetails">
             <i v-if="opened" class="fa fa-chevron-up" aria-hidden="true" />
             <i v-else class="fa fa-chevron-down" aria-hidden="true" />
           </a>
@@ -68,6 +68,8 @@
 </template>
 
 <script>
+import { arcsiBaseURL } from '~/constants'
+
 export default {
   props: {
     show: {
@@ -82,7 +84,7 @@ export default {
   data () {
     return {
       opened: false,
-      loadedShow: null,
+      latestEpisodeData: null,
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
@@ -92,6 +94,13 @@ export default {
     }
   },
   computed: {
+    getToday () {
+      const d = new Date()
+      const year = d.getFullYear()
+      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+      return `${year}-${month}-${day}`
+    },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
@@ -125,44 +134,66 @@ export default {
       return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
     },
     onAirDescription () {
-      if (!this.nowPlaying.now_playing && this.show.items) {
+      if (!this.nowPlaying.now_playing && this.latestEpisodeData) {
         return false
       }
       if (this.nowPlaying?.live?.is_live) {
         return this.show.description
       }
-      const descriptionFromArcsi = this.loadedShow?.[0]?.description
+      const descriptionFromArcsi = this.latestEpisodeData.description
       return descriptionFromArcsi || this.show.description
     },
     latestEpisodeImage () {
-      if (!this.show.items) {
+      if (!this.latestEpisodeData) {
         return false
       }
       return this.show.cover_image_url
     },
     latestEpisodeTitle () {
-      if (!this.show.items) {
+      if (!this.latestEpisodeData) {
         return this.show.name
       }
-      const episodeTitleFromArcsi = this.loadedShow?.[0]?.name
+      const episodeTitleFromArcsi = this.latestEpisodeData.name
       return episodeTitleFromArcsi ? `${episodeTitleFromArcsi}` : this.show.name
     },
     latestEpisodeLink () {
       const baseLink = '/shows/' + this.show.archive_lahmastore_base_url
-      if (!this.show.items) {
+      if (!this.latestEpisodeData) {
         return baseLink
       }
-      const episodeIdFromArcsi = this.loadedShow?.[0]?.id
+      const episodeIdFromArcsi = this.getCorrectSlug(this.latestEpisodeData.play_file_name)
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
-  },
-  mounted () {
   },
   methods: {
     showAirCheck (showname) {
       if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
+    },
+    openShowDetails () {
+      this.opened = !this.opened
+      if (this.opened && !this.showAirCheck(this.show.name)) {
+        this.getShowInfos()
+      }
+    },
+    getShowInfos () {
+      this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive')
+        .then((res) => {
+          this.latestEpisodeData = this.getLatestEpisode(res.data)
+        })
+        .catch((error) => {
+          console.log(error)
+          this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+        })
+    },
+    getLatestEpisode (episodes) {
+      const sortedItems = episodes
+        .filter(show => show.play_date < this.getToday)
+        .filter(show => show.archived === true)
+        .sort((a, b) => b.number - a.number)
+        .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+      return sortedItems[0]
     }
   }
 }
