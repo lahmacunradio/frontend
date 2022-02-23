@@ -232,6 +232,7 @@ export default {
   },
   beforeDestroy () {
     this.arcsiEpisode = null
+    this.arcsiShow = null
   },
   methods: {
     playArcsi () {
