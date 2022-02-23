@@ -15,9 +15,9 @@
           </a>
         </div>
         <div class="mb-4 show-description">
-          <h2 class="mt-0 font-bold">
+          <h1 class="mt-0 font-bold h2">
             {{ arcsiInfosBlock.name }}
-          </h2>
+          </h1>
           <div class="show-infos">
             <p>
               Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{
