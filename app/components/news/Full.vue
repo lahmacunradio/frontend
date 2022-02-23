@@ -26,9 +26,9 @@
         </div>
       </div>
       <div id="news-content">
-        <h2 class="mt-0 font-bold">
+        <h1 class="mt-0 font-bold h2">
           {{ htmlDecoder(news.title.rendered) }}
-        </h2>
+        </h1>
         <p class="mb-4 news-time">
           {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>

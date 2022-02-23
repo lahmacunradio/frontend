@@ -21,7 +21,9 @@
             </a>
           </div>
           <div class="mb-4 show-description">
-            <h3>{{ fullEpisodeTitle || arcsiEpisode.name }}</h3>
+            <h1 class="h3">
+              {{ fullEpisodeTitle || arcsiEpisode.name }}
+            </h1>
             <div class="episode-infos">
               <p v-if="arcsiEpisode.play_date">
                 Episode Nr. {{ arcsiEpisode.number }},

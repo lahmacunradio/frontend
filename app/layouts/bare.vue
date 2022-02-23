@@ -7,6 +7,6 @@
 
 <script>
 export default {
-  name: 'Bare'
+  name: 'BareLayout'
 }
 </script>
