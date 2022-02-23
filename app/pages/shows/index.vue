@@ -15,7 +15,7 @@
       <div class="mt-8 mb-4 title">
         <h2>Active Shows</h2>
       </div>
-      <div v-if="arcsiShowsList.length">
+      <div v-if="arcsiShowsList && arcsiShowsList.length">
         <ShowsLister :shows="arcsiShowsList" />
       </div>
       <div v-else>
@@ -26,7 +26,7 @@
       <div class="mt-8 mb-4 title">
         <h2>Past Shows</h2>
       </div>
-      <div v-if="pastShowsList.length">
+      <div v-if="pastShowsList && pastShowsList.length">
         <ShowsLister :shows="pastShowsList" />
       </div>
       <div v-else>

@@ -59,7 +59,7 @@
           </div>
         </div>
       </div>
-      <div v-if="arcsiShow && arcsiShowListFiltered" class="py-8">
+      <div v-if="arcsiShow && arcsiEpisodesList && arcsiEpisodesList.length" class="py-8">
         <h4 class="pb-1 mb-4 text-center border-b border-current">
           Other Episodes from {{ arcsiShow.name }}
         </h4>
@@ -76,7 +76,7 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiShowListFiltered" :key="arcsi.id">
+          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
@@ -89,6 +89,7 @@
                   {{ arcsi.name }}
                 </h5>
               </NuxtLink>
+              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>
@@ -99,7 +100,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiBaseURL, arcsiItemBaseURL, mediaServerURL } from '~/constants'
+import { arcsiBaseURL, mediaServerURL } from '~/constants'
 
 export default {
   data () {
@@ -120,7 +121,7 @@ export default {
           a: ['*']
         }
       },
-      arcsiShowListFiltered: null,
+      sortingType: 'air',
       alphabeticAsc: false,
       airtimeAsc: true
     }
@@ -133,7 +134,7 @@ export default {
         this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
       })
     if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
-      this.arcsiShow = await this.$axios.get(`${arcsiBaseURL}/show/${this.arcsiEpisode.shows[0].id}`)
+      this.arcsiShow = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
         .then(res => res.data)
         .catch((error) => {
           this.$sentry.captureException(new Error('Arcsi server not available ', error))
@@ -190,15 +191,6 @@ export default {
       if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
     },
-    otherEpisodes () {
-      if (!this.arcsiShow && !this.arcsiShow?.items) {
-        return false
-      }
-      return this.arcsiShow.items
-        .filter(item => item.id !== this.arcsiEpisode.id)
-        .filter(item => item.play_date < this.getToday)
-        .filter(item => item.archived === true)
-    },
     airDate () {
       if (!this.arcsiEpisode?.play_date) {
         return ''
@@ -210,11 +202,32 @@ export default {
         return `Aired on ${this.airDate}`
       }
       return this.truncate(this.arcsiEpisode?.description, 150)
-    }
-  },
-  beforeUpdate () {
-    if (!this.arcsiShowListFiltered) {
-      this.arcsiShowListFiltered = this.otherEpisodes
+    },
+    arcsiEpisodesList () {
+      if (this.arcsiShow && this.arcsiShow.items?.length) {
+        const itemsSorted = this.arcsiShow?.items
+          .filter(item => item.id !== this.arcsiEpisode.id)
+          .filter(show => show.play_date < this.getToday)
+          .filter(show => show.archived === true)
+          .sort((a, b) => b.number - a.number)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        if (this.airtimeAsc && this.sortingType === 'air') {
+          return itemsSorted
+            .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        } else if (!this.airtimeAsc && this.sortingType === 'air') {
+          return itemsSorted
+            .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
+        } else if (this.alphabeticAsc && this.sortingType === 'abc') {
+          return itemsSorted
+            .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+        } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
+          return itemsSorted
+            .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
+        } else {
+          return itemsSorted
+        }
+      }
+      return null
     }
   },
   beforeDestroy () {
@@ -227,32 +240,18 @@ export default {
       this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
     },
     sortAlphabeticaly () {
-      if (this.alphabeticAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
-        this.alphabeticAsc = false
-      } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-        this.alphabeticAsc = true
-      }
+      this.sortingType = 'abc'
+      this.alphabeticAsc = !this.alphabeticAsc
+      this.airtimeAsc = false
       this.$refs.alphabetical.classList.add('selected')
       this.$refs.bydate.classList.remove('selected')
-      this.airtimeAsc = false
     },
     sortAirtime () {
-      if (this.airtimeAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered
-          .sort((a, b) => a.number - b.number)
-          .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
-        this.airtimeAsc = false
-      } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered
-          .sort((a, b) => b.number - a.number)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        this.airtimeAsc = true
-      }
+      this.sortingType = 'air'
+      this.airtimeAsc = !this.airtimeAsc
+      this.alphabeticAsc = false
       this.$refs.alphabetical.classList.remove('selected')
       this.$refs.bydate.classList.add('selected')
-      this.alphabeticAsc = false
     }
   }
 

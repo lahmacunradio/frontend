@@ -53,8 +53,7 @@ export default {
       if (!this.episode.play_file_name) {
         return false
       }
-      const processedName = this.episode.play_file_name.toLowerCase()
-      return processedName.replace('.mp3', '')
+      return this.getCorrectSlug(this.episode.play_file_name)
     }
   },
   created () {

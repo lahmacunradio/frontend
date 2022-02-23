@@ -115,7 +115,10 @@ export function showFrequency (frequency) {
 }
 
 export function getCorrectSlug (item) {
-  const processedName = item.toLowerCase()
+  if (!item) {
+    return false
+  }
+  const processedName = item ? item.toLowerCase() : ''
   return processedName.replace('.mp3', '')
 }
 
