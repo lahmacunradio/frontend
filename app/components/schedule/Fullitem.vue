@@ -140,7 +140,7 @@ export default {
       if (this.nowPlaying?.live?.is_live) {
         return this.show.description
       }
-      const descriptionFromArcsi = this.latestEpisodeData.description
+      const descriptionFromArcsi = this.latestEpisodeData?.description
       return descriptionFromArcsi || this.show.description
     },
     latestEpisodeImage () {
@@ -153,7 +153,7 @@ export default {
       if (!this.latestEpisodeData) {
         return this.show.name
       }
-      const episodeTitleFromArcsi = this.latestEpisodeData.name
+      const episodeTitleFromArcsi = this.latestEpisodeData?.name
       return episodeTitleFromArcsi ? `${episodeTitleFromArcsi}` : this.show.name
     },
     latestEpisodeLink () {
@@ -161,7 +161,7 @@ export default {
       if (!this.latestEpisodeData) {
         return baseLink
       }
-      const episodeIdFromArcsi = this.getCorrectSlug(this.latestEpisodeData.play_file_name)
+      const episodeIdFromArcsi = this.getCorrectSlug(this.latestEpisodeData?.play_file_name)
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
   },
