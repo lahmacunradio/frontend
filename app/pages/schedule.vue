@@ -190,6 +190,31 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.days {
+  ul {
+    display: flex;
+    width: 100%;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow: auto;
+    &::-webkit-scrollbar {
+      height: 0.5rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: white;
+    }
+    li {
+        cursor: pointer;
+        width: 100%;
+        white-space: nowrap;
+        h4 {
+          font-size: 1.2rem;
+        }
+    }
+  }
+}
 </style>
