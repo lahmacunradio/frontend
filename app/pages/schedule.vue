@@ -43,6 +43,7 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
+      customPosition: 0,
       interval: null,
       nowPlaying: {},
       latestRareThursday: null,
@@ -94,6 +95,9 @@ export default {
         return false
       }
       return [...this.fullSchedule]
+        .filter(show => (
+          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
+        ))
         .sort((a, b) => a.day - b.day)
         .sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
