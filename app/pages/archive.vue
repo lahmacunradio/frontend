@@ -112,7 +112,7 @@ export default {
   methods: {
     async loadMoreEpisodes () {
       this.startIndex++
-      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest/?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
         .then(res => res.data)
         .catch((error) => {
           this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
