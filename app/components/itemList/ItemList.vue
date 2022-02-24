@@ -16,9 +16,9 @@
         </div>
       </article>
       <Pagination
-        :itemsCount="items.length"
-        :totalCount="totalCount"
-        :isLoading="isLoading"
+        :items-count="items.length"
+        :total-count="totalCount"
+        :is-loading="isLoading"
         @click="callback"
       />
     </div>
@@ -28,7 +28,7 @@
 <script>
 
 export default {
-  props : {
+  props: {
     items: {
       type: Array,
       request: true
@@ -51,13 +51,13 @@ export default {
     isFilter: {
       type: Boolean,
       default: true
-    },
-  },
-  methods: {
-    onChange(event) {
-      this.$emit('search', event.target.value)
     }
   },
+  methods: {
+    onChange (event) {
+      this.$emit('search', event.target.value)
+    }
+  }
 }
 </script>
 

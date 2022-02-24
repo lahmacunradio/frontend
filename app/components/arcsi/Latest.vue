@@ -151,7 +151,6 @@ export default {
       this.resizeTimeout = setTimeout(() => this.reInitSlider(), 1)
     },
     reInitSlider () {
-
       this.$refs.episodes.style.transform = `translateX(-${this.episodeWidth * this.sliderPosition}px)`
     },
     previousBlock () {

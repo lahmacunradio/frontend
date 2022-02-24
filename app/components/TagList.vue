@@ -1,7 +1,8 @@
 <template>
   <div class="tag-list">
     <TagBlock
-      v-for="(tag, index) in tags" :key="`${tag.id}-${index}`"
+      v-for="(tag, index) in tags"
+      :key="`${tag.id}-${index}`"
       :tag="tag"
       class="tag"
     />
@@ -15,8 +16,8 @@ export default {
     tags: {
       type: Array,
       required: true
-    },
-  },
+    }
+  }
 }
 </script>
 
