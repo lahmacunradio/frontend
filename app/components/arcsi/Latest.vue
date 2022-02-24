@@ -67,7 +67,7 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/latest')
+    this.arcsiEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))

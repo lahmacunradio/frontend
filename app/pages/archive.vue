@@ -20,7 +20,7 @@
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
+      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
           <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
@@ -52,7 +52,7 @@ export default {
     }
   },
   async fetch () {
-    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest/?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
