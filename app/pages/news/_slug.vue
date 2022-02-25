@@ -55,7 +55,7 @@ export default {
         {
           hid: 'og:image',
           property: 'og:image',
-          content: this.metaImage
+          content: this.metaOgImage
         }
       ]
     }
@@ -67,6 +67,13 @@ export default {
       }
       const shortenMeta = this.stripHTMLTags(this.selectedNews?.excerpt?.rendered)
       return this.truncate(shortenMeta, 150)
+    },
+    metaOgImage () {
+      if (!this.selectedNews) {
+        return this.metaImage
+      }
+      const metaImageACF = this.selectedNews?.acf?.ogimage
+      return metaImageACF || this.metaImage
     }
   },
   methods: {
