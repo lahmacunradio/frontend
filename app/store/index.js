@@ -9,6 +9,7 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit ({ state }, { $sentry, error }) {
+    /* Legacy api with all items
     await this.$axios.get(arcsiServerURL)
       .then((res) => {
         state.arcsiShows = res.data
@@ -17,6 +18,7 @@ export const actions = {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'Arcsi Shows not found' })
       })
+    */
     await this.$axios.get(arcsiShowsBaseURL + '/schedule')
       .then((res) => {
         state.fullSchedule = res.data
@@ -45,9 +47,6 @@ export const actions = {
 }
 
 export const mutations = {
-  refreshArcsiShows (state, payload) {
-    state.arcsiShows = payload
-  },
   refreshFullSchedule (state, payload) {
     state.fullSchedule = payload
   },
@@ -60,8 +59,9 @@ export const mutations = {
 }
 
 export const getters = {
+  // return back the list of full show data from /schedule endpoint
   returnArcsiShows (state) {
-    return state.arcsiShows
+    return state.fullSchedule
   },
   returnSchedule (state) {
     return state.fullSchedule

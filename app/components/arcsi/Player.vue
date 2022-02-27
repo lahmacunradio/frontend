@@ -38,7 +38,7 @@
             {{ episode.shows[0].name }}
           </NuxtLink>
           <span> - </span>
-          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.id}`">
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${getCorrectSlug(episode.play_file_name)}`">
             {{ episode.name }}
           </NuxtLink>
         </h5>

@@ -55,9 +55,6 @@ export default {
       isArcsiPlaying: 'getArcsiPlayState'
 
     }),
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
-    },
     arcsiAudio () {
       if (!this.arcsiEpisode?.play_file_name) {
         return false
