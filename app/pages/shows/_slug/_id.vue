@@ -11,9 +11,9 @@
         <div class="flex-row sm:flex">
           <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
             <a class="cursor-pointer" @click="arcsiItemShadowbox = !arcsiItemShadowbox">
-              <img :src="arcsiEpisode.image_url" :alt="arcsiEpisode.name">
+              <img :src="episodeImage" :alt="arcsiEpisode.name">
               <Modal
-                :media="arcsiEpisode.image_url"
+                :media="episodeImage"
                 :title="arcsiEpisode.name"
                 :description="arcsiEpisode.description"
                 :visibility="arcsiItemShadowbox"
@@ -164,7 +164,7 @@ export default {
         {
           hid: 'og:image',
           property: 'og:image',
-          content: this.arcsiEpisode?.image_url
+          content: this.episodeImage
         }
       ]
     }
@@ -196,6 +196,10 @@ export default {
         return ''
       }
       return this.$moment(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
+    },
+    episodeImage () {
+      const rootLink = mediaServerURL + this.slug + '/'
+      return rootLink + this.arcsiEpisode?.image_url
     },
     metaDescription () {
       if (!this.arcsiEpisode?.description) {

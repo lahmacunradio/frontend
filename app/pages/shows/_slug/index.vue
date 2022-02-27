@@ -12,9 +12,9 @@
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
-            <img :src="showObject.cover_image_url" :alt="showObject.name">
+            <img :src="showImage" :alt="showObject.name">
             <Modal
-              :media="showObject.cover_image_url"
+              :media="showImage"
               :title="showObject.name"
               :description="showObject.description"
               :visibility="shadowbox"
@@ -115,8 +115,7 @@ export default {
     this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
       .then(res => res.data)
       .catch((error) => {
-        console.log(error)
-        this.$nuxt.error({ statusCode: 404, message: 'Show page not found' })
+        this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
       })
   },
   head () {
@@ -141,7 +140,7 @@ export default {
         {
           hid: 'og:image',
           property: 'og:image',
-          content: this.showObject?.cover_image_url
+          content: this.showImage
         }
       ]
     }
@@ -189,6 +188,10 @@ export default {
         }
       }
       return null
+    },
+    showImage () {
+      const rootLink = mediaServerURL + this.slug + '/'
+      return rootLink + this.showObject?.cover_image_url
     },
     metaDescription () {
       if (!this.showObject?.description) {
