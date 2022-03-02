@@ -38,7 +38,7 @@
             <p v-if="showObject && getLatestEpisode">
               {{ showObject.active ? 'Show is active.' : 'Show is not active.' }}
               Last episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${getCorrectSlug(getLatestEpisode.play_file_name)}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${getLatestEpisode.name_slug}` }">
                 <strong>{{ getLatestEpisode.name }}</strong>
               </NuxtLink>,
               {{ $moment(getLatestEpisode.play_date).fromNow() }}.
@@ -68,11 +68,11 @@
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }"
+                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>

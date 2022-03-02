@@ -161,7 +161,7 @@ export default {
       if (!this.latestEpisodeData) {
         return baseLink
       }
-      const episodeIdFromArcsi = this.getCorrectSlug(this.latestEpisodeData?.play_file_name)
+      const episodeIdFromArcsi = this.latestEpisodeData?.name_slug
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
   },

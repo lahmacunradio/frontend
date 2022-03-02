@@ -50,10 +50,10 @@ export default {
       return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
     },
     episodeLink () {
-      if (!this.episode.play_file_name) {
+      if (!this.episode.name_slug) {
         return false
       }
-      return this.getCorrectSlug(this.episode.play_file_name)
+      return this.episode.name_slug
     }
   },
   created () {

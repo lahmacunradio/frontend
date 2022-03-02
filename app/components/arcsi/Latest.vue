@@ -91,7 +91,7 @@ export default {
         return showslist
           .filter(item => item.play_date < this.getToday)
           .filter(item => item.archived === true)
-          .filter(item => item.play_file_name !== null)
+          .filter(item => item.name_slug !== null)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
           .slice(this.startIndex, this.numberOfEpisodes)
       }

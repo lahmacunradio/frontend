@@ -80,11 +80,11 @@
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }"
+                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${getCorrectSlug(arcsi.play_file_name)}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>
@@ -126,21 +126,8 @@ export default {
       airtimeAsc: true
     }
   },
-  async fetch () {
-    this.arcsiEpisode = await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/episode/${this.id}`)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-      })
-    if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
-      this.arcsiShow = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
-        .then(res => res.data)
-        .catch((error) => {
-          this.$sentry.captureException(new Error('Arcsi server not available ', error))
-          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-        })
-    }
+  fetch () {
+    this.fetchEpisodeData()
   },
   head () {
     return {
@@ -234,6 +221,15 @@ export default {
       return null
     }
   },
+  mounted () {
+    this.$nextTick(() => {
+      setTimeout(() => {
+        if (!this.arcsiEpisode) {
+          this.fetchEpisodeData()
+        }
+      }, 1000)
+    })
+  },
   beforeDestroy () {
     this.arcsiEpisode = null
     this.arcsiShow = null
@@ -257,6 +253,44 @@ export default {
       this.alphabeticAsc = false
       this.$refs.alphabetical.classList.remove('selected')
       this.$refs.bydate.classList.add('selected')
+    },
+    async fetchEpisodeData () {
+      await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`)
+        .then((res) => {
+          this.arcsiEpisode = res.data
+        })
+        .catch((error) => {
+          if (error.response.status === 404) {
+            this.fetchEpisodeDataLegacy()
+          } else {
+            this.$sentry.captureException(new Error('Arcsi server not available ', error))
+            this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+          }
+        })
+      this.fetchShowData()
+    },
+    async fetchEpisodeDataLegacy () {
+      await this.$axios.get(`${arcsiBaseURL}/item/${this.id}`)
+        .then((res) => {
+          this.arcsiEpisode = res.data
+        })
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Arcsi server not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        })
+      if (!this.arcsiShow) {
+        this.fetchShowData()
+      }
+    },
+    async fetchShowData () {
+      if (this.arcsiEpisode && this.arcsiEpisode.shows[0]) {
+        this.arcsiShow = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
+          .then(res => res.data)
+          .catch((error) => {
+            this.$sentry.captureException(new Error('Arcsi server not available ', error))
+            this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+          })
+      }
     }
   }
 
