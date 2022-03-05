@@ -490,7 +490,7 @@ export default {
 <style lang="scss" scoped>
 .radio-player-widget {
     min-width: 300px;
-  @media (max-width: $small-width) {
+  @media (max-width: $tablet-width) {
     min-width: auto;
   }
     max-width: 400px;

@@ -64,7 +64,7 @@ export default {
         @media (max-width: $tablet-width) {
           margin: 0.5rem 0;
         }
-        @media (max-width: $mobile-width) {
+        @media (max-width: $tablet-width) {
           text-align: center;
         }
         li {

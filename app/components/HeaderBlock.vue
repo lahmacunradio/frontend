@@ -1,32 +1,32 @@
 <template>
-  <header class="flex-row-reverse items-center justify-between px-4 py-2 bg-white md:flex md:flex-row">
-    <div class="flex items-center mb-4 xsm:mb-0 xsm:overflow-hidden">
+  <header class="items-center justify-between px-4 py-2 bg-white lg:flex sm:flex-nowrap flex-wrap">
+    <div class="flex items-center mb-4 xsm:mb-0">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <div class="main-title">
           Lahmacun Radio
         </div>
         <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
       </div>
-      <div class="mt-2 xsm:my-4 md:mr-8">
+      <div class="mt-2 xsm:my-4">
         <client-only>
           <RadioPlayer :show-album-art="true" :now-playing-uri="streamServer" />
         </client-only>
       </div>
-    </div>
-    <div class="block mx-4 w-48">
-      <NuxtLink to="/campaigns/stand-with-ukraine/">
-        <div class="relative">
-          <div class="absolute h-full w-full flex justify-items-center items-center">
-            <div class="text-center text-white hover:text-lahma-pink w-full font-bold">
+      <div class="ukraine-campaign block my-2 mx-auto sm:mx-4 md:w-48">
+        <NuxtLink to="/campaigns/stand-with-ukraine/">
+          <div class="ukraine-block h-full w-full flex justify-items-center items-center text-white hover:text-lahma-pink">
+            <div class="text-center w-full font-bold sm:block hidden">
               #StandWithUkraine
             </div>
+            <div class="text-center w-full sm:hidden block text-2xl px-2 py-4">
+              ✌🏻
+            </div>
           </div>
-          <img src="@/assets/img/campaigns/standwith_alap.svg" alt="#StandWithUkraine">
-        </div>
-      </NuxtLink>
+        </NuxtLink>
+      </div>
     </div>
     <HeadNavigation />
-    <div id="time" class="hidden md:block">
+    <div id="time" class="hidden lg:block">
       <div class="currenttime">
         {{ timestamp }} <br class="block xl:hidden">CET
       </div>
@@ -147,4 +147,24 @@ export default {
       padding: 2rem 1rem;
     }
   }
+    .ukraine-campaign {
+      @media (max-width: $tablet-width) {
+        position: absolute;
+        right: 1rem;
+      }
+      .ukraine-block {
+        background: url(@/assets/img/campaigns/standwith_alap.svg) no-repeat center center;
+        background-size: contain;
+        padding: 1.75rem 0.5rem;
+        clip-path: ellipse(50% 40% at 50% 50%);
+        height: 5rem;
+        @media (max-width: $mobile-width) {
+          clip-path: circle(50% at 50% 50%);
+          background-size: cover;
+          padding: 0;
+          height: 3rem;
+          width: 3rem;
+        }
+      }
+    }
 </style>

@@ -16,7 +16,7 @@ module.exports = {
     extend: {
       colors: {
         'lahma-pink': '#d09cf8',
-        'ukraine-yellow': '#f6ce00'
+        'ukraine-yellow': '#FFD500'
       }
     },
     screens: {
