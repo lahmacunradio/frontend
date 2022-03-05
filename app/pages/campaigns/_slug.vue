@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun News" url="/news/" />
+    <SubTitle title="Lahmacun Campaigns" url="/campaigns/" />
     <div class="container mt-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
