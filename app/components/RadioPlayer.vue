@@ -116,7 +116,7 @@
             </div>
           </div>
         </div>
-        <div class="hidden sand-clock sm:block">
+        <div v-if="false" class="hidden sand-clock sm:block">
           <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
         </div>
       </div>

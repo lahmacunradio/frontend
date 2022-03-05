@@ -98,7 +98,6 @@ export default {
 
 <style lang="scss" scoped>
 .news-badge {
-  background: $lahma-pink;
   transform: rotate(20deg);
   border-radius: 50%;
   margin: 1rem;
@@ -108,6 +107,7 @@ export default {
     padding: 1rem;
     text-transform: uppercase;
   }
+  @apply bg-ukraine-yellow;
 }
 .news-home-container {
   .news-image {

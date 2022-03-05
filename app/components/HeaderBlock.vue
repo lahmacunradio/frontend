@@ -13,6 +13,18 @@
         </client-only>
       </div>
     </div>
+    <div class="block mx-4 w-48">
+      <NuxtLink to="/campaigns/stand-with-ukraine/">
+        <div class="relative">
+          <div class="absolute h-full w-full flex justify-items-center items-center">
+            <div class="text-center text-white hover:text-lahma-pink w-full font-bold">
+              #StandWithUkraine
+            </div>
+          </div>
+          <img src="@/assets/img/campaigns/standwith_alap.svg" alt="#StandWithUkraine">
+        </div>
+      </NuxtLink>
+    </div>
     <HeadNavigation />
     <div id="time" class="hidden md:block">
       <div class="currenttime">

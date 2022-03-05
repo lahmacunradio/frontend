@@ -13,6 +13,12 @@ module.exports = {
     './nuxt.config.{js,ts}'
   ],
   theme: {
+    extend: {
+      colors: {
+        'lahma-pink': '#d09cf8',
+        'ukraine-yellow': '#f6ce00'
+      }
+    },
     screens: {
       xsm: '380px',
       sm: '576px',
