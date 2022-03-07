@@ -2,7 +2,7 @@ import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL } fr
 
 export const state = () => ({
   arcsiShows: {},
-  fullSchedule: {},
+  allShowsList: {},
   rareShows: {},
   customSchedule: {}
 })
@@ -19,13 +19,13 @@ export const actions = {
         error({ statusCode: 404, message: 'Arcsi Shows not found' })
       })
     */
-    await this.$axios.get(arcsiShowsBaseURL + '/schedule')
+    await this.$axios.get(arcsiShowsBaseURL + '/all_without_items')
       .then((res) => {
-        state.fullSchedule = res.data
+        state.allShowsList = res.data
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Schedule not found' })
+        error({ statusCode: 404, message: 'All Shows not found' })
       })
     await this.$axios.get(rareShowsURL)
       .then((res) => {
@@ -47,8 +47,8 @@ export const actions = {
 }
 
 export const mutations = {
-  refreshFullSchedule (state, payload) {
-    state.fullSchedule = payload
+  refreshAllShowsList (state, payload) {
+    state.allShowsList = payload
   },
   refreshRareShows (state, payload) {
     state.rareShows = payload
@@ -59,12 +59,8 @@ export const mutations = {
 }
 
 export const getters = {
-  // return back the list of full show data from /schedule endpoint
   returnArcsiShows (state) {
-    return state.fullSchedule
-  },
-  returnSchedule (state) {
-    return state.fullSchedule
+    return state.allShowsList
   },
   returnRareShows (state) {
     return state.rareShows

@@ -2,7 +2,7 @@
   <div>
     <SubTitle title="Lahmacun Shows" />
     <div class="container mt-8">
-      <div class="mb-8">
+      <div v-if="defaultArcsiShows" class="mb-8">
         <AutoCompleteSearch
           :default-items="defaultArcsiShows"
           suggestion-attribute="name"
@@ -39,8 +39,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
-import { mediaServerURL, arcsiShowsBaseURL } from '~/constants'
+import { mediaServerURL } from '~/constants'
 
 export default {
   data () {
@@ -50,15 +51,6 @@ export default {
       defaultArcsiShows: null,
       searchFields: ['name', 'description']
     }
-  },
-  async fetch () {
-    this.arcsiShows = await this.$axios.get(arcsiShowsBaseURL + '/list')
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Shows list not found ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Shows list not found' })
-      })
-    this.defaultArcsiShows = [...this.arcsiShows]
   },
   head () {
     return {
@@ -83,6 +75,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      fullSchedule: 'returnArcsiShows'
+    }),
     arcsiShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (
@@ -97,6 +92,12 @@ export default {
           .sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
+    }
+  },
+  mounted () {
+    if (this.fullSchedule) {
+      this.arcsiShows = [...this.fullSchedule]
+      this.defaultArcsiShows = [...this.fullSchedule]
     }
   },
   beforeDestroy () {

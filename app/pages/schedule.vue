@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      fullSchedule: 'returnSchedule',
+      fullSchedule: 'returnArcsiShows',
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule'
     }),
