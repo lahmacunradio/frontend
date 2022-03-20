@@ -64,8 +64,7 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/sentry',
-    'v-sanitize/nuxt',
-    'nuxt-cookie-control'
+    'v-sanitize/nuxt'
   ],
   axios: {
     // proxyHeaders: false
