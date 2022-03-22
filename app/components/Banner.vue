@@ -29,7 +29,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import '~vuetify/src/components/VStepper/_variables.scss';
+    @import '@/assets/css/banner.css'; //for Vuetify style overrides; probably not needed here, but it's a good placeholder too see where overrides styles can be defined
 
     .v-banner{
         position:fixed;
