@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <div v-bind:style="{ display: isRemembered }">
+        <div v-bind:style="{ display: isNone }">
         <v-banner
           single-line
           color="yellow"
@@ -28,18 +28,24 @@ export default {
     methods: {
         dismiss_remember: function (event) {
             // `this` inside methods points to the Vue instance
-            window.localStorage.lahma_cookie_info_banner_status = 'none';
-            this.isRemembered = 'none'
+            window.localStorage.lahma_cookie_info_banner_status = 'dismissed';
+            this.isRemembered = true
         }
     },
     data () {
         return {
             //Note: as window object is not available in early phases in the instance creation, we need to update the value when the component is mounted
-            isRemembered: 'none'
+            //Initial value can be assumed to be true so that nothing is displayed when rendering
+            isRemembered: true
         }
     },
     mounted () {            
-            this.isRemembered = window.localStorage.lahma_cookie_info_banner_status
+            this.isRemembered = window.localStorage.lahma_cookie_info_banner_status ? true : false
+    },
+    computed: {
+        isNone () {
+            return this.isRemembered ? 'none' : 'block'
+        }
     }
 };
 </script>
