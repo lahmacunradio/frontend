@@ -1,24 +1,24 @@
 <template>
-        <v-app>
+    <v-app>
         <v-banner
-          color="white">
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent cursus nec sem id malesuada.
-    Curabitur lacinia sem et turpis euismod, eget elementum ex pretium.
-    <template v-slot:actions>
-      <v-btn
-        text
-        color="primary"
-      >
-        Dismiss
-      </v-btn>
-      <v-btn
-        text
-        color="primary"
-      >
-        Retry
-      </v-btn>
-    </template>
-  </v-banner>
+          single-line
+          color="yellow"
+          rounded>
+         <v-icon
+            icon="mdi-cookie"
+            color="black">
+                mdi-cookie
+        </v-icon>
+        Használunk stüiket, részletek <NuxtLink to="/cookies/">itt</NuxtLink>. 
+        <template v-slot:actions="{ dismiss }">
+            <v-btn
+                text
+                color="primary"
+                @click="dismiss">
+                Dismiss
+            </v-btn>
+        </template>
+    </v-banner>
   </v-app>
 </template>
   
@@ -34,5 +34,6 @@ export default {
     .v-banner{
         position:fixed;
         bottom:50px;        
-    }
+        opacity:0.9;
+    }    
 </style>
