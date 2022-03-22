@@ -1,5 +1,6 @@
 <template>
     <v-app>
+        <div v-bind:style="{ display: isRemembered }">
         <v-banner
           single-line
           color="yellow"
@@ -9,22 +10,37 @@
             color="black">
                 mdi-cookie
         </v-icon>
-        Használunk stüiket, részletek <NuxtLink to="/cookies/">itt</NuxtLink>. 
-        <template v-slot:actions="{ dismiss }">
+        Használunk sütiket, részletek <NuxtLink to="/cookies/">itt</NuxtLink>. 
             <v-btn
                 text
                 color="primary"
-                @click="dismiss">
+                @click="dismiss_remember">
                 Dismiss
             </v-btn>
-        </template>
-    </v-banner>
+        </v-banner>
+        </div>
   </v-app>
 </template>
   
 <script>
 export default {
-    name: 'Banner'
+    name: 'Banner',
+    methods: {
+        dismiss_remember: function (event) {
+            // `this` inside methods points to the Vue instance
+            window.localStorage.lahma_cookie_info_banner_status = 'none';
+            this.isRemembered = 'none'
+        }
+    },
+    data () {
+        return {
+            //Note: as window object is not available in early phases in the instance creation, we need to update the value when the component is mounted
+            isRemembered: 'none'
+        }
+    },
+    mounted () {            
+            this.isRemembered = window.localStorage.lahma_cookie_info_banner_status
+    }
 };
 </script>
 
