@@ -28,7 +28,7 @@ export default {
     methods: {
         dismiss_remember: function (event) {
             // `this` inside methods points to the Vue instance
-            window.localStorage.lahma_cookie_info_banner_status = 'dismissed';
+            window.localStorage.lahma_cookie_info_banner_dismiss_date = new Date();
             this.isRemembered = true
         }
     },
@@ -36,11 +36,12 @@ export default {
         return {
             //Note: as window object is not available in early phases in the instance creation, we need to update the value when the component is mounted
             //Initial value can be assumed to be true so that nothing is displayed when rendering
-            isRemembered: true
+            isRemembered: false
         }
     },
     mounted () {            
-            this.isRemembered = window.localStorage.lahma_cookie_info_banner_status ? true : false
+            var dismissalAge = (new Date() - new Date(window.localStorage.lahma_cookie_info_banner_dismiss_date))/1000/60/60/24; //convert from ms to days
+            this.isRemembered = (dismissalAge < 30) ? true : false; //show banner again after 30 days of last dismissal
     },
     computed: {
         isNone () {
