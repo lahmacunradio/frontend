@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun radio - Cookies" :maintitle="true" />
+    <SubTitle title="Website cookies" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
