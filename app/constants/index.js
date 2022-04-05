@@ -1,6 +1,6 @@
-// export const arcsiBaseURL = 'https://arcsi.lahmacun.hu/arcsi'
-export const arcsiBaseURL = 'https://devarcsi.lahmacun.hu/arcsi'
+export const arcsiBaseURL = 'https://arcsi.lahmacun.hu/arcsi'
 export const arcsiShowsBaseURL = arcsiBaseURL + '/show'
+//arcsiServerURL is legacy, currently not in use as it returns all items along with the shows
 export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
@@ -11,7 +11,7 @@ export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 // local server 'http://docker.for.mac.localhost:40'; //
 
 // export const mediaServerURL = 'https://media.lahmacun.hu/'
-export const mediaServerURL = 'https://devmedia.lahmacun.hu/'
+export const mediaServerURL = 'https://media.lahmacun.hu/'
 
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'
 
