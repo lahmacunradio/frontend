@@ -95,7 +95,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.error({ statusCode: 404, message: 'Custom schedule not found' })
         })
     }
 
