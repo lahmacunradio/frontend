@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" class="dayblock" :class="{opened: opened}">
     <div class="w-full show-basic-infos">
-      <a href="#" class="flex justify-between timing-infos w-full" @click.prevent="opened = !opened">
+      <a href="#" class="flex justify-between timing-infos w-full" @click.prevent="openShow">
         <div class="mb-2 time-block sm:mb-0">
           {{ removeSeconds(show.start) }}-{{ removeSeconds(show.end) }} <br class="sm:hidden block">
           <b>{{ show.name }}</b>
@@ -37,6 +37,7 @@
 </template>
 
 <script>
+/* rework to fetch show items on open */
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -87,12 +88,16 @@ export default {
     }
   },
   mounted () {
-    this.sortItems()
   },
   methods: {
     sortItems () {
+      // obsolete
       const showItems = [...this.show.items]
       this.loadedShow = showItems.sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+    },
+    openShow () {
+      this.opened = !this.opened
+      /* fetch and get latest js.(find) */
     }
   }
 }

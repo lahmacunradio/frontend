@@ -16,7 +16,7 @@
           </ul>
         </div>
       </div>
-      <div class="col-span-2 selectday">
+      <div v-if="showsByDate.length" class="col-span-2 selectday">
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <div v-if="customPosition === index">
@@ -40,17 +40,14 @@ export default {
   data () {
     return {
       streamServer,
-      isClient: typeof window !== 'undefined' && window.document,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
+      customPosition: null,
       interval: null,
       nowPlaying: {},
       latestRareThursday: null,
-      latestRareFriday: null,
-      customScheduleDay: null,
-      customScheduleEntries: null,
-      customPosition: null
+      latestRareFriday: null
     }
   },
   head () {
@@ -77,7 +74,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      arcsishows: 'returnArcsiShows',
+      fullSchedule: 'returnArcsiShows',
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule'
     }),
@@ -94,7 +91,13 @@ export default {
       return this.rareShows.rare_friday.find(item => item.active === true)
     },
     sortShowsForSchedule () {
-      return [...this.arcsishows]
+      if (!this.fullSchedule) {
+        return false
+      }
+      return [...this.fullSchedule]
+        .filter(show => (
+          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
+        ))
         .sort((a, b) => a.day - b.day)
         .sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
@@ -136,18 +139,15 @@ export default {
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-
       this.latestRareThursday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka csut'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
       this.latestRareFriday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
-
+        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
       const filteredShows = shows
         .filter(val => !this.latestRareThursday.includes(val))
         .filter(val => !this.latestRareFriday.includes(val))
-
       // custom Schedule Day
       if (this.customSchedule?.is_active) {
         this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
@@ -155,7 +155,6 @@ export default {
         // TODO fix the correct index
         this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
       }
-
       for (let i = 0; i < 7; i++) {
         list.push([])
         if (this.customScheduleDay - 1 === i) {
@@ -192,9 +191,7 @@ export default {
       })
     }
   }
-
 }
-
 </script>
 
 <style lang="scss" scoped>

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { streamServer, arcsiServerURL, rareShowsURL, customScheduleURL } from '~/constants'
+import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL } from '~/constants'
 
 export default {
   data () {
@@ -55,27 +55,27 @@ export default {
 
       // refresh arcsiShows every 10 minutes
       if (minutes % 10 === 0) {
-        this.refreshArcsiShows()
+        this.refreshAllShows()
       }
 
-      // refresh arcsiShows every 3 minutes
+      // refresh rareShows every 3 minutes
       if (minutes % 3 === 0) {
         this.refreshRareShows()
       }
 
-      // refresh arcsiShows every 4 minutes
+      // refresh customSchedule every 4 minutes
       if (minutes % 4 === 0) {
         this.refreshCustomSchedule()
       }
     },
-    async refreshArcsiShows () {
-      await this.$axios.get(arcsiServerURL)
+    async refreshAllShows () {
+      await this.$axios.get(arcsiShowsBaseURL + '/all_without_items')
         .then((res) => {
-          this.$store.commit('refreshArcsiShows', res.data)
+          this.$store.commit('refreshAllShowsList', res.data)
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Latest news not found' })
+          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
         })
     },
     async refreshRareShows () {
@@ -95,7 +95,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.error({ statusCode: 404, message: 'Custom schedule not found' })
         })
     }
 

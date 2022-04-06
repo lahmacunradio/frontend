@@ -2,7 +2,7 @@
   <div>
     <SubTitle title="Lahmacun Shows" />
     <div class="container mt-8">
-      <div class="mb-8">
+      <div v-if="defaultArcsiShows" class="mb-8">
         <AutoCompleteSearch
           :default-items="defaultArcsiShows"
           suggestion-attribute="name"
@@ -15,7 +15,7 @@
       <div class="mt-8 mb-4 title">
         <h2>Active Shows</h2>
       </div>
-      <div v-if="arcsiShowsList.length">
+      <div v-if="arcsiShowsList && arcsiShowsList.length">
         <ShowsLister :shows="arcsiShowsList" />
       </div>
       <div v-else>
@@ -26,7 +26,7 @@
       <div class="mt-8 mb-4 title">
         <h2>Past Shows</h2>
       </div>
-      <div v-if="pastShowsList.length">
+      <div v-if="pastShowsList && pastShowsList.length">
         <ShowsLister :shows="pastShowsList" />
       </div>
       <div v-else>
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 import { mediaServerURL } from '~/constants'
 
@@ -46,8 +47,8 @@ export default {
   data () {
     return {
       mediaServerURL,
-      defaultArcsiShows: this.$store.getters.returnArcsiShows,
-      arcsiShows: this.$store.getters.returnArcsiShows,
+      arcsiShows: null,
+      defaultArcsiShows: null,
       searchFields: ['name', 'description']
     }
   },
@@ -74,6 +75,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      fullSchedule: 'returnArcsiShows'
+    }),
     arcsiShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (
@@ -88,6 +92,12 @@ export default {
           .sort((a, b) => a.name.localeCompare(b.name))
       }
       return null
+    }
+  },
+  mounted () {
+    if (this.fullSchedule) {
+      this.arcsiShows = [...this.fullSchedule]
+      this.defaultArcsiShows = [...this.fullSchedule]
     }
   },
   beforeDestroy () {

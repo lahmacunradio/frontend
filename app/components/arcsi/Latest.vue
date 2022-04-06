@@ -58,7 +58,7 @@ export default {
   data () {
     return {
       startIndex: 0,
-      numberOfEpisodes: 9,
+      numberOfEpisodes: 12,
       visibleEpisodes: 3,
       sliderPosition: 0,
       episodeWidth: 300,
@@ -67,7 +67,7 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+    this.arcsiEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))
@@ -91,6 +91,7 @@ export default {
         return showslist
           .filter(item => item.play_date < this.getToday)
           .filter(item => item.archived === true)
+          .filter(item => item.name_slug !== null)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
           .slice(this.startIndex, this.numberOfEpisodes)
       }
@@ -105,6 +106,7 @@ export default {
       window.addEventListener('resize', this.changeBreakpoint, { passive: true })
       setTimeout(() => {
         this.changeBreakpoint()
+        this.numberOfEpisodes = this.arcsiEpisodesListSortedLatest?.length
       }, 3000)
     }
   },

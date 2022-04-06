@@ -1,46 +1,53 @@
 <template>
   <div>
     <SubTitle title="Lahmacun Shows" url="/shows/" />
-    <div class="container mt-10">
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
+      <p>Loading...</p>
+    </div>
+    <div v-if="$fetchState.error" class="py-8 text-center">
+      Error happened
+    </div>
+    <div v-if="showObject" class="container mt-10">
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
-            <img :src="arcsiInfosBlock.cover_image_url" :alt="arcsiInfosBlock.name">
+            <img :src="showImage" :alt="showObject.name">
             <Modal
-              :media="arcsiInfosBlock.cover_image_url"
-              :title="arcsiInfosBlock.name"
-              :description="arcsiInfosBlock.description"
+              :media="showImage"
+              :title="showObject.name"
+              :description="showObject.description"
               :visibility="shadowbox"
             />
           </a>
         </div>
         <div class="mb-4 show-description">
           <h1 class="mt-0 font-bold h2">
-            {{ arcsiInfosBlock.name }}
+            {{ showObject.name }}
           </h1>
           <div class="show-infos">
             <p>
-              Airing time: {{ dayNames[arcsiInfosBlock.day - 1] }} {{
-                removeSeconds(arcsiInfosBlock.start)
-              }}–{{ removeSeconds(arcsiInfosBlock.end) }},
-              {{ showFrequency(arcsiInfosBlock.frequency, arcsiInfosBlock.week) }}, Language: <span
-                v-sanitize.nothing="getLanguageGraph(arcsiInfosBlock.language)"
+              Airing time: {{ dayNames[showObject.day - 1] }} {{
+                removeSeconds(showObject.start)
+              }}–{{ removeSeconds(showObject.end) }},
+              {{ showFrequency(showObject.frequency, showObject.week) }}, Language: <span
+                v-sanitize.nothing="getLanguageGraph(showObject.language)"
                 class="language"
               />
             </p>
-            <p v-if="arcsiShowsList && arcsiShowsList.length">
-              {{ arcsiInfosBlock.active ? 'Show is active.' : 'Show is not active.' }}
-              Latest episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsiShowsList[0].id.toString()}` }">
-                <strong>{{ arcsiShowsList[0].name }}</strong>
+            <p v-if="showObject && getLatestEpisode">
+              {{ showObject.active ? 'Show is active.' : 'Show is not active.' }}
+              Last episode:
+              <NuxtLink :to="{ path: `/shows/${slug}/${getLatestEpisode.name_slug}` }">
+                <strong>{{ getLatestEpisode.name }}</strong>
               </NuxtLink>,
-              {{ $moment(arcsiShowsList[0].play_date).fromNow() }}.
+              {{ $moment(getLatestEpisode.play_date).fromNow() }}.
             </p>
           </div>
-          <div v-sanitize="[ sanitizeOptions, arcsiInfosBlock.description ]" class="description-text" />
+          <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
         </div>
       </div>
-      <div v-if="arcsiShowsList && arcsiShowsList.length">
+      <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
         <h3 class="pb-1 mb-4 text-center border-b border-current">
           Archived Shows
         </h3>
@@ -57,15 +64,15 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiShowListFiltered" :key="arcsi.id">
+          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
             <div>
               <NuxtLink
                 class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }"
+                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }"
               >
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.id.toString()}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>
@@ -80,7 +87,7 @@
 </template>
 
 <script>
-import { mediaServerURL } from '~/constants'
+import { arcsiBaseURL, mediaServerURL } from '~/constants'
 
 export default {
   data () {
@@ -98,13 +105,22 @@ export default {
         }
       },
       arcsiShowListFiltered: null,
+      showObject: null,
+      sortingType: 'air',
       alphabeticAsc: false,
       airtimeAsc: true
     }
   },
+  async fetch () {
+    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
+      .then(res => res.data)
+      .catch((error) => {
+        this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
+      })
+  },
   head () {
     return {
-      title: this.arcsiInfosBlock?.name,
+      title: this.showObject?.name,
       meta: [
         {
           hid: 'description',
@@ -114,7 +130,7 @@ export default {
         {
           hid: 'og:title',
           property: 'og:title',
-          content: this.arcsiInfosBlock?.name
+          content: this.showObject?.name
         },
         {
           hid: 'og:description',
@@ -124,7 +140,7 @@ export default {
         {
           hid: 'og:image',
           property: 'og:image',
-          content: this.arcsiInfosBlock?.cover_image_url
+          content: this.showImage
         }
       ]
     }
@@ -137,67 +153,67 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    arcsiShows () {
-      return this.$store.getters.returnArcsiShows
-    },
-    arcsiInfosBlock () {
-      if (this.arcsiShows) {
-        const allShows = [...this.arcsiShows]
-        return allShows
-          .filter(show => show.archive_lahmastore_base_url === this.$route.params.slug)
-          .shift()
-      }
-      return null
-    },
-    arcsiShowsList () {
-      if (this.arcsiShows) {
-        const showslist = [...this.arcsiInfosBlock.items]
-        return showslist
+    getLatestEpisode () {
+      if (this.showObject?.items) {
+        const itemsSorted = this.showObject.items
           .filter(show => show.play_date < this.getToday)
           .filter(show => show.archived === true)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        return itemsSorted[0]
       }
       return null
     },
+    arcsiEpisodesList () {
+      if (this.showObject?.items) {
+        const itemsSorted = this.showObject.items
+          .filter(show => show.play_date < this.getToday)
+          .filter(show => show.archived === true)
+          .sort((a, b) => b.number - a.number)
+          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        if (this.airtimeAsc && this.sortingType === 'air') {
+          return itemsSorted
+            .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+        } else if (!this.airtimeAsc && this.sortingType === 'air') {
+          return itemsSorted
+            .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
+        } else if (this.alphabeticAsc && this.sortingType === 'abc') {
+          return itemsSorted
+            .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
+        } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
+          return itemsSorted
+            .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
+        } else {
+          return itemsSorted
+        }
+      }
+      return null
+    },
+    showImage () {
+      const rootLink = mediaServerURL + this.slug + '/'
+      return rootLink + this.showObject?.cover_image_url
+    },
     metaDescription () {
-      if (!this.arcsiInfosBlock?.description) {
+      if (!this.showObject?.description) {
         return ''
       }
-      return this.truncate(this.arcsiInfosBlock?.description, 150)
+      return this.truncate(this.showObject?.description, 150)
     }
-  },
-  mounted () {
-    this.arcsiShowListFiltered = this.arcsiShowsList
   },
   methods: {
     sortAlphabeticaly () {
-      if (this.alphabeticAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
-        this.alphabeticAsc = false
-      } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-        this.alphabeticAsc = true
-      }
+      this.sortingType = 'abc'
+      this.alphabeticAsc = !this.alphabeticAsc
+      this.airtimeAsc = false
       this.$refs.alphabetical.classList.add('selected')
       this.$refs.bydate.classList.remove('selected')
-      this.airtimeAsc = false
     },
     sortAirtime () {
-      if (this.airtimeAsc) {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered
-          .sort((a, b) => a.number - b.number)
-          .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
-        this.airtimeAsc = false
-      } else {
-        this.arcsiShowListFiltered = this.arcsiShowListFiltered
-          .sort((a, b) => b.number - a.number)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        this.airtimeAsc = true
-      }
+      this.sortingType = 'air'
+      this.airtimeAsc = !this.airtimeAsc
+      this.alphabeticAsc = false
       this.$refs.alphabetical.classList.remove('selected')
       this.$refs.bydate.classList.add('selected')
-      this.alphabeticAsc = false
     }
   }
 }

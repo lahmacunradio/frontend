@@ -20,12 +20,12 @@
       <div v-if="$fetchState.error" class="py-8 text-center">
         Error happened
       </div>
-      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-4">
+      <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
           <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
       </article>
-      <div v-if="arcsiEpisodes && arcsiEpisodes.length > numberOfEpisodes" id="loadmore" class="p-4 text-center">
+      <div id="loadmore" class="p-4 text-center">
         <a href="#" @click.prevent="loadMoreEpisodes">
           <b>Load {{ startNumberofEpisodes }} more episodes</b>
           <br>
@@ -42,7 +42,7 @@ import { arcsiItemBaseURL } from '~/constants'
 export default {
   data () {
     return {
-      startIndex: 0,
+      startIndex: 1,
       preloadImages: false,
       numberOfEpisodes: 12,
       startNumberofEpisodes: 12,
@@ -52,7 +52,7 @@ export default {
     }
   },
   async fetch () {
-    this.defaultEpisodes = await this.$axios.get(arcsiItemBaseURL + '/all')
+    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
@@ -97,7 +97,6 @@ export default {
           .filter(item => item.play_date < this.getToday)
           .filter(item => item.archived === true)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-          .slice(this.startIndex, this.numberOfEpisodes)
       }
       return null
     },
@@ -110,8 +109,16 @@ export default {
     this.arcsiEpisodes = null
   },
   methods: {
-    loadMoreEpisodes () {
-      this.numberOfEpisodes = this.numberOfEpisodes + this.startNumberofEpisodes
+    async loadMoreEpisodes () {
+      this.startIndex++
+      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
+        })
+      this.arcsiEpisodes = this.arcsiEpisodes.concat(newEpisodes)
+      this.numberOfEpisodes = this.numberOfEpisodes * 2
     },
     onUpdate (result) {
       this.arcsiEpisodes = result

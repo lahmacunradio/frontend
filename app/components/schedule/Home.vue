@@ -77,7 +77,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      rareShows: 'returnRareShows'
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule'
     }),
     rareShowThursday () {
       if (!this.rareShows) {
@@ -112,11 +113,7 @@ export default {
     },
     todayName () {
       return this.dayNames[this.getToday - 1]
-    },
-    customSchedule () {
-      return this.$store.state.customSchedule
     }
-
   },
   mounted () {
     this.groupShowsByDay(this.shows)
@@ -157,11 +154,11 @@ export default {
       const dayIndex = daybyMonday - 1
 
       this.latestRareThursday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka csut'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
       this.latestRareFriday = shows
-        .filter(item => item.playlist_name.startsWith('Ritka pentek'))
-        .filter(item => item.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
 
       const filteredShows = shows
         .filter(val => !this.latestRareThursday.includes(val))

@@ -41,6 +41,10 @@ export function htmlDecoder (string) {
 }
 
 export function slugify (str) {
+  if (!str) {
+    return ''
+  }
+
   str = str.replace(/^\s+|\s+$/g, '') // trim
   str = str.toLowerCase()
 
@@ -114,6 +118,14 @@ export function showFrequency (frequency) {
   return showText
 }
 
+export function getCorrectSlug (item) {
+  if (!item) {
+    return false
+  }
+  const processedName = item ? item.toLowerCase() : ''
+  return processedName.replace('.mp3', '')
+}
+
 // Make sure to pick a unique name for the flag
 // so it won't conflict with any other mixin.
 if (!Vue.__my_mixin__) {
@@ -132,7 +144,8 @@ if (!Vue.__my_mixin__) {
       convertHourMinuteSecond,
       stripHTMLTags,
       getLanguageGraph,
-      showFrequency
+      showFrequency,
+      getCorrectSlug
     }
   })
 }

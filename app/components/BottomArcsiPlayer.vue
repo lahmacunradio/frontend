@@ -55,16 +55,14 @@ export default {
       isArcsiPlaying: 'getArcsiPlayState'
 
     }),
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
-    },
     arcsiAudio () {
-      if (!this.arcsiEpisode?.archive_lahmastore_canonical_url || !this.arcsiList) {
+      if (!this.arcsiEpisode?.play_file_name) {
         return false
       }
-      const showID = this.arcsiEpisode?.shows?.[0].id
-      const showObject = this.arcsiList?.find(show => show.id === showID)
-      return `${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`
+      const showSlug = this.arcsiEpisode.shows?.[0].archive_lahmastore_base_url
+      const episodeNumber = this.arcsiEpisode.number
+      const fileName = this.arcsiEpisode.play_file_name
+      return `${mediaServerURL}${showSlug}/${episodeNumber}/${fileName}`
     }
   },
   methods: {
