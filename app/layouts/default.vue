@@ -5,6 +5,7 @@
     <FooterHome v-if="$route.name === 'index'" />
     <FooterBottom v-else />
     <BottomArcsiPlayer />
+    <Banner />
   </div>
 </template>
 

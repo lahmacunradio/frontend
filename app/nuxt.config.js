@@ -56,7 +56,8 @@ export default {
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/style-resources',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    '@nuxtjs/vuetify'
   ],
   /*
   ** Nuxt.js modules
@@ -106,5 +107,9 @@ export default {
     nuxtjs: 'What happened? 🙀🐁',
     back_to_home: '🗣 Back home! 🎅🧨👉',
     server_error_details: 'Server errorrrrr or unreachable 🤯'
-  }
+  },
+    vuetify: {
+      customVariables: ['@/assets/css/globalstyles', '@/assets/css/banner'],
+      treeShake: true
+    }
 }
