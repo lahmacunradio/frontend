@@ -298,13 +298,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mt-8{
-  margin-top:2rem;
-}
 .show-image {
     min-width: 300px;
     max-width: 360px;
-    margin-right: 2rem;
 }
 .show-infos {
 margin-bottom: 1rem;
