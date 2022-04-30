@@ -91,5 +91,6 @@ export default {
         position:fixed;
         bottom:50px;        
         opacity:0.9;
+        z-index: 11;
     }    
 </style>
