@@ -15,7 +15,7 @@
                 text
                 color="primary"
                 @click="dismiss_remember">
-                Dismiss
+                OK
             </v-btn>
         </v-banner>
         </div>
