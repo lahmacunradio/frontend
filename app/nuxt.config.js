@@ -109,7 +109,7 @@ export default {
     server_error_details: 'Server errorrrrr or unreachable 🤯'
   },
     vuetify: {
-      customVariables: ['@/assets/css/globalstyles', '@/assets/css/banner'],
+      customVariables: ['@/assets/css/banner'],
       treeShake: true
     }
 }

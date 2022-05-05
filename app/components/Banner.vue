@@ -15,7 +15,7 @@
                 text
                 color="primary"
                 @click="dismiss_remember">
-                Dismiss
+                OK
             </v-btn>
         </v-banner>
         </div>
@@ -91,5 +91,6 @@ export default {
         position:fixed;
         bottom:50px;        
         opacity:0.9;
+        z-index: 11;
     }    
 </style>

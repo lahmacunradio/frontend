@@ -1,3 +1,9 @@
 .v-application--wrap{
     min-height: 0vh;
 }
+
+/* General styles for Vuetify style overrides */
+
+.input{
+    background-color: white;
+}
