@@ -3,7 +3,7 @@
     <div v-if="totalCount > itemsCount && !isLoading" class="p-4 text-center load-more-container">
       <a href="#" @click.prevent="onClick">
         <div class="load-more">
-            LOAD MORE
+          LOAD MORE
         </div>
       </a>
     </div>
@@ -29,11 +29,11 @@ export default {
     totalCount: {
       type: Number,
       required: true
-    },
+    }
   },
   methods: {
-    async onClick() {
-      this.$emit('click');
+    async onClick () {
+      this.$emit('click')
     }
   }
 }

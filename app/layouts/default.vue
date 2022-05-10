@@ -5,16 +5,21 @@
     <FooterHome v-if="$route.name === 'index'" />
     <FooterBottom v-else />
     <BottomArcsiPlayer />
+    <client-only>
+      <Banner />
+    </client-only>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'Default',
+  name: 'DefaultLayout',
   computed: {
-    arcsiVisible () {
-      return this.$store.state.player.isArcsiVisible
-    }
+    ...mapGetters('player', {
+      arcsiVisible: 'getArcsiVisibility'
+    })
   }
 }
 </script>

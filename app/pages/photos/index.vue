@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Photos" />
+    <SubTitle title="Lahmacun Photos" :maintitle="true" />
     <div class="container mb-8">
       <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">

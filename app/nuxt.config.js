@@ -56,27 +56,19 @@ export default {
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     '@nuxtjs/tailwindcss',
     '@nuxtjs/style-resources',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    '@nuxtjs/vuetify'
   ],
   /*
   ** Nuxt.js modules
   */
   modules: [
     '@nuxtjs/axios',
-    'nuxt-memwatch',
     '@nuxtjs/sentry',
     'v-sanitize/nuxt'
   ],
   axios: {
     // proxyHeaders: false
-  },
-  memwatch: {
-    averages: true,
-    gcAfterEvery: 50,
-    graph: false,
-    leakGrowthCount: 5,
-    useMovingAverage: 40,
-    verbose: true
   },
   sentry: {
     dsn: process.env.SENTRY_DSN,
@@ -115,5 +107,9 @@ export default {
     nuxtjs: 'What happened? 🙀🐁',
     back_to_home: '🗣 Back home! 🎅🧨👉',
     server_error_details: 'Server errorrrrr or unreachable 🤯'
-  }
+  },
+    vuetify: {
+      customVariables: ['@/assets/css/banner'],
+      treeShake: true
+    }
 }

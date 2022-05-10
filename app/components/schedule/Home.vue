@@ -9,55 +9,6 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-if="getToday === 4 && latestRareThursday">
-          <div class="dayblock">
-            <div class="onairshow">
-              <span class="text-red-600">●</span>
-              On Air
-            </div>
-            <div>
-              <div class="show-basic-infos">
-                {{ removeSeconds(latestRareThursday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
-                {{ removeSeconds(latestRareThursday[0].end) }} -
-                <i> Alternating shows</i>
-              </div>
-              <div class="mt-2">
-                <div v-for="(rare, index) in latestRareThursday" :key="index" class="inline">
-                  <span v-if="index !== 0" class="mx-1"> | </span>
-                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    <b>{{ rare.name }}</b>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="getToday === 5 && latestRareFriday">
-          <div class="dayblock">
-            <div class="onairshow">
-              <span class="text-red-600">●</span>
-              On Air
-            </div>
-            <div>
-              <div class="show-basic-infos">
-                {{ removeSeconds(latestRareFriday[0].start) }}
-                <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
-                {{ removeSeconds(latestRareFriday[0].end) }} -
-                <i> Alternating shows</i>
-              </div>
-              <div class="mt-2">
-                <div v-for="(rare, index) in latestRareFriday" :key="index" class="inline">
-                  <span v-if="index !== 0" class="mx-1"> | </span>
-                  <NuxtLink :to="'/shows/' + rare.archive_lahmastore_base_url">
-                    <b>{{ rare.name }}</b>
-                  </NuxtLink>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div v-for="(show, index) in showsByDate[0]" :key="show.id * (index + index) * index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
@@ -67,9 +18,29 @@
             {{ removeSeconds(show.start) }}
             <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
-            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url">
+            <div v-if="show.archive_lahmastore_base_url.includes(currentHost)" class="inline">
+              <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url.includes('lahmacun.hu/shows/')" class="inline">
+              <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url.substring(show.archive_lahmastore_base_url.lastIndexOf('/') + 1)">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url.includes('http')" class="inline">
+              <a :href="show.archive_lahmastore_base_url" target="_blank">
+                <b>{{ show.name }}</b>
+              </a>
+            </div>
+            <div v-else-if="show.archive_lahmastore_base_url" class="inline">
+              <NuxtLink :to="'shows/' + show.archive_lahmastore_base_url.replace(currentHost, '')">
+                <b>{{ show.name }}</b>
+              </NuxtLink>
+            </div>
+            <div v-else class="inline">
               <b>{{ show.name }}</b>
-            </NuxtLink>
+            </div>
           </div>
         </div>
       </div>
@@ -78,6 +49,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { streamServer } from '~/constants'
 
 export default {
@@ -89,17 +61,37 @@ export default {
   },
   data () {
     return {
+      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
+      isClient: typeof window !== 'undefined' && window.document,
       streamServer,
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
       nowPlaying: {},
       latestRareThursday: null,
-      latestRareFriday: null
-
+      latestRareFriday: null,
+      customScheduleDay: null,
+      customScheduleEntries: null,
+      customPosition: null
     }
   },
   computed: {
+    ...mapGetters({
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule'
+    }),
+    rareShowThursday () {
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_thursday.find(item => item.active === true)
+    },
+    rareShowFriday () {
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_friday.find(item => item.active === true)
+    },
     getToday () {
       const d = new Date()
       return d.getDay()
@@ -125,7 +117,9 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.shows)
-    this.checkNowPlaying()
+    setTimeout(() => {
+      this.checkNowPlaying()
+    }, 1000)
   },
   beforeDestroy () {
     // prevent memory leak
@@ -133,9 +127,11 @@ export default {
   },
   created () {
     // update the time every minute
-    this.interval = setInterval(() => {
-      this.checkNowPlaying()
-    }, 60 * 1000)
+    if (this.isClient) {
+      this.interval = setInterval(() => {
+        this.checkNowPlaying()
+      }, 60 * 1000)
+    }
   },
   methods: {
     showAirCheck (index, showname) {
@@ -152,17 +148,41 @@ export default {
       })
     },
     groupShowsByDay (shows) {
+      if (!shows) { return false }
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       const dayIndex = daybyMonday - 1
-      this.latestRareThursday = shows.filter(item => item.playlist_name.startsWith('Ritka csut'))
-      this.latestRareFriday = shows.filter(item => item.playlist_name.startsWith('Ritka pentek'))
-      const filteredShows = shows.filter(val => !this.latestRareThursday.includes(val)).filter(val => !this.latestRareFriday.includes(val))
+
+      this.latestRareThursday = shows
+        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+      this.latestRareFriday = shows
+        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+
+      const filteredShows = shows
+        .filter(val => !this.latestRareThursday.includes(val))
+        .filter(val => !this.latestRareFriday.includes(val))
+
+      // custom Schedule Day
+      if (this.customSchedule?.is_active) {
+        this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
+        this.customScheduleEntries = this.customSchedule.schedule
+        // TODO fix the correct index
+        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
+      }
+
       for (let i = 0; i < 7; i++) {
         list.push([])
+        if (this.customScheduleDay - 1 === i) {
+          this.customScheduleEntries.forEach((entry) => {
+            list[i].push(entry)
+          })
+        }
+
         filteredShows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          if (show.day - 1 === i) {
+          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
             list[i].push(show)
           }
         })

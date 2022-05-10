@@ -17,7 +17,7 @@
             :visibility="newsImageShadowbox"
           />
         </a>
-        <div v-if="postTagsArray.length" class="tags mb-8">
+        <div v-if="postTagsArray.length" class="mb-8 tags">
           <div v-for="(tag, index) in postTagsArray" :key="index + tag.id" class="inline-block">
             <NuxtLink :to="`/news/tags/${tag.slug}`" class="tag-block">
               {{ tag.name }}
@@ -26,9 +26,9 @@
         </div>
       </div>
       <div id="news-content">
-        <h2 class="mt-0 font-bold">
+        <h1 class="mt-0 font-bold h2">
           {{ htmlDecoder(news.title.rendered) }}
-        </h2>
+        </h1>
         <p class="mb-4 news-time">
           {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
@@ -57,7 +57,7 @@ export default {
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       postTagsArray: [],
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'iframe'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
           img: ['*'],
           iframe: ['*'],

@@ -17,7 +17,7 @@
               </div>
 
               <div v-if="description" class="modal-footer">
-                {{ description }}
+                <div v-sanitize="[ sanitizeOptions, description ]" class="description-text" />
               </div>
             </div>
           </div>
@@ -53,6 +53,12 @@ export default {
   },
   data () {
     return {
+      sanitizeOptions: {
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
+        allowedAttributes: {
+          a: ['*']
+        }
+      }
     }
   },
   computed: {
@@ -64,6 +70,10 @@ export default {
     showModal (val) {
       val ? document.body.style.overflow = 'hidden' : document.body.style.overflow = ''
     }
+  },
+  beforeDestroy () {
+    // avoid stuck overflow hidden
+    document.body.style.overflow = ''
   }
 }
 </script>

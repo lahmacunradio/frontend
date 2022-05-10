@@ -5,14 +5,30 @@ services:
     build: ./app
     ports:
       - 3333:3333 
-    stdin_open: true
-    tty: true
+  
   proxy:
     image: nginx:1.19
     restart: always
     ports:
       - 80:80
+      - 443:443
     volumes:
+      - challenge:/var/www/html
+      - certbot-etc:/etc/letsencrypt
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - app
+
+  certbot:
+    depends_on:
+      - proxy
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - challenge:/var/www/html
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  certbot-etc:
+  challenge:

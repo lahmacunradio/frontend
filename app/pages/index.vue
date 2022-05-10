@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
-      <div class="bg-white">
+      <div v-if="sortNews" class="bg-white">
         <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
       </div>
       <div>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { newsURL } from '~/constants'
 
 export default {
@@ -35,11 +36,13 @@ export default {
       })
   },
   computed: {
-    arcsishows () {
-      return this.$store.state.arcsiShows
-    },
+    ...mapGetters({
+      fullSchedule: 'returnArcsiShows',
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule'
+    }),
     sortShowsForSchedule () {
-      return [...this.arcsishows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
+      return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
     newsListState () {
       if (!this.newsList) {

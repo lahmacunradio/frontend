@@ -45,20 +45,20 @@
 <script>
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
-
 import { arcsiItemBaseURL, tagsURL } from '~/constants'
 
+
 const fullConfig = resolveConfig(tailwindConfig)
-const mobileSize = fullConfig.theme.screens.sm
 const tabletSize = fullConfig.theme.screens.md
 const desktopSize = fullConfig.theme.screens.lg
+const largeScreenSize = fullConfig.theme.screens['2xl']
 
 export default {
   name: 'LatestArcsi',
   data () {
     return {
       startIndex: 0,
-      numberOfEpisodes: 9,
+      numberOfEpisodes: 12,
       visibleEpisodes: 3,
       sliderPosition: 0,
       episodeWidth: 300,
@@ -87,7 +87,7 @@ export default {
       return `${year}-${month}-${day}`
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     }
   },
   mounted () {
@@ -95,6 +95,7 @@ export default {
       window.addEventListener('resize', this.changeBreakpoint, { passive: true })
       setTimeout(() => {
         this.changeBreakpoint()
+        this.numberOfEpisodes = this.arcsiEpisodesListSortedLatest?.length
       }, 3000)
     }
   },
@@ -140,19 +141,22 @@ export default {
       if (!viewport) {
         return false
       }
-      if (windowWidth >= parseInt(desktopSize)) {
-        this.visibleEpisodes = 3
-        if (this.sliderPosition === this.numberOfEpisodes - 2) {
+      if (windowWidth >= parseInt(largeScreenSize)) {
+        this.visibleEpisodes = 4
+        // refactor the checks
+        if (this.sliderPosition < this.numberOfEpisodes) {
           this.sliderPosition = this.sliderPosition - 1
         }
-        if (this.sliderPosition === this.numberOfEpisodes - 1) {
-          this.sliderPosition = this.sliderPosition - 2
+      } else if (windowWidth >= parseInt(desktopSize) && windowWidth < parseInt(largeScreenSize)) {
+        this.visibleEpisodes = 3
+        if (this.sliderPosition < this.numberOfEpisodes) {
+          this.sliderPosition = this.sliderPosition - 1
         }
       } else if (windowWidth <= parseInt(tabletSize)) {
         this.visibleEpisodes = 1
       } else {
         this.visibleEpisodes = 2
-        if (this.sliderPosition === this.numberOfEpisodes - 1) {
+        if (this.sliderPosition < this.numberOfEpisodes) {
           this.sliderPosition = this.sliderPosition - 1
         }
       }

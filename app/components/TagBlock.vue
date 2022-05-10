@@ -10,8 +10,8 @@ export default {
     tag: {
       type: Object,
       required: true
-    },
-  },
+    }
+  }
 }
 </script>
 

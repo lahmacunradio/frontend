@@ -29,11 +29,11 @@
     </div>
     <div class="news-infos">
       <div class="p-8 news-info-details">
-        <h5 class="pb-2 text-2xl font-bold">
+        <h1 class="pb-2 text-2xl font-bold">
           <nuxt-link :to="'/news/' + news.slug">
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
-        </h5>
+        </h1>
         <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
       </div>
     </div>
@@ -57,7 +57,7 @@ export default {
       newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
       newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       sanitizeOptions: {
-        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup'],
+        allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
           a: ['*']
         }

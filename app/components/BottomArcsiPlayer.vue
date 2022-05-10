@@ -11,7 +11,7 @@
           <div v-else>
             <div class="py-4">
               No arcsi episode selected. Go to
-              <NuxtLink to="archive" class="font-bold">
+              <NuxtLink to="/archive" class="font-bold">
                 archive page
               </NuxtLink>
               for the full list
@@ -19,7 +19,7 @@
           </div>
         </div>
         <div class="close">
-          <a href="#" class="block control-ear bg-white rounded-t-lg" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
+          <a href="#" class="block bg-white rounded-t-lg control-ear" @click.prevent="togglePlayerVisibility(!arcsiVisible)">
             <div v-if="arcsiVisible">
               X
             </div>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { mediaServerURL } from '~/constants'
 
 export default {
@@ -48,28 +49,20 @@ export default {
     }
   },
   computed: {
-    arcsiVisible () {
-      return this.$store.state.player.isArcsiVisible
-    },
-    isArcsiPlaying () {
-      if (!this.$store.state.player.isArcsiPlaying) {
-        return false
-      }
-      return this.$store.state.player.isArcsiPlaying
-    },
-    arcsiEpisode () {
-      return this.$store.state.player.arcsiEpisode
-    },
-    arcsiList () {
-      return [...this.$store.state.arcsiShows]
-    },
+    ...mapGetters('player', {
+      arcsiEpisode: 'getArcsiEpisode',
+      arcsiVisible: 'getArcsiVisibility',
+      isArcsiPlaying: 'getArcsiPlayState'
+
+    }),
     arcsiAudio () {
-      if (!this.arcsiEpisode?.archive_lahmastore_canonical_url || !this.arcsiList) {
+      if (!this.arcsiEpisode?.play_file_name) {
         return false
       }
-      const showID = this.arcsiEpisode?.shows?.[0].id
-      const showObject = this.arcsiList?.find(show => show.id === showID)
-      return `${mediaServerURL}${showObject?.archive_lahmastore_base_url}/${this.arcsiEpisode?.archive_lahmastore_canonical_url}`
+      const showSlug = this.arcsiEpisode.shows?.[0].archive_lahmastore_base_url
+      const episodeNumber = this.arcsiEpisode.number
+      const fileName = this.arcsiEpisode.play_file_name
+      return `${mediaServerURL}${showSlug}/${episodeNumber}/${fileName}`
     }
   },
   methods: {

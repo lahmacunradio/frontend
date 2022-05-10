@@ -18,14 +18,8 @@
       <div class="mt-8 mb-4 title">
         <h2>Past Shows</h2>
       </div>
-      <ItemList
-        :items="formerShows"
-        :noFoundMessage="'No matching shows found'"
-        :isLoading="isLoading"
-      />
-      <div v-show="isLoading" class="flex flex-col items-center justify-center py-4">
-        <img src="@/assets/img/preloader.svg" class="h-8 mb-2">
-        Loading...
+      <div v-if="pastShowsList && pastShowsList.length">
+        <ShowsLister :shows="pastShowsList" />
       </div>
     </article>
   </div>
@@ -33,6 +27,7 @@
 
 <script>
 import { arcsiServerURL } from '~/constants'
+import { mediaServerURL } from '~/constants'
 
 export default {
   data () {
@@ -41,7 +36,10 @@ export default {
       liveShows: [],
       formerShows: [],
       searchFields: ['name', 'description'],
-      isLoading: false
+      isLoading: false,
+      mediaServerURL,
+      arcsiShows: null,
+      defaultArcsiShows: null,
     }
   },
   head () {

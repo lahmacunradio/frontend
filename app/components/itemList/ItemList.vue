@@ -16,7 +16,7 @@
 <script>
 
 export default {
-  props : {
+  props: {
     items: {
       type: Array,
       request: true
@@ -29,7 +29,7 @@ export default {
       type: Boolean,
       request: true
     }
-  },
+  }
 }
 </script>
 

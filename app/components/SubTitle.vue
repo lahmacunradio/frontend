@@ -1,10 +1,13 @@
 <template>
   <div>
-    <h2 class="title-block">
+    <h1 v-if="maintitle" class="title-block">
+      {{ title }}
+    </h1>
+    <h2 v-else class="title-block">
       <NuxtLink v-if="url" :to="url">
-        {{title}}
+        {{ title }}
       </NuxtLink>
-      <span v-else>{{title}}</span>
+      <span v-else>{{ title }}</span>
     </h2>
   </div>
 </template>
@@ -21,6 +24,11 @@ export default {
       type: String,
       required: false,
       default: null
+    },
+    maintitle: {
+      type: Boolean,
+      required: false,
+      deafult: false
     }
   }
 }

@@ -29,7 +29,7 @@ export default {
       totalCount: 0,
       searchText: '',
       isLoading: false,
-      page: 1,
+      page: 1
     }
   },
   head () {
@@ -63,7 +63,7 @@ export default {
     await this.fetchNews()
   },
   methods: {
-    async useFetch(url) {
+    async useFetch (url) {
       try {
         const response = await this.$axios.get(`${url}`)
         return response
@@ -72,7 +72,7 @@ export default {
         this.$nuxt.error({ statusCode: 404, message: 'News is not available' })
       }
     },
-    async getImage(idNews) {
+    async getImage (idNews) {
       const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
       return data?.media_details?.sizes?.large?.source_url || data?.source_url
     },
@@ -80,7 +80,7 @@ export default {
       const { data } = await this.useFetch(`${tagsURL}?include=${tags}`)
       return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
     },
-    async parseData(news) {
+    async parseData (news) {
       return await Promise.all(news.map(async n => ({
         title: this.htmlDecoder(n.title.rendered),
         url: `/news/${n.slug}`,

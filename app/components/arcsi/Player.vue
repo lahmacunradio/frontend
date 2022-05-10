@@ -21,8 +21,8 @@
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex pt-4 pb-2 md:py-4 md:pr-4">
-        <button class="w-4 mr-4 cursor-pointer" @click="toggleArcsi">
+      <div class="flex items-center pt-4 pb-2 md:py-4 md:pr-4">
+        <button class="w-5 h-5 mr-3 text-left cursor-pointer" @click="toggleArcsi">
           <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
           </span>
@@ -38,7 +38,7 @@
             {{ episode.shows[0].name }}
           </NuxtLink>
           <span> - </span>
-          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.id}`">
+          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.name_slug}`">
             {{ episode.name }}
           </NuxtLink>
         </h5>
@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     episode: {
@@ -119,6 +121,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('player', {
+      arcsiIsPlaying: 'getArcsiPlayState',
+      isStreamPlaying: 'getStreamPlayState',
+      arcsiVolume: 'getArcsiVolume',
+      arcsiPlayHistory: 'getArcsiPlayHistory'
+    }),
     progress () {
       if (!this.audio) {
         return false
@@ -138,7 +146,7 @@ export default {
       }
     },
     arcsiList () {
-      return [...this.$store.state.arcsiShows]
+      return [...this.$store.getters.returnArcsiShows]
     },
     arcsiShow () {
       if (!this.arcsiList) {
@@ -150,12 +158,6 @@ export default {
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
-    arcsiIsPlaying () {
-      if (!this.$store.state.player.isArcsiPlaying) {
-        return false
-      }
-      return this.$store.state.player.isArcsiPlaying
-    },
     isSafari () {
       return (navigator.vendor.match(/apple/i) || '').length > 0
     }
@@ -163,7 +165,7 @@ export default {
   watch: {
     '$store.state.player.isStreamPlaying': {
       handler () {
-        if (this.$store.state.player.isStreamPlaying) {
+        if (this.isStreamPlaying) {
           this.audio?.pause()
         }
       },
@@ -174,9 +176,9 @@ export default {
     this.audio = document.getElementById('arcsiplayer')
   },
   mounted () {
-    if (this.currentVolume !== this.$store.state.player.arcsiVolume) {
-      this.currentVolume = this.$store.state.player.arcsiVolume
-      this.setVolume(parseFloat(this.$store.state.player.arcsiVolume))
+    if (this.currentVolume !== this.arcsiVolume) {
+      this.currentVolume = this.arcsiVolume
+      this.setVolume(parseFloat(this.arcsiVolume))
     }
     this.setMetaData()
     this.$store.commit('player/currentlyPlayingArcsi', this.episode)
@@ -243,20 +245,23 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      // Google Analytics 4 event
       document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
       this.docTitleSetter = setInterval(() => {
         if (this.arcsiIsPlaying) {
           document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
         } else {
           clearInterval(this.docTitleSetter)
+          const currentPageTitle = document.querySelector("meta[property='og:title']").getAttribute('content')
+          currentPageTitle ? document.title = currentPageTitle : document.title = 'Lahmacun Radio'
         }
       }, 3000)
 
-      // Google Analytics 4 event
+      // Google Analytics 3 play event
+      // eslint-disable-next-line no-undef
       gtag('event', 'Arcsi play', {
-        Show: this.episode.shows[0].name,
-        Episode: this.episode.name
+        event_category: this.episode.shows[0].name,
+        event_label: this.episode.name,
+        value: 1
       })
     },
     pauseArcsi () {
@@ -329,7 +334,7 @@ export default {
         return false
       }
       const arcsiReady = await this.$refs.arcsiplayer?.readyState > 2
-      const arcsiPlayerSeek = await this.$store.state.player.arcsiPlayHistory[this.episode.id]
+      const arcsiPlayerSeek = await this.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
 
       if (arcsiReady && this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {

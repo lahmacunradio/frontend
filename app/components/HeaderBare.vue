@@ -1,13 +1,13 @@
 <template>
-  <header class="flex-row-reverse items-center px-4 py-4 bg-white md:flex md:flex-row">
+  <header class="flex flex-row items-center px-4 py-4 bg-white ">
     <div class="items-center md:flex">
       <div class="block mr-4 cursor-pointer" @click="$router.push('/')">
         <img src="@/assets/img/lahmacun-logo.png" alt="" class="w-24 logo">
       </div>
     </div>
-    <h2>
+    <div class="h2">
       Lahmacun radio
-    </h2>
+    </div>
   </header>
 </template>
 
