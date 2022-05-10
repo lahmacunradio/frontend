@@ -1,13 +1,20 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun News" :maintitle="true" />
-    <ItemList
-      :items="newsFilteredList"
-      :is-loading="isLoading"
-      :total-count="totalCount"
-      :callback="fetchNews"
-      @search="onChange"
-    />
+    <SubTitle title="Lahmacun News" />
+    <article class="container">
+      <FilterInput @search="onChange" />
+      <ItemList
+        :items="newsFilteredList"
+        :noFoundMessage="'No matching news found'"
+        :isLoading="isLoading"
+      />
+      <Pagination
+        :itemsCount="newsFilteredList.length"
+        :totalCount="totalCount"
+        :isLoading="isLoading"
+        @click="fetchNews"
+      />
+    </article>
   </div>
 </template>
 
@@ -55,10 +62,6 @@ export default {
   async mounted () {
     await this.fetchNews()
   },
-  beforeDestroy () {
-    this.newsFilteredList = null
-    this.totalCount = null
-  },
   methods: {
     async useFetch (url) {
       try {
@@ -73,8 +76,8 @@ export default {
       const { data } = await this.useFetch(`${contentApiURL}/media/${idNews}`)
       return data?.media_details?.sizes?.large?.source_url || data?.source_url
     },
-    async getTags (idNews) {
-      const { data } = await this.useFetch(`${tagsURL}?include=${idNews}`)
+    async getTags(tags) {
+      const { data } = await this.useFetch(`${tagsURL}?include=${tags}`)
       return data.map(tag => ({ ...tag, link: `/news/tags/${tag.slug}` }))
     },
     async parseData (news) {
@@ -106,23 +109,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-header {
-  padding: 2rem 0 2rem 0;
-}
-.news-block {
-  max-width: 100%;
-}
-.input {
-  display: block;
-  width: 350px;
-  @media (max-width: $mobile-width) {
-    width: 100%;
-  }
-  height: 30px;
-  border-radius: 0.25rem;
-  outline: none;
-  padding: 0 10px;
-}
-</style>
