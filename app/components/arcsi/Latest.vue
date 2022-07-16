@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Latest Archives" url="/archive/" />
+    <SubTitle title="Latest From Archives" url="/archive/" />
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-32">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
