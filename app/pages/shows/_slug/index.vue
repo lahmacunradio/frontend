@@ -226,6 +226,7 @@ export default {
 }
 .show-infos {
   margin-bottom: 1rem;
+  font-style: italic;
 }
 .language {
   display: inline-block;
