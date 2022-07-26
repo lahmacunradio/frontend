@@ -37,11 +37,10 @@
             </p>
             <p v-if="showObject && getLatestEpisode">
               {{ showObject.active ? 'Show is active.' : 'Show is not active.' }}
-              Last episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${getLatestEpisode.name_slug}` }">
-                <strong>{{ getLatestEpisode.name }}</strong>
-              </NuxtLink>,
-              {{ $moment(getLatestEpisode.play_date).fromNow() }}.
+              Elsewhere on web:
+              <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
+                {{ showObject.archive_mixcloud_base_url }}
+              </a>
             </p>
           </div>
           <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
@@ -220,6 +219,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.show-external-link {
+  text-decoration: underline;
+}
+
 .show-image {
     min-width: 300px;
     max-width: 360px;
