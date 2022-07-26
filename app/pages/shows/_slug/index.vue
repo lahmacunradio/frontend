@@ -49,7 +49,7 @@
           <!-- Inactive shows: currently hard-coded for more flexibility and readability -->
           <div v-else class="show-infos">
             <p>
-              <strong>Show is not active.</strong>
+              <strong>Show is not active</strong>
             </p>
             <p>
               Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
