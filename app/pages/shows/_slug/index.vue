@@ -37,16 +37,30 @@
             <p>
               Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
             </p>
-            <p>
+            <p v-if="showObject.archive_mixcloud_base_url">
               Elsewhere on web:
+              <!-- Quick fix: we (mis)use Mixcloud links (originally meant for another upload platform) as arbitrary external link. -->
+              <!-- Note: link needs to be full path and it will be displayed! -->
               <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
                 {{ showObject.archive_mixcloud_base_url }}
               </a>
             </p>
           </div>
+          <!-- Inactive shows: currently hard-coded for more flexibility and readability -->
           <div v-else class="show-infos">
             <p>
-              Bla
+              <strong>Show is not active.</strong>
+            </p>
+            <p>
+              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
+            </p>
+            <p v-if="showObject.archive_mixcloud_base_url">
+              Elsewhere on web:
+              <!-- Quick fix: we (mis)use Mixcloud links (originally meant for another upload platform) as arbitrary external link. -->
+              <!-- Note: link needs to be full path and it will be displayed! -->
+              <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
+                {{ showObject.archive_mixcloud_base_url }}
+              </a>
             </p>
           </div>
           <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
