@@ -25,7 +25,7 @@
           <h1 class="mt-0 font-bold h2">
             {{ showObject.name }}
           </h1>
-          <div class="show-infos">
+          <div v-if="showObject.active" class="show-infos">
             <p>
               Airing time: {{ dayNames[showObject.day - 1] }} {{
                 removeSeconds(showObject.start)
@@ -37,12 +37,16 @@
             <p>
               Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
             </p>
-            <p v-if="showObject && getLatestEpisode">
-              {{ showObject.active ? 'Show is active.' : 'Show is not active.' }}
+            <p>
               Elsewhere on web:
               <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
                 {{ showObject.archive_mixcloud_base_url }}
               </a>
+            </p>
+          </div>
+          <div v-else class="show-infos">
+            <p>
+              Bla
             </p>
           </div>
           <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
@@ -154,17 +158,7 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    getLatestEpisode () {
-      if (this.showObject?.items) {
-        const itemsSorted = this.showObject.items
-          .filter(show => show.play_date < this.getToday)
-          .filter(show => show.archived === true)
-          .sort((a, b) => b.number - a.number)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        return itemsSorted[0]
-      }
-      return null
-    },
+
     arcsiEpisodesList () {
       if (this.showObject?.items) {
         const itemsSorted = this.showObject.items
