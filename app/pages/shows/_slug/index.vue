@@ -27,12 +27,12 @@
           </h1>
           <div v-if="showObject.active" class="show-infos">
             <p>
-              Airing time: {{ dayNames[showObject.day - 1] }} {{
+              {{ dayNames[showObject.day - 1] }} {{
                 removeSeconds(showObject.start)
               }}–{{ removeSeconds(showObject.end) }}
             </p>
             <p>
-              {{ showFrequency(showObject.frequency, showObject.week) }}
+              {{ showFrequency(showObject.frequency, showObject.week, showObject.playlist_name) }}
             </p>
             <p>
               Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>

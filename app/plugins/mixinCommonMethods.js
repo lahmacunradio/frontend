@@ -104,16 +104,20 @@ export function getLanguageGraph (type) {
   }
 }
 
-export function showFrequency (frequency) {
+export function showFrequency (frequency, week, playlist) {
   let showText = 'Not defined'
+  if (playlist === "Ritka csut" || playlist === "Ritka pentek"){
+    showText = 'New episode occasionally'
+    return showText
+  }
   if (frequency === 1) {
-    showText = 'New Episode: Monthly'
+    showText = 'New episode monthly'
   }
   if (frequency === 2) {
-    showText = 'New Episode: Every Second Week'
+    showText = 'New episode every second week'
   }
   if (frequency >= 3) {
-    showText = 'New Episode: Weekly'
+    showText = 'New episode weekly'
   }
   return showText
 }
