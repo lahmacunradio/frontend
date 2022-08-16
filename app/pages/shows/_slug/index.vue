@@ -25,23 +25,42 @@
           <h1 class="mt-0 font-bold h2">
             {{ showObject.name }}
           </h1>
-          <div class="show-infos">
+          <div v-if="showObject.active" class="show-infos">
             <p>
-              Airing time: {{ dayNames[showObject.day - 1] }} {{
+              {{ dayNames[showObject.day - 1] }} {{
                 removeSeconds(showObject.start)
-              }}–{{ removeSeconds(showObject.end) }},
-              {{ showFrequency(showObject.frequency, showObject.week) }}, Language: <span
-                v-sanitize.nothing="getLanguageGraph(showObject.language)"
-                class="language"
-              />
+              }}–{{ removeSeconds(showObject.end) }}
             </p>
-            <p v-if="showObject && getLatestEpisode">
-              {{ showObject.active ? 'Show is active.' : 'Show is not active.' }}
-              Last episode:
-              <NuxtLink :to="{ path: `/shows/${slug}/${getLatestEpisode.name_slug}` }">
-                <strong>{{ getLatestEpisode.name }}</strong>
-              </NuxtLink>,
-              {{ $moment(getLatestEpisode.play_date).fromNow() }}.
+            <p>
+              {{ showFrequency(showObject.frequency, showObject.week, showObject.playlist_name) }}
+            </p>
+            <p>
+              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
+            </p>
+            <p v-if="showObject.archive_mixcloud_base_url">
+              Elsewhere on web:
+              <!-- Quick fix: we (mis)use Mixcloud links (originally meant for another upload platform) as arbitrary external link. -->
+              <!-- Note: link needs to be full path and it will be displayed! -->
+              <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
+                {{ showObject.archive_mixcloud_base_url }}
+              </a>
+            </p>
+          </div>
+          <!-- Inactive shows: currently hard-coded for more flexibility and readability -->
+          <div v-else class="show-infos">
+            <p>
+              <strong>Show is not active</strong>
+            </p>
+            <p>
+              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
+            </p>
+            <p v-if="showObject.archive_mixcloud_base_url">
+              Elsewhere on web:
+              <!-- Quick fix: we (mis)use Mixcloud links (originally meant for another upload platform) as arbitrary external link. -->
+              <!-- Note: link needs to be full path and it will be displayed! -->
+              <a class="show-external-link" :href="showObject.archive_mixcloud_base_url" target="_blank">
+                {{ showObject.archive_mixcloud_base_url }}
+              </a>
             </p>
           </div>
           <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
@@ -153,17 +172,7 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    getLatestEpisode () {
-      if (this.showObject?.items) {
-        const itemsSorted = this.showObject.items
-          .filter(show => show.play_date < this.getToday)
-          .filter(show => show.archived === true)
-          .sort((a, b) => b.number - a.number)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        return itemsSorted[0]
-      }
-      return null
-    },
+
     arcsiEpisodesList () {
       if (this.showObject?.items) {
         const itemsSorted = this.showObject.items
@@ -220,12 +229,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.show-external-link {
+  text-decoration: underline;
+}
+
 .show-image {
     min-width: 300px;
     max-width: 360px;
 }
 .show-infos {
   margin-bottom: 1rem;
+  font-style: italic;
 }
 .language {
   display: inline-block;
