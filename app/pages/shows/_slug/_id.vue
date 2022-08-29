@@ -100,7 +100,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiBaseURL, mediaServerURL } from '~/constants'
+import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
   data () {
@@ -128,14 +128,14 @@ export default {
   },
   async fetch () {
       //Fetch episode data
-      await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`)
+      await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`, config)
         .then((res) => {
           this.arcsiEpisode = res.data
         })
         .catch((error) => {
           if (error.response.status === 404) {
             //Use legacy API URL as fallback
-            this.$axios.get(`${arcsiBaseURL}/item/${this.id}`)
+            this.$axios.get(`${arcsiBaseURL}/item/${this.id}`, config)
               .then((res) => {
                 this.arcsiEpisode = res.data
               })
@@ -149,7 +149,7 @@ export default {
           }
         })
       //Fetch show data
-      await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
+      await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page', config)
         .then((res) => {
             this.arcsiShow = res.data
         })

@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { arcsiBaseURL } from '~/constants'
+import { arcsiBaseURL, config } from '~/constants'
 
 export default {
   props: {
@@ -178,7 +178,7 @@ export default {
       }
     },
     getShowInfos () {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive')
+      this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
         .then((res) => {
           this.latestEpisodeData = this.getLatestEpisode(res.data)
         })

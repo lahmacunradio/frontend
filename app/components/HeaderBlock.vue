@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL } from '~/constants'
+import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   data () {
@@ -69,7 +69,7 @@ export default {
       }
     },
     async refreshAllShows () {
-      await this.$axios.get(arcsiShowsBaseURL + '/all_without_items')
+      await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
         .then((res) => {
           this.$store.commit('refreshAllShowsList', res.data)
         })
