@@ -3,7 +3,15 @@ export const arcsiShowsBaseURL = arcsiBaseURL + '/show'
 //arcsiServerURL is legacy, currently not in use as it returns all items along with the shows
 export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
-export const config = { headers: { 'Authentication-Token': 'your-token' } };
+export const config = {
+headers: {
+        'Authentication-Token': 'your-token',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
+        'Access-Control-Allow-Headers': 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'
+    }
+  };
 
 // dev server 'https://devarcsi.lahmacun.hu' //
 // prod server 'https://arcsi.lahmacun.hu' //
