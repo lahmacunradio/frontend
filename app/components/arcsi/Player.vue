@@ -21,7 +21,7 @@
       <p>Preloading...</p>
     </div>
     <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex items-center pt-4 pb-2 md:py-4 md:pr-4">
+      <div class="flex items-center pt-4 pb-2 md:py-4 md:pr-4 md:w-1/4">
         <button class="w-5 h-5 mr-3 text-left cursor-pointer" @click="toggleArcsi">
           <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
             <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
@@ -46,7 +46,7 @@
           {{ episode.shows[0].name + ' - ' + episode.name }}
         </h5>
       </div>
-      <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
+      <div class="flex items-center w-full md:mr-6 md:w-1/2 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
         <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
           <i class="fa fa-fast-backward" aria-hidden="true" />
         </a>
@@ -72,7 +72,7 @@
           <i class="fa fa-fast-forward" aria-hidden="true" />
         </a>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap">
+      <div v-if="!isTouchEnabled" id="myVolume" class="md:w-1/4 my-2 whitespace-nowrap">
         <div class="inline-block w-4 align-middle">
           <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
           <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
