@@ -36,6 +36,11 @@
           Donate
         </NuxtLink>
       </li>
+      <li>
+        <NuxtLink to="http://sauce.lahmacun.hu:8080/form/w1eN73" target="_blank">
+          Questionnaire
+        </NuxtLink>
+      </li>
     </ul>
   </nav>
 </template>
