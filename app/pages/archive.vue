@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { arcsiItemBaseURL } from '~/constants'
+import { arcsiItemBaseURL, config } from '~/constants'
 
 export default {
   data () {
@@ -52,7 +52,7 @@ export default {
     }
   },
   async fetch () {
-    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
@@ -111,7 +111,7 @@ export default {
   methods: {
     async loadMoreEpisodes () {
       this.startIndex++
-      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
         .then(res => res.data)
         .catch((error) => {
           this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))

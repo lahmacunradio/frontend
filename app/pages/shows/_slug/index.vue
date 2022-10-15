@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { arcsiBaseURL, mediaServerURL } from '~/constants'
+import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
   data () {
@@ -131,7 +131,7 @@ export default {
     }
   },
   async fetch () {
-    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page')
+    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page', config)
       .then(res => res.data)
       .catch((error) => {
         this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })

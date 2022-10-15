@@ -1,4 +1,4 @@
-import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL } from '~/constants'
+import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const state = () => ({
   arcsiShows: {},
@@ -19,7 +19,7 @@ export const actions = {
         error({ statusCode: 404, message: 'Arcsi Shows not found' })
       })
     */
-    await this.$axios.get(arcsiShowsBaseURL + '/all_without_items')
+    await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
       .then((res) => {
         state.allShowsList = res.data
       })

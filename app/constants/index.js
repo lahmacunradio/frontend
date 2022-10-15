@@ -3,6 +3,11 @@ export const arcsiShowsBaseURL = arcsiBaseURL + '/show'
 //arcsiServerURL is legacy, currently not in use as it returns all items along with the shows
 export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
+export const config = {
+headers: {
+        'Authentication-Token': 'your-token'
+    }
+  };
 
 // dev server 'https://devarcsi.lahmacun.hu' //
 // prod server 'https://arcsi.lahmacun.hu' //

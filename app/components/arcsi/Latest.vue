@@ -46,7 +46,7 @@
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
 
-import { arcsiItemBaseURL } from '~/constants'
+import { arcsiItemBaseURL, config } from '~/constants'
 
 const fullConfig = resolveConfig(tailwindConfig)
 const tabletSize = fullConfig.theme.screens.md
@@ -67,7 +67,7 @@ export default {
     }
   },
   async fetch () {
-    this.arcsiEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`)
+    this.arcsiEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
       .then(res => res.data)
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi latest not found ', error))
