@@ -3,12 +3,15 @@
     <SubTitle title="Error page" />
     <NuxtLink to="/">
       <img src="@/assets/img/lahma_citrom_transparent.png" alt="" class="w-full pt-8 mx-auto md:w-80">
-      <div class="container pt-8 text-center error-page">
+      <div class="container py-8 text-center error-page">
         <h1 v-if="error.statusCode === 404">
           Page {{ $route && `"${$route.path}"` }} not found
         </h1>
         <h1 v-else-if="error.statusCode === 500">
           {{ error.message || 'Server error' }}
+        </h1>
+        <h1 v-else-if="error.statusCode === 401">
+          {{ error.message || 'Arcsi unauthorized' }}
         </h1>
         <h1 v-else>
           An error occurred

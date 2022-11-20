@@ -1,10 +1,10 @@
 import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const state = () => ({
-  arcsiShows: {},
-  allShowsList: {},
-  rareShows: {},
-  customSchedule: {}
+  arcsiShows: [],
+  allShowsList: [],
+  rareShows: [],
+  customSchedule: []
 })
 
 export const actions = {
@@ -25,7 +25,9 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'All Shows not found' })
+        const statusCode = e.response.status || 404
+        const message = statusCode === 401 ? 'Arcsi unauthorized' : e.message || 'Shows not found'
+        error({ statusCode, message })
       })
     await this.$axios.get(rareShowsURL)
       .then((res) => {
@@ -33,7 +35,9 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Rare shows not found' })
+        const statusCode = e.response.status || 404
+        const message = statusCode === 401 ? 'Arcsi unauthorized' : e.message || 'Rare shows not found'
+        error({ statusCode, message })
       })
     await this.$axios.get(customScheduleURL)
       .then((res) => {
