@@ -3,6 +3,7 @@ export const arcsiShowsBaseURL = arcsiBaseURL + '/show'
 //arcsiServerURL is legacy, currently not in use as it returns all items along with the shows
 export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
+
 export const config = {
 headers: {
         'Authentication-Token': 'your-token'
@@ -39,6 +40,7 @@ export const recipeSectionURL = contentApiURL + '/pages/3093'
 export const rareShowsURL = contentApiURL + '/pages/3721'
 export const bannerTextURL = contentApiURL + '/pages/3932'
 export const cookiesPageURL = contentApiURL + '/pages/3923'
+export const donateBannerURL = contentApiURL + '/pages/4291'
 
 export const lahmaGaleriesURL = contentApiURL + '/lahma_gallery'
 export const mediaURL = contentApiURL + '/media'
