@@ -257,8 +257,8 @@ span.moresign {
 /* Donate Banner */
 
 .donate-banner {
-  background: $yellow-color;
-  @apply pl-2 py-2 flex items-center justify-center relative pr-10 gap-x-4;
+  background-color: $yellow-color;
+  @apply pl-4 py-6 flex items-center justify-center relative pr-10 gap-x-4 bg-opacity-50;
   a {
     @apply font-bold;
   }
