@@ -23,7 +23,7 @@
           </li>
           <li>
             <a href="#" @click.prevent="scrollToRef('community')">
-              Community
+              Show hosts & collabs
             </a>
           </li>
           <li>
