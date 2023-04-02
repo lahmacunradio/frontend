@@ -46,6 +46,11 @@
               Favourites
             </a>
           </li>
+          <li>
+            <a href="#" @click.prevent="scrollToRef('supporters')">
+              Supporters
+            </a>
+          </li>
         </ul>
       </nav>
       <div class="px-4 my-8 italic text-center">
@@ -132,6 +137,10 @@
           <h2>Favourite radio stations</h2>
           <div v-sanitize="favouritesContentResults" class="community-page-content" />
         </article>
+        <article id="supporters-page" ref="supporters">
+          <h2>{{ htmlDecoder(supportersContent.title.rendered) }}</h2>
+          <div v-sanitize="supportersContentResults" class="supporters-page-content" />
+        </article>
       </div>
     </div>
   </div>
@@ -145,7 +154,10 @@ import {
   favouriteRadiosURL,
   eventsSectionURL,
   pressSectionURL,
-  labsSectionURL, recipeSectionURL, mediaURL
+  labsSectionURL, 
+  recipeSectionURL, 
+  mediaURL, 
+  supportersURL
 } from '~/constants'
 
 export default {
@@ -165,6 +177,7 @@ export default {
       recipeSection: null,
       recipeFeaturedImage: null,
       favouritesContent: null,
+      supportersContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
@@ -313,6 +326,17 @@ export default {
         this.$sentry.captureException(new Error('Favourites not available ', error))
         this.$nuxt.error({ statusCode: 404, message: 'Favourites not available' })
       })
+    // supporters
+    this.supportersContent = await this.$axios.get(`${supportersURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Supporters content not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
+      })
   },
   head () {
     return {
@@ -385,6 +409,12 @@ export default {
         return 'No content'
       }
       return this.favouritesContent.content.rendered
+    },
+    supportersContentResults () {
+      if (!this.supportersContent) {
+        return 'No content'
+      }
+      return this.supportersContent.content.rendered
     }
   },
   mounted () {
