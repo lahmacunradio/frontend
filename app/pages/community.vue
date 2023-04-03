@@ -139,7 +139,7 @@
         </article>
         <article id="supporters-page" ref="supporters">
           <h2>{{ htmlDecoder(supportersContent.title.rendered) }}</h2>
-          <div v-sanitize="supportersContentResults" class="supporters-page-content" />
+          <div v-sanitize="[sanitizeOptions,supportersContentResults]" class="community-page-content" />
         </article>
       </div>
     </div>
