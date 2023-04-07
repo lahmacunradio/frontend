@@ -16,43 +16,62 @@
         @ended="stopArcsi()"
       />
     </template>
-    <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
+    <div v-if="duration && duration === 0" class="arcsi-player-preload flex items-center py-4 preload">
       <img src="@/assets/img/preloader.svg" class="h-4 mr-4" alt="preload">
       <p>Preloading...</p>
     </div>
-    <div v-else class="flex flex-col items-start justify-between w-full md:items-center md:flex-row">
-      <div class="flex items-center pt-4 pb-2 md:py-4 md:pr-4 md:w-1/4">
-        <button class="w-5 h-5 mr-3 text-left cursor-pointer" @click="toggleArcsi">
-          <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
-            <i class="fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
-          </span>
-          <span v-else-if="arcsiIsPlaying">
-            <i class="fa fa-pause" aria-hidden="true" />
-          </span>
-          <span v-else>
-            <i class="fa fa-play" aria-hidden="true" />
-          </span>
-        </button>
-        <h5 v-if="arcsiShow">
+    <div v-else class="arcsi-player-container flex flex-col items-start justify-between w-full md:items-center sm:flex-col md:flex-row">
+
+      <div class="arcsi-player-container-info flex items-center py-2 md:py-4 md:w-1/4">
+        <div v-if="arcsiShow" class="arcsi-show-info">
+          <h4 class="arcsi-player-container-info-name my-1">
           <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
             {{ episode.shows[0].name }}
           </NuxtLink>
-          <span> - </span>
+          </h4>
+          <h5 class="arcsi-player-container-info-title">
           <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.name_slug}`">
             {{ episode.name }}
           </NuxtLink>
-        </h5>
-        <h5 v-else>
-          {{ episode.shows[0].name + ' - ' + episode.name }}
-        </h5>
-      </div>
-      <div class="flex items-center w-full md:mr-6 md:w-1/2 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
-        <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
-          <i class="fa fa-fast-backward" aria-hidden="true" />
-        </a>
-        <div class="text-sm seek-time">
-          {{ seek && seek > 1 ? currentSeek : '0:00:00' }}
+          </h5>
         </div>
+        <div v-else class="arcsi-nonshow-info">
+          {{ episode.shows[0].name + ' - ' + episode.name }}
+        </div>
+      </div>
+      
+      <div class="arcsi-player-container-control flex items-center py-2 w-full md:w-4/6 min-w-1/2 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
+        <!-- <button class="arcsi-player-container-play w-10 h-10 mx-1 text-left cursor-pointer" @click="toggleArcsi">
+          <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
+            <i class="arcsi-player-btn-spinner fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
+          </span>
+          <span v-else-if="arcsiIsPlaying">
+            <i class="arcsi-player-btn-pause fa fa-pause" aria-hidden="true" />
+          </span>
+          <span v-else>
+            <i class="arcsi-player-btn-play fa fa-play" aria-hidden="true" />
+          </span>
+        </button> -->
+         <button class="arcsi-player-container-play text-left cursor-pointer w-8 h-8 mr-2" @click="toggleArcsi">
+          <span v-if="arcsiIsPlaying && seek === 0 && !isSafari">
+            <i class="arcsi-player-btn-spinner fa fa-spinner fa-pulse fa-fw" aria-hidden="true" />
+          </span>
+          <span v-else-if="arcsiIsPlaying">
+            <img src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="arcsi-player-btn-pause  w-8 h-8 pr-2 text-left cursor-pointer" />
+          </span>
+          <span v-else>
+            <img src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="arcsi-player-btn-play  w-8 h-8 pr-2 text-left cursor-pointer"  />
+          </span>
+        </button>
+        <!-- <a class="bigplay-button" href="#" @click.prevent="toggle()">
+            <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
+            <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
+        </a> -->
+
+        <a href="#" class="ml-1 mr-1 my-2" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
+          <i class="arcsi-player-btn-back fa  fa-undo" aria-hidden="true" />
+        </a>
+
         <div id="myProgress" class="mx-2 my-2">
           <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
           <input
@@ -61,28 +80,35 @@
             type="range"
             min="0"
             max="1"
-            step="0.001"
+            step="0.01"
             @change="seekBar($event.target.value)"
           >
         </div>
-        <div class="text-sm">
-          {{ currentDuration }}
-        </div>
-        <a href="#" class="ml-2 text-xs" @click.prevent="seekForward(10)" @dblclick.prevent="seekForward(20)">
-          <i class="fa fa-fast-forward" aria-hidden="true" />
+        <a href="#" class="ml-1 mr-1 my-2" @click.prevent="seekForward(10)" @dblclick.prevent="seekForward(20)">
+          <i class="arcsi-player-btn-fwd fa fa-repeat" aria-hidden="true" />
         </a>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="md:w-1/4 my-2 whitespace-nowrap">
-        <div class="inline-block w-4 align-middle">
-          <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
-          <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
-          <i v-else-if="currentVolume < '0.7'" class="fa fa-volume-down" />
-          <i v-else class="fa fa-volume-up" />
+
+      <div class="episode-time flex flex-row items-center ml-1 mr-1 w-1/5">
+        <div class="seek-time 2xl:text-base xl:text-sm lg:text-sm md:text-xs sm:text-xs">
+          <span> {{ seek && seek > 1 ? currentSeek : '0:00:00' }} </span>
+        </div>
+        <div class="total-duration 2xl:text-base xl:text-sm lg:text-sm md:text-xs sm:text-xs">
+          <span> / {{ currentDuration }}</span>
+        </div>
+      </div>
+      
+      <div v-if="!isTouchEnabled" id="myVolume" class="flex justify-end w-1/6 my-2 whitespace-nowrap">
+        <div class="arcsi-player-btn-vol inline-block w-4 align-middle ">
+          <i v-if="currentVolume === '0'" class="arcsi-player-btn-mute fa fa-microphone-slash" />
+          <i v-else-if="currentVolume < '0.3'" class="arcsi-player-btn-low fa fa-volume-off" />
+          <i v-else-if="currentVolume < '0.7'" class="arcsi-player-btn-mid fa fa-volume-down" />
+          <i v-else class="arcsi-player-btn-high fa fa-volume-up" />
         </div>
         <input
           id="volumeRange"
           v-model="currentVolume"
-          class="align-middle"
+          class="align-middle w-4/6"
           type="range"
           min="0"
           max="1"
@@ -90,6 +116,7 @@
           @input.passive="volumeBar($event.target.value)"
         >
       </div>
+      
     </div>
   </div>
 </template>
@@ -368,21 +395,72 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h5 {
-  line-height: 1.2em;
+h4 {
+  line-height: 1rem;
+  font-size: 0.87rem;
   a {
     color: $black-color;
     &:hover {
       text-decoration: underline;
     }
   }
-  span {
-    font-weight: normal;
+  @media (max-width: $mobile-width) {
+    font-size: 0.75rem;
   }
 }
+h5 {
+  line-height: 1rem;
+  font-size: 0.8rem;
+  a {
+    color: $lahma-pink;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  @media (max-width: $mobile-width) {
+    font-size: 0.7rem;
+  }
+}
+
+.arcsi-player-container {
+  @media (max-width: $mobile-width) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.episode-time {
+  div {
+    line-height: 1.275rem;
+    font-size: 0.8rem;
+  }
+  // div {
+  //   @media (min-width: $extralarge-width) {
+  //     font-size: 1.2rem;
+  //   }
+  //   @media (max-width: $extralarge-width ) $largescreen-width) {
+  //     font-size: 1rem;
+  //   }
+  //   @media ( $notebook-width) {
+  //     font-size: 0.82rem;
+  //   }
+  //   @media ( $tablet-width) {
+  //     font-size: 0.6rem;
+  //   }
+  //   @media ( $mobile-width) {
+  //     font-size: 0.4rem;
+  //   }
+  // }
+}
+
 #myProgress {
-  width: 100%;
-  background-color: $black-color;
+  width: 66%;
+  background-color: white;
+  border: solid black;
+  border-width: 0.16rem;
+  @media (max-width: $mobile-width) {
+    border-width: 0.08rem;
+  }
     input[type="range" i]::-webkit-slider-thumb {
       opacity: 0;
       transition: opacity 0.2s;
@@ -397,13 +475,13 @@ h5 {
 
 #myBar {
   width: 1%;
-  height: 0.4rem;
+  height: 1.2rem;
   background-color: $lahma-pink;
 }
 
 #progressingRange {
   width: 100%;
-  height: 0.8rem;
+  height: 0.4rem;
   -webkit-appearance: none !important;
   appearance: none;
   margin-top: -0.8rem;
@@ -424,6 +502,16 @@ h5 {
       input[type="range" i]::-webkit-slider-thumb {
         opacity: 1;
       }
+    }
+}
+
+#volumeRange {
+  background-color: $black-color;
+}
+
+.total-duration {
+    @media (max-width: $mobile-width) {
+      display: none;
     }
 }
 
