@@ -257,13 +257,12 @@ span.moresign {
 /* Donate Banner */
 
 .donate-banner {
-  background-color: $yellow-color;
+  background-color: $lahma-pink;
+  color: black;
   @apply pl-4 py-6 flex items-center justify-center relative pr-10 gap-x-4 bg-opacity-50;
-  a {
-    @apply font-bold;
-  }
+
   .donate-banner-button {
-    background-color: $lahma-pink;
+    background-color: $yellow-color;
     @apply font-bold py-2 px-4 rounded uppercase;
   }
 }
