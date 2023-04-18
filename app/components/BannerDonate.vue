@@ -2,11 +2,11 @@
   <div v-if="donateContent && donateContent.enabled && donateIsVisible">
     <div class="donate-banner">
       <div v-sanitize="[sanitizeOptions, donateContent.banner_text]" />
-      <div v-if="donateContent.button.show_button">
-        <a :href="donateContent.button.button_link" class="donate-banner-button">
+      <button v-if="donateContent.button.show_button" class="donate-banner-button">
+        <a :href="donateContent.button.button_link">
           {{ donateContent.button.button_text }}
         </a>
-      </div>
+      </button>
       <div class="absolute top-0 right-0 pr-4 text-xl cursor-pointer" @click="closeBanner()">
         x
       </div>
