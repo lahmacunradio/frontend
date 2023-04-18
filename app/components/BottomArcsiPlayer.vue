@@ -30,7 +30,6 @@
             </div>
           </a>
         </div>
-        <BannerDonate />
       </div>
 
     </client-only>
