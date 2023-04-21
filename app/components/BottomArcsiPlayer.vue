@@ -31,6 +31,7 @@
           </a>
         </div>
       </div>
+
     </client-only>
   </div>
 </template>

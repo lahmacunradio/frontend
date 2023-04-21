@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col min-h-screen" :class="{ 'pb-12': arcsiVisible }">
     <HeaderBlock />
+    <BannerDonate />
     <nuxt class="flex-grow pb-12" />
     <FooterHome v-if="$route.name === 'index'" />
     <FooterBottom v-else />

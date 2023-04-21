@@ -1,23 +1,25 @@
-@import '_variables.scss';
+@import "_variables.scss";
 
 @mixin aspect-ratio($width, $height) {
   position: relative;
   &:before {
-      display: block;
-      content: "";
-      width: 100%;
-      padding-top: ($height / $width) * 100%;
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: ($height / $width) * 100%;
   }
   > .content {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 
-*,*:before,*:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   margin: 0;
 }
@@ -39,19 +41,19 @@ html {
     font-size: 22px;
   }
   @media (min-width: 2880px) {
-      font-size: 24px;
+    font-size: 24px;
   }
   @media (min-width: 3120px) {
-      font-size: 26px;
+    font-size: 26px;
   }
   @media (min-width: 3360px) {
-      font-size: 28px;
+    font-size: 28px;
   }
   @media (min-width: 3600px) {
-      font-size: 30px;
+    font-size: 30px;
   }
   @media (min-width: 3840px) {
-      font-size: 32px;
+    font-size: 32px;
   }
 }
 
@@ -76,7 +78,8 @@ body {
   @apply mx-auto;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   font-size: 3rem;
   @media (max-width: $mobile-width) {
     font-size: 2.4rem;
@@ -84,7 +87,8 @@ h1, .h1 {
   font-weight: 600;
   line-height: 1.2em;
 }
-h2, .h2 {
+h2,
+.h2 {
   font-size: 2.5rem;
   @media (max-width: $mobile-width) {
     font-size: 2.1rem;
@@ -93,7 +97,8 @@ h2, .h2 {
   line-height: 1.2em;
   margin: 1rem 0;
 }
-h3, .h3 {
+h3,
+.h3 {
   font-size: 2rem;
   @media (max-width: $mobile-width) {
     font-size: 1.8rem;
@@ -102,7 +107,8 @@ h3, .h3 {
   line-height: 1.2em;
   margin: 1rem 0;
 }
-h4, .h4 {
+h4,
+.h4 {
   font-size: 1.5rem;
   @media (max-width: $mobile-width) {
     font-size: 1.3rem;
@@ -111,7 +117,8 @@ h4, .h4 {
   line-height: 1.4em;
 }
 
-h5, .h5 {
+h5,
+.h5 {
   font-size: 1.25rem;
   @media (max-width: $mobile-width) {
     font-size: 1.2rem;
@@ -120,7 +127,8 @@ h5, .h5 {
   line-height: 1.4em;
 }
 
-b, strong {
+b,
+strong {
   font-weight: 600;
 }
 
@@ -151,7 +159,8 @@ span.moresign {
 }
 
 .show-description {
-  h1, h3 {
+  h1,
+  h3 {
     margin-top: 0;
   }
 }
@@ -159,10 +168,10 @@ span.moresign {
 .aspect-ratio-1\/1 {
   @include aspect-ratio(1, 1);
   height: unset;
-  >* {
-      position: absolute;
-      top: 0;
-      left: 0;
+  > * {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }
 
@@ -178,18 +187,22 @@ span.moresign {
 }
 
 @keyframes infiniterotate {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .rotate-element {
   animation: infiniterotate 6s linear infinite;
 }
 
-
 /* Modal anims */
 
-.modal-enter-active, .modal-leave-active {
+.modal-enter-active,
+.modal-leave-active {
   transition: opacity 0.1s ease-in;
 }
 
@@ -239,4 +252,17 @@ span.moresign {
 
 .tag-block {
   @apply bg-white mr-2 mb-2 px-3 py-1 inline-block;
+}
+
+/* Donate Banner */
+
+.donate-banner {
+  background-color: $lahma-pink;
+  color: black;
+  @apply pl-4 py-6 flex items-center justify-center relative pr-10 gap-x-4 bg-opacity-50;
+
+  .donate-banner-button {
+    background-color: $yellow-color;
+    @apply font-bold py-2 px-4 rounded uppercase;
+  }
 }
