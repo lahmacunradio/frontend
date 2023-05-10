@@ -436,6 +436,8 @@ export default {
       this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
+        // Update show name in stream in store for other components
+        this.$store.commit('player/setStreamShowTitle', this.show_title())
         // Set a "default" current stream if none exists.
         if (this.current_stream.url === '' && npNew.station.listen_url !== '' && this.streams.length > 0) {
           let currentStream = null
