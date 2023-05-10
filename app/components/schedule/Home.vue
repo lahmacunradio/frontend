@@ -78,7 +78,8 @@ export default {
   computed: {
     ...mapGetters({
       rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
+      customSchedule: 'returnCustomSchedule',
+      streamShowTitle: 'player/getStreamShowTitle'
     }),
     rareShowThursday () {
       if (!this.rareShows) {
@@ -101,15 +102,6 @@ export default {
     },
     tommorrow () {
       return new Date(new Date())
-    },
-    streamShowTitle () {
-      if (!this.nowPlaying) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.streamer_name
-      } else {
-        return this.nowPlaying?.now_playing?.song.artist
-      }
     },
     todayName () {
       return this.dayNames[this.getToday - 1]

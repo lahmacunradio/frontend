@@ -64,5 +64,8 @@ export const getters = {
   },
   getStreamPlayState (state) {
     return state.isStreamPlaying
+  },
+  getStreamShowTitle (state) {
+    return state.streamShowTitle
   }
 }
