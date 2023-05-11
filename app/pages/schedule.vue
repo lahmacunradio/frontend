@@ -45,7 +45,6 @@ export default {
       selectedDay: 0,
       customPosition: null,
       interval: null,
-      nowPlaying: {},
       latestRareThursday: null,
       latestRareFriday: null
     }
@@ -117,21 +116,6 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.sortShowsForSchedule)
-    setTimeout(() => {
-      this.checkNowPlaying()
-    }, 1000)
-  },
-  beforeDestroy () {
-    // prevent memory leak
-    clearInterval(this.interval)
-  },
-  created () {
-    // update the time every minute
-    if (this.isClient) {
-      this.interval = setInterval(() => {
-        this.checkNowPlaying()
-      }, 60 * 1000)
-    }
   },
   methods: {
     groupShowsByDay (shows) {
@@ -182,14 +166,6 @@ export default {
       this.$refs[dayindex][0].classList.remove('hidden')
       this.selectedDay = dayindex
     },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        this.$sentry.captureException(new Error('Stream interrupted ', error))
-        this.interval = setTimeout(this.checkNowPlaying, 15000)
-      })
-    }
   }
 }
 </script>
