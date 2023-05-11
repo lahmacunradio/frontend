@@ -23,7 +23,7 @@
               <ScheduleCustom :show="show" />
             </div>
             <div v-else>
-              <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
+              <ScheduleFullitem :show="show" />
             </div>
           </div>
         </div>
