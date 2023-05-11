@@ -1,6 +1,8 @@
 export const state = () => ({
   isStreamPlaying: false,
   streamShowTitle: "",
+  streamEpisodeTitle: "",
+  streamEpisodeImageURL: "",
   streamVolume: 55,
   arcsiEpisode: {},
   arcsiPlayHistory: {},
@@ -15,6 +17,12 @@ export const mutations = {
   },
   setStreamShowTitle (state, title) {
     state.streamShowTitle = title
+  },
+  setStreamEpisodeTitle (state, title) {
+    state.streamEpisodeTitle = title
+  },
+  setStreamEpisodeImageURL (state, url) {
+    state.streamEpisodeImageURL = url
   },
   currentlyPlayingArcsi (state, episode) {
     state.arcsiEpisode = episode
@@ -67,5 +75,11 @@ export const getters = {
   },
   getStreamShowTitle (state) {
     return state.streamShowTitle
-  }
+  },
+  getStreamEpisodeTitle (state) {
+    return state.streamShowEpisode
+  },
+  getStreamEpisodeImageURL (state) {
+    return state.streamEpisodeImageURL
+  }  
 }
