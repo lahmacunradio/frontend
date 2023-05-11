@@ -68,6 +68,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { arcsiBaseURL, config } from '~/constants'
 
 export default {

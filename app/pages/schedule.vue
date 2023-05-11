@@ -122,6 +122,7 @@ export default {
       if (!shows) { return false }
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
+      //Current day's index
       const dayIndex = daybyMonday - 1
       this.latestRareThursday = shows
         .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
@@ -153,6 +154,7 @@ export default {
           }
         })
       }
+      //2D array indexed by the week's days starting at current day; each array element is a 1D array listing the day's shows
       this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
       this.dayNames = [...this.dayNames.slice(dayIndex), ...this.dayNames.slice(0, dayIndex)]
     },
