@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show && nowPlaying" class="dayblock" :class="showAirCheck(show.name) ? 'onair' : ''">
+  <div v-if="show" class="dayblock" :class="showAirCheck(show.name) ? 'onair' : ''">
     <div class="container mx-auto sm:flex show-basic-infos">
       <div class="mr-4 timing-infos">
         <div class="mb-2 time-block sm:mb-0">
@@ -75,10 +75,6 @@ export default {
     show: {
       type: Object,
       required: true
-    },
-    nowPlaying: {
-      type: Object,
-      required: true
     }
   },
   data () {
@@ -94,6 +90,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({   
+      streamShowTitle: 'player/getStreamShowTitle',
+      streamEpisodeTitle: 'player/getStreamEpisodeTitle',
+      onAirImage: 'player/getStreamEpisodeImageURL'
+    }),
     getToday () {
       const d = new Date()
       const year = d.getFullYear()
@@ -104,42 +105,7 @@ export default {
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
-    streamShowTitle () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.streamer_name
-      } else {
-        return this.nowPlaying?.now_playing?.song.artist
-      }
-    },
-    streamEpisodeTitle () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.song?.title || 'Live stream'
-      } else {
-        return this.nowPlaying?.now_playing?.song?.title
-      }
-    },
-    onAirImage () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      }
-      let streamImage
-      streamImage = this.nowPlaying.now_playing?.song?.art
-      if (this.nowPlaying.live.is_live) {
-        streamImage = this.show.cover_image_url
-      }
-      return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
-    },
     onAirDescription () {
-      if (!this.nowPlaying.now_playing && this.latestEpisodeData) {
-        return false
-      }
-      if (this.nowPlaying?.live?.is_live) {
-        return this.show.description
-      }
       const descriptionFromArcsi = this.latestEpisodeData?.description
       return descriptionFromArcsi || this.show.description
     },

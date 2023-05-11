@@ -20,7 +20,7 @@
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <div v-if="customPosition === index">
-              <ScheduleCustom :show="show" :now-playing="nowPlaying" />
+              <ScheduleCustom :show="show" />
             </div>
             <div v-else>
               <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
