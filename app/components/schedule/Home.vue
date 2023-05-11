@@ -67,7 +67,6 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
-      nowPlaying: {},
       latestRareThursday: null,
       latestRareFriday: null,
       customScheduleDay: null,
@@ -109,35 +108,12 @@ export default {
   },
   mounted () {
     this.groupShowsByDay(this.shows)
-    setTimeout(() => {
-      this.checkNowPlaying()
-    }, 1000)
-  },
-  beforeDestroy () {
-    // prevent memory leak
-    clearInterval(this.interval)
-  },
-  created () {
-    // update the time every minute
-    if (this.isClient) {
-      this.interval = setInterval(() => {
-        this.checkNowPlaying()
-      }, 60 * 1000)
-    }
   },
   methods: {
     showAirCheck (index, showname) {
       if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
-    },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        this.$sentry.captureException(new Error('Schedule not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Schedule not available' })
-      })
     },
     groupShowsByDay (shows) {
       if (!shows) { return false }
