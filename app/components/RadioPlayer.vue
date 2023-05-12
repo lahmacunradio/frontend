@@ -127,6 +127,7 @@ import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.mi
 import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -190,6 +191,9 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      todayShows: 'returnTodayShows'
+    }),
     streams () {
       const allStreams = []
       this.np.station.mounts.forEach(function (mount) {
@@ -243,7 +247,20 @@ export default {
       return (timeTotal) ? this.formatTime(timeTotal) : null
     },
     show_title () {
-      if (this.np.live.is_live) { return this.np.live.streamer_name } else { return this.np.now_playing.song.artist }
+      const title = ''
+      if (this.np.playlist !== '') // Show metadata can be served from Azuracast nowplaing API response
+        {
+          if (this.np.live.is_live) 
+            {title = this.np.live.streamer_name} else 
+            {title = this.np.now_playing.song.artist}
+        } else
+        {                         // Fallback: show metadata needs to be served from arcsi
+          title=''
+        } 
+        // Update show name in stream in store for other components
+        this.$store.commit('player/setStreamShowTitle', title)
+        return title
+
     },
     show_subtitle () {
       if (this.np.live.is_live) { return this.np.now_playing.song.title } else { return this.np.now_playing.song.title }
