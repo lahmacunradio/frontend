@@ -1,4 +1,3 @@
-import { stat } from '@babel/core/lib/gensync-utils/fs'
 import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const state = () => ({
@@ -65,7 +64,7 @@ export const mutations = {
   setTodayCET (state) {
     const d = new Date();
     let CETdayString = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", weekday:"long"});
-    state.todayCET = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(day)(CETdayString)  
+    state.todayCET = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(CETdayString)  
   }
 }
 
