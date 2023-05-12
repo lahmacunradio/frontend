@@ -1,10 +1,13 @@
+import { stat } from '@babel/core/lib/gensync-utils/fs'
 import { arcsiServerURL, arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const state = () => ({
   arcsiShows: {},
   allShowsList: {},
   rareShows: {},
-  customSchedule: {}
+  customSchedule: {},
+  todayShows: {},
+  todayCET: 0 //current weekday as numeric according to CET, Sunday is 0 etc. 
 })
 
 export const actions = {
@@ -55,6 +58,14 @@ export const mutations = {
   },
   refreshCustomSchedule (state, payload) {
     state.customSchedule = payload
+  },
+  setTodayShows (state, tshows) {
+    state.todayShows = tshows
+  },
+  setTodayCET (state) {
+    const d = new Date();
+    let CETdayString = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", weekday:"long"});
+    state.todayCET = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(day)(CETdayString)  
   }
 }
 
@@ -67,5 +78,11 @@ export const getters = {
   },
   returnCustomSchedule (state) {
     return state.customSchedule
+  },
+  returnTodayShows (state) {
+    return state.todayShows
+  },
+  returnTodayCET (state) {
+    return state.todayCET
   }
 }

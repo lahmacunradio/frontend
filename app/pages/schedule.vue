@@ -75,7 +75,8 @@ export default {
     ...mapGetters({
       fullSchedule: 'returnArcsiShows',
       rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
+      customSchedule: 'returnCustomSchedule',
+      getToday: 'returnTodayCET'
     }),
     rareShowThursday () {
       if (!this.rareShows) {
@@ -99,10 +100,6 @@ export default {
         ))
         .sort((a, b) => a.day - b.day)
         .sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
-    },
-    getToday () {
-      const d = new Date()
-      return d.getDay()
     },
     todayDate () {
       return new Date()

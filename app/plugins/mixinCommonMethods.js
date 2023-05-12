@@ -31,7 +31,7 @@ export function removeSeconds (time) {
 export function getCurrentTimeHourCET () {
   const d = new Date();
   //Return browser time's hour part in 24h style, e.g., 7 for 7am or 19 for 7pm, where time is CET
-  return d.toLocaleString("hu-HU", {timeZone: "Europe/Budapest", hour:"numeric"});
+  return d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric"});
 }
 
 export function truncate (text, limit = 200) {

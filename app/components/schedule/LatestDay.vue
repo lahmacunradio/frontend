@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     day: {
@@ -45,10 +47,9 @@ export default {
     }
   },
   computed: {
-    getToday () {
-      const d = new Date()
-      return d.getDay()
-    }
+        ...mapGetters({
+      getToday: 'returnTodayCET'
+    })
   },
   mounted () {
     if (this.index === this.getToday - 1) {

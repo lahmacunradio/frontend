@@ -78,7 +78,8 @@ export default {
     ...mapGetters({
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule',
-      streamShowTitle: 'player/getStreamShowTitle'
+      streamShowTitle: 'player/getStreamShowTitle',
+      getToday: 'returnTodayCET'
     }),
     rareShowThursday () {
       if (!this.rareShows) {
@@ -91,10 +92,6 @@ export default {
         return false
       }
       return this.rareShows.rare_friday.find(item => item.active === true)
-    },
-    getToday () {
-      const d = new Date()
-      return d.getDay()
     },
     todayDate () {
       return new Date()
@@ -156,6 +153,7 @@ export default {
         })
       }
       this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
+      this.$store.commit('returnTodayShows', showsByDate[0])
     }
   }
 
