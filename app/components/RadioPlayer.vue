@@ -247,7 +247,7 @@ export default {
       return (timeTotal) ? this.formatTime(timeTotal) : null
     },
     show_title () {
-      const title = ''
+      let title = ''
       if (this.np.playlist !== '') // Show metadata can be served from Azuracast nowplaing API response
         {
           if (this.np.live.is_live) 

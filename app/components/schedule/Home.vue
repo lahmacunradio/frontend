@@ -153,7 +153,7 @@ export default {
         })
       }
       this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
-      this.$store.commit('returnTodayShows', showsByDate[0])
+      this.$store.commit('setTodayShows', this.showsByDate[0])
     }
   }
 
