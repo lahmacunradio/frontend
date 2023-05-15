@@ -214,11 +214,7 @@ export default {
       return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
-      if (this.np.live.is_live) { // live show
-        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.live.streamer_name))
-      } else { // pre-recorded show
-        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.now_playing.song.artist))
-      }
+      return this.arcsiList.find(show => this.slugify(show.name) === this.show_title)
     },
     time_percent () {
       const timePlayed = this.np.now_playing.elapsed
@@ -459,8 +455,6 @@ export default {
       this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
-        // Update show name in stream in store for other components
-        this.$store.commit('player/setStreamShowTitle', this.show_title())
         // Set a "default" current stream if none exists.
         if (this.current_stream.url === '' && npNew.station.listen_url !== '' && this.streams.length > 0) {
           let currentStream = null
