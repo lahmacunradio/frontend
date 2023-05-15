@@ -255,7 +255,13 @@ export default {
             {title = this.np.now_playing.song.artist}
         } else
         {                         // Fallback: show metadata needs to be served from arcsi
-          title=''
+          for (let i = 0; i < this.todayShows.length; i++) {
+              let show = this.todayShows[i];
+              if (removeMinutesAndSeconds(show.start)<=getCurrentTimeHourCET()) { //as shows are timely ordered in input array, the first hit will be the currently running show
+                title=show.name;
+                break
+            }
+          }          
         } 
         // Update show name in stream in store for other components
         this.$store.commit('player/setStreamShowTitle', title)

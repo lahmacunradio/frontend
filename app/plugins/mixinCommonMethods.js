@@ -28,6 +28,10 @@ export function removeSeconds (time) {
   return time.substring(0, time.length - 3)
 }
 
+export function removeMinutesAndSeconds (time) {
+  return time.substring(0, 1)
+}
+
 export function getCurrentTimeHourCET () {
   const d = new Date();
   //Return browser time's hour part in 24h style, e.g., 7 for 7am or 19 for 7pm, where time is CET
