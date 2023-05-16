@@ -110,12 +110,6 @@ export default {
       const descriptionFromArcsi = this.latestEpisodeData?.description
       return descriptionFromArcsi || this.show.description
     },
-    latestEpisodeImage () {
-      if (!this.latestEpisodeData) {
-        return false
-      }
-      return this.show.cover_image_url
-    },
     latestEpisodeTitle () {
       if (!this.latestEpisodeData) {
         return this.show.name

@@ -11,16 +11,6 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit ({ state }, { $sentry, error }) {
-    /* Legacy api with all items
-    await this.$axios.get(arcsiServerURL)
-      .then((res) => {
-        state.arcsiShows = res.data
-      })
-      .catch((e) => {
-        $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Arcsi Shows not found' })
-      })
-    */
     await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
       .then((res) => {
         state.allShowsList = res.data
