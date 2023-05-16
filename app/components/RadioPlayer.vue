@@ -128,6 +128,7 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
 import { mapGetters } from 'vuex'
+import { arcsiBaseURL, config } from '~/constants'
 
 export default {
   components: {
@@ -146,6 +147,8 @@ export default {
   data () {
     return {
       streamModal: false,
+      show: null,
+      latestEpisodeData: null,
       np: {
         live: {
           is_live: 'Is Live',
@@ -249,20 +252,11 @@ export default {
           if (this.np.live.is_live) 
             {title = this.np.live.streamer_name} else 
             {title = this.np.now_playing.song.artist}
-        } else
-        {                         // Fallback: show metadata needs to be served from arcsi
-          for (let i = 0; i < this.todayShows.length; i++) {
-              let show = this.todayShows[i];
-              if (removeMinutesAndSeconds(show.start)<=getCurrentTimeHourCET()) { //as shows are timely ordered in input array, the first hit will be the currently running show
-                title=show.name;
-                break
-            }
-          }          
-        } 
+        } else // Fallback: show metadata needs to be served from arcsi
+        { title=this.show.name } 
         // Update show name in stream in store for other components
         this.$store.commit('player/setStreamShowTitle', title)
         return title
-
     },
     show_subtitle () {
       if (this.np.live.is_live) { return this.np.now_playing.song.title } else { return this.np.now_playing.song.title }
@@ -357,6 +351,7 @@ export default {
         this.volume = parseInt(urlParams.get('volume'))
       }
     }
+    // Start polling the streaming server's (Azuracast) nowplaying API
     this.checkNowPlaying()
   },
   beforeDestroy () {
@@ -465,7 +460,12 @@ export default {
           })
           this.current_stream = currentStream
         }
-        // Vue.prototype.$eventHub.$emit('np_updated', npNew);
+        // Compute show information from arcsi
+        if (this.np.playlist !== '') { // Optimisation: only do it if nowplaying is providing show data (e.g., when relaying streams)
+          //Disclaimer: could be optimised even more so that this information is not computed in the loop
+          this.findCurrentShowfromArcsi();
+          this.getLatestEpisodeFromArcsi()
+        }
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -500,7 +500,26 @@ export default {
     closeModal () {
       this.streamModal = false
     }
-  }
+  },
+  findCurrentShowfromArcsi(){
+    for (let i = 0; i < this.todayShows.length; i++) {
+    this.show = this.todayShows[i];
+    // As shows are timely ordered in input array, the first hit will be the currently running show
+    if (removeMinutesAndSeconds(this.show.start)<=getCurrentTimeHourCET()) { 
+      break
+      }
+    }          
+  },
+  getLatestEpisodeFromArcsi() {
+  this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
+    .then((res) => {
+      this.latestEpisodeData = this.getLatestEpisode(res.data)
+    })
+    .catch((error) => {
+      console.log(error)
+      this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+    })
+}
 }
 </script>
 
