@@ -217,7 +217,7 @@ export default {
       return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
-      // This is a legacy duplication of the same data using via a computed function (currentShowArcsi) and data variable (this.show)  
+      // This is a legacy duplication of the same data using via a computed function (currentShowArcsi) and data variable (this.show)
       this.show = this.arcsiList.find(show => this.slugify(show.name) === this.show_title);  
       return this.show
     },
@@ -316,7 +316,7 @@ export default {
         }
       } else // Use arcsi data as fallback
       {
-        this.latestEpisodeData?.cover_image_url
+        this.latestEpisodeData?.image_url
       }
     },
     isTouchEnabled () {
@@ -372,10 +372,6 @@ export default {
     }
     // Start polling the streaming server's (Azuracast) nowplaying API
     this.checkNowPlaying()
-  },
-  mounted () {
-    // Disclaimer: this is always called even if it's only used if nowplaying data is not available (e.g., when stream relays)
-    this.getLatestEpisodeFromArcsi()
   },
   beforeDestroy () {
     clearInterval(this.np_interval)
@@ -483,6 +479,11 @@ export default {
           })
           this.current_stream = currentStream
         }
+        // Optimisation: it should execute only once upon the first call
+        if (this.show == null) { // Also true if 'undefined'
+          this.show = this.arcsiList.find(show => this.slugify(show.name) === this.show_title);  
+          this.getLatestEpisodeFromArcsi()
+        }  
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -516,17 +517,17 @@ export default {
     },
     closeModal () {
       this.streamModal = false
+    },
+    getLatestEpisodeFromArcsi() {
+    this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
+      .then((res) => {
+        this.latestEpisodeData = this.getLatestEpisode(res.data)
+      })
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+      })
     }
-  },
-  getLatestEpisodeFromArcsi() {
-  this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
-    .then((res) => {
-      this.latestEpisodeData = this.getLatestEpisode(res.data)
-    })
-    .catch((error) => {
-      console.log(error)
-      this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
-    })
   },
   // Helper method for getLatestEpisodeFromArcsi()
   getLatestEpisode (episodes) {
