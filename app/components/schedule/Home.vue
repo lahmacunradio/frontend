@@ -106,7 +106,6 @@ export default {
     }
   },
   mounted () {
-    this.$store.commit('setTodayCET');
     this.groupShowsByDay(this.shows)
   },
   methods: {
