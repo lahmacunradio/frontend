@@ -5,8 +5,7 @@ export const state = () => ({
   allShowsList: {},
   rareShows: {},
   customSchedule: {},
-  todayShows: {},
-  todayCET: 0 //current weekday as numeric according to CET, Sunday is 0 etc.
+  todayShows: {}
 })
 
 export const actions = {
@@ -50,11 +49,6 @@ export const mutations = {
   },
   setTodayShows (state, tshows) {
     state.todayShows = tshows
-  },
-  setTodayCET (state) {
-    const d = new Date();
-    let CETdayString = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", weekday:"long"});
-    state.todayCET = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(CETdayString)  
   }
 }
 
@@ -70,8 +64,5 @@ export const getters = {
   },
   returnTodayShows (state) {
     return state.todayShows
-  },
-  returnTodayCET (state) {
-    return state.todayCET
   }
 }

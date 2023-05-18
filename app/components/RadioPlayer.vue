@@ -128,7 +128,6 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
 import { arcsiBaseURL, config } from '~/constants'
-import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -194,9 +193,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      getToday: 'returnTodayCET'
-    }),
+    getToday (){
+      return this.getTodayNumeric()
+    },
     streams () {
       const allStreams = []
       this.np.station.mounts.forEach(function (mount) {
@@ -479,7 +478,7 @@ export default {
           this.current_stream = currentStream
         }
         // Optimisation: it should execute only once upon the first call and only if it's a scheduled show going on
-        if (this.show == null && !this.show_check) { // Note: 'this.show == null' is also true if 'undefined'
+        if (this.show == null && this.show_check) { // Note: 'this.show == null' is also true if 'undefined'
           this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title));  
           this.getLatestEpisodeFromArcsi()
         }  

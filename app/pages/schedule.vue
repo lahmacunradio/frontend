@@ -75,9 +75,11 @@ export default {
     ...mapGetters({
       fullSchedule: 'returnArcsiShows',
       rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule',
-      getToday: 'returnTodayCET'
+      customSchedule: 'returnCustomSchedule'
     }),
+    getToday (){
+      return this.getTodayNumeric()
+    },
     rareShowThursday () {
       if (!this.rareShows) {
         return false

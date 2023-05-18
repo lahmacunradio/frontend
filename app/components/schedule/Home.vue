@@ -78,9 +78,11 @@ export default {
     ...mapGetters({
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule',
-      streamShowTitle: 'player/getStreamShowTitle',
-      getToday: 'returnTodayCET'
+      streamShowTitle: 'player/getStreamShowTitle'
     }),
+    getToday (){
+      return this.getTodayNumeric()
+    },
     rareShowThursday () {
       if (!this.rareShows) {
         return false
