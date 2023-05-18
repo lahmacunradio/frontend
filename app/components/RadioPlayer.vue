@@ -273,7 +273,13 @@ export default {
       }
     },
     show_check () {
-      return !!(this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== ''))
+      return !!(
+        this.np.live.is_live || 
+        (this.np.now_playing.playlist !== 'OFF AIR' && 
+        this.np.now_playing.playlist !== 'Off Air Ambient' && 
+        this.np.now_playing.playlist !== 'Jingle' && 
+        this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && 
+        this.np.now_playing.playlist !== ''))
     },
     check_offairlink () {
       return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
@@ -477,11 +483,11 @@ export default {
           })
           this.current_stream = currentStream
         }
-        // Optimisation: it should execute only once upon the first call and only if it's a scheduled show going on
-        if (this.show == null && this.show_check) { // Note: 'this.show == null' is also true if 'undefined'
+        // Optimisation: only call when it's a scheduled show going on
+        if (this.show_check) { 
           this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title));  
           this.getLatestEpisodeFromArcsi()
-        }  
+        }
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
