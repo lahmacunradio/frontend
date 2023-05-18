@@ -96,13 +96,6 @@ export default {
       streamEpisodeTitle: 'player/getStreamEpisodeTitle',
       onAirImage: 'player/getStreamEpisodeImageURL'
     }),
-    getToday () {
-      const d = new Date()
-      const year = d.getFullYear()
-      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      return `${year}-${month}-${day}`
-    },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
@@ -150,7 +143,7 @@ export default {
     },
     getLatestEpisode (episodes) {
       const sortedItems = episodes
-        .filter(show => show.play_date < this.getToday)
+        .filter(show => show.play_date < this.getTodayDateCET())
         .filter(show => show.archived === true)
         .sort((a, b) => b.number - a.number)
         .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))

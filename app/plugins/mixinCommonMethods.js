@@ -38,6 +38,14 @@ export function getCurrentTimeHourCET () {
   return d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric"});
 }
 
+export function getTodayDateCET () {
+  const d = new Date()
+  const year = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", year: "numeric"}) 
+  const month = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", month: "2-digit"}) 
+  const day = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", day: "2-digit"})
+  return `${year}-${month}-${day}`    
+}
+
 export function truncate (text, limit = 200) {
   if (text.length <= limit) {
     return text
@@ -159,7 +167,9 @@ if (!Vue.__my_mixin__) {
       stripHTMLTags,
       getLanguageGraph,
       showFrequency,
-      getCorrectSlug
+      getCorrectSlug,
+      getCurrentTimeHourCET,
+      getTodayDateCET
     }
   })
 }

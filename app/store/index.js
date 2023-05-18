@@ -6,7 +6,7 @@ export const state = () => ({
   rareShows: {},
   customSchedule: {},
   todayShows: {},
-  todayCET: 0 //current weekday as numeric according to CET, Sunday is 0 etc. 
+  todayCET: 0 //current weekday as numeric according to CET, Sunday is 0 etc.
 })
 
 export const actions = {

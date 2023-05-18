@@ -127,8 +127,8 @@ import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.mi
 import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
-import { mapGetters } from 'vuex'
 import { arcsiBaseURL, config } from '~/constants'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -195,7 +195,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      todayShows: 'returnTodayShows'
+      getToday: 'returnTodayCET'
     }),
     streams () {
       const allStreams = []
@@ -217,8 +217,7 @@ export default {
       return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
-      // This is a legacy duplication of the same data using via a computed function (currentShowArcsi) and data variable (this.show)
-      this.show = this.arcsiList.find(show => this.slugify(show.name) === this.show_title);  
+      // Legacy function used in building the page; this.show is computed elsewhere
       return this.show
     },
     time_percent () {
@@ -479,9 +478,9 @@ export default {
           })
           this.current_stream = currentStream
         }
-        // Optimisation: it should execute only once upon the first call
-        if (this.show == null) { // Also true if 'undefined'
-          this.show = this.arcsiList.find(show => this.slugify(show.name) === this.show_title);  
+        // Optimisation: it should execute only once upon the first call and only if it's a scheduled show going on
+        if (this.show == null && !this.show_check) { // Note: 'this.show == null' is also true if 'undefined'
+          this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title));  
           this.getLatestEpisodeFromArcsi()
         }  
       }).catch((error) => {
@@ -527,17 +526,17 @@ export default {
         console.log(error)
         this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
       })
-    }
-  },
-  // Helper method for getLatestEpisodeFromArcsi()
-  getLatestEpisode (episodes) {
-    const sortedItems = episodes
-    .filter(show => show.play_date < this.getToday)
-    .filter(show => show.archived === true)
-    .sort((a, b) => b.number - a.number)
-    .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-    return sortedItems[0]
-  } 
+    },
+    // Helper method for getLatestEpisodeFromArcsi()
+    getLatestEpisode (episodes) {
+      const sortedItems = episodes
+      .filter(show => show.play_date < this.getTodayDateCET())
+      .filter(show => show.archived === true)
+      .sort((a, b) => b.number - a.number)
+      .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+      return sortedItems[0]
+    } 
+  }
 }
 </script>
 
