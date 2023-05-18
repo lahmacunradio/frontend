@@ -274,12 +274,11 @@ export default {
     },
     show_check () {
       return !!(
-        this.np.live.is_live || 
-        (this.np.now_playing.playlist !== 'OFF AIR' && 
+        this.np.now_playing.playlist !== 'OFF AIR' && 
         this.np.now_playing.playlist !== 'Off Air Ambient' && 
         this.np.now_playing.playlist !== 'Jingle' && 
-        this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && 
-        this.np.now_playing.playlist !== ''))
+        this.np.now_playing.playlist !== 'Jingle AFTER SHOW'
+      )
     },
     check_offairlink () {
       return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
