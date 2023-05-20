@@ -4,8 +4,7 @@ export const state = () => ({
   arcsiShows: {},
   allShowsList: {},
   rareShows: {},
-  customSchedule: {},
-  todayShows: {}
+  customSchedule: {}
 })
 
 export const actions = {
@@ -46,9 +45,6 @@ export const mutations = {
   },
   refreshCustomSchedule (state, payload) {
     state.customSchedule = payload
-  },
-  setTodayShows (state, tshows) {
-    state.todayShows = tshows
   }
 }
 
@@ -61,8 +57,5 @@ export const getters = {
   },
   returnCustomSchedule (state) {
     return state.customSchedule
-  },
-  returnTodayShows (state) {
-    return state.todayShows
   }
 }
