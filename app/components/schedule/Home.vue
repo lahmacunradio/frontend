@@ -64,36 +64,16 @@ export default {
       currentHost: typeof window !== 'undefined' ? window.location.origin : null,
       isClient: typeof window !== 'undefined' && window.document,
       streamServer,
-      showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
-      latestRareThursday: null,
-      latestRareFriday: null,
-      customScheduleDay: null,
-      customScheduleEntries: null,
-      customPosition: null
     }
   },
   computed: {
     ...mapGetters({
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule',
       streamShowTitle: 'player/getStreamShowTitle'
     }),
     getToday (){
       return this.getTodayNumeric()
-    },
-    rareShowThursday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_thursday.find(item => item.active === true)
-    },
-    rareShowFriday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_friday.find(item => item.active === true)
     },
     todayDate () {
       return new Date()
@@ -103,59 +83,16 @@ export default {
     },
     todayName () {
       return this.dayNames[this.getToday - 1]
+    },
+    showsByDate () {
+      return this.$store.getters['player/getShowsByDate']
     }
-  },
-  mounted () {
-    this.groupShowsByDay(this.shows)
   },
   methods: {
     showAirCheck (index, showname) {
       if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
-    },
-    groupShowsByDay (shows) {
-      if (!shows) { return false }
-      const list = []
-      const daybyMonday = this.getToday === 0 ? 7 : this.getToday
-      const dayIndex = daybyMonday - 1
-
-      this.latestRareThursday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
-      this.latestRareFriday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
-
-      const filteredShows = shows
-        .filter(val => !this.latestRareThursday.includes(val))
-        .filter(val => !this.latestRareFriday.includes(val))
-
-      // custom Schedule Day
-      if (this.customSchedule?.is_active) {
-        this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
-        this.customScheduleEntries = this.customSchedule.schedule
-        // TODO fix the correct index
-        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
-      }
-
-      for (let i = 0; i < 7; i++) {
-        list.push([])
-        if (this.customScheduleDay - 1 === i) {
-          this.customScheduleEntries.forEach((entry) => {
-            list[i].push(entry)
-          })
-        }
-
-        filteredShows.forEach((show) => {
-          if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
-            list[i].push(show)
-          }
-        })
-      }
-      this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
-      this.$store.commit('setTodayShows', this.showsByDate[0])
     }
   }
 
