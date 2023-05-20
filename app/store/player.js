@@ -8,7 +8,8 @@ export const state = () => ({
   arcsiPlayHistory: {},
   arcsiVolume: 1,
   isArcsiPlaying: false,
-  isArcsiVisible: false
+  isArcsiVisible: false,
+  showsByDate: []
 })
 
 export const mutations = {
@@ -47,6 +48,9 @@ export const mutations = {
   },
   isArcsiVisible (state, showState) {
     state.isArcsiVisible = showState
+  },
+  setShowsByDate (state, shows) {
+    state.showsByDate = shows
   }
 
 }
@@ -76,10 +80,13 @@ export const getters = {
   getStreamShowTitle (state) {
     return state.streamShowTitle
   },
-  getStreamEpisodeTitle (state) {
-    return state.streamShowEpisode
+  getStreamEpisodeTitle (state) {  
+    return state.streamEpisodeTitle
   },
   getStreamEpisodeImageURL (state) {
     return state.streamEpisodeImageURL
-  }  
+  },
+  getShowsByDate (state) {
+    return state.showsByDate
+  }
 }

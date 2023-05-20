@@ -119,6 +119,9 @@ export default {
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
   },
+  mounted () {
+    this.getShowInfos()
+  },
   methods: {
     showAirCheck (showname) {
       if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
@@ -132,7 +135,7 @@ export default {
       }
     },
     getShowInfos () {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
+      this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
         .then((res) => {
           this.latestEpisodeData = this.getLatestEpisode(res.data)
         })
@@ -142,9 +145,7 @@ export default {
         })
     },
     getLatestEpisode (episodes) {
-      const sortedItems = episodes
-        .filter(show => show.play_date < this.getTodayDateCET())
-        .filter(show => show.archived === true)
+      const sortedItems = episodes.items
         .sort((a, b) => b.number - a.number)
         .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       return sortedItems[0]
