@@ -49,7 +49,7 @@ export default {
   methods: {
     getNow () {
       const today = new Date()
-      this.timestamp = today.getHours().toString().padStart(2, '0') + ':' + today.getMinutes().toString().padStart(2, '0')
+      this.timestamp = today.toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric", minute:"numeric", hour12: false})
 
       const minutes = today.getMinutes()
 
