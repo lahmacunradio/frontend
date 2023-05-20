@@ -114,10 +114,10 @@ export default {
     }
   },
   mounted () {
-    this.groupShowsByDay(this.sortShowsForSchedule)
+    this.local_groupShowsByDay(this.sortShowsForSchedule)
   },
   methods: {
-    groupShowsByDay (shows) {
+    local_groupShowsByDay (shows) {
       if (!shows) { return false }
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
