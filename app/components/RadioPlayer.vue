@@ -280,7 +280,7 @@ export default {
     },
     show_subtitle () {
       let title = ''
-      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaying API response
       {
         if (this.np.live.is_live) { 
           title = this.np.now_playing.song.title 
@@ -509,7 +509,7 @@ export default {
           })
           this.current_stream = currentStream
         }
-      // Compute show grouping from arcsi for schedule (Home) and player fallback (of nowplaying is not available)
+      // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
       // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons: 
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
@@ -585,8 +585,8 @@ export default {
       })
     },
     // Helper method for getLatestEpisodeFromArcsi()
-    getLatestEpisode (episodes) {
-      const sortedItems = episodes.items
+    getLatestEpisode (currentShow) {
+      const sortedItems = currentShow.items
       // We need the unarchived items too (no audio uploaded yet) to cover relay streams too
       //.filter(show => show.archived === true) 
       .sort((a, b) => b.number - a.number)
@@ -594,7 +594,7 @@ export default {
       // Workaround: compute absoulate URL as current arcsi response doesn't have it
       let latestEp = sortedItems[0]
       const relativeURL = latestEp.image_url
-      latestEp.image_url = mediaServerURL +  episodes.archive_lahmastore_base_url + '/' + relativeURL  
+      latestEp.image_url = mediaServerURL +  currentShow.archive_lahmastore_base_url + '/' + relativeURL  
       return latestEp
     } 
   }
