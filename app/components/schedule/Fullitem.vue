@@ -43,7 +43,7 @@
             <div class="text-sm description">
               <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
               <p v-if="latestEpisodeData" class="mt-2">
-                Latest Episode:
+                Episode highlight:
                 <NuxtLink :to="latestEpisodeLink">
                   <b>{{ latestEpisodeTitle }}</b>
                 </NuxtLink>
@@ -144,10 +144,10 @@ export default {
           this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
         })
     },
-    getLatestEpisode (episodes) {
-      const sortedItems = episodes.items
-        .sort((a, b) => b.number - a.number)
-        .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+    // Note: we currently show future and unarchived episodes too (see "Episode highlight" wording in HTML render part above)
+    getLatestEpisode (currentShow) {
+      const sortedItems = currentShow.items
+        .sort((a, b) => b.id - a.id)
       return sortedItems[0]
     }
   }
