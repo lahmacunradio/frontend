@@ -37,7 +37,7 @@
 
             <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
               <div class="media-body">
-                <div v-if="np.now_playing.song.title !== ''">
+                <div>
                   <h4 :title="show_title" class="now-playing-title">
                     <nuxt-link v-if="show_check === true" :to="show_url">
                       <span>{{ show_title }}&nbsp;</span>
@@ -58,11 +58,6 @@
                   <h5 :title="show_subtitle" class="now-playing-artist">
                     {{ show_subtitle }}
                   </h5>
-                </div>
-                <div v-else>
-                  <h4 class="now-playing-title">
-                    {{ show_title }}
-                  </h4>
                 </div>
               </div>
               <div v-if="!isTouchEnabled" id="radio-player-controls" class="hidden radio-controls-standalone volumecontrolos sm:block">
@@ -300,8 +295,8 @@ export default {
         this.np.live.is_live ||
         this.np.now_playing.playlist !== 'OFF AIR' && 
         this.np.now_playing.playlist !== 'Off Air Ambient' && 
-        this.np.now_playing.playlist !== 'Jingle' && 
-        this.np.now_playing.playlist !== 'Jingle AFTER SHOW'
+        this.np.now_playing.playlist !== 'Jingle Donate' && 
+        this.np.now_playing.playlist !== 'Jingle Station ID'
       )
     },
     check_offairlink () {
@@ -589,8 +584,7 @@ export default {
       const sortedItems = currentShow.items
       // We need the unarchived items too (no audio uploaded yet) to cover relay streams too
       //.filter(show => show.archived === true) 
-      .sort((a, b) => b.number - a.number)
-      .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+      .sort((a, b) => b.id - a.id)
       // Workaround: compute absoulate URL as current arcsi response doesn't have it
       let latestEp = sortedItems[0]
       const relativeURL = latestEp.image_url
