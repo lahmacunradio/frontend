@@ -1,5 +1,5 @@
 <template>
-  <div v-if="show && nowPlaying" class="dayblock" :class="showAirCheck(show.name) ? 'onair' : ''">
+  <div v-if="show" class="dayblock" :class="showAirCheck(show.name) ? 'onair' : ''">
     <div class="container mx-auto sm:flex show-basic-infos">
       <div class="mr-4 timing-infos">
         <div class="mb-2 time-block sm:mb-0">
@@ -68,15 +68,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { arcsiBaseURL, config } from '~/constants'
 
 export default {
   props: {
     show: {
-      type: Object,
-      required: true
-    },
-    nowPlaying: {
       type: Object,
       required: true
     }
@@ -94,60 +91,17 @@ export default {
     }
   },
   computed: {
-    getToday () {
-      const d = new Date()
-      const year = d.getFullYear()
-      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      return `${year}-${month}-${day}`
-    },
+    ...mapGetters({   
+      streamShowTitle: 'player/getStreamShowTitle',
+      streamEpisodeTitle: 'player/getStreamEpisodeTitle',
+      onAirImage: 'player/getStreamEpisodeImageURL'
+    }),
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
-    streamShowTitle () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.streamer_name
-      } else {
-        return this.nowPlaying?.now_playing?.song.artist
-      }
-    },
-    streamEpisodeTitle () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.song?.title || 'Live stream'
-      } else {
-        return this.nowPlaying?.now_playing?.song?.title
-      }
-    },
-    onAirImage () {
-      if (!this.nowPlaying.now_playing) {
-        return false
-      }
-      let streamImage
-      streamImage = this.nowPlaying.now_playing?.song?.art
-      if (this.nowPlaying.live.is_live) {
-        streamImage = this.show.cover_image_url
-      }
-      return this.showAirCheck(this.show.name) ? streamImage : this.show.cover_image_url
-    },
     onAirDescription () {
-      if (!this.nowPlaying.now_playing && this.latestEpisodeData) {
-        return false
-      }
-      if (this.nowPlaying?.live?.is_live) {
-        return this.show.description
-      }
       const descriptionFromArcsi = this.latestEpisodeData?.description
       return descriptionFromArcsi || this.show.description
-    },
-    latestEpisodeImage () {
-      if (!this.latestEpisodeData) {
-        return false
-      }
-      return this.show.cover_image_url
     },
     latestEpisodeTitle () {
       if (!this.latestEpisodeData) {
@@ -165,6 +119,9 @@ export default {
       return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
     }
   },
+  mounted () {
+    this.getShowInfos()
+  },
   methods: {
     showAirCheck (showname) {
       if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
@@ -178,7 +135,7 @@ export default {
       }
     },
     getShowInfos () {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.show.archive_lahmastore_base_url + '/archive', config)
+      this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
         .then((res) => {
           this.latestEpisodeData = this.getLatestEpisode(res.data)
         })
@@ -188,9 +145,7 @@ export default {
         })
     },
     getLatestEpisode (episodes) {
-      const sortedItems = episodes
-        .filter(show => show.play_date < this.getToday)
-        .filter(show => show.archived === true)
+      const sortedItems = episodes.items
         .sort((a, b) => b.number - a.number)
         .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
       return sortedItems[0]

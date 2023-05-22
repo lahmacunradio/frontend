@@ -127,6 +127,8 @@ import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.mi
 import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
+import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -145,6 +147,8 @@ export default {
   data () {
     return {
       streamModal: false,
+      show: null,
+      latestEpisodeData: null,
       np: {
         live: {
           is_live: 'Is Live',
@@ -186,10 +190,29 @@ export default {
       // rework the checks
       default_art_url: require('@/assets/img/stream/defaultshowart.jpg'),
       default_azuracast_art_url: require('@/assets/img/stream/generic_song.jpg'),
-      docTitleSetter: null
+      docTitleSetter: null,
     }
   },
   computed: {
+    ...mapGetters({
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule',
+    }),
+    rareShowThursday () {
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_thursday.find(item => item.active === true)
+    },
+    rareShowFriday () {
+      if (!this.rareShows) {
+        return false
+      }
+      return this.rareShows.rare_friday.find(item => item.active === true)
+    },
+    getToday (){
+      return this.getTodayNumeric()
+    },
     streams () {
       const allStreams = []
       this.np.station.mounts.forEach(function (mount) {
@@ -210,11 +233,8 @@ export default {
       return [...this.$store.getters.returnArcsiShows]
     },
     currentShowArcsi () {
-      if (this.np.live.is_live) { // live show
-        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.live.streamer_name))
-      } else { // pre-recorded show
-        return this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.np.now_playing.song.artist))
-      }
+      // Legacy function used in building the page; this.show is computed elsewhere
+      return this.show
     },
     time_percent () {
       const timePlayed = this.np.now_playing.elapsed
@@ -242,14 +262,47 @@ export default {
       const timeTotal = this.np.now_playing.duration
       return (timeTotal) ? this.formatTime(timeTotal) : null
     },
+    nowPlayingInfoAvailable (){
+      return (this.np?.now_playing?.playlist != '' || this.np?.live?.is_live)
+    },
     show_title () {
-      if (this.np.live.is_live) { return this.np.live.streamer_name } else { return this.np.now_playing.song.artist }
+      let title = ''
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
+        {
+          if (this.np.live.is_live) 
+            {title = this.np.live.streamer_name} else 
+            {title = this.np.now_playing.song.artist}
+        } else // Fallback: show metadata needs to be served from arcsi
+        { title=this.show?.name } 
+        // Update show name in stream in store for other components
+        this.$store.commit('player/setStreamShowTitle', title)
+        return title
     },
     show_subtitle () {
-      if (this.np.live.is_live) { return this.np.now_playing.song.title } else { return this.np.now_playing.song.title }
+      let title = ''
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaying API response
+      {
+        if (this.np.live.is_live) { 
+          title = this.np.now_playing.song.title 
+        } else 
+        { 
+          title = this.np.now_playing.song.title 
+        }
+      } else // Use arcsi data as fallback
+      {
+        title = this.latestEpisodeData?.name
+      }
+      this.$store.commit('player/setStreamEpisodeTitle', title)
+      return title
     },
     show_check () {
-      return !!(this.np.live.is_live || (this.np.now_playing.playlist !== 'OFF AIR' && this.np.now_playing.playlist !== 'Off Air Ambient' && this.np.now_playing.playlist !== 'Jingle' && this.np.now_playing.playlist !== 'Jingle AFTER SHOW' && this.np.now_playing.playlist !== ''))
+      return !!(
+        this.np.live.is_live ||
+        this.np.now_playing.playlist !== 'OFF AIR' && 
+        this.np.now_playing.playlist !== 'Off Air Ambient' && 
+        this.np.now_playing.playlist !== 'Jingle' && 
+        this.np.now_playing.playlist !== 'Jingle AFTER SHOW'
+      )
     },
     check_offairlink () {
       return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
@@ -259,33 +312,42 @@ export default {
       return '/shows/' + url
     },
     show_art_url () {
-      if (this.np.live.is_live) {
-        // check if this method is valid with streams
-        return this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
-      } else {
-        // const songTitleJSON = this.np.now_playing.song.title
-        const songArtistJSON = this.np.now_playing.song.artist
-        const artworkJSON = this.np.now_playing.song.art // art work url in json
+      let url = ''
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
+      {
+        if (this.np.live.is_live) {
+          // check if this method is valid with streams
+          url = this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
+        } else {
+          // const songTitleJSON = this.np.now_playing.song.title
+          const songArtistJSON = this.np.now_playing.song.artist
+          const artworkJSON = this.np.now_playing.song.art // art work url in json
 
-        if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
-          if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
-            let artworkHistoryJSON = '';
-            (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
-              if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
-                artworkHistoryJSON = el.song.art
-                return true
-              } else {
-                return false
-              }
-            })
-            if (artworkHistoryJSON !== '') { return artworkHistoryJSON } else { return this.default_art_url } // fallback to default art URL
-          } else {
-            return this.currentShowArcsi.cover_image_url // return show art work
+          if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
+            if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
+              let artworkHistoryJSON = '';
+              (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
+                if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
+                  artworkHistoryJSON = el.song.art
+                  return true
+                } else {
+                  return false
+                }
+              })
+              if (artworkHistoryJSON !== '') { url = artworkHistoryJSON } else { url = this.default_art_url } // fallback to default art URL
+            } else {
+              url = this.currentShowArcsi.cover_image_url // return show art work
+            }
+          } else { // it's a valid art work url by azuracast
+            url = artworkJSON
           }
-        } else { // it's a valid art work url by azuracast
-          return artworkJSON
         }
+      } else // Use arcsi data as fallback
+      {
+        url = this.latestEpisodeData?.image_url
       }
+      this.$store.commit('player/setStreamEpisodeImageURL', url)
+      return url
     },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
@@ -338,6 +400,7 @@ export default {
         this.volume = parseInt(urlParams.get('volume'))
       }
     }
+    // Start polling the streaming server's (Azuracast) nowplaying API
     this.checkNowPlaying()
   },
   beforeDestroy () {
@@ -446,7 +509,34 @@ export default {
           })
           this.current_stream = currentStream
         }
-        // Vue.prototype.$eventHub.$emit('np_updated', npNew);
+      // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
+      // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons: 
+      // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
+      // 2. We may need some recurring calculation logic if we want day changes not to need site reload
+      // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
+      const groupedShows = this.groupShowsByDay(this.arcsiList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
+      this.$store.commit('player/setShowsByDate', groupedShows)
+      //Compute current show      
+      if (this.nowPlayingInfoAvailable){
+        //Compute by name
+        this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title))
+      } else {
+        // Compute by time
+        const todayShows = groupedShows[0]
+        for (let i = 0; i < todayShows.length; i++) {
+          this.show = todayShows[i]
+          if (this.removeMinutesAndSeconds(this.show.start)<=this.getCurrentTimeHourCET() && this.removeMinutesAndSeconds(this.show.end) >= this.getCurrentTimeHourCET() ) { //as shows are timely ordered in input array, the first hit will be the currently running show
+            break
+          }
+        }
+      }  
+      if (this.show_check){
+        this.getLatestEpisodeFromArcsi()
+        console.log('1')
+      } else {
+        this.latestEpisodeData = null
+      }
+      
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -480,7 +570,33 @@ export default {
     },
     closeModal () {
       this.streamModal = false
-    }
+    },
+    getLatestEpisodeFromArcsi() {
+    // TODO: use dedicated frontend API instead of one meant for arcsi UI (rationale: we need the unarchived episodes too for relay logic and there was no such frontend arcsi API available)  
+    // TODO: see also related workaround in getLatestEpisode ()
+    this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
+      .then((res) => {
+        this.latestEpisodeData = this.getLatestEpisode(res.data)
+        console.log(res.data)
+      })
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+      })
+    },
+    // Helper method for getLatestEpisodeFromArcsi()
+    getLatestEpisode (currentShow) {
+      const sortedItems = currentShow.items
+      // We need the unarchived items too (no audio uploaded yet) to cover relay streams too
+      //.filter(show => show.archived === true) 
+      .sort((a, b) => b.number - a.number)
+      .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+      // Workaround: compute absoulate URL as current arcsi response doesn't have it
+      let latestEp = sortedItems[0]
+      const relativeURL = latestEp.image_url
+      latestEp.image_url = mediaServerURL +  currentShow.archive_lahmastore_base_url + '/' + relativeURL  
+      return latestEp
+    } 
   }
 }
 </script>

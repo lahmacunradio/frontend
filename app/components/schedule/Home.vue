@@ -64,37 +64,16 @@ export default {
       currentHost: typeof window !== 'undefined' ? window.location.origin : null,
       isClient: typeof window !== 'undefined' && window.document,
       streamServer,
-      showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
-      nowPlaying: {},
-      latestRareThursday: null,
-      latestRareFriday: null,
-      customScheduleDay: null,
-      customScheduleEntries: null,
-      customPosition: null
     }
   },
   computed: {
     ...mapGetters({
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
+      streamShowTitle: 'player/getStreamShowTitle'
     }),
-    rareShowThursday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_thursday.find(item => item.active === true)
-    },
-    rareShowFriday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_friday.find(item => item.active === true)
-    },
-    getToday () {
-      const d = new Date()
-      return d.getDay()
+    getToday (){
+      return this.getTodayNumeric()
     },
     todayDate () {
       return new Date()
@@ -102,35 +81,11 @@ export default {
     tommorrow () {
       return new Date(new Date())
     },
-    streamShowTitle () {
-      if (!this.nowPlaying) {
-        return false
-      } else if (this.nowPlaying?.live?.is_live) {
-        return this.nowPlaying?.live?.streamer_name
-      } else {
-        return this.nowPlaying?.now_playing?.song.artist
-      }
-    },
     todayName () {
       return this.dayNames[this.getToday - 1]
-    }
-  },
-  mounted () {
-    this.groupShowsByDay(this.shows)
-    setTimeout(() => {
-      this.checkNowPlaying()
-    }, 1000)
-  },
-  beforeDestroy () {
-    // prevent memory leak
-    clearInterval(this.interval)
-  },
-  created () {
-    // update the time every minute
-    if (this.isClient) {
-      this.interval = setInterval(() => {
-        this.checkNowPlaying()
-      }, 60 * 1000)
+    },
+    showsByDate () {
+      return this.$store.getters['player/getShowsByDate']
     }
   },
   methods: {
@@ -138,56 +93,6 @@ export default {
       if (index === 0 && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
-    },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        this.$sentry.captureException(new Error('Schedule not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Schedule not available' })
-      })
-    },
-    groupShowsByDay (shows) {
-      if (!shows) { return false }
-      const list = []
-      const daybyMonday = this.getToday === 0 ? 7 : this.getToday
-      const dayIndex = daybyMonday - 1
-
-      this.latestRareThursday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
-      this.latestRareFriday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
-
-      const filteredShows = shows
-        .filter(val => !this.latestRareThursday.includes(val))
-        .filter(val => !this.latestRareFriday.includes(val))
-
-      // custom Schedule Day
-      if (this.customSchedule?.is_active) {
-        this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
-        this.customScheduleEntries = this.customSchedule.schedule
-        // TODO fix the correct index
-        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
-      }
-
-      for (let i = 0; i < 7; i++) {
-        list.push([])
-        if (this.customScheduleDay - 1 === i) {
-          this.customScheduleEntries.forEach((entry) => {
-            list[i].push(entry)
-          })
-        }
-
-        filteredShows.forEach((show) => {
-          if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
-            list[i].push(show)
-          }
-        })
-      }
-      this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
     }
   }
 

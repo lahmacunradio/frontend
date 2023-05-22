@@ -25,6 +25,7 @@
 </template>
 
 <script>
+
 export default {
   props: {
     day: {
@@ -45,9 +46,8 @@ export default {
     }
   },
   computed: {
-    getToday () {
-      const d = new Date()
-      return d.getDay()
+    getToday (){
+      return this.getTodayNumeric()
     }
   },
   mounted () {

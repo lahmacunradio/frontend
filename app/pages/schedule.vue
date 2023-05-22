@@ -20,10 +20,10 @@
         <div v-for="(day, index) in dayNames" :key="index" :ref="index" class="dayschedule" :class="index === 0 ? 'block' : 'hidden'">
           <div v-for="(show, showindex) in showsByDate[index]" :key="index + showindex">
             <div v-if="customPosition === index">
-              <ScheduleCustom :show="show" :now-playing="nowPlaying" />
+              <ScheduleCustom :show="show" />
             </div>
             <div v-else>
-              <ScheduleFullitem :show="show" :now-playing="nowPlaying" />
+              <ScheduleFullitem :show="show" />
             </div>
           </div>
         </div>
@@ -45,7 +45,6 @@ export default {
       selectedDay: 0,
       customPosition: null,
       interval: null,
-      nowPlaying: {},
       latestRareThursday: null,
       latestRareFriday: null
     }
@@ -78,6 +77,9 @@ export default {
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule'
     }),
+    getToday (){
+      return this.getTodayNumeric()
+    },
     rareShowThursday () {
       if (!this.rareShows) {
         return false
@@ -101,10 +103,6 @@ export default {
         .sort((a, b) => a.day - b.day)
         .sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },
-    getToday () {
-      const d = new Date()
-      return d.getDay()
-    },
     todayDate () {
       return new Date()
     },
@@ -116,28 +114,14 @@ export default {
     }
   },
   mounted () {
-    this.groupShowsByDay(this.sortShowsForSchedule)
-    setTimeout(() => {
-      this.checkNowPlaying()
-    }, 1000)
-  },
-  beforeDestroy () {
-    // prevent memory leak
-    clearInterval(this.interval)
-  },
-  created () {
-    // update the time every minute
-    if (this.isClient) {
-      this.interval = setInterval(() => {
-        this.checkNowPlaying()
-      }, 60 * 1000)
-    }
+    this.local_groupShowsByDay(this.sortShowsForSchedule)
   },
   methods: {
-    groupShowsByDay (shows) {
+    local_groupShowsByDay (shows) {
       if (!shows) { return false }
       const list = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
+      //Current day's index
       const dayIndex = daybyMonday - 1
       this.latestRareThursday = shows
         .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
@@ -169,6 +153,7 @@ export default {
           }
         })
       }
+      //2D array indexed by the week's days starting at current day; each array element is a 1D array listing the day's shows
       this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
       this.dayNames = [...this.dayNames.slice(dayIndex), ...this.dayNames.slice(0, dayIndex)]
     },
@@ -182,14 +167,6 @@ export default {
       this.$refs[dayindex][0].classList.remove('hidden')
       this.selectedDay = dayindex
     },
-    checkNowPlaying () {
-      this.$axios.get(this.streamServer).then((response) => {
-        this.nowPlaying = response.data
-      }).catch((error) => {
-        this.$sentry.captureException(new Error('Stream interrupted ', error))
-        this.interval = setTimeout(this.checkNowPlaying, 15000)
-      })
-    }
   }
 }
 </script>
