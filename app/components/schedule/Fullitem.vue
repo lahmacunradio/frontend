@@ -26,7 +26,7 @@
               Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
-              {{ onAirDescription }}
+               <div v-sanitize="[ sanitizeOptions, onAirDescription ]" class="description-text" />
             </div>
           </div>
         </div>
