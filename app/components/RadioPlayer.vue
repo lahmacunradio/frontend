@@ -527,7 +527,6 @@ export default {
       }  
       if (this.show_check){
         this.getLatestEpisodeFromArcsi()
-        console.log('1')
       } else {
         this.latestEpisodeData = null
       }
@@ -572,7 +571,6 @@ export default {
     this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
       .then((res) => {
         this.latestEpisodeData = this.getLatestEpisode(res.data)
-        console.log(res.data)
       })
       .catch((error) => {
         console.log(error)
@@ -581,6 +579,7 @@ export default {
     },
     // Helper method for getLatestEpisodeFromArcsi()
     getLatestEpisode (currentShow) {
+      if (currentShow.items.length != 0){
       const sortedItems = currentShow.items
       // We need the unarchived items too (no audio uploaded yet) to cover relay streams too
       //.filter(show => show.archived === true) 
@@ -590,6 +589,7 @@ export default {
       const relativeURL = latestEp.image_url
       latestEp.image_url = mediaServerURL +  currentShow.archive_lahmastore_base_url + '/' + relativeURL  
       return latestEp
+      }
     } 
   }
 }
