@@ -26,7 +26,7 @@
             </a>
           </div>
           <div v-else-if="show.archive_lahmastore_base_url">
-            <NuxtLink :to="'shows/' + show.archive_lahmastore_base_url.replace(currentHost, '')">
+            <NuxtLink :to="'/shows/' + show.archive_lahmastore_base_url.replace(currentHost, '')">
               <b>{{ show.name }}</b>
             </NuxtLink>
           </div>
