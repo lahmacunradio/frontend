@@ -149,7 +149,7 @@ export default {
           }
         })
       //Fetch show data
-      await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page', config)
+      await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
         .then((res) => {
             this.arcsiShow = res.data
         })
@@ -226,8 +226,6 @@ export default {
       if (this.arcsiShow && this.arcsiShow.items?.length) {
         const itemsSorted = this.arcsiShow?.items
           .filter(item => item.id !== this.arcsiEpisode.id)
-          .filter(show => show.play_date < this.getToday)
-          .filter(show => show.archived === true)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {

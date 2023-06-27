@@ -131,7 +131,7 @@ export default {
     }
   },
   async fetch () {
-    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page', config)
+    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
       .then(res => res.data)
       .catch((error) => {
         this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
@@ -176,8 +176,6 @@ export default {
     arcsiEpisodesList () {
       if (this.showObject?.items) {
         const itemsSorted = this.showObject.items
-          .filter(show => show.play_date < this.getToday)
-          .filter(show => show.archived === true)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {

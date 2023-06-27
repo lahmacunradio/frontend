@@ -566,31 +566,15 @@ export default {
       this.streamModal = false
     },
     getLatestEpisodeFromArcsi() {
-    // TODO: use dedicated frontend API instead of one meant for arcsi UI (rationale: we need the unarchived episodes too for relay logic and there was no such frontend arcsi API available)  
-    // TODO: see also related workaround in getLatestEpisode ()
-    this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
+    this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=latest', config)
       .then((res) => {
-        this.latestEpisodeData = this.getLatestEpisode(res.data)
+        this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
       })
       .catch((error) => {
         console.log(error)
         this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
       })
     },
-    // Helper method for getLatestEpisodeFromArcsi()
-    getLatestEpisode (currentShow) {
-      if (currentShow.items.length != 0){
-      const sortedItems = currentShow.items
-      // We need the unarchived items too (no audio uploaded yet) to cover relay streams too
-      //.filter(show => show.archived === true) 
-      .sort((a, b) => b.id - a.id)
-      // Workaround: compute absoulate URL as current arcsi response doesn't have it
-      let latestEp = sortedItems[0]
-      const relativeURL = latestEp.image_url
-      latestEp.image_url = mediaServerURL +  currentShow.archive_lahmastore_base_url + '/' + relativeURL  
-      return latestEp
-      }
-    } 
   }
 }
 </script>

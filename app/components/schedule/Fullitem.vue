@@ -43,7 +43,7 @@
             <div class="text-sm description">
               <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
               <p v-if="latestEpisodeData" class="mt-2">
-                Episode highlight:
+                Last in archive:
                 <NuxtLink :to="latestEpisodeLink">
                   <b>{{ latestEpisodeTitle }}</b>
                 </NuxtLink>
@@ -135,21 +135,15 @@ export default {
       }
     },
     getShowInfos () {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.show.id, config)
+      this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=archived,latest', config)
         .then((res) => {
-          this.latestEpisodeData = this.getLatestEpisode(res.data)
+          this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
         })
         .catch((error) => {
           console.log(error)
           this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
         })
     },
-    // Note: we currently show future and unarchived episodes too (see "Episode highlight" wording in HTML render part above)
-    getLatestEpisode (currentShow) {
-      const sortedItems = currentShow.items
-        .sort((a, b) => b.id - a.id)
-      return sortedItems[0]
-    }
   }
 }
 </script>
