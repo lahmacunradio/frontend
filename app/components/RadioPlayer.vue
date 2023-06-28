@@ -434,9 +434,8 @@ export default {
       if (this.show_check) {
         // eslint-disable-next-line no-undef
         gtag('event', 'Radio play', {
-          event_category: this.show_title,
-          event_label: this.show_subtitle,
-          value: 1
+          show_title: this.show_title,
+          episode_title: this.show_subtitle
         })
       }
 
