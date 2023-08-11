@@ -16,16 +16,12 @@
         Date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}
       </p>
     </NuxtLink>
-    <div v-if="false" class="flex items-center mt-6 tags">
-      <!-- tags are not needed for now -->
-      <div class="tag">
-        dub
-      </div>
-      <div class="tag">
-        psychedelic
-      </div>
-      <div class="tag">
-        experimental
+    <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
+      <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.slug" class="inline-block">
+        <!-- TODO::: which URL to use? can we get a slug also to use instead of ID? Which API endpoint lists the Tags? -->
+        <NuxtLink :to="`/episode/tags/${tag.id}`" class="tag-block">
+          {{ tag.display_name }}
+        </NuxtLink>
       </div>
     </div>
   </div>
@@ -57,6 +53,13 @@ export default {
         return false
       }
       return this.episode.name_slug
+    },
+    // TODO:: episode archive Tags -- implement in API???
+    episodeTags () {
+      if (!this.episode.tags) {
+        return false
+      }
+      return this.episode.tags.filter(tag => tag.display_name.length > 0)
     }
   },
   created () {

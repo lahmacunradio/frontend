@@ -16,13 +16,14 @@
     "@babel/plugin-proposal-optional-chaining": "^7.14.5",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/sentry": "^5.1.5",
+    "@sentry/tracing": "^7.62.0",
     "eslint": "^7.32.0",
     "html-entities": "^2.3.2",
     "nuxt": "^2.15.8",
     "sass": "^1.43.3",
     "sass-loader": "^10.2.0",
     "store": "^2.0.12",
-    "v-sanitize": "^0.0.5",
+    "v-sanitize": "^0.0.13",
     "vue-marked": "^0.1.1",
     "vue-sanitize-directive": "^0.1.0",
     "vue-slider-component": "^3.2.15",
@@ -34,10 +35,10 @@
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/tailwindcss": "^4.2.1",
+    "@nuxtjs/vuetify": "1.12.3",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat",
-    "@nuxtjs/vuetify":"1.12.3"
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }

@@ -20,6 +20,14 @@
               :visibility="shadowbox"
             />
           </a>
+          <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
+      <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.slug" class="inline-block">
+        <!-- TODO::: which URL to use? can we get a slug also to use instead of ID? Which API endpoint lists the Tags? -->
+        <NuxtLink :to="`/episode/tags/${tag.id}`" class="tag-block">
+          {{ tag.display_name }}
+        </NuxtLink>
+      </div>
+    </div>
         </div>
         <div class="mb-4 show-description">
           <h1 class="mt-0 font-bold h2">
@@ -205,6 +213,12 @@ export default {
         return ''
       }
       return this.truncate(this.showObject?.description, 150)
+    },
+    episodeTags () {
+      if (!this.showObject.tags) {
+        return false
+      }
+      return this.showObject.tags.filter(tag => tag.display_name.length > 0)
     }
   },
   methods: {
