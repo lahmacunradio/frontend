@@ -141,7 +141,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
-          this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+          //this.$nuxt.error({ statusCode: error.response.status, message: "Show's latest episode could not be fetched: " + error.message })
         })
     },
   }
