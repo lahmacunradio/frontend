@@ -11,7 +11,7 @@
     <div class="container">
       <div v-if="tags?.length" class="flex items-center mt-6 tags flex-wrap">
         <div v-for="(tag, index) in tags" :key="index + tag.id + tag.clean_name" class="inline-block">
-          <div class="tag-block">
+          <div v-if="tag.clean_name.length > 0" class="tag-block">
             <NuxtLink :to="`/archive/tags/${tag.clean_name}`">
               {{ tag.display_name }}
             </NuxtLink>

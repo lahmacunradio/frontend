@@ -13,20 +13,18 @@
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
             <img :src="showImage" :alt="showObject.name">
-            <Modal
-              :media="showImage"
-              :title="showObject.name"
-              :description="showObject.description"
-              :visibility="shadowbox"
-            />
+            <Modal :media="showImage" :title="showObject.name" :description="showObject.description"
+              :visibility="shadowbox" />
           </a>
           <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
-      <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.slug" class="inline-block">
-        <NuxtLink :to="`/archive/tags/${tag.clean_name}`" class="tag-block">
-          {{ tag.display_name }}
-        </NuxtLink>
-      </div>
-    </div>
+            <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.clean_name" class="inline-block">
+              <div v-if="tag.clean_name.length > 0" class="tag-block">
+                <NuxtLink :to="`/archive/tags/${tag.clean_name}`">
+                  {{ tag.display_name }}
+                </NuxtLink>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="mb-4 show-description">
           <h1 class="mt-0 font-bold h2">
@@ -42,7 +40,7 @@
               {{ showFrequency(showObject.frequency, showObject.week, showObject.playlist_name) }}
             </p>
             <p>
-              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
+              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language" />
             </p>
             <p v-if="showObject.archive_mixcloud_base_url">
               Elsewhere on web:
@@ -59,7 +57,7 @@
               <strong>Show is not active</strong>
             </p>
             <p>
-              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language"/>
+              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language" />
             </p>
             <p v-if="showObject.archive_mixcloud_base_url">
               Elsewhere on web:
@@ -70,7 +68,7 @@
               </a>
             </p>
           </div>
-          <div v-sanitize="[ sanitizeOptions, showObject.description ]" class="description-text" />
+          <div v-sanitize="[sanitizeOptions, showObject.description]" class="description-text" />
         </div>
       </div>
       <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
@@ -92,10 +90,8 @@
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
             <div>
-              <NuxtLink
-                class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }"
-              >
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
+                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
@@ -116,7 +112,7 @@
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
-  data () {
+  data() {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
@@ -137,14 +133,14 @@ export default {
       airtimeAsc: true
     }
   },
-  async fetch () {
+  async fetch() {
     this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
       .then(res => res.data)
       .catch((error) => {
         this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
       })
   },
-  head () {
+  head() {
     return {
       title: this.showObject?.name,
       meta: [
@@ -172,7 +168,7 @@ export default {
     }
   },
   computed: {
-    getToday () {
+    getToday() {
       const d = new Date()
       const year = d.getFullYear()
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
@@ -180,7 +176,7 @@ export default {
       return `${year}-${month}-${day}`
     },
 
-    arcsiEpisodesList () {
+    arcsiEpisodesList() {
       if (this.showObject?.items) {
         const itemsSorted = this.showObject.items
           .sort((a, b) => b.number - a.number)
@@ -203,17 +199,17 @@ export default {
       }
       return null
     },
-    showImage () {
+    showImage() {
       const rootLink = mediaServerURL + this.slug + '/'
       return rootLink + this.showObject?.cover_image_url
     },
-    metaDescription () {
+    metaDescription() {
       if (!this.showObject?.description) {
         return ''
       }
       return this.truncate(this.showObject?.description, 150)
     },
-    episodeTags () {
+    episodeTags() {
       if (!this.showObject.tags) {
         return false
       }
@@ -221,14 +217,14 @@ export default {
     }
   },
   methods: {
-    sortAlphabeticaly () {
+    sortAlphabeticaly() {
       this.sortingType = 'abc'
       this.alphabeticAsc = !this.alphabeticAsc
       this.airtimeAsc = false
       this.$refs.alphabetical.classList.add('selected')
       this.$refs.bydate.classList.remove('selected')
     },
-    sortAirtime () {
+    sortAirtime() {
       this.sortingType = 'air'
       this.airtimeAsc = !this.airtimeAsc
       this.alphabeticAsc = false
@@ -240,29 +236,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .show-external-link {
   text-decoration: underline;
 }
 
 .show-image {
-    min-width: 300px;
-    max-width: 360px;
+  min-width: 300px;
+  max-width: 360px;
 }
+
 .show-infos {
   margin-bottom: 1rem;
   font-style: italic;
 }
+
 .language {
   display: inline-block;
   vertical-align: middle;
 }
+
 .change-order-button {
   border: 1px solid #775a8f;
   @apply py-2 px-4 rounded;
-  &.selected, &:hover {
+
+  &.selected,
+  &:hover {
     @apply bg-white bg-opacity-25;
   }
+
   @media (max-width: $mobile-width) {
     @apply text-sm px-2;
   }
