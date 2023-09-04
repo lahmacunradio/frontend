@@ -1,11 +1,92 @@
 <template>
   <div>
-    <h2>Episode Tags TBD</h2>
+    <SubTitle :title="title" url="/archive/tags/" />
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+      <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
+      <p>Loading...</p>
+    </div>
+    <div v-if="$fetchState.error" class="py-8 text-center">
+      Error happened
+    </div>
+    <div v-else class="container">
+      <div v-if="tags?.shows?.length" class="pt-8 pb-12" :class="{
+        'border-b border-current mb-12': tags?.items?.length
+      }">
+        <h2 class="mb-4">Shows</h2>
+        <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div v-for="show in tags?.shows" :key="show.id">
+            <div>
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
+                <img :src="mediaServerURL + '/' + show.archive_lahmastore_base_url + '/' + show.cover_image_url" alt=""
+                  class="my-2 image-fit">
+              </NuxtLink>
+              <NuxtLink :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
+                <h5 class="mt-4">
+                  {{ show.name }}
+                </h5>
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="tags?.items?.length" class="">
+        <h2 class="mb-4">Episodes</h2>
+        <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div v-for="arcsi in tags?.items" :key="arcsi.id">
+            <div>
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
+                :to="{ path: `/shows/${arcsi.name_slug}` }">
+                <img :src="mediaServerURL + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+              </NuxtLink>
+              <NuxtLink :to="{ path: `/shows/${arcsi.name_slug}` }">
+                <h5 class="mt-4">
+                  {{ arcsi.name }}
+                </h5>
+              </NuxtLink>
+              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
+import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+
 export default {
+  data() {
+    return {
+      mediaServerURL,
+      slug: this.$route.params.slug,
+      tags: null
+    }
+  },
+  async fetch() {
+    //Fetch show data
+    await this.$axios.get(arcsiBaseURL + '/tag/' + this.slug, config)
+      .then((res) => {
+        // console.log(res.data)
+        this.tags = res.data
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+      })
+
+  },
+  computed: {
+    title() {
+      if (this.tags?.display_name) {
+        return "Tags for " + this.tags?.display_name
+      } else {
+        return "Tags"
+      }
+    },
+  }
+
 
 }
 </script>
