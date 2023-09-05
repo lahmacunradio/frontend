@@ -14,7 +14,7 @@
       }">
         <h2 class="mb-4">Shows</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="show in tags?.shows.sort((a, b) => a.archive_lahmastore_base_url.localeCompare(b.archive_lahmastore_base_url))" :key="show.id">
+          <div v-for="show in tags?.shows" :key="show.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
@@ -32,7 +32,7 @@
       <div v-if="tags?.items?.length" class="">
         <h2 class="mb-4">Episodes</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in tags?.items?.sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))" :key="arcsi.id">
+          <div v-for="arcsi in tags?.items" :key="arcsi.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${arcsi.shows?.[0]?.archive_lahmastore_base_url}/${arcsi.name_slug}` }">
