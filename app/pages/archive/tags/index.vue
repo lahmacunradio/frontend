@@ -36,7 +36,7 @@ export default {
     //Fetch Tag data
     await this.$axios.get(arcsiBaseURL + '/tag/all', config)
       .then((res) => {
-        this.tags = res.data.sort((a, b) => a.clean_name.localeCompare(b.clean_name))
+        this.tags = res.data.sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
       })
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi server not available ', error))

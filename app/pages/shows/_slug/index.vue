@@ -213,7 +213,7 @@ export default {
       if (!this.showObject.tags) {
         return false
       }
-      return this.showObject.tags.filter(tag => tag.display_name.length > 0).sort((a, b) => a.clean_name.localeCompare(b.clean_name))
+      return this.showObject.tags.filter(tag => tag.display_name.length > 0).sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
     }
   },
   methods: {
