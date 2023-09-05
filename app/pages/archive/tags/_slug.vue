@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle :title="title" url="/archive/tags/" />
+    <SubTitle :title="title" />
     <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
@@ -16,8 +16,9 @@
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="show in tags?.shows" :key="show.id">
             <div>
-              <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
-                <img :src="mediaServerURL + '/' + show.archive_lahmastore_base_url + '/' + show.cover_image_url" alt=""
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
+                :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
+                <img :src="show.cover_image_url" alt=""
                   class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
@@ -34,11 +35,10 @@
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="arcsi in tags?.items" :key="arcsi.id">
             <div>
-              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${arcsi.name_slug}` }">
-                <img :src="mediaServerURL + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1" :to="{ path: `/shows/${arcsi.shows?.[0]?.archive_lahmastore_base_url}/${arcsi.name_slug}` }">
+                <img :src="arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${arcsi.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${arcsi.shows?.[0]?.archive_lahmastore_base_url}/${arcsi.name_slug}` }">
                 <h5 class="mt-4">
                   {{ arcsi.name }}
                 </h5>
@@ -47,6 +47,18 @@
             </div>
           </div>
         </div>
+      </div>
+      <div v-if="tags?.items?.length === 0 && tags?.shows?.length === 0" class="py-8">
+        <p class="italic text-lg">
+          No matching Shows or Episodes found for <b>{{ tags?.display_name }} </b> tag
+        </p>
+      </div>
+      <div class="flex justify-end w-full">
+        <NuxtLink :to="{ path: `/archive/tags/` }">
+          <h5 class="mt-6">
+            Show all tags <i class="fa fa-angle-double-right font-normal"></i>
+          </h5>
+        </NuxtLink>
       </div>
     </div>
 
