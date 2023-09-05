@@ -55,12 +55,11 @@ export default {
       }
       return this.episode.name_slug
     },
-    // TODO:: episode archive Tags -- implement in API???
     episodeTags() {
       if (!this.episode.tags) {
         return false
       }
-      return this.episode.tags.filter(tag => tag.display_name.length > 0)
+      return this.episode.tags.filter(tag => tag.display_name.length > 0).sort((a, b) => a.clean_name.localeCompare(b.clean_name))
     }
   },
   created() {
