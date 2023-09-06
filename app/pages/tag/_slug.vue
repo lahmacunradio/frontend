@@ -25,6 +25,15 @@
                   {{ show.name }}
                 </h5>
               </NuxtLink>
+              <div v-if="show?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
+                <div v-for="(tag, index) in show.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
+                  <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">
+                    <NuxtLink :to="`/tag/${tag.clean_name}`">
+                      {{ tag.display_name }}
+                    </NuxtLink>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -44,6 +53,15 @@
                 </h5>
               </NuxtLink>
               <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <div v-if="arcsi?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
+                <div v-for="(tag, index) in arcsi.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
+                  <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">
+                    <NuxtLink :to="`/tag/${tag.clean_name}`">
+                      {{ tag.display_name }}
+                    </NuxtLink>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -54,7 +72,7 @@
         </p>
       </div>
       <div class="flex justify-end w-full">
-        <NuxtLink :to="{ path: `/archive/tags/` }">
+        <NuxtLink :to="{ path: `/tag/` }">
           <h5 class="mt-6">
             Show all tags <i class="fa fa-angle-double-right font-normal"></i>
           </h5>
@@ -91,7 +109,7 @@ export default {
   computed: {
     title() {
       if (this.tags?.display_name) {
-        return "Tags for " + this.tags?.display_name
+        return "TAGGED BY " + this.tags?.display_name
       } else {
         return "Tags"
       }

@@ -16,6 +16,11 @@
           Archive
         </NuxtLink>
       </li>
+      <li :class="baseRoute === '/tag/' && 'selected'">
+        <NuxtLink to="/tag/">
+          Tags
+        </NuxtLink>
+      </li>
       <li :class="baseRoute === '/news/' && 'selected'">
         <NuxtLink to="/news/">
           News
