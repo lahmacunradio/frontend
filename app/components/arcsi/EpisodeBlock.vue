@@ -16,16 +16,13 @@
         Date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}
       </p>
     </NuxtLink>
-    <div v-if="false" class="flex items-center mt-6 tags">
-      <!-- tags are not needed for now -->
-      <div class="tag">
-        dub
-      </div>
-      <div class="tag">
-        psychedelic
-      </div>
-      <div class="tag">
-        experimental
+    <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
+      <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.clean_name" class="inline-block">
+        <div v-if="tag.clean_name.length > 0" class="tag-block">
+          <NuxtLink :to="`/tag/${tag.clean_name}`">
+            {{ tag.display_name }}
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
@@ -43,23 +40,29 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       showslug: ''
     }
   },
   computed: {
-    episodeImage () {
+    episodeImage() {
       return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
     },
-    episodeLink () {
+    episodeLink() {
       if (!this.episode.name_slug) {
         return false
       }
       return this.episode.name_slug
+    },
+    episodeTags() {
+      if (!this.episode.tags) {
+        return false
+      }
+      return this.episode.tags.filter(tag => tag.display_name.length > 0).sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
     }
   },
-  created () {
+  created() {
     this.showslug = this.arcsilist.find(item => item.id === this.episode.shows[0].id).archive_lahmastore_base_url
   }
 }
@@ -67,11 +70,13 @@ export default {
 
 <style lang="scss" scoped>
 .latest-arcsi-blokk {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+
   .arcsi-img {
     height: auto;
     width: 100%;
     overflow: hidden;
+
     img {
       object-fit: cover;
       height: 100%;
@@ -80,10 +85,10 @@ export default {
     }
   }
 }
+
 .tag {
   padding: 0.2rem 0.5rem;
   margin-right: 0.5rem;
   @apply bg-white;
 }
-
 </style>

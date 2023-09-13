@@ -104,6 +104,8 @@ export default {
   mounted () {
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', this.changeBreakpoint, { passive: true })
+      const viewport = this.$refs.slider
+      this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
       setTimeout(() => {
         this.changeBreakpoint()
         this.numberOfEpisodes = this.arcsiEpisodesListSortedLatest?.length

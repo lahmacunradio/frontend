@@ -11,9 +11,9 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 ## Dev env
 #### Node
 At least `>=12.13.0`
-Recommended `=14.11.0`
+Recommended `=14.18.2`
 
-Node Version Manager (.nvmrc) has 14.11.0 as recommended, run `nvm install` and `nvm use` in `app` folder
+Node Version Manager (.nvmrc) has 14.18.2 as recommended, run `nvm install` and `nvm use` in `app` folder
 #### Yarn
 At least `>=1.22.10`
 

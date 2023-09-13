@@ -12,13 +12,18 @@
           <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
             <a class="cursor-pointer" @click="arcsiItemShadowbox = !arcsiItemShadowbox">
               <img :src="episodeImage" :alt="arcsiEpisode.name">
-              <Modal
-                :media="episodeImage"
-                :title="arcsiEpisode.name"
-                :description="arcsiEpisode.description"
-                :visibility="arcsiItemShadowbox"
-              />
+              <Modal :media="episodeImage" :title="arcsiEpisode.name" :description="arcsiEpisode.description"
+                :visibility="arcsiItemShadowbox" />
             </a>
+            <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
+              <div v-for="(tag, index) in episodeTags" :key="index + tag.id + tag.clean_name" class="inline-block">
+                <div v-if="tag.clean_name.length > 0" class="tag-block">
+                  <NuxtLink :to="`/tag/${tag.clean_name}`">
+                    {{ tag.display_name }}
+                  </NuxtLink>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="mb-4 show-description">
             <h1 class="h3">
@@ -42,7 +47,7 @@
               </p>
             </div>
 
-            <div v-sanitize="[ sanitizeOptions, arcsiEpisode.description ]" />
+            <div v-sanitize="[sanitizeOptions, arcsiEpisode.description]" />
 
             <div v-if="arcsiEpisode.play_file_name" class="py-4">
               <client-only>
@@ -78,10 +83,8 @@
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
             <div>
-              <NuxtLink
-                class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }"
-              >
+              <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
+                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
@@ -103,7 +106,7 @@ import { mapGetters } from 'vuex'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
-  data () {
+  data() {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       arcsiItemShadowbox: false,
@@ -126,39 +129,39 @@ export default {
       airtimeAsc: true
     }
   },
-  async fetch () {
-      //Fetch episode data
-      await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`, config)
-        .then((res) => {
-          this.arcsiEpisode = res.data
-        })
-        .catch((error) => {
-          if (error.response.status === 404) {
-            //Use legacy API URL as fallback
-            this.$axios.get(`${arcsiBaseURL}/item/${this.id}`, config)
-              .then((res) => {
-                this.arcsiEpisode = res.data
-              })
-              .catch((error) => {
-                this.$sentry.captureException(new Error('Arcsi server not available ', error))
-                this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-              })
-          } else {
-            this.$sentry.captureException(new Error('Arcsi server not available ', error))
-            this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-          }
-        })
-      //Fetch show data
-      await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
-        .then((res) => {
-            this.arcsiShow = res.data
-        })
-        .catch((error) => {
+  async fetch() {
+    //Fetch episode data
+    await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`, config)
+      .then((res) => {
+        this.arcsiEpisode = res.data
+      })
+      .catch((error) => {
+        if (error.response.status === 404) {
+          //Use legacy API URL as fallback
+          this.$axios.get(`${arcsiBaseURL}/item/${this.id}`, config)
+            .then((res) => {
+              this.arcsiEpisode = res.data
+            })
+            .catch((error) => {
+              this.$sentry.captureException(new Error('Arcsi server not available ', error))
+              this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+            })
+        } else {
           this.$sentry.captureException(new Error('Arcsi server not available ', error))
           this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-        })
-},
-  head () {
+        }
+      })
+    //Fetch show data
+    await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
+      .then((res) => {
+        this.arcsiShow = res.data
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+      })
+  },
+  head() {
     return {
       title: this.fullEpisodeTitle,
       meta: [
@@ -192,37 +195,37 @@ export default {
       arcsiEpisodePlaying: 'getArcsiPlayState'
 
     }),
-    getToday () {
+    getToday() {
       const d = new Date()
       const year = d.getFullYear()
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    showTitle () {
+    showTitle() {
       if (!this.arcsiEpisode) { return 'Show' }
       return this.arcsiEpisode?.shows?.[0].name
     },
-    fullEpisodeTitle () {
+    fullEpisodeTitle() {
       if (!this.arcsiEpisode) { return 'Arcsi Episode' }
       return this.arcsiEpisode?.shows?.[0].name + ' - ' + this.arcsiEpisode?.name
     },
-    airDate () {
+    airDate() {
       if (!this.arcsiEpisode?.play_date) {
         return ''
       }
       return this.$moment(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
     },
-    episodeImage () {
+    episodeImage() {
       return this.arcsiEpisode?.image_url
     },
-    metaDescription () {
+    metaDescription() {
       if (!this.arcsiEpisode?.description) {
         return `Aired on ${this.airDate}`
       }
       return this.truncate(this.arcsiEpisode?.description, 150)
     },
-    arcsiEpisodesList () {
+    arcsiEpisodesList() {
       if (this.arcsiShow && this.arcsiShow.items?.length) {
         const itemsSorted = this.arcsiShow?.items
           .filter(item => item.id !== this.arcsiEpisode.id)
@@ -245,9 +248,15 @@ export default {
         }
       }
       return null
+    },
+    episodeTags() {
+      if (!this.arcsiEpisode?.tags) {
+        return false
+      }
+      return this.arcsiEpisode?.tags.filter(tag => tag.display_name.length > 0)
     }
   },
-  mounted () {
+  mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
         if (!this.arcsiEpisode) {
@@ -256,24 +265,24 @@ export default {
       }, 1000)
     })
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.arcsiEpisode = null
     this.arcsiShow = null
   },
   methods: {
-    playArcsi () {
+    playArcsi() {
       this.$store.commit('player/isArcsiPlaying', true)
       this.$store.commit('player/isArcsiVisible', true)
       this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
     },
-    sortAlphabeticaly () {
+    sortAlphabeticaly() {
       this.sortingType = 'abc'
       this.alphabeticAsc = !this.alphabeticAsc
       this.airtimeAsc = false
       this.$refs.alphabetical.classList.add('selected')
       this.$refs.bydate.classList.remove('selected')
     },
-    sortAirtime () {
+    sortAirtime() {
       this.sortingType = 'air'
       this.airtimeAsc = !this.airtimeAsc
       this.alphabeticAsc = false
@@ -287,22 +296,28 @@ export default {
 
 <style lang="scss" scoped>
 .show-image {
-    min-width: 300px;
-    max-width: 360px;
+  min-width: 300px;
+  max-width: 360px;
 }
+
 .show-infos {
-margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
+
 .language {
   display: inline-block;
   vertical-align: middle;
 }
+
 .change-order-button {
   border: 1px solid #775a8f;
   @apply py-2 px-4 rounded whitespace-nowrap;
-  &.selected, &:hover {
+
+  &.selected,
+  &:hover {
     @apply bg-white bg-opacity-25;
   }
+
   @media (max-width: $mobile-width) {
     @apply text-sm px-2;
   }

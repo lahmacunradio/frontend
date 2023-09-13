@@ -36,7 +36,7 @@ export default {
     this.donateContent = await this.$axios.get(`${donateBannerURL}`)
       .then((res) => {
         if (res && res.data.acf) {
-          console.log(res.data.acf)
+          // console.log(res.data.acf)
           return res.data.acf
         }
       })
