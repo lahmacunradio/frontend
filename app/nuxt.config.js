@@ -72,11 +72,6 @@ export default {
   },
   sentry: {
     dsn: process.env.SENTRY_DSN,
-    publish_release: true,
-    sourceMapStyle: 'hidden-source-map',
-    config: {
-      release: process.env.GIT_COMMIT_SHA
-    },
     tracing: true
   },
   /*
