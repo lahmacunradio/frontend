@@ -14,12 +14,13 @@
             <select v-model="show_name" class="show-select" :class="{ showSelected: show_name.length > 1 }"
               @change="selectShow">
               <option disabled selected value="">Please select a show</option>
-              <option v-for="(show) in arcsiShowsList" :value="show.archive_lahmastore_base_url" :key="index">
+              <option v-for="(show) in arcsiShowsList" :value="show.archive_lahmastore_base_url"
+                :key="show.archive_lahmastore_base_url">
                 {{ show.name }}
               </option>
             </select>
             <div class="absolute right-2 top-2 z-0">
-              <i class="fa fa-chevron-down"/>
+              <i class="fa fa-chevron-down" />
             </div>
           </div>
 
