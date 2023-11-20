@@ -24,6 +24,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
@@ -45,6 +47,19 @@ export default {
         },
       ]
     }
+  },
+  computed: {
+    ...mapGetters({
+      allShows: 'returnArcsiShows'
+    }),
+    arcsiShowsList () {
+      if (this.allShows) {
+        return this.allShows.filter(show => (
+          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
+        )).sort((a, b) => a.name.localeCompare(b.name))
+      }
+      return null
+    },
   },
 
 }
