@@ -1,46 +1,86 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun show membership" :maintitle="true" />
+    <SubTitle title="Lahmacun membership" :maintitle="true" />
     <div class="container my-8">
-      <div class="product mb-4">
-        <p>DAILY RECURRING PAYMENT</p>
-        <h5>0.1 EUR</h5>
+      <div v-if="$fetchState.pending" class="center">
+        Loading...
       </div>
 
-      <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_recurring_membership" method="GET">
-        <div>
-          <label for="show_name">Show name:</label>
-          <div class="relative max-w-md bg-white rounded-sm">
-            <select v-model="show_name" class="show-select" :class="{ showSelected: show_name.length > 1 }"
-              @change="selectShow">
-              <option disabled selected value="">Please select a show</option>
-              <option v-for="(show) in arcsiShowsList" :value="show.archive_lahmastore_base_url"
-                :key="show.archive_lahmastore_base_url">
-                {{ show.name }}
-              </option>
-            </select>
-            <div class="absolute right-2 top-2 z-0">
-              <i class="fa fa-chevron-down" />
-            </div>
+      <div v-if="membershipContent" class="max-w-4xl mx-auto">
+        <div class="mb-4">
+          <h2>{{ membershipContent.title.rendered }}</h2>
+        </div>
+        <div class="grid md:grid-cols-2 md:gap-8 gap-4">
+          <div>
+            <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
+          </div>
+
+          <div>
+            <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_recurring_membership"
+              method="GET">
+              <div>
+                <label for="show_name">Select your show</label>
+                <div class="relative max-w-md bg-white rounded-sm">
+                  <select class="show-select" :class="{ showSelected: show_name.length > 1 }" @change="selectShow">
+                    <option disabled selected value="">Please select a show</option>
+                    <option v-for="(show) in arcsiShowsList" :value="show.archive_lahmastore_base_url"
+                      :key="show.archive_lahmastore_base_url">
+                      {{ show.name }}
+                    </option>
+                  </select>
+                  <div class="absolute right-2 top-2 z-0">
+                    <i class="fa fa-chevron-down" />
+                  </div>
+                </div>
+
+              </div>
+              <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
+            </form>
+            <p>Cancel your subscription <a href="/membership">here</a></p>
           </div>
 
         </div>
-        <button type="submit" id="checkout-button">Checkout</button>
-      </form>
-
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { membershipStripeURL } from '~/constants'
+
 import { mapGetters } from 'vuex'
 
 export default {
   data() {
     return {
       show_name: "",
+      membershipContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
+        allowedAttributes: {
+          a: ['*'],
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          form: ['*'],
+          input: ['*']
+        }
+      }
     }
+
   },
+  async fetch() {
+    this.membershipContent = await this.$axios.get(`${membershipStripeURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Membership not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
+      })
+  },
+
   mounted() {
     let stripeScript = document.createElement('script')
     stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
@@ -94,6 +134,14 @@ export default {
 }
 
 #checkout-button {
-  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-8;
+  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
+
+  &[disabled] {
+    @apply cursor-not-allowed bg-gray-800 text-gray-400;
+  }
+}
+
+p a {
+  @apply underline;
 }
 </style>
