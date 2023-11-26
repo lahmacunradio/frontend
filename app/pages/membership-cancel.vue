@@ -3,6 +3,7 @@
     <SubTitle title="Lahmacun membership" :maintitle="true" />
     <div class="container my-8">
       <h2>Cancel membership</h2>
+      <p>Do you really want to cancel your Membership?</p>
     </div>
   </div>
 </template>
