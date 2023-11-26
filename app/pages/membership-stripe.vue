@@ -36,7 +36,7 @@
               </div>
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
             </form>
-            <p>Cancel your subscription <a href="/membership">here</a></p>
+            <p>Cancel your subscription <a :href="$config.subscriptionManagementUrl">here</a></p>
           </div>
 
         </div>
