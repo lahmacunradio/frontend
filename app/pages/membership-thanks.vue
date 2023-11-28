@@ -11,8 +11,8 @@
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
         <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
-        <div class="block mt-6">
-          <a id="checkout-button" :href="$config.subscriptionCancelUrl">Yes, cancel my membership</a>
+        <div class="mt-4">
+          <p>Cancel your subscription <a href="/membership-cancel">here</a></p>
         </div>
       </div>
     </div>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { membershipStripeCancelURL } from '~/constants'
+import { membershipStripeThanksURL } from '~/constants'
 
 export default {
   data() {
@@ -39,7 +39,7 @@ export default {
     }
   },
   async fetch() {
-    this.membershipContent = await this.$axios.get(`${membershipStripeCancelURL}`)
+    this.membershipContent = await this.$axios.get(`${membershipStripeThanksURL}`)
       .then((res) => {
         if (res) {
           return res.data
@@ -52,12 +52,12 @@ export default {
   },
   head() {
     return {
-      title: 'Cancel Lahmacun Membership',
+      title: 'Thank you for Lahmacun Membership',
       meta: [
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Cancel Lahmacun Membership'
+          content: 'Thank you for Lahmacun Membership'
         },
       ]
     }
@@ -66,10 +66,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#checkout-button {
-  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm cursor-pointer;
-}
-
 p a {
   @apply underline;
 }

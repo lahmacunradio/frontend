@@ -122,6 +122,7 @@ export default {
     treeShake: true,
   },
   privateRuntimeConfig: {
-    subscriptionManagementUrl: process.env.SUBSCRIPTION_MANAGEMENT_URL
+    subscriptionManagementUrl: process.env.SUBSCRIPTION_MANAGEMENT_URL,
+    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL
   }
 };
