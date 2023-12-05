@@ -23,7 +23,7 @@
                 <div class="relative max-w-md bg-white rounded-sm">
                   <select class="show-select" :class="{ showSelected: show_name.length > 1 }" @change="selectShow">
                     <option disabled selected value="">Please select a show</option>
-                    <option v-for="(show) in arcsiShowsList" :value="show.archive_lahmastore_base_url"
+                    <option v-for="(show) in arcsiShowsList" :value="show.name"
                       :key="show.archive_lahmastore_base_url">
                       {{ show.name }}
                     </option>
