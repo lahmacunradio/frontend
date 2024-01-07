@@ -12,7 +12,10 @@
         </div>
         <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
         <div class="mt-4">
-          <p>Cancel your subscription <a href="/membership-cancel">here</a></p>
+          <p>Cancel your subscription <NuxtLink to="/membership-cancel">
+              here
+            </NuxtLink>
+          </p>
         </div>
       </div>
     </div>
