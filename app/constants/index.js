@@ -6,7 +6,7 @@ export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
 export const config = {
 headers: {
-        'Authentication-Token': 'your-token'
+        'Authentication-Token': process.env.ARCSI_TOKEN,
     }
   };
 
