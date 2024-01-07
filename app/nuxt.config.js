@@ -123,6 +123,8 @@ export default {
   },
   privateRuntimeConfig: {
     subscriptionManagementUrl: process.env.SUBSCRIPTION_MANAGEMENT_URL,
-    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL
+    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
+    donationManagementUrl: process.env.DONATION_MANAGEMENT_URL,
+    donationCancelUrl: process.env.DONATION_CANCEL_URL,
   }
 };
