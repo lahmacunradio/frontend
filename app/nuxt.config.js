@@ -81,6 +81,7 @@ export default {
     "@nuxtjs/style-resources",
     "@nuxtjs/moment",
     "@nuxtjs/vuetify",
+    "@nuxtjs/dotenv",
   ],
   /*
    ** Nuxt.js modules
@@ -123,6 +124,6 @@ export default {
   },
   privateRuntimeConfig: {
     subscriptionManagementUrl: process.env.SUBSCRIPTION_MANAGEMENT_URL,
-    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL
-  }
+    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
+  },
 };
