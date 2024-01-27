@@ -16,24 +16,23 @@
           </div>
 
           <div>
-            <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_recurring_membership"
-              method="GET">
+            <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_listener" method="GET">
               <div>
-                <p>
+                <p class="mb-2">
                   <strong>
                     You can choose from the following options:
                   </strong>
                 </p>
-                <div>
-                  <input type="radio" id="name-your-price" name="options" value="name-your-price" checked />
-                  <label for="name-your-price">{{ donationContent?.acf?.name_your_price }}</label>
+                <div class="my-2">
+                  <input type="radio" id="option1" name="is_recurring" value="no" checked />
+                  <label for="option1">{{ donationContent?.acf?.one_time }}</label>
                 </div>
-                <div>
-                  <input type="radio" id="subscribe" name="options" value="subscribe" />
-                  <label for="subscribe">{{ donationContent?.acf?.subscribe }}</label>
+                <div class="my-2">
+                  <input type="radio" id="option2" name="is_recurring" value="yes" />
+                  <label for="option2">{{ donationContent?.acf?.recurring }}</label>
                 </div>
               </div>
-              <button type="submit" id="checkout-button">Continue for payment</button>
+              <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
             </form>
             <p>Cancel your subscription
               <NuxtLink to="/donate-cancel">
@@ -113,6 +112,10 @@ export default {
 
 .show-select.showSelected {
   @apply text-black;
+}
+
+input[type="radio"] {
+  @apply mr-1;
 }
 
 #checkout-button {
