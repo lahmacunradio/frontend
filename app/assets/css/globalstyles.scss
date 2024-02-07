@@ -136,6 +136,43 @@ button:focus {
   outline: none;
 }
 
+.selector {
+  .v-application {
+    background-color: transparent !important;
+    cursor: pointer !important;
+    input {
+      cursor: pointer !important;
+    }
+    .container {
+      padding: 0;
+    }
+    .v-select__slot {
+      height: 2.5rem;
+    }
+    .v-label {
+      color: $black-color !important;
+    }
+    .primary--text {
+      color: $black-color !important;
+      caret-color: $black-color !important;
+    }
+    .v-list-item {
+      color: $lahma-pink !important;
+      caret-color: $black-color !important;
+      &.v-list-item--highlighted::before {
+        opacity: 1;
+      }
+      .v-list-item__title {
+        color: $black-color !important;
+        z-index: 1;
+      }
+    }
+    .v-input__append-inner {
+      margin-top: 0.5rem;
+    }
+  }
+}
+
 .text-content {
   p {
     margin-bottom: 0.5rem;

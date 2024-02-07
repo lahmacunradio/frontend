@@ -18,20 +18,15 @@
           <div>
             <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_recurring_membership"
               method="GET">
-              <div>
-                <label for="show_name">Select your show</label>
-                <div class="relative max-w-md bg-white rounded-sm">
-                  <select name="show_name" class="show-select" :class="{ showSelected: show_name.length > 1 }"
-                    @change="selectShow">
-                    <option disabled selected value="">Please select a show</option>
-                    <option v-for="(show) in arcsiShowsList" :value="show.name" :key="show.archive_lahmastore_base_url">
-                      {{ show.name }}
-                    </option>
-                  </select>
-                  <div class="absolute right-2 top-2 z-0">
-                    <i class="fa fa-chevron-down" />
-                  </div>
-                </div>
+              <div class="selector">
+
+                <v-app>
+                  <v-container>
+                    <v-select label="Select your show" name="show_name" v-model="show_name"
+                      :items="arcsiShowsList"></v-select>
+                  </v-container>
+                </v-app>
+                <input type="hidden" name="show_name">
 
               </div>
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
@@ -110,13 +105,14 @@ export default {
       if (this.allShows) {
         return this.allShows.filter(show => (
           !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
-        )).sort((a, b) => a.name.localeCompare(b.name))
+        )).sort((a, b) => a.name.localeCompare(b.name)).map(show => show.name)
       }
       return null
     },
   },
   methods: {
     selectShow(showname) {
+      console.log(showname, 'selcted show')
       this.show_name = showname.target.value
     },
   }
