@@ -16,7 +16,7 @@
           </div>
 
           <div>
-            <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_listener" method="GET">
+            <form :action="$config.donationStripeFormUrl" method="GET">
               <div>
                 <p class="mb-2">
                   <strong>

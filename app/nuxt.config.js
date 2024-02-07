@@ -126,5 +126,9 @@ export default {
     subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
     donationManagementUrl: process.env.DONATION_MANAGEMENT_URL,
     donationCancelUrl: process.env.DONATION_CANCEL_URL,
-  }
+  },
+  publicRuntimeConfig: {
+    donationStripeFormUrl: process.env.DONATION_STRIPE_FORM_URL,
+    membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL,
+  },
 };

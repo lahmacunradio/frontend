@@ -16,8 +16,7 @@
           </div>
 
           <div>
-            <form action="https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_recurring_membership"
-              method="GET">
+            <form :action="$config.membershipStripeFormUrl" method="GET">
               <div class="selector">
 
                 <v-app>
