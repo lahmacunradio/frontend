@@ -111,7 +111,6 @@ export default {
   },
   methods: {
     selectShow(showname) {
-      console.log(showname, 'selcted show')
       this.show_name = showname.target.value
     },
   }
