@@ -171,7 +171,42 @@ button:focus {
       margin-top: 0.5rem;
     }
   }
+  .v-messages {
+    display: none;
+  }
 }
+
+.radios {
+  .v-application {
+    background-color: transparent !important;
+    cursor: pointer !important;
+    input {
+      cursor: pointer !important;
+    }
+    .container {
+      padding: 0;
+    }
+    .v-radio {
+      color: $black-color !important;
+      caret-color: $black-color !important;
+      margin-bottom: 1rem;
+      &.v-radio--is-checked::before {
+        background-color: $black-color !important;
+      }
+      .v-input__control {
+        color: $black-color !important;
+      }
+    }
+    .v-label, .v-input input {
+      color: $black-color !important;
+    }
+  }
+  .v-messages {
+    display: none;
+  }
+}
+
+
 
 .text-content {
   p {

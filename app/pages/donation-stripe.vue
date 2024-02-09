@@ -23,14 +23,19 @@
                     You can choose from the following options:
                   </strong>
                 </p>
-                <div class="my-2">
-                  <input type="radio" id="option1" name="is_recurring" value="no" checked />
-                  <label for="option1">{{ donationContent?.acf?.one_time }}</label>
+
+                <div class="radios">
+                  <v-app>
+                    <v-container>
+                      <v-radio-group v-model="is_recurring">
+                        <v-radio :label="donationContent?.acf?.one_time" value="no" color="black"></v-radio>
+                        <v-radio :label="donationContent?.acf?.recurring" value="yes" color="black"></v-radio>
+                      </v-radio-group>
+                    </v-container>
+                  </v-app>
                 </div>
-                <div class="my-2">
-                  <input type="radio" id="option2" name="is_recurring" value="yes" />
-                  <label for="option2">{{ donationContent?.acf?.recurring }}</label>
-                </div>
+                <input type="hidden" name="is_recurring" :value="is_recurring">
+
               </div>
               <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
             </form>
@@ -53,7 +58,7 @@ import { donateStripeURL } from '~/constants'
 export default {
   data() {
     return {
-      show_name: "",
+      is_recurring: "no",
       donationContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],

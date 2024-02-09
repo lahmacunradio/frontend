@@ -25,7 +25,7 @@
                       :items="arcsiShowsList"></v-select>
                   </v-container>
                 </v-app>
-                <input type="hidden" name="show_name">
+                <input type="hidden" name="show_name" :value="show_name">
 
               </div>
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
