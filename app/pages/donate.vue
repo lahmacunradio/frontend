@@ -1,27 +1,65 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun Donate" :maintitle="true" />
+    <SubTitle title="Lahmacun donation" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
       </div>
-      <article id="donate-page" ref="donate">
-        <div v-if="donateContent">
-          <h2>{{ donateContent.title.rendered }}</h2>
-          <div v-sanitize="[sanitizeOptions, donateContentResults]" class="donate-content" />
+
+      <div v-if="donationContent" class="max-w-4xl mx-auto">
+        <div class="mb-4">
+          <h2>{{ donationContent.title.rendered }}</h2>
         </div>
-      </article>
+        <div class="grid md:grid-cols-2 md:gap-8 gap-4">
+          <div>
+            <div v-sanitize="[sanitizeOptions, donationContent.content.rendered]" />
+          </div>
+
+          <div>
+            <form :action="$config.donationStripeFormUrl" method="GET">
+              <div>
+                <p class="mb-2">
+                  <strong>
+                    You can choose from the following options:
+                  </strong>
+                </p>
+
+                <div class="radios">
+                  <v-app>
+                    <v-container>
+                      <v-radio-group v-model="is_recurring">
+                        <v-radio :label="donationContent?.acf?.one_time" value="no" color="black"></v-radio>
+                        <v-radio :label="donationContent?.acf?.recurring" value="yes" color="black"></v-radio>
+                      </v-radio-group>
+                    </v-container>
+                  </v-app>
+                </div>
+                <input type="hidden" name="is_recurring" :value="is_recurring">
+
+              </div>
+              <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
+            </form>
+            <p>Cancel your subscription
+              <NuxtLink to="/donate-cancel">
+                here
+              </NuxtLink>
+            </p>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { donateURL } from '~/constants'
+import { donateStripeURL } from '~/constants'
 
 export default {
-  data () {
+  data() {
     return {
-      donateContent: null,
+      is_recurring: "no",
+      donationContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
         allowedAttributes: {
@@ -33,74 +71,52 @@ export default {
         }
       }
     }
+
   },
-  async fetch () {
-    this.donateContent = await this.$axios.get(`${donateURL}`)
+  async fetch() {
+    this.donationContent = await this.$axios.get(`${donateStripeURL}`)
       .then((res) => {
         if (res) {
           return res.data
         }
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Donate not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
+        this.$sentry.captureException(new Error('Donation not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Donation not available' })
       })
   },
-  head () {
+
+  mounted() {
+    let stripeScript = document.createElement('script')
+    stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
+    document.head.appendChild(stripeScript)
+  },
+  head() {
     return {
-      title: 'Lahmacun Donate',
+      title: 'Lahmacun Donation',
       meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'This is a not-for-profit webradio with various starting and running costs. Without financial help we won’t be able to provide quality content for long.'
-        },
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Lahmacun Donate'
+          content: 'Lahmacun Donation'
         },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'This is a not-for-profit webradio with various starting and running costs. Without financial help we won’t be able to provide quality content for long.'
-        }
       ]
     }
   },
-  computed: {
-    donateContentResults () {
-      if (!this.donateContent?.content?.rendered) {
-        return 'No content'
-      }
-      return this.donateContent.content.rendered.replace(/target="_top"/g, 'target="_blank"')
-    }
-  }
 }
 </script>
 
-<style lang="scss">
-.donate-content {
-  @apply md:flex items-start;
-  #donatetext {
-    @apply md:pr-16 mb-12;
-    hr {
-      margin: 1rem 0;
-    }
+<style scoped lang="scss">
+
+#checkout-button {
+  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
+
+  &[disabled] {
+    @apply cursor-not-allowed bg-gray-800 text-gray-400;
   }
-  #donatepart {
-    text-align: center;
-    padding: 1rem 2rem 2rem;
-    margin-bottom: 1rem;
-    background: white;
-    box-shadow: 0px 0px 12px #23282d;
-    border-radius: 3px;
-    h4 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      white-space: nowrap;
-      text-transform: uppercase;
-    }
-  }
+}
+
+p a {
+  @apply underline;
 }
 </style>
