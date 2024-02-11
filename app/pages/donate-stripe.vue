@@ -34,6 +34,7 @@
                     </v-container>
                   </v-app>
                 </div>
+                <input type="hidden" name="is_recurring" :value="is_recurring">
 
               </div>
               <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
