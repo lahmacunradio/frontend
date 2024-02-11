@@ -34,7 +34,6 @@
                     </v-container>
                   </v-app>
                 </div>
-                <input type="hidden" name="is_recurring" :value="is_recurring">
 
               </div>
               <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
@@ -107,21 +106,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.show-select {
-  @apply block p-2 my-2 border w-full text-gray-500 z-10 relative;
-}
-
-.show-select:focus {
-  @apply outline-none;
-}
-
-.show-select.showSelected {
-  @apply text-black;
-}
-
-input[type="radio"] {
-  @apply mr-1;
-}
 
 #checkout-button {
   @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;

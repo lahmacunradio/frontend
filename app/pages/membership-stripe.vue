@@ -25,7 +25,6 @@
                       :items="arcsiShowsList"></v-select>
                   </v-container>
                 </v-app>
-                <input type="hidden" name="show_name" :value="show_name">
 
               </div>
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
@@ -119,17 +118,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.show-select {
-  @apply block p-2 my-2 border w-full text-gray-500 z-10 relative;
-}
-
-.show-select:focus {
-  @apply outline-none;
-}
-
-.show-select.showSelected {
-  @apply text-black;
-}
 
 #checkout-button {
   @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
