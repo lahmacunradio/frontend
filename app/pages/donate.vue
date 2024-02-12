@@ -1,22 +1,22 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun donation" :maintitle="true" />
+    <SubTitle title="Lahmacun donate" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
       </div>
 
-      <div v-if="donationContent" class="max-w-4xl mx-auto">
+      <div v-if="donateContent" class="max-w-4xl mx-auto">
         <div class="mb-4">
-          <h2>{{ donationContent.title.rendered }}</h2>
+          <h2>{{ donateContent.title.rendered }}</h2>
         </div>
         <div class="grid md:grid-cols-2 md:gap-8 gap-4">
           <div>
-            <div v-sanitize="[sanitizeOptions, donationContent.content.rendered]" />
+            <div v-sanitize="[sanitizeOptions, donateContent.content.rendered]" />
           </div>
 
           <div>
-            <form :action="$config.donationStripeFormUrl" method="GET">
+            <form :action="$config.donateStripeFormUrl" method="GET">
               <div>
                 <p class="mb-2">
                   <strong>
@@ -28,8 +28,8 @@
                   <v-app>
                     <v-container>
                       <v-radio-group v-model="is_recurring">
-                        <v-radio :label="donationContent?.acf?.one_time" value="no" color="black"></v-radio>
-                        <v-radio :label="donationContent?.acf?.recurring" value="yes" color="black"></v-radio>
+                        <v-radio :label="donateContent?.acf?.one_time" value="no" color="black"></v-radio>
+                        <v-radio :label="donateContent?.acf?.recurring" value="yes" color="black"></v-radio>
                       </v-radio-group>
                     </v-container>
                   </v-app>
@@ -37,7 +37,7 @@
                 <input type="hidden" name="is_recurring" :value="is_recurring">
 
               </div>
-              <button type="submit" id="checkout-button">{{ donationContent?.acf?.checkout }}</button>
+              <button type="submit" id="checkout-button">{{ donateContent?.acf?.checkout }}</button>
             </form>
             <p>Cancel your subscription
               <NuxtLink to="/donate-cancel">
@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       is_recurring: "no",
-      donationContent: null,
+      donateContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
         allowedAttributes: {
@@ -74,15 +74,15 @@ export default {
 
   },
   async fetch() {
-    this.donationContent = await this.$axios.get(`${donateStripeURL}`)
+    this.donateContent = await this.$axios.get(`${donateStripeURL}`)
       .then((res) => {
         if (res) {
           return res.data
         }
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Donation not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donation not available' })
+        this.$sentry.captureException(new Error('Donate not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
       })
   },
 
@@ -93,12 +93,12 @@ export default {
   },
   head() {
     return {
-      title: 'Lahmacun Donation',
+      title: 'Lahmacun Donate',
       meta: [
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Lahmacun Donation'
+          content: 'Lahmacun Donate'
         },
       ]
     }

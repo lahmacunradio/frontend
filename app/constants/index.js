@@ -47,9 +47,6 @@ export const tagsURL = contentApiURL + '/tags'
 
 export const customScheduleURL = contentApiURL + '/pages/3679'
 
-export const donateURL = contentApiURL + '/pages/2'
-export const membershipURL = contentApiURL + '/pages/1425'
-
 export const membershipStripeURL = contentApiURL + '/pages/4980'
 export const membershipStripeCancelURL = contentApiURL + '/pages/4992'
 export const membershipStripeThanksURL = contentApiURL + '/pages/4994'

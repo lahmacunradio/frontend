@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun donation" :maintitle="true" />
+    <SubTitle title="Lahmacun donate" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
@@ -46,18 +46,18 @@ export default {
         }
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Donation not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donation not available' })
+        this.$sentry.captureException(new Error('Donate not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
       })
   },
   head() {
     return {
-      title: 'Cancel Lahmacun Donation',
+      title: 'Cancel Lahmacun Donate',
       meta: [
         {
           hid: 'og:title',
           property: 'og:title',
-          content: 'Cancel Lahmacun Donation'
+          content: 'Cancel Lahmacun Donate'
         },
       ]
     }
