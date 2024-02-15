@@ -12,7 +12,7 @@
         </div>
         <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
         <div class="block mt-6">
-          <a id="checkout-button" :href="$config.subscriptionCancelUrl">Yes, cancel my membership</a>
+          <a id="checkout-button" :href="$config.subscriptionCancelUrl" target="_blank">Yes, cancel my membership</a>
         </div>
       </div>
     </div>

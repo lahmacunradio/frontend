@@ -122,7 +122,10 @@ export default {
     treeShake: true,
   },
   privateRuntimeConfig: {
-    subscriptionManagementUrl: process.env.SUBSCRIPTION_MANAGEMENT_URL,
-    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL
-  }
+    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
+  },
+  publicRuntimeConfig: {
+    donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
+    membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL,
+  },
 };
