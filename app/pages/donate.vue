@@ -6,11 +6,11 @@
         Loading...
       </div>
 
-      <div v-if="donateContent" class="max-w-4xl mx-auto">
+      <div v-if="donateContent" class="mx-auto">
         <div class="mb-4">
           <h2>{{ donateContent.title.rendered }}</h2>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-8 gap-4">
+        <div class="grid md:grid-cols-2 md:gap-16 gap-4">
           <div>
             <div v-sanitize="[sanitizeOptions, donateContent.content.rendered]" />
           </div>
