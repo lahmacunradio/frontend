@@ -107,6 +107,9 @@ export default {
   header {
       justify-content: space-between;
       align-content: center;
+      .flex {
+        flex: none;
+      }
       .main-title {
         text-indent: -99em;
         font-size: 0.1px;
