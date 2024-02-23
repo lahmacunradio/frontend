@@ -37,7 +37,6 @@
     "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/tailwindcss": "^4.2.1",
-    "@nuxtjs/vuetify": "1.12.3",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
     "autoprefixer": "^9.8.8",
     "postcss": "^7.0.39",

@@ -6,7 +6,7 @@
     display: block;
     content: "";
     width: 100%;
-    padding-top: ($height / $width) * 100%;
+    padding-top: calc($height / $width) * 100%;
   }
   > .content {
     position: absolute;
@@ -137,76 +137,22 @@ button:focus {
 }
 
 .selector {
-  .v-application {
-    background-color: transparent !important;
-    cursor: pointer !important;
-    input {
-      cursor: pointer !important;
+  .p-dropdown {
+    width: 100%;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid $black-color;
+    border-radius: 0;
+    box-shadow: none;
+    * {
+      color: $black-color;
     }
-    .container {
-      padding: 0;
+    &.p-focus, &:hover {
+      border-color: $black-color !important;
+      box-shadow: none !important;
     }
-    .v-select__slot {
-      height: 2.5rem;
-    }
-    .v-label {
-      color: $black-color !important;
-    }
-    .primary--text {
-      color: $black-color !important;
-      caret-color: $black-color !important;
-    }
-    .v-list-item {
-      color: $lahma-pink !important;
-      caret-color: $black-color !important;
-      &.v-list-item--highlighted::before {
-        opacity: 1;
-      }
-      .v-list-item__title {
-        color: $black-color !important;
-        z-index: 1;
-      }
-    }
-    .v-input__append-inner {
-      margin-top: 0.5rem;
-    }
-  }
-  .v-messages {
-    display: none;
   }
 }
-
-.radios {
-  .v-application {
-    background-color: transparent !important;
-    cursor: pointer !important;
-    input {
-      cursor: pointer !important;
-    }
-    .container {
-      padding: 0;
-    }
-    .v-radio {
-      color: $black-color !important;
-      caret-color: $black-color !important;
-      margin-bottom: 1rem;
-      &.v-radio--is-checked::before {
-        background-color: $black-color !important;
-      }
-      .v-input__control {
-        color: $black-color !important;
-      }
-    }
-    .v-label, .v-input input {
-      color: $black-color !important;
-    }
-  }
-  .v-messages {
-    display: none;
-  }
-}
-
-
 
 .text-content {
   p {
