@@ -85,7 +85,17 @@ export default {
   /*
    ** Nuxt.js modules
    */
-  modules: ["@nuxtjs/axios", "@nuxtjs/sentry", "v-sanitize/nuxt"],
+  modules: [
+    "@nuxtjs/axios",
+    "@nuxtjs/sentry",
+    "v-sanitize/nuxt",
+    [
+      "primevue/nuxt",
+      {
+        components: ["Dropdown", "RadioButton"],
+      },
+    ],
+  ],
   axios: {
     // proxyHeaders: false
   },
@@ -104,6 +114,7 @@ export default {
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
+    transpile: ["primevue"],
   },
   styleResources: {
     // your settings here

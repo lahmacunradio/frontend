@@ -24,19 +24,21 @@
                   </strong>
                 </p>
 
-                <div class="radios">
-                  <v-app>
-                    <v-container>
-                      <v-radio-group v-model="is_recurring">
-                        <v-radio :label="donateContent?.acf?.one_time" value="no" color="black"></v-radio>
-                        <v-radio :label="donateContent?.acf?.recurring" value="yes" color="black"></v-radio>
-                      </v-radio-group>
-                    </v-container>
-                  </v-app>
+                <div class="flex flex-col gap-2 my-4">
+                  <div class="flex items-center gap-2">
+                    <RadioButton id="one-time" inputId="one-time" name="donate" value="no" v-model="is_recurring" />
+                    <label for="one-time">{{ donateContent?.acf?.one_time }}</label>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <RadioButton id="recurring" inputId="recurring" name="donate" value="yes" v-model="is_recurring" />
+                    <label for="recurring">{{ donateContent?.acf?.recurring }}</label>
+                  </div>
+
                 </div>
                 <input type="hidden" name="is_recurring" :value="is_recurring">
 
               </div>
+
               <button type="submit" id="checkout-button">{{ donateContent?.acf?.checkout }}</button>
             </form>
             <p>Cancel your subscription
