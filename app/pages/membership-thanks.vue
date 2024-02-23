@@ -6,7 +6,7 @@
         Loading...
       </div>
 
-      <div v-if="membershipContent" class="max-w-4xl mx-auto">
+      <div v-if="membershipContent" class="max-w-4xl">
         <div class="mb-4">
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
