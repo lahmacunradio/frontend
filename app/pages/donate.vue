@@ -24,7 +24,7 @@
                   </strong>
                 </p>
 
-                <div class="flex flex-col gap-2 my-4">
+                <div class="flex flex-col gap-2 my-4 radios">
                   <div class="flex items-center gap-2">
                     <RadioButton id="one-time" inputId="one-time" name="donate" value="no" v-model="is_recurring" />
                     <label for="one-time">{{ donateContent?.acf?.one_time }}</label>
