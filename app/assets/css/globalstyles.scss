@@ -147,9 +147,23 @@ button:focus {
     * {
       color: $black-color;
     }
-    &.p-focus, &:hover {
+    &.p-focus,
+    &:hover {
       border-color: $black-color !important;
       box-shadow: none !important;
+    }
+    .p-dropdown-items {
+      .p-dropdown-item.p-highlight {
+        background: $lahma-pink;
+        color: $black-color;
+      }
+    }
+    .p-dropdown-label {
+      padding-left: 0;
+      &.p-placeholder {
+        opacity: 0.5;
+        color: inherit;
+      }
     }
   }
 }
