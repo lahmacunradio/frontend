@@ -6,7 +6,7 @@
     display: block;
     content: "";
     width: 100%;
-    padding-top: ($height / $width) * 100%;
+    padding-top: calc($height / $width) * 100%;
   }
   > .content {
     position: absolute;
@@ -137,76 +137,84 @@ button:focus {
 }
 
 .selector {
-  .v-application {
-    background-color: transparent !important;
-    cursor: pointer !important;
-    input {
-      cursor: pointer !important;
+  .p-dropdown {
+    width: 100%;
+    border: none;
+    background: transparent;
+    border-bottom: 2px solid $black-color;
+    border-radius: 0;
+    box-shadow: none;
+    * {
+      color: $black-color;
     }
-    .container {
-      padding: 0;
+    &.p-focus,
+    &:hover {
+      border-color: $black-color !important;
+      box-shadow: none !important;
     }
-    .v-select__slot {
-      height: 2.5rem;
-    }
-    .v-label {
-      color: $black-color !important;
-    }
-    .primary--text {
-      color: $black-color !important;
-      caret-color: $black-color !important;
-    }
-    .v-list-item {
-      color: $lahma-pink !important;
-      caret-color: $black-color !important;
-      &.v-list-item--highlighted::before {
-        opacity: 1;
-      }
-      .v-list-item__title {
-        color: $black-color !important;
-        z-index: 1;
+    .p-dropdown-items {
+      .p-dropdown-item.p-highlight {
+        background: $lahma-pink;
+        color: $black-color;
       }
     }
-    .v-input__append-inner {
-      margin-top: 0.5rem;
+    .p-dropdown-label {
+      padding-left: 0;
+      &.p-placeholder {
+        opacity: 0.5;
+        color: inherit;
+      }
     }
-  }
-  .v-messages {
-    display: none;
   }
 }
 
 .radios {
-  .v-application {
-    background-color: transparent !important;
-    cursor: pointer !important;
-    input {
-      cursor: pointer !important;
-    }
-    .container {
-      padding: 0;
-    }
-    .v-radio {
-      color: $black-color !important;
-      caret-color: $black-color !important;
-      margin-bottom: 1rem;
-      &.v-radio--is-checked::before {
-        background-color: $black-color !important;
+  .p-radiobutton {
+    .p-radiobutton-box {
+      border: 2px solid $black-color;
+      background: transparent;
+      opacity: 0.5;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 0 0 0 rgb(0 0 0 / 0%);
+      &:not(.p-disabled):not(.p-highlight):hover {
+        border-color: $black-color;
+        background-color: white;
       }
-      .v-input__control {
-        color: $black-color !important;
+      &.p-highlight {
+        position: relative;
+        opacity: 1;
+        background: white;
+        border-color: $black-color;
+        &:before {
+          border-radius: 100%;
+          bottom: 0;
+          content: "";
+          left: 0;
+          opacity: 1;
+          position: absolute;
+          right: 0;
+          top: 0;
+          transform: scale(0.5);
+          transform-origin: center center;
+          transition: inherit;
+          z-index: 1;
+          background: $black-color;
+        }
+        &:not(.p-disabled):hover {
+          border-color: $black-color;
+          background: white;
+        }
+      }
+      &:not(.p-disabled).p-focus {
+        border-color: $black-color;
+        box-shadow: 0 0 0 0.3rem rgb(0 0 0 / 10%);
       }
     }
-    .v-label, .v-input input {
-      color: $black-color !important;
+    .p-radiobutton-label {
+      color: $black-color;
     }
-  }
-  .v-messages {
-    display: none;
   }
 }
-
-
 
 .text-content {
   p {

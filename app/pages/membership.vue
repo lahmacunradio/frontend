@@ -17,15 +17,9 @@
 
           <div>
             <form :action="$config.membershipStripeFormUrl" method="GET">
-              <div class="selector">
-
-                <v-app>
-                  <v-container>
-                    <v-select label="Select your show" name="show_name" v-model="show_name"
-                      :items="arcsiShowsList"></v-select>
-                  </v-container>
-                </v-app>
-
+              <div class="selector mb-4">
+                <label class="text-sm mb-1">Select your show</label>
+                <Dropdown v-model="show_name" :options="arcsiShowsList" placeholder="Choose from list" scrollHeight="300px" />
               </div>
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
             </form>
@@ -53,7 +47,7 @@ export default {
       show_name: "",
       membershipContent: null,
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
         allowedAttributes: {
           a: ['*'],
           img: ['*'],

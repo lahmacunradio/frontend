@@ -13,7 +13,7 @@ ENV APP_ROOT=/src
 WORKDIR ${APP_ROOT}
 COPY . ${APP_ROOT}
 
-RUN yarn install
+RUN yarn install --ignore-engines
 
 RUN yarn build
 RUN yarn cache clean

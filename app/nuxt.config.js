@@ -61,10 +61,7 @@ export default {
   /*
    ** Global CSS
    */
-  css: [
-    // SCSS files in the project
-    "@/assets/css/globalstyles",
-  ],
+  css: ["@/assets/css/globalstyles.scss"],
   /*
    ** Plugins to load before mounting the App
    */
@@ -80,12 +77,22 @@ export default {
     "@nuxtjs/tailwindcss",
     "@nuxtjs/style-resources",
     "@nuxtjs/moment",
-    "@nuxtjs/vuetify",
   ],
   /*
    ** Nuxt.js modules
    */
-  modules: ["@nuxtjs/axios", "@nuxtjs/sentry", "v-sanitize/nuxt"],
+  modules: [
+    "@nuxtjs/axios",
+    "@nuxtjs/sentry",
+    "v-sanitize/nuxt",
+    [
+      "primevue/nuxt",
+      {
+        theme: "bootstrap4-light-purple",
+        components: ["Dropdown", "RadioButton"],
+      },
+    ],
+  ],
   axios: {
     // proxyHeaders: false
   },
@@ -104,6 +111,7 @@ export default {
     babel: {
       plugins: ["@babel/plugin-proposal-optional-chaining"],
     },
+    transpile: ["primevue"],
   },
   styleResources: {
     // your settings here
@@ -116,10 +124,6 @@ export default {
     nuxtjs: "What happened? 🙀🐁",
     back_to_home: "🗣 Back home! 🎅🧨👉",
     server_error_details: "Server errorrrrr or unreachable 🤯",
-  },
-  vuetify: {
-    customVariables: ["@/assets/css/banner"],
-    treeShake: true,
   },
   privateRuntimeConfig: {
     subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
