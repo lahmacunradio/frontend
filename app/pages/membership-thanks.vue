@@ -6,13 +6,16 @@
         Loading...
       </div>
 
-      <div v-if="membershipContent" class="max-w-4xl mx-auto">
+      <div v-if="membershipContent" class="max-w-4xl">
         <div class="mb-4">
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
         <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
         <div class="mt-4">
-          <p>Cancel your subscription <a href="/membership-cancel">here</a></p>
+          <p>Cancel your subscription <NuxtLink to="/membership-cancel">
+              here
+            </NuxtLink>
+          </p>
         </div>
       </div>
     </div>
@@ -27,7 +30,7 @@ export default {
     return {
       membershipContent: null,
       sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br'],
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
         allowedAttributes: {
           a: ['*'],
           img: ['*'],
