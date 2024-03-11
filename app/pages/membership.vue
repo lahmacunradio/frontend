@@ -21,6 +21,7 @@
                 <label class="text-sm mb-1">Select your show</label>
                 <Dropdown v-model="show_name" :options="arcsiShowsList" placeholder="Choose from list" scrollHeight="300px" />
               </div>
+              <input type="hidden" name="show_name" :value="show_name">
               <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
             </form>
             <p>Cancel your subscription
