@@ -26,16 +26,15 @@
 
                 <div class="flex flex-col gap-2 my-4 radios">
                   <div class="flex items-center gap-2">
-                    <RadioButton id="one-time" inputId="one-time" name="donate" value="no" v-model="is_recurring" />
+                    <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no" v-model="is_recurring" />
                     <label for="one-time">{{ donateContent?.acf?.one_time }}</label>
                   </div>
                   <div class="flex items-center gap-2">
-                    <RadioButton id="recurring" inputId="recurring" name="donate" value="yes" v-model="is_recurring" />
+                    <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes" v-model="is_recurring" />
                     <label for="recurring">{{ donateContent?.acf?.recurring }}</label>
                   </div>
 
                 </div>
-                <input type="hidden" name="is_recurring" :value="is_recurring">
 
               </div>
 
