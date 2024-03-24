@@ -77,6 +77,7 @@ export default {
     "@nuxtjs/tailwindcss",
     "@nuxtjs/style-resources",
     "@nuxtjs/moment",
+    "@nuxtjs/dotenv",
   ],
   /*
    ** Nuxt.js modules
