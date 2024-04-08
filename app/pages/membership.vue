@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun membership" :maintitle="true" />
+    <SubTitle :title="membershipContent?.acf?.page_title ?? 'Lahmacun Membership'" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
@@ -17,20 +17,46 @@
 
           <div>
             <form :action="$config.membershipStripeFormUrl" method="GET">
-              <div class="selector mb-4">
-                <label class="text-sm mb-1">Select your show</label>
-                <Dropdown v-model="show_name" :options="arcsiShowsList" placeholder="Choose from list" scrollHeight="300px" />
+              <div class="selector mb-6">
+                <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
+                <Dropdown v-model="show_name" :options="arcsiShowsList"
+                  :placeholder="membershipContent?.acf?.choose_select || 'Choose from list'" scrollHeight="300px" />
               </div>
               <input type="hidden" name="show_name" :value="show_name">
-              <button type="submit" id="checkout-button" :disabled="show_name.length === 0">Continue for payment</button>
+
+              <div class="flex gap-4 mt-4 mb-6 radios">
+                <div class="flex items-center gap-2">
+                  <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no" v-model="is_recurring" />
+                  <label for="one-time">{{ membershipContent?.acf?.one_time }}</label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes"
+                    v-model="is_recurring" />
+                  <label for="recurring">{{ membershipContent?.acf?.recurring }}</label>
+                </div>
+              </div>
+
+              <div class="flex gap-4 my-4 radios">
+                <div class="flex items-center gap-2">
+                  <RadioButton id="yes" inputId="yes" name="currency" value="yes" v-model="currency" />
+                  <label for="yes">{{ membershipContent?.acf?.currency_main }}</label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <RadioButton id="huf" inputId="huf" name="currency" value="huf" v-model="currency" />
+                  <label for="huf">{{ membershipContent?.acf?.currency_huf }}</label>
+                </div>
+              </div>
+
+              <button type="submit" id="checkout-button" :disabled="show_name.length === 0">{{
+                membershipContent?.acf?.continue_button }}</button>
+
             </form>
-            <p>Cancel your subscription
+            <p>{{ membershipContent?.acf?.cancel_text }}
               <NuxtLink to="/membership-cancel">
-                here
+                {{ membershipContent?.acf?.cancel_link }}
               </NuxtLink>
             </p>
           </div>
-
         </div>
       </div>
     </div>
@@ -46,6 +72,8 @@ export default {
   data() {
     return {
       show_name: "",
+      is_recurring: "no",
+      currency: "yes",
       membershipContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
@@ -72,7 +100,6 @@ export default {
         this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
       })
   },
-
   mounted() {
     let stripeScript = document.createElement('script')
     stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
@@ -80,7 +107,7 @@ export default {
   },
   head() {
     return {
-      title: 'Lahmacun Membership',
+      title: this.membershipContent?.acf?.page_title ?? 'Lahmacun Membership',
       meta: [
         {
           hid: 'og:title',
@@ -113,7 +140,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 #checkout-button {
   @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
 
