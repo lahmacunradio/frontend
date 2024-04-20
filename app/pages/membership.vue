@@ -38,7 +38,7 @@
 
               <div class="flex gap-4 my-4 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="yes" inputId="yes" name="currency" value="yes" v-model="currency" />
+                  <RadioButton id="yes" inputId="yes" name="currency" value="eur" v-model="currency" />
                   <label for="yes">{{ membershipContent?.acf?.currency_main }}</label>
                 </div>
                 <div class="flex items-center gap-2">
@@ -73,7 +73,7 @@ export default {
     return {
       show_name: "",
       is_recurring: "no",
-      currency: "yes",
+      currency: "eur",
       membershipContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
