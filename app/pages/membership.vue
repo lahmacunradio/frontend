@@ -38,8 +38,8 @@
 
               <div class="flex gap-4 my-4 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="yes" inputId="yes" name="currency" value="eur" v-model="currency" />
-                  <label for="yes">{{ membershipContent?.acf?.currency_main }}</label>
+                  <RadioButton id="eur" inputId="eur" name="currency" value="eur" v-model="currency" />
+                  <label for="eur">{{ membershipContent?.acf?.currency_main }}</label>
                 </div>
                 <div class="flex items-center gap-2">
                   <RadioButton id="huf" inputId="huf" name="currency" value="huf" v-model="currency" />
