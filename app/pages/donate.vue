@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SubTitle title="Lahmacun donate" :maintitle="true" />
+    <SubTitle :title="donateContent?.acf?.page_title ?? 'Lahmacun Donate'" :maintitle="true" />
     <div class="container my-8">
       <div v-if="$fetchState.pending" class="center">
         Loading...
@@ -20,29 +20,43 @@
               <div>
                 <p class="mb-2">
                   <strong>
-                    You can choose from the following options:
+                    {{ donateContent?.acf?.options_choose_label }}
                   </strong>
                 </p>
 
-                <div class="flex flex-col gap-2 my-4 radios">
+                <div class="flex gap-4 mt-4 mb-6 radios">
                   <div class="flex items-center gap-2">
-                    <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no" v-model="is_recurring" />
+                    <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no"
+                      v-model="is_recurring" />
                     <label for="one-time">{{ donateContent?.acf?.one_time }}</label>
                   </div>
                   <div class="flex items-center gap-2">
-                    <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes" v-model="is_recurring" />
+                    <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes"
+                      v-model="is_recurring" />
                     <label for="recurring">{{ donateContent?.acf?.recurring }}</label>
                   </div>
+                </div>
 
+                <div class="flex gap-4 my-4 radios">
+                  <div class="flex items-center gap-2">
+                    <RadioButton id="eur" inputId="eur" name="currency" value="eur"
+                      v-model="currency" />
+                    <label for="eur">{{ donateContent?.acf?.currency_main }}</label>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <RadioButton id="huf" inputId="huf" name="currency" value="huf"
+                      v-model="currency" />
+                    <label for="huf">{{ donateContent?.acf?.currency_huf }}</label>
+                  </div>
                 </div>
 
               </div>
 
               <button type="submit" id="checkout-button">{{ donateContent?.acf?.checkout }}</button>
             </form>
-            <p>Cancel your subscription
+            <p>{{ donateContent?.acf?.cancel_text }}
               <NuxtLink to="/donate-cancel">
-                here
+                {{ donateContent?.acf?.cancel_button }}
               </NuxtLink>
             </p>
           </div>
@@ -60,6 +74,7 @@ export default {
   data() {
     return {
       is_recurring: "no",
+      currency: "eur",
       donateContent: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
@@ -94,7 +109,7 @@ export default {
   },
   head() {
     return {
-      title: 'Lahmacun Donate',
+      title: this.donateContent?.acf?.page_title ?? 'Lahmacun Donate',
       meta: [
         {
           hid: 'og:title',
@@ -108,7 +123,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 #checkout-button {
   @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
 
