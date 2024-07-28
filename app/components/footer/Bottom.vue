@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-black">
+  <footer class="bg-black lahma-footer">
     <div class="container justify-between py-8 md:flex">
       <div class="infos">
         <div class="mb-4">
@@ -39,45 +39,101 @@
           </h5>
         </div>
       </div>
-      <div v-if="false" class="py-8 md:py-4 logos">
-        {{ /* no sponsors for now */ }}
-        <a href="http://golyapresszo.hu/" target="_blank">
-          <img src="@/assets/img/sponsors/golyalogo-1.png" alt="">
-        </a>
+      <div class="infos supporters">
+        <div class="mb-4">
+          <h5>{{ supportersFooter?.supporters_block_title }}</h5>
+          <div v-html="$sanitize(supportersFooter?.supporters_block_content, sanitizeOptions)"
+            class="supporters-content"></div>
+        </div>
+        <div class="mb-4">
+          <h5>{{ membershipFooter?.membership_block_title }}</h5>
+          <div v-html="$sanitize(membershipFooter?.membership_block_content, sanitizeOptions)"
+            class="supporters-content"></div>
+        </div>
       </div>
     </div>
   </footer>
 </template>
 
 <script>
+import {
+  supportersURL,
+  membershipStripeURL
+} from '~/constants'
+
 export default {
-  name: 'Bottom'
+  name: 'Bottom',
+  data() {
+    return {
+      supportersFooter: null,
+      membershipFooter: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
+        }
+      }
+    }
+  },
+  async fetch() {
+    // supporters
+    this.supportersFooter = await this.$axios.get(`${supportersURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data?.acf
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Supporters content not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
+      })
+// membership
+this.membershipFooter = await this.$axios.get(`${membershipStripeURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data?.acf
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Membership not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
+      })
+
+  }
 }
+
 </script>
 
 <style lang="scss" scoped>
 .infos {
   color: white;
-  > div {
+
+  >div {
     display: inline-block;
     margin-right: 3rem;
     vertical-align: top;
   }
+
   a {
     transition: all 0.5s;
     color: white;
+
     &:hover {
       color: $lahma-pink;
     }
   }
 }
-.logos {
-  img {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 3rem;
-    @media (max-width: $mobile-width) {
-      margin: 0;
+</style>
+
+<style lang="scss">
+.lahma-footer .supporters {
+  .supporters-content {
+    margin-top: 0.5rem;
+    img {
+      margin-bottom: 1rem;
+      max-width: 150px;
     }
   }
 }
