@@ -39,14 +39,14 @@
           </h5>
         </div>
       </div>
-      <div class="infos supporters">
+      <div class="supporters">
         <div class="mb-4">
-          <h5>{{ supportersFooter?.supporters_block_title }}</h5>
+          <h5 class="mb-4">{{ supportersFooter?.supporters_block_title }}</h5>
           <div v-html="$sanitize(supportersFooter?.supporters_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
-        <div class="mb-4">
-          <h5>{{ membershipFooter?.membership_block_title }}</h5>
+        <div class="">
+          <h5 class="mb-4">{{ membershipFooter?.membership_block_title }}</h5>
           <div v-html="$sanitize(membershipFooter?.membership_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
@@ -89,8 +89,8 @@ export default {
         this.$sentry.captureException(new Error('Supporters content not available ', error))
         this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
       })
-// membership
-this.membershipFooter = await this.$axios.get(`${membershipStripeURL}`)
+    // membership
+    this.membershipFooter = await this.$axios.get(`${membershipStripeURL}`)
       .then((res) => {
         if (res) {
           return res.data?.acf
@@ -129,11 +129,18 @@ this.membershipFooter = await this.$axios.get(`${membershipStripeURL}`)
 
 <style lang="scss">
 .lahma-footer .supporters {
+  @apply text-white flex flex-col md:flex-row gap-x-12;
+
   .supporters-content {
     margin-top: 0.5rem;
-    img {
-      margin-bottom: 1rem;
-      max-width: 150px;
+
+    p {
+      display: flex;
+      align-items: center;
+      row-gap: 1.5rem;
+      column-gap: 1rem;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
     }
   }
 }
