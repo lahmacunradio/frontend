@@ -431,13 +431,10 @@ export default {
       this.$store.commit('player/isStreamPlaying', true)
 
       // Google Analytics 3 play
-      if (this.show_check) {
-        // eslint-disable-next-line no-undef
         gtag('event', 'Radio play', {
           show_title: this.show_title,
           episode_title: this.show_subtitle
         })
-      }
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
