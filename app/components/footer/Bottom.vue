@@ -41,13 +41,13 @@
       </div>
       <div class="supporters">
         <div class="mb-4">
-          <h5 class="mb-4">{{ supportersFooter?.supporters_block_title }}</h5>
-          <div v-html="$sanitize(supportersFooter?.supporters_block_content, sanitizeOptions)"
+          <h5 class="mb-4">{{ footerLogos?.supporters_block_title }}</h5>
+          <div v-html="$sanitize(footerLogos?.supporters_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
         <div class="">
-          <h5 class="mb-4">{{ membershipFooter?.membership_block_title }}</h5>
-          <div v-html="$sanitize(membershipFooter?.membership_block_content, sanitizeOptions)"
+          <h5 class="mb-4">{{ footerLogos?.membership_block_title }}</h5>
+          <div v-html="$sanitize(footerLogos?.membership_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
       </div>
@@ -57,16 +57,14 @@
 
 <script>
 import {
-  supportersURL,
-  membershipStripeURL
+  footerLogosUrl
 } from '~/constants'
 
 export default {
   name: 'Bottom',
   data() {
     return {
-      supportersFooter: null,
-      membershipFooter: null,
+      footerLogos: null,
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
@@ -78,8 +76,8 @@ export default {
     }
   },
   async fetch() {
-    // supporters
-    this.supportersFooter = await this.$axios.get(`${supportersURL}`)
+    // logos
+    this.footerLogos = await this.$axios.get(`${footerLogosUrl}`)
       .then((res) => {
         if (res) {
           return res.data?.acf
@@ -89,18 +87,6 @@ export default {
         this.$sentry.captureException(new Error('Supporters content not available ', error))
         this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
       })
-    // membership
-    this.membershipFooter = await this.$axios.get(`${membershipStripeURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data?.acf
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Membership not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
-      })
-
   }
 }
 
