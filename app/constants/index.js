@@ -54,3 +54,5 @@ export const membershipStripeThanksURL = contentApiURL + '/pages/4994'
 export const donateStripeURL = contentApiURL + '/pages/5088'
 export const donateStripeCancelURL = contentApiURL + '/pages/5090'
 export const donateStripeThanksURL = contentApiURL + '/pages/5092'
+
+export const footerLogosUrl = contentApiURL + '/pages/5521'
