@@ -73,6 +73,3 @@ Arguments: ```` --output-style compressed $FileName$ $FileNameWithoutExtension$.
 
 #### VSCode:
 eg. Scss-to-css extension (should work automatically)
-
-## Component packages
-Uses [Primevue v.2](https://www.primefaces.org/primevue-v2/#/) for components
