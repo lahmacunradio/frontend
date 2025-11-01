@@ -1,11 +1,17 @@
 version: '3'
 
-services:  
+services:
   app:
     build: ./app
     ports:
-      - 3333:3333 
-  
+      - 3333:3333
+    command: yarn dev
+    volumes:
+      - ./app:/src
+      - /src/node_modules
+    environment:
+      - HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true
   proxy:
     image: nginx:1.19
     restart: always
