@@ -26,23 +26,22 @@
 
               <div class="flex gap-4 mt-4 mb-6 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no" v-model="is_recurring" />
+                  <RadioButton id="one-time" name="is_recurring" option="no" v-model="is_recurring" />
                   <label for="one-time">{{ membershipContent?.acf?.one_time }}</label>
                 </div>
                 <div class="flex items-center gap-2">
-                  <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes"
-                    v-model="is_recurring" />
+                  <RadioButton id="recurring" name="is_recurring" option="yes" v-model="is_recurring" />
                   <label for="recurring">{{ membershipContent?.acf?.recurring }}</label>
                 </div>
               </div>
 
               <div class="flex gap-4 my-4 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="eur" inputId="eur" name="currency" value="eur" v-model="currency" />
+                  <RadioButton id="eur" name="currency" option="eur" v-model="currency" />
                   <label for="eur">{{ membershipContent?.acf?.currency_main }}</label>
                 </div>
                 <div class="flex items-center gap-2">
-                  <RadioButton id="huf" inputId="huf" name="currency" value="huf" v-model="currency" />
+                  <RadioButton id="huf" name="currency" option="huf" v-model="currency" />
                   <label for="huf">{{ membershipContent?.acf?.currency_huf }}</label>
                 </div>
               </div>
@@ -67,6 +66,8 @@
 import { membershipStripeURL } from '~/constants'
 
 import { mapGetters } from 'vuex'
+import Dropdown from '~/components/Dropdown.vue'
+import RadioButton from '~/components/RadioButton.vue'
 
 export default {
   data() {
@@ -134,6 +135,11 @@ export default {
     selectShow(showname) {
       this.show_name = showname.target.value
     },
+  },
+
+  components: {
+    Dropdown,
+    RadioButton
   }
 
 }

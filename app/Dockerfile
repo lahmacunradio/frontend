@@ -1,12 +1,20 @@
-FROM node:14.18-buster-slim
+FROM node:14-bullseye-slim
 
-RUN apt-get update
-RUN apt-get install -y curl \
-    && apt-get install -y gnupg \
-    && apt-get install -y build-essential
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt install -y yarn
+# Ensure apt is non-interactive and up-to-date, then install required packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        gnupg \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Yarn (official repo)
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends yarn \
+    && rm -rf /var/lib/apt/lists/*
 
 ENV APP_ROOT=/src
 
