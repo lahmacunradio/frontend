@@ -17,10 +17,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { newsURL } from '~/constants'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
+  created() {
+    // initialize Pinia store
+    this.arcsi = useArcsiStore()
+  },
   data () {
     return {
       newsLimit: 9,
@@ -36,11 +40,9 @@ export default {
       })
   },
   computed: {
-    ...mapGetters({
-      fullSchedule: 'returnArcsiShows',
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
-    }),
+    fullSchedule() { return this.arcsi.returnArcsiShows },
+    rareShows() { return this.arcsi.returnRareShows },
+    customSchedule() { return this.arcsi.returnCustomSchedule },
     sortShowsForSchedule () {
       return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
     },

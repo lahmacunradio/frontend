@@ -41,13 +41,13 @@ $ yarn generate
 $ ls docker-compose.yml
 
 # Build the image after development changes
-$ docker-compose build
+$ docker compose build
 
 # Load the app
-$ docker-compose up -d
+$ docker compose up -d
 
 # Stop the app
-$ docker-compose down
+$ docker compose down
 ```
 
 ## Local Dev environment + IDE Setup

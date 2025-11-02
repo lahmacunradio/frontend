@@ -38,8 +38,13 @@
 
 <script>
 import { arcsiItemBaseURL, config } from '~/constants'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
+  created() {
+    // initialize Pinia store
+    this.arcsi = useArcsiStore()
+  },
   data () {
     return {
       startIndex: 1,

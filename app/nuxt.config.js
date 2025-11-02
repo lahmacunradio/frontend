@@ -67,7 +67,8 @@ export default {
    */
   plugins: [
     "~/plugins/mixinCommonMethods",
-    { src: "~/plugins/vuex-persist", mode: "client" },
+    "~/plugins/pinia.js",
+    "~/plugins/pinia-server.js",
   ],
   /*
    ** Nuxt.js dev-modules
@@ -78,6 +79,7 @@ export default {
     "@nuxtjs/style-resources",
     "@nuxtjs/moment",
     "@nuxtjs/dotenv",
+    "@nuxtjs/composition-api/module",
   ],
   /*
    ** Nuxt.js modules
@@ -103,7 +105,7 @@ export default {
      */
     extend(config, ctx) {},
     babel: {
-      plugins: ["@babel/plugin-proposal-optional-chaining"],
+      plugins: ["@babel/plugin-transform-optional-chaining"],
     },
   },
   styleResources: {

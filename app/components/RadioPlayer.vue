@@ -124,6 +124,8 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 import 'vue-slider-component/theme/default.css'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 import { mapGetters } from 'vuex'
+import { usePlayerStore } from '~/stores/player'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
   components: {
@@ -188,6 +190,7 @@ export default {
       docTitleSetter: null,
     }
   },
+
   computed: {
     ...mapGetters({
       rareShows: 'returnRareShows',
@@ -225,7 +228,7 @@ export default {
       return allStreams
     },
     arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+      return this.arcsi ? this.arcsi.returnArcsiShows : []
     },
     currentShowArcsi () {
       // Legacy function used in building the page; this.show is computed elsewhere
@@ -264,38 +267,38 @@ export default {
       let title = ''
       if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
         {
-          if (this.np.live.is_live) 
-            {title = this.np.live.streamer_name} else 
+          if (this.np.live.is_live)
+            {title = this.np.live.streamer_name} else
             {title = this.np.now_playing.song.artist}
         } else // Fallback: show metadata needs to be served from arcsi
-        { title=this.show?.name } 
+        { title=this.show?.name }
         // Update show name in stream in store for other components
-        this.$store.commit('player/setStreamShowTitle', title)
+  if (this.player) this.player.setStreamShowTitle(title)
         return title
     },
     show_subtitle () {
       let title = ''
       if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaying API response
       {
-        if (this.np.live.is_live) { 
-          title = this.np.now_playing.song.title 
-        } else 
-        { 
-          title = this.np.now_playing.song.title 
+        if (this.np.live.is_live) {
+          title = this.np.now_playing.song.title
+        } else
+        {
+          title = this.np.now_playing.song.title
         }
       } else // Use arcsi data as fallback
       {
         title = this.latestEpisodeData?.name
       }
-      this.$store.commit('player/setStreamEpisodeTitle', title)
+  if (this.player) this.player.setStreamEpisodeTitle(title)
       return title
     },
     show_check () {
       return !!(
         this.np.live.is_live ||
-        this.np.now_playing.playlist !== 'OFF AIR' && 
-        this.np.now_playing.playlist !== 'Off Air Ambient' && 
-        this.np.now_playing.playlist !== 'Jingle Donate' && 
+        this.np.now_playing.playlist !== 'OFF AIR' &&
+        this.np.now_playing.playlist !== 'Off Air Ambient' &&
+        this.np.now_playing.playlist !== 'Jingle Donate' &&
         this.np.now_playing.playlist !== 'Jingle Station ID'
       )
     },
@@ -341,7 +344,7 @@ export default {
       {
         url = this.latestEpisodeData?.image_url
       }
-      this.$store.commit('player/setStreamEpisodeImageURL', url)
+  if (this.player) this.player.setStreamEpisodeImageURL(url)
       return url
     },
     isTouchEnabled () {
@@ -351,14 +354,14 @@ export default {
   watch: {
     volume (volume) {
       if (isNaN(volume)) {
-        volume = this.$store.getters['player/getStreamVolume'] || 50
+        volume = (this.player && this.player.getStreamVolume) ? this.player.getStreamVolume : 50
       }
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
-      this.$store.commit('player/setStreamVolume', volume)
+  if (this.player) this.player.setStreamVolume(volume)
     },
     '$store.state.player.isArcsiPlaying': {
       handler () {
-        if (this.$store.getters['player/getArcsiPlayState']) {
+        if (this.player && this.player.getArcsiPlayState) {
           this.stop()
         }
       },
@@ -366,6 +369,9 @@ export default {
     }
   },
   created () {
+    // initialize Pinia player and arcsi stores for this component
+    this.player = usePlayerStore()
+    this.arcsi = useArcsiStore()
     this.audio = document.createElement('audio')
     this.clock_interval = setInterval(this.iterateTimer, 1000)
     // Handle audio errors.
@@ -385,8 +391,8 @@ export default {
       }
     }
     // Check webstorage for existing volume preference.
-    if (this.volume !== this.$store.getters['player/getStreamVolume']) {
-      this.volume = this.$store.getters['player/getStreamVolume']
+    if (this.player && this.volume !== this.player.getStreamVolume) {
+      this.volume = this.player.getStreamVolume
     }
     // Check the query string if browser supports easy query string access.
     if (typeof URLSearchParams !== 'undefined') {
@@ -427,8 +433,7 @@ export default {
         }
       }, 3000)
 
-      this.$store.commit('player/isArcsiPlaying', false)
-      this.$store.commit('player/isStreamPlaying', true)
+  if (this.player) { this.player.setIsArcsiPlaying(false); this.player.setIsStreamPlaying(true) }
 
       // Google Analytics 3 play
         gtag('event', 'Radio play', {
@@ -462,7 +467,7 @@ export default {
         this.audio.pause()
       }
       this.audio.src = ''
-      this.$store.commit('player/isStreamPlaying', false)
+  if (this.player) this.player.setIsStreamPlaying(false)
 
       clearInterval(this.docTitleSetter)
       const ogTitle = document.querySelector("meta[property='og:title']")
@@ -501,13 +506,13 @@ export default {
           this.current_stream = currentStream
         }
       // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
-      // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons: 
+      // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons:
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
-      // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
+      // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit))
       const groupedShows = this.groupShowsByDay(this.arcsiList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
-      this.$store.commit('player/setShowsByDate', groupedShows)
-      //Compute current show      
+  if (this.player) this.player.setShowsByDate(groupedShows)
+      //Compute current show
       if (this.nowPlayingInfoAvailable){
         //Compute by name
         this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title))
@@ -520,13 +525,13 @@ export default {
             break
           }
         }
-      }  
+      }
       if (this.show_check){
         this.getLatestEpisodeFromArcsi()
       } else {
         this.latestEpisodeData = null
       }
-      
+
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)

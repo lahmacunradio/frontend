@@ -18,7 +18,7 @@
             {{ removeSeconds(show.start) }}
             <img src="@/assets/img/arrow-schedule.svg" alt="" class="inline-block w-8 pb-1">
             {{ removeSeconds(show.end) }} -
-            <div v-if="show.archive_lahmastore_base_url.includes(currentHost)" class="inline">
+            <div v-if="show.archive_lahmastore_base_url && show.archive_lahmastore_base_url.includes(currentHost)" class="inline">
               <NuxtLink :to="show.archive_lahmastore_base_url.replace(currentHost, '')">
                 <b>{{ show.name }}</b>
               </NuxtLink>
@@ -49,10 +49,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { streamServer } from '~/constants'
+import { usePlayerStore } from '~/stores/player'
 
 export default {
+  created() {
+    // initialize Pinia store
+    this.player = usePlayerStore()
+  },
   props: {
     shows: {
       required: true,
@@ -69,9 +73,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      streamShowTitle: 'player/getStreamShowTitle'
-    }),
+    streamShowTitle() { return this.player ? this.player.getStreamShowTitle : '' },
     getToday (){
       return this.getTodayNumeric()
     },
@@ -85,7 +87,7 @@ export default {
       return this.dayNames[this.getToday - 1]
     },
     showsByDate () {
-      return this.$store.getters['player/getShowsByDate']
+      return this.player ? this.player.getShowsByDate : []
     }
   },
   methods: {
