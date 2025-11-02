@@ -5,7 +5,7 @@
         id="arcsiplayer"
         ref="arcsiplayer"
         preload="metadata"
-        :title="episode.shows[0].name + ' - ' + episode.name"
+  :title="(episode.shows?.[0]?.name || '') + ' - ' + episode.name"
         :src="source"
         :autoplay="isSafari"
         @play="setPlayState()"
@@ -34,8 +34,8 @@
           </span>
         </button>
         <h5 v-if="arcsiShow">
-          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
-            {{ episode.shows[0].name }}
+          <NuxtLink v-if="arcsiShow" :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
+            {{ episode.shows?.[0]?.name || '' }}
           </NuxtLink>
           <span> - </span>
           <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.name_slug}`">
@@ -43,7 +43,7 @@
           </NuxtLink>
         </h5>
         <h5 v-else>
-          {{ episode.shows[0].name + ' - ' + episode.name }}
+          {{ (episode.shows?.[0]?.name || '') + ' - ' + episode.name }}
         </h5>
       </div>
       <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
@@ -95,7 +95,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { usePlayerStore } from '~/stores/player'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
   props: {
@@ -121,12 +122,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('player', {
-      arcsiIsPlaying: 'getArcsiPlayState',
-      isStreamPlaying: 'getStreamPlayState',
-      arcsiVolume: 'getArcsiVolume',
-      arcsiPlayHistory: 'getArcsiPlayHistory'
-    }),
+    arcsiIsPlaying () { return this.player ? this.player.getArcsiPlayState : false },
+    isStreamPlaying () { return this.player ? this.player.getStreamPlayState : false },
+    arcsiVolume () { return this.player ? this.player.getArcsiVolume : 1 },
+    arcsiPlayHistory () { return this.player ? this.player.getArcsiPlayHistory : {} },
     progress () {
       if (!this.audio) {
         return false
@@ -146,7 +145,7 @@ export default {
       }
     },
     arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+      return this.arcsi ? this.arcsi.returnArcsiShows : []
     },
     arcsiShow () {
       if (!this.arcsiList) {
@@ -163,7 +162,7 @@ export default {
     }
   },
   watch: {
-    '$store.state.player.isStreamPlaying': {
+    'player.isStreamPlaying': {
       handler () {
         if (this.isStreamPlaying) {
           this.audio?.pause()
@@ -173,6 +172,8 @@ export default {
     }
   },
   created () {
+    this.player = usePlayerStore()
+    this.arcsi = useArcsiStore()
     this.audio = document.getElementById('arcsiplayer')
   },
   mounted () {
@@ -181,7 +182,7 @@ export default {
       this.setVolume(parseFloat(this.arcsiVolume))
     }
     this.setMetaData()
-    this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+  if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
     if (!this.isSafari) {
       this.pauseArcsi()
     }
@@ -197,7 +198,7 @@ export default {
     clearInterval(this.docTitleSetter)
     this.timeOutHelper = null
     if (this.arcsiIsPlaying) {
-      this.$store.commit('player/currentlyPlayingArcsi', this.episode)
+  if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
     }
     if ('mediaSession' in navigator) {
       navigator.mediaSession.setActionHandler('pause', () => null)
@@ -212,24 +213,28 @@ export default {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
-      this.$store.commit('player/currentlyPlayingArcsi', this.episode)
-      this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      this.$store.commit('player/isArcsiPlaying', true)
-      this.$store.commit('player/isStreamPlaying', false)
+      if (this.player) {
+        this.player.setCurrentlyPlayingArcsi(this.episode)
+        this.player.setArcsiProgressHistory(playHistory)
+        this.player.setIsArcsiPlaying(true)
+        this.player.setIsStreamPlaying(false)
+      }
     },
     setPauseState () {
       const playHistory = {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
-      this.$store.commit('player/isArcsiPlaying', false)
-      this.$store.commit('player/setArcsiProgressHistory', playHistory)
+      if (this.player) {
+        this.player.setIsArcsiPlaying(false)
+        this.player.setArcsiProgressHistory(playHistory)
+      }
     },
     setMetaData () {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.episode.name,
-          artist: this.episode.shows[0].name,
+          artist: this.episode.shows?.[0]?.name || '',
           artwork: [
             { src: this.episode.image_url }
           ]
@@ -245,10 +250,11 @@ export default {
       this.setPlayState()
       this.setMetaData()
 
-      document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+      const showName = this.episode.shows?.[0]?.name || ''
+      document.title = `🔈 ${showName} - ${this.episode.name}`
       this.docTitleSetter = setInterval(() => {
         if (this.arcsiIsPlaying) {
-          document.title = `🔈 ${this.episode.shows[0].name} - ${this.episode.name}`
+          document.title = `🔈 ${showName} - ${this.episode.name}`
         } else {
           clearInterval(this.docTitleSetter)
           const currentPageTitle = document.querySelector("meta[property='og:title']").getAttribute('content')
@@ -259,7 +265,7 @@ export default {
       // Google Analytics 3 play event
       // eslint-disable-next-line no-undef
       gtag('event', 'Arcsi play', {
-        show_title: this.episode.shows[0].name,
+        show_title: showName,
         episode_title: this.episode.name,
         value: 1
       })
@@ -296,8 +302,10 @@ export default {
         value: 0
       }
       this.currentProgress = '0'
-      this.$store.commit('player/setArcsiProgressHistory', playHistory)
-      this.$store.commit('player/isArcsiPlaying', false)
+      if (this.player) {
+        this.player.setArcsiProgressHistory(playHistory)
+        this.player.setIsArcsiPlaying(false)
+      }
     },
     setVolume (volume) {
       if (this.audio) {
@@ -307,7 +315,7 @@ export default {
     },
     volumeBar (value) {
       this.setVolume(parseFloat(value))
-      this.$store.commit('player/setArcsiVolume', value)
+  if (this.player) this.player.setArcsiVolume(value)
     },
     seekBar (value) {
       this.$refs.arcsiplayer.currentTime = this.duration * parseFloat(value)
@@ -315,7 +323,7 @@ export default {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
-      this.$store.commit('player/setArcsiProgressHistory', playHistory)
+  if (this.player) this.player.setArcsiProgressHistory(playHistory)
     },
     setSeek (seek) {
       if (!this.$refs.arcsiplayer) {

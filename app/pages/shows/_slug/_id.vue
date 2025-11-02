@@ -102,8 +102,8 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { usePlayerStore } from '~/stores/player'
 
 export default {
   data() {
@@ -189,12 +189,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('player', {
-      arcsiCurrentEpisode: 'getArcsiEpisode',
-      arcsiVisible: 'getArcsiVisibility',
-      arcsiEpisodePlaying: 'getArcsiPlayState'
-
-    }),
+    arcsiCurrentEpisode () { return this.player ? this.player.getArcsiEpisode : null },
+    arcsiVisible () { return this.player ? this.player.getArcsiVisibility : false },
+    arcsiEpisodePlaying () { return this.player ? this.player.getArcsiPlayState : false },
     getToday() {
       const d = new Date()
       const year = d.getFullYear()
@@ -256,6 +253,9 @@ export default {
       return this.arcsiEpisode?.tags.filter(tag => tag.display_name.length > 0)
     }
   },
+  created() {
+    this.player = usePlayerStore()
+  },
   mounted() {
     this.$nextTick(() => {
       setTimeout(() => {
@@ -271,9 +271,11 @@ export default {
   },
   methods: {
     playArcsi() {
-      this.$store.commit('player/isArcsiPlaying', true)
-      this.$store.commit('player/isArcsiVisible', true)
-      this.$store.commit('player/currentlyPlayingArcsi', this.arcsiEpisode)
+      if (this.player) {
+        this.player.setIsArcsiPlaying(true)
+        this.player.setIsArcsiVisible(true)
+        this.player.setCurrentlyPlayingArcsi(this.arcsiEpisode)
+      }
     },
     sortAlphabeticaly() {
       this.sortingType = 'abc'

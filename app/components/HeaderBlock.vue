@@ -24,8 +24,13 @@
 
 <script>
 import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL, config } from '~/constants'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
+  created() {
+    // initialize Pinia store
+    this.arcsi = useArcsiStore()
+  },
   data () {
     return {
       streamServer,
@@ -71,7 +76,7 @@ export default {
     async refreshAllShows () {
       await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
         .then((res) => {
-          this.$store.commit('refreshAllShowsList', res.data)
+          this.arcsi.refreshAllShowsList(res.data)
         })
         .catch((e) => {
           this.$sentry.captureException(e)
@@ -81,7 +86,7 @@ export default {
     async refreshRareShows () {
       await this.$axios.get(rareShowsURL)
         .then((res) => {
-          this.$store.commit('refreshRareShows', res.data?.acf)
+          this.arcsi.refreshRareShows(res.data?.acf)
         })
         .catch((e) => {
           this.$sentry.captureException(e)
@@ -91,7 +96,7 @@ export default {
     async refreshCustomSchedule () {
       await this.$axios.get(customScheduleURL)
         .then((res) => {
-          this.$store.commit('refreshCustomSchedule', res.data?.acf)
+          this.arcsi.refreshCustomSchedule(res.data?.acf)
         })
         .catch((e) => {
           this.$sentry.captureException(e)

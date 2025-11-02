@@ -68,10 +68,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { usePlayerStore } from '~/stores/player'
 import { arcsiBaseURL, config } from '~/constants'
 
 export default {
+  created () {
+    // initialize Pinia player store for this component
+    this.player = usePlayerStore()
+  },
   props: {
     show: {
       type: Object,
@@ -91,11 +95,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({   
-      streamShowTitle: 'player/getStreamShowTitle',
-      streamEpisodeTitle: 'player/getStreamEpisodeTitle',
-      onAirImage: 'player/getStreamEpisodeImageURL'
-    }),
+    streamShowTitle () { return this.player ? this.player.getStreamShowTitle : '' },
+    streamEpisodeTitle () { return this.player ? this.player.getStreamEpisodeTitle : '' },
+    onAirImage () { return this.player ? this.player.getStreamEpisodeImageURL : '' },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },

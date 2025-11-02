@@ -45,6 +45,7 @@
 <script>
 import resolveConfig from 'tailwindcss/resolveConfig'
 import tailwindConfig from '~/tailwind.config.js'
+import { useArcsiStore } from '~/stores/arcsi'
 
 import { arcsiItemBaseURL, config } from '~/constants'
 
@@ -77,6 +78,10 @@ export default {
       this.changeBreakpoint()
     }
   },
+  created() {
+    // initialize Pinia store
+    this.arcsi = useArcsiStore()
+  },
   computed: {
     getToday () {
       const d = new Date()
@@ -98,7 +103,7 @@ export default {
       return null
     },
     arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+      return this.arcsi ? this.arcsi.returnArcsiShows : []
     }
   },
   mounted () {

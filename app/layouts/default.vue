@@ -13,14 +13,15 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { usePlayerStore } from '~/stores/player'
 
 export default {
   name: 'DefaultLayout',
   computed: {
-    ...mapGetters('player', {
-      arcsiVisible: 'getArcsiVisibility'
-    })
+    arcsiVisible () { return this.player ? this.player.getArcsiVisibility : false }
+  }
+  ,created () {
+    this.player = usePlayerStore()
   }
 }
 </script>
