@@ -1,6 +1,6 @@
 {
   "name": "lahmacun",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Lahmacun Radio Frontend",
   "author": "Lahma team",
   "private": true,
@@ -19,6 +19,7 @@
     "@nuxtjs/dotenv": "^1.4.2",
     "@nuxtjs/sentry": "^7.5.0",
     "@sentry/webpack-plugin": "^1.20.1",
+    "date-fns": "^2.30.0",
     "eslint": "^7.32.0",
     "html-entities": "^2.3.2",
     "isomorphic-dompurify": "^2.31.0",
@@ -32,7 +33,6 @@
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.1",
-    "@nuxtjs/moment": "^1.6.1",
     "@nuxtjs/style-resources": "^1.2.1",
     "@nuxtjs/tailwindcss": "^4.2.1",
     "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",

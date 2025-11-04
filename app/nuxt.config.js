@@ -70,7 +70,8 @@ export default {
     "~/plugins/pinia.js",
     "~/plugins/pinia-persist.js",
     "~/plugins/pinia-server.js",
-    { src: '~/plugins/dompurify.client.js', mode: 'client' }
+    { src: '~/plugins/dompurify.client.js', mode: 'client' },
+    "~/plugins/date-fns.js"
   ],
   /*
    ** Nuxt.js dev-modules
@@ -79,7 +80,6 @@ export default {
     // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
     "@nuxtjs/tailwindcss",
     "@nuxtjs/style-resources",
-    "@nuxtjs/moment",
     "@nuxtjs/dotenv",
     "@nuxtjs/composition-api/module",
   ],

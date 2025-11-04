@@ -99,7 +99,7 @@
                   {{ arcsi.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $date(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>

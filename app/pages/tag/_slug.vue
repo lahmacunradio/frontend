@@ -52,7 +52,7 @@
                   {{ arcsi.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $date(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
               <div v-if="arcsi?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
                 <div v-for="(tag, index) in arcsi.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
                   <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">

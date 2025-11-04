@@ -13,7 +13,7 @@
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
       <p class="text-white">
-        Date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}
+  Date: {{ $date(episode.play_date).format('yyyy. MMMM Do.') }}
       </p>
     </NuxtLink>
     <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">

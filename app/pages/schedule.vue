@@ -10,7 +10,7 @@
                 <h4 class="block">
                   {{ day }}
                 </h4>
-                {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
+                {{ $date(todayDate).add(dayIndex, 'days').format('MMM Do') }}
               </div>
             </li>
           </ul>

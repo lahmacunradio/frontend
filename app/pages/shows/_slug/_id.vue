@@ -92,7 +92,7 @@
                   {{ arcsi.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $date(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default {
       if (!this.arcsiEpisode?.play_date) {
         return ''
       }
-      return this.$moment(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
+  return this.$date(this.arcsiEpisode.play_date).format('yyyy. MMMM Do.')
     },
     episodeImage() {
       return this.arcsiEpisode?.image_url

@@ -30,7 +30,7 @@
           {{ htmlDecoder(news.title.rendered) }}
         </h1>
         <p class="mb-4 news-time">
-          {{ $moment(news.date).format('yyyy. MMMM Do.') }}
+          {{ $date(news.date).format('yyyy. MMMM Do.') }}
         </p>
         <div v-dompurify-html:[sanitizeOptions]="news.content.rendered" class="text-content news-text" />
       </div>
