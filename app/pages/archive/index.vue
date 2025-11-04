@@ -108,7 +108,6 @@ export default {
       return null
     },
     arcsiList () {
-      // Use Pinia store getter instead of Vuex
       return [...(this.arcsi?.returnArcsiShows || [])]
     }
   },
