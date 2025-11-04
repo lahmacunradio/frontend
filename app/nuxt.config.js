@@ -68,6 +68,7 @@ export default {
   plugins: [
     "~/plugins/mixinCommonMethods",
     "~/plugins/pinia.js",
+    "~/plugins/pinia-persist.js",
     "~/plugins/pinia-server.js",
   ],
   /*

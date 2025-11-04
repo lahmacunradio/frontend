@@ -80,7 +80,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'All shows endpoint not found' }) : null
         })
     },
     async refreshRareShows () {
@@ -90,7 +90,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Rare Shows not found' }) : null
         })
     },
     async refreshCustomSchedule () {
@@ -100,7 +100,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Custom schedule not found' })
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Custom schedule not found' }) : null
         })
     }
 

@@ -65,11 +65,15 @@
 <script>
 import { membershipStripeURL } from '~/constants'
 
-import { mapGetters } from 'vuex'
+import { useArcsiStore } from '~/stores/arcsi'
 import Dropdown from '~/components/Dropdown.vue'
 import RadioButton from '~/components/RadioButton.vue'
 
 export default {
+  created() {
+    // initialize Pinia arcsi store
+    this.arcsi = useArcsiStore()
+  },
   data() {
     return {
       show_name: "",
@@ -119,9 +123,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      allShows: 'returnArcsiShows'
-    }),
+    allShows() {
+      return this.arcsi ? this.arcsi.returnArcsiShows : null
+    },
     arcsiShowsList() {
       if (this.allShows) {
         return this.allShows.filter(show => (

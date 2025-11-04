@@ -47,6 +47,8 @@ export default {
   },
   data () {
     return {
+      // Pinia store instance
+      arcsi: null,
       startIndex: 1,
       preloadImages: false,
       numberOfEpisodes: 12,
@@ -106,7 +108,8 @@ export default {
       return null
     },
     arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+      // Use Pinia store getter instead of Vuex
+      return [...(this.arcsi?.returnArcsiShows || [])]
     }
   },
   beforeDestroy () {

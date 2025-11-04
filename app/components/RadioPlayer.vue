@@ -123,7 +123,6 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
-import { mapGetters } from 'vuex'
 import { usePlayerStore } from '~/stores/player'
 import { useArcsiStore } from '~/stores/arcsi'
 
@@ -192,10 +191,12 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule',
-    }),
+    rareShows () {
+      return this.arcsi ? this.arcsi.returnRareShows : null
+    },
+    customSchedule () {
+      return this.arcsi ? this.arcsi.returnCustomSchedule : null
+    },
     rareShowThursday () {
       if (!this.rareShows) {
         return false
@@ -359,19 +360,20 @@ export default {
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
   if (this.player) this.player.setStreamVolume(volume)
     },
-    '$store.state.player.isArcsiPlaying': {
-      handler () {
-        if (this.player && this.player.getArcsiPlayState) {
-          this.stop()
-        }
-      },
-      deep: true
-    }
+    // replaced Vuex watcher with Pinia watcher set up in created()
   },
   created () {
     // initialize Pinia player and arcsi stores for this component
     this.player = usePlayerStore()
     this.arcsi = useArcsiStore()
+    // Watch Pinia player's Arcsi play state and stop stream if Arcsi starts
+    if (this.player && this.$watch) {
+      this._unwatchArcsiPlay = this.$watch(() => this.player.getArcsiPlayState, (val) => {
+        if (val) {
+          this.stop()
+        }
+      })
+    }
     this.audio = document.createElement('audio')
     this.clock_interval = setInterval(this.iterateTimer, 1000)
     // Handle audio errors.
@@ -414,6 +416,10 @@ export default {
     this.np_timeout = null
     this.clock_interval = null
     this.timeOutHelper = null
+    if (this._unwatchArcsiPlay) {
+      try { this._unwatchArcsiPlay() } catch (e) { /* ignore */ }
+      this._unwatchArcsiPlay = null
+    }
   },
   methods: {
     play () {
