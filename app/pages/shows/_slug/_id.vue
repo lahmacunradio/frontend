@@ -34,7 +34,7 @@
                 Episode Nr. {{ arcsiEpisode.number }},
                 Original air date:
                 {{ airDate }}
-                Language: <span v-sanitize.nothing="getLanguageGraph(arcsiEpisode.language)" class="language" />
+                Language: <span v-dompurify-html.nothing="getLanguageGraph(arcsiEpisode.language)" class="language" />
               </p>
             </div>
 
@@ -47,7 +47,7 @@
               </p>
             </div>
 
-            <div v-sanitize="[sanitizeOptions, arcsiEpisode.description]" />
+            <div v-dompurify-html:[sanitizeOptions]="arcsiEpisode.description" />
 
             <div v-if="arcsiEpisode.play_file_name" class="py-4">
               <client-only>

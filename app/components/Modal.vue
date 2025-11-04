@@ -17,7 +17,7 @@
               </div>
 
               <div v-if="description" class="modal-footer">
-                <div v-sanitize="[ sanitizeOptions, description ]" class="description-text" />
+                <div v-dompurify-html:[sanitizeOptions]="description" class="description-text" />
               </div>
             </div>
           </div>

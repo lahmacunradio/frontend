@@ -1,7 +1,7 @@
 <template>
   <div v-if="donateContent && donateContent.enabled && donateIsVisible">
     <div class="donate-banner">
-      <div v-sanitize="[sanitizeOptions, donateContent.banner_text]" />
+      <div v-dompurify-html:[sanitizeOptions]="donateContent.banner_text" />
       <button v-if="donateContent.button.show_button" class="donate-banner-button">
         <a :href="donateContent.button.button_link">
           {{ donateContent.button.button_text }}

@@ -70,6 +70,7 @@ export default {
     "~/plugins/pinia.js",
     "~/plugins/pinia-persist.js",
     "~/plugins/pinia-server.js",
+    { src: '~/plugins/dompurify.client.js', mode: 'client' }
   ],
   /*
    ** Nuxt.js dev-modules
@@ -88,7 +89,6 @@ export default {
   modules: [
     "@nuxtjs/axios",
     "@nuxtjs/sentry",
-    "v-sanitize/nuxt",
   ],
   axios: {
     // proxyHeaders: false

@@ -8,7 +8,7 @@
       <article id="cookies-page" ref="cookies">
         <div v-if="cookiesContent">
           <h2>{{ cookiesContent.title.rendered }}</h2>
-          <span v-sanitize.nothing="cookiesContentResults" />
+          <span v-dompurify-html.nothing="cookiesContentResults" />
         </div>
       </article>
     </div>

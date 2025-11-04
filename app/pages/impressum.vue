@@ -12,7 +12,7 @@
         <div v-if="impressumFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
           <img :src="impressumFeaturedImage.source_url" alt="Lahmacun Impressum">
         </div>
-        <div v-sanitize="[ sanitizeOptions, impressumResults]" class="text-content" />
+        <div v-dompurify-html:[sanitizeOptions]="impressumResults" class="text-content" />
       </div>
     </div>
   </div>

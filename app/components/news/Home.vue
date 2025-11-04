@@ -34,7 +34,7 @@
             {{ htmlDecoder(news.title.rendered) }}
           </nuxt-link>
         </h1>
-        <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
+        <div v-dompurify-html:[sanitizeOptions]="truncatedNews" />
       </div>
     </div>
   </div>

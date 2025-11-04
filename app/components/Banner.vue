@@ -6,7 +6,7 @@
           <div class="w-4 h-4">
             <IconCookie />
           </div>
-          <div v-sanitize="[sanitizeOptions, bannerText_computed]" />
+          <div v-dompurify-html:[sanitizeOptions]="bannerText_computed" />
           <button @click="dismiss_remember">OK</button>
         </div>
 

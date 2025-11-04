@@ -19,7 +19,7 @@
         </h5>
       </NuxtLink>
       <div class="news-text">
-        <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
+        <div v-dompurify-html:[sanitizeOptions]="truncatedNews" />
       </div>
     </div>
     <div v-if="newsTags" class="mt-2 tags">

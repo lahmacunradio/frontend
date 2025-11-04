@@ -10,7 +10,7 @@
         <div class="mb-4">
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
-        <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
+        <div v-dompurify-html:[sanitizeOptions]="membershipContent.content.rendered" />
         <div class="block mt-6">
           <a id="checkout-button" :href="$config.subscriptionCancelUrl" target="_blank">Yes, cancel my membership</a>
         </div>

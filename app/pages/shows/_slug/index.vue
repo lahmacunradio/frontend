@@ -40,7 +40,7 @@
               {{ showFrequency(showObject.frequency, showObject.week, showObject.playlist_name) }}
             </p>
             <p>
-              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language" />
+              Language: <span v-dompurify-html.nothing="getLanguageGraph(showObject.language)" class="language" />
             </p>
             <p v-if="showObject.archive_mixcloud_base_url">
               Elsewhere on web:
@@ -57,7 +57,7 @@
               <strong>Show is not active</strong>
             </p>
             <p>
-              Language: <span v-sanitize.nothing="getLanguageGraph(showObject.language)" class="language" />
+              Language: <span v-dompurify-html.nothing="getLanguageGraph(showObject.language)" class="language" />
             </p>
             <p v-if="showObject.archive_mixcloud_base_url">
               Elsewhere on web:
@@ -68,7 +68,7 @@
               </a>
             </p>
           </div>
-          <div v-sanitize="[sanitizeOptions, showObject.description]" class="description-text" />
+          <div v-dompurify-html:[sanitizeOptions]="showObject.description" class="description-text" />
         </div>
       </div>
       <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
