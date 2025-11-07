@@ -5,41 +5,29 @@
   "author": "Lahma team",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt dev",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "nuxt preview",
+    "preview": "nuxt preview",
     "generate": "nuxt generate",
     "lint": "eslint --ext .ts,.js,.vue ."
   },
   "dependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/plugin-transform-optional-chaining": "^7.24.0",
-    "@nuxtjs/axios": "^5.13.6",
-    "@nuxtjs/composition-api": "^0.32.0",
-    "@nuxtjs/dotenv": "^1.4.2",
-    "@nuxtjs/sentry": "^7.5.0",
-    "@sentry/webpack-plugin": "^1.20.1",
     "date-fns": "^2.30.0",
     "eslint": "^7.32.0",
     "html-entities": "^2.3.2",
     "isomorphic-dompurify": "^2.31.0",
-    "nuxt": "^2.15.8",
-    "pinia": "^2.0.35",
+  "nuxt": "^3.12.0",
+    "pinia": "^2.2.4",
     "sass": "^1.43.3",
-    "sass-loader": "^10.2.0",
-    "store": "^2.0.12",
-    "vue-slider-component": "^3.2.15",
-    "webpack": "^4.46.0"
+  "store": "^2.0.12"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.1",
-    "@nuxtjs/style-resources": "^1.2.1",
-    "@nuxtjs/tailwindcss": "^4.2.1",
-    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
-    "autoprefixer": "^9.8.8",
-    "postcss": "^8.5.6",
-    "postcss-import": "^12.0.1",
-    "postcss-loader": "^4.3.0",
-    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
+    "@pinia/nuxt": "^0.4.11",
+    "@nuxtjs/tailwindcss": "^5.3.5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.14"
   }
 }

@@ -27,10 +27,6 @@ import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL, confi
 import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
-  created() {
-    // initialize Pinia store
-    this.arcsi = useArcsiStore()
-  },
   data () {
     return {
       streamServer,
@@ -40,6 +36,8 @@ export default {
     }
   },
   created () {
+    // initialize Pinia store and start clock
+    this.arcsi = useArcsiStore()
     this.getNow()
   },
   mounted () {
@@ -47,7 +45,7 @@ export default {
       this.interval = setInterval(this.getNow, 60 * 1000)
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.interval)
     this.interval = null
   },
@@ -79,7 +77,7 @@ export default {
           this.arcsi.refreshAllShowsList(res.data)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
           this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'All shows endpoint not found' }) : null
         })
     },
@@ -89,7 +87,7 @@ export default {
           this.arcsi.refreshRareShows(res.data?.acf)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
           this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Rare Shows not found' }) : null
         })
     },
@@ -99,7 +97,7 @@ export default {
           this.arcsi.refreshCustomSchedule(res.data?.acf)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
           this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Custom schedule not found' }) : null
         })
     }

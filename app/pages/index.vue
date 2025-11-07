@@ -1,12 +1,24 @@
 <template>
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
-      <div v-if="sortNews" class="bg-white">
-        <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
+      <div class="bg-white">
+        <div v-if="$fetchState.pending" class="p-8 text-center text-gray-500">
+          Loading news...
+        </div>
+        <div v-else-if="$fetchState.error" class="p-8 text-center text-red-500">
+          Failed to load news
+        </div>
+        <NewsHome v-else-if="sortNews && sortNews.length > 0" :news="sortNews[newsStart]" @changenews="changeIt($event)" />
+        <div v-else class="p-8 text-center text-gray-500">
+          No news available
+        </div>
       </div>
       <div>
         <client-only>
-          <ScheduleHome :shows="sortShowsForSchedule" />
+          <div v-if="!fullSchedule || fullSchedule.length === 0" class="p-8 text-center text-gray-500">
+            Loading schedule...
+          </div>
+          <ScheduleHome v-else :shows="sortShowsForSchedule" />
         </client-only>
       </div>
     </section>
@@ -44,7 +56,11 @@ export default {
     rareShows() { return this.arcsi.returnRareShows },
     customSchedule() { return this.arcsi.returnCustomSchedule },
     sortShowsForSchedule () {
-      return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
+      const shows = Array.isArray(this.fullSchedule) ? this.fullSchedule : []
+      return [...shows]
+        .filter(s => s && s.day != null && s.start)
+        .sort((a, b) => Number(a.day) - Number(b.day))
+        .sort((a, b) => parseInt(String(a.start).replace(':', ''), 10) - parseInt(String(b.start).replace(':', ''), 10))
     },
     newsListState () {
       if (!this.newsList) {
@@ -56,7 +72,10 @@ export default {
       if (!this.newsList) {
         return false
       }
-      return [...this.newsListState].sort((a, b) => a.date - b.date)
+      const list = Array.isArray(this.newsListState) ? this.newsListState : []
+      return [...list]
+        .filter(n => n && n.date)
+        .sort((a, b) => new Date(b.date) - new Date(a.date))
     }
   },
   methods: {

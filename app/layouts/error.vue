@@ -40,7 +40,7 @@ export default {
       }, 30000)
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.tryReloadInterval)
   }
 }

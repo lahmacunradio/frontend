@@ -9,7 +9,7 @@
         Some error happened...
       </div>
       <div v-if="aboutUs">
-        <div v-dompurify-html:[sanitizeOptions]="aboutUsResults" />
+        <div v-dompurify-html="{ html: aboutUsResults, options: sanitizeOptions }" />
       </div>
     </div>
   </div>

@@ -42,12 +42,12 @@
       <div class="supporters">
         <div class="mb-4">
           <h5 class="mb-4">{{ footerLogos?.supporters_block_title }}</h5>
-          <div v-dompurify-html:[sanitizeOptions]="footerLogos?.supporters_block_content"
+          <div v-dompurify-html="{ html: footerLogos?.supporters_block_content, options: sanitizeOptions }"
             class="supporters-content"></div>
         </div>
         <div class="">
           <h5 class="mb-4">{{ footerLogos?.membership_block_title }}</h5>
-          <div v-dompurify-html:[sanitizeOptions]="footerLogos?.membership_block_content"
+          <div v-dompurify-html="{ html: footerLogos?.membership_block_content, options: sanitizeOptions }"
             class="supporters-content"></div>
         </div>
       </div>

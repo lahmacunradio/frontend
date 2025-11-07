@@ -10,7 +10,7 @@
         <div class="mb-4">
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
-        <div v-dompurify-html:[sanitizeOptions]="membershipContent.content.rendered" />
+        <div v-dompurify-html="{ html: membershipContent.content.rendered, options: sanitizeOptions }" />
         <div class="mt-4">
           <p>Cancel your subscription <NuxtLink to="/membership-cancel">
               here

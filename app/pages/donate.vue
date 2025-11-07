@@ -12,7 +12,7 @@
         </div>
         <div class="grid md:grid-cols-2 md:gap-16 gap-4">
           <div>
-            <div v-dompurify-html:[sanitizeOptions]="donateContent.content.rendered" />
+            <div v-dompurify-html="{ html: donateContent.content.rendered, options: sanitizeOptions }" />
           </div>
 
           <div>

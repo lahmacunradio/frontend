@@ -54,6 +54,10 @@ function momentLike(input) {
   }
 }
 
-export default (ctx, inject) => {
-  inject('date', (d) => momentLike(d))
-}
+export default defineNuxtPlugin(() => {
+  return {
+    provide: {
+      date: (d) => momentLike(d)
+    }
+  }
+})

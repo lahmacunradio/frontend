@@ -10,7 +10,7 @@
         <div class="mb-4">
           <h2>{{ donateContent.title.rendered }}</h2>
         </div>
-        <div v-dompurify-html:[sanitizeOptions]="donateContent.content.rendered" />
+        <div v-dompurify-html="{ html: donateContent.content.rendered, options: sanitizeOptions }" />
         <div class="mt-4">
           <p>Cancel your subscription
             <NuxtLink to="/donate-cancel">

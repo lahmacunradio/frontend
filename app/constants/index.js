@@ -5,10 +5,10 @@ export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
 export const config = {
-headers: {
-        'Authentication-Token': process.env.ARCSI_TOKEN,
-    }
-  };
+  headers: {
+    // In Nuxt 3, default auth header is attached by the $axios compatibility plugin using runtimeConfig.arcsiToken
+  }
+};
 
 // dev server 'https://devarcsi.lahmacun.hu' //
 // prod server 'https://arcsi.lahmacun.hu' //

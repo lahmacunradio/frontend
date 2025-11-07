@@ -63,12 +63,7 @@
               <div v-if="!isTouchEnabled" id="radio-player-controls" class="hidden radio-controls-standalone volumecontrolos sm:block">
                 <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
-                  <vue-slider
-                    v-model="volume"
-                    :height="16"
-                    tooltip="none"
-                    :dot-size="16"
-                  />
+                  <input type="range" v-model="volume" min="0" max="100" aria-label="volume" />
                 </div>
                 <i class="fa fa-volume-up" />
               </div>
@@ -118,18 +113,12 @@
 </template>
 
 <script>
-import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min.js'
-import 'vue-slider-component/dist-css/vue-slider-component.css'
-// import theme
-import 'vue-slider-component/theme/default.css'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 import { usePlayerStore } from '~/stores/player'
 import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
-  components: {
-    VueSlider
-  },
+  components: {},
   props: {
     nowPlayingUri: {
       type: String,
@@ -184,8 +173,8 @@ export default {
       timeOutHelper: null,
 
       // rework the checks
-      default_art_url: require('@/assets/img/stream/defaultshowart.jpg'),
-      default_azuracast_art_url: require('@/assets/img/stream/generic_song.jpg'),
+      default_art_url: '/defaultshowart.jpg',
+      default_azuracast_art_url: '/generic_song.jpg',
       docTitleSetter: null,
     }
   },

@@ -1,131 +1,86 @@
-export default {
+import { fileURLToPath } from 'url'
+
+export default defineNuxtConfig({
+  compatibilityDate: '2025-11-06',
   components: true,
-  server: {
-    port: 3333, // default: 3000
-    host: "0.0.0.0", // default: localhost
+  devServer: {
+    port: 3333,
+    host: '0.0.0.0'
   },
-  /*
-   ** Headers of the page
-   */
-  head: {
-    title: "Lahmacun Radio",
-    titleTemplate: "%s",
-    meta: [
-      { charset: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      {
-        hid: "description",
-        name: "description",
-        content:
-          "Lahmacun.hu is an online music & more radio from Budapest since 2018",
-      },
-      { hid: "keywords", name: "keywords", content: "budapest online radio" },
-      {
-        hid: "og:site_name",
-        name: "og:site_name",
-        content: "Lahmacun Radio Budapest",
-      },
-      { hid: "og:title", name: "og:title", content: "Lahmacun Radio" },
-      {
-        hid: "og:description",
-        name: "og:description",
-        content:
-          "Lahmacun.hu is an online music & more radio from Budapest since 2018",
-      },
-      {
-        hid: "og:image",
-        name: "og:image",
-        content: "/lahmacun-logo-share.jpg",
-      },
-    ],
-    link: [
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-      },
-    ],
+  app: {
+    head: {
+      title: 'Lahmacun Radio',
+      titleTemplate: '%s',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' },
+        { hid: 'keywords', name: 'keywords', content: 'budapest online radio' },
+        { hid: 'og:site_name', name: 'og:site_name', content: 'Lahmacun Radio Budapest' },
+        { hid: 'og:title', name: 'og:title', content: 'Lahmacun Radio' },
+        { hid: 'og:description', name: 'og:description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' },
+        { hid: 'og:image', name: 'og:image', content: '/lahmacun-logo-share.jpg' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap' },
+        { rel: 'stylesheet', href: 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' }
+      ]
+    }
   },
-  /*
-   ** Customize the progress-bar color
-   */
-  loading: { color: "#fff" },
-  /* disable link prefetch */
-  router: {
-    prefetchLinks: false,
-  },
-  /*
-   ** Global CSS
-   */
-  css: ["@/assets/css/globalstyles.scss"],
-  /*
-   ** Plugins to load before mounting the App
-   */
+  css: [
+    '@/assets/css/globalstyles.scss'
+  ],
   plugins: [
-    "~/plugins/mixinCommonMethods",
-    "~/plugins/pinia.js",
-    "~/plugins/pinia-persist.js",
-    "~/plugins/pinia-server.js",
-    { src: '~/plugins/dompurify.client.js', mode: 'client' },
-    "~/plugins/date-fns.js"
+    // Ensure $axios and $config are available very early
+    '~/plugins/axios',
+    '~/plugins/compat-fetch',
+    // App helpers
+    '~/plugins/mixinCommonMethods',
+    '~/plugins/pinia-persist',
+    // Data hydration (uses $axios)
+    '~/plugins/pinia-server',
+    // SSR + client DOMPurify directive
+    '~/plugins/dompurify',
+    { src: '~/plugins/dompurify.client', mode: 'client' },
+    { src: '~/plugins/sentry.client', mode: 'client' },
+    '~/plugins/date-fns'
   ],
-  /*
-   ** Nuxt.js dev-modules
-   */
-  buildModules: [
-    // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-    "@nuxtjs/tailwindcss",
-    "@nuxtjs/style-resources",
-    "@nuxtjs/dotenv",
-    "@nuxtjs/composition-api/module",
-  ],
-  /*
-   ** Nuxt.js modules
-   */
   modules: [
-    "@nuxtjs/axios",
-    "@nuxtjs/sentry",
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt'
   ],
-  axios: {
-    // proxyHeaders: false
+  tailwindcss: {
+    // Disable the viewer dev route to avoid deprecated handler warning
+    viewer: false
   },
-  sentry: {
-    dsn: process.env.SENTRY_DSN,
-    tracing: true,
-  },
-  /*
-   ** Build configuration
-   */
-  build: {
-    /*
-     ** You can extend webpack config here
-     */
-    extend(config, ctx) {},
-    babel: {
-      plugins: ["@babel/plugin-transform-optional-chaining"],
-    },
-  },
-  styleResources: {
-    // your settings here
-    scss: ["@assets/css/_variables.scss"],
-    hoistUseStatements: true,
-    // Hoists the "@use" imports. Applies only to "sass", "scss" and "less". Default: false.
-  },
-  messages: {
-    server_error: "🧐 Oh no! 🧤 Server is down 🤖",
-    nuxtjs: "What happened? 🙀🐁",
-    back_to_home: "🗣 Back home! 🎅🧨👉",
-    server_error_details: "Server errorrrrr or unreachable 🤯",
-  },
-  privateRuntimeConfig: {
+  runtimeConfig: {
+    arcsiToken: process.env.ARCSI_TOKEN,
     subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
+    sentryDsn: process.env.SENTRY_DSN,
+    public: {
+      donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
+      membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL
+    }
   },
-  publicRuntimeConfig: {
-    donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
-    membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL,
-  },
-};
+  vite: {
+    resolve: {
+      alias: {
+        // Workaround for Vite import analysis trying to resolve a Nuxt virtual module during dev
+        // Nuxt provides this internally, but some Vite versions still pre-analyze the import literal.
+        // Map to a harmless local stub so analysis passes; runtime uses the network manifest path.
+        '#app-manifest': fileURLToPath(new URL('./utils/app-manifest-stub.mjs', import.meta.url)),
+        // Provide a compatibility shim for `ufo` to add missing `joinRelativeURL` export
+        // used by generated .nuxt/paths.mjs in some Nuxt/Vite combinations.
+        'ufo': fileURLToPath(new URL('./utils/ufo-compat.mjs', import.meta.url))
+      }
+    },
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "@/assets/css/_variables.scss" as *;'
+        }
+      }
+    }
+  }
+})

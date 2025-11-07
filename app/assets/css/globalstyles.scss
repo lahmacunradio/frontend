@@ -1,4 +1,8 @@
-@import "_variables.scss";
+@use "_variables.scss" as *;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @mixin aspect-ratio($width, $height) {
   position: relative;

@@ -68,7 +68,7 @@
               </a>
             </p>
           </div>
-          <div v-dompurify-html:[sanitizeOptions]="showObject.description" class="description-text" />
+          <div v-dompurify-html="{ html: showObject.description, options: sanitizeOptions }" class="description-text" />
         </div>
       </div>
       <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">

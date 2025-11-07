@@ -1,11 +1,7 @@
-export default ({ app }) => {
-  // Simple Pinia persistence plugin compatible with the old `LahmaStore` shape.
-  // It hydrates stores from localStorage['LahmaStore'] if present and writes
-  // back on store changes. Runs only on client (window.localStorage available).
-  const pinia = app.pinia || (app.context && app.context.pinia)
-  if (!pinia) return
+export default defineNuxtPlugin(({ $pinia }) => {
+  if (!$pinia) return
 
-  pinia.use(({ store }) => {
+  $pinia.use(({ store }) => {
     const storageKey = 'LahmaStore'
 
     // Hydrate store from existing localStorage (if present)
@@ -51,4 +47,4 @@ export default ({ app }) => {
       }, { detached: true })
     }
   })
-}
+})

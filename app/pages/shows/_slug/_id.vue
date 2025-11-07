@@ -47,7 +47,7 @@
               </p>
             </div>
 
-            <div v-dompurify-html:[sanitizeOptions]="arcsiEpisode.description" />
+            <div v-dompurify-html="{ html: arcsiEpisode.description, options: sanitizeOptions }" />
 
             <div v-if="arcsiEpisode.play_file_name" class="py-4">
               <client-only>

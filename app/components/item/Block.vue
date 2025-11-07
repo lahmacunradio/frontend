@@ -34,8 +34,8 @@ export default {
   },
   data () {
     return {
-      image: require('@/assets/img/lahmacun-logo-dummy.png'),
-      smallImage: require('@/assets/img/lahmacun-logo-dummy.png')
+      image: '/lahmacun-logo-dummy.png',
+      smallImage: '/lahmacun-logo-dummy.png'
     }
   },
   computed: {

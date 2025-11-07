@@ -64,7 +64,7 @@
         <article id="call-page" ref="call">
           <div v-if="callForShows">
             <h2>{{ htmlDecoder(callForShows?.title?.rendered) }}</h2>
-            <div v-dompurify-html:[sanitizeOptions]="callForShowsResults" class="community-page-content" />
+            <div v-dompurify-html="{ html: callForShowsResults, options: sanitizeOptions }" class="community-page-content" />
           </div>
         </article>
         <article id="base-page" ref="base">
@@ -74,7 +74,7 @@
               <div v-if="lahmaBaseFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="lahmaBaseFeaturedImage.source_url" :alt="htmlDecoder(lahmaBase?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="lahmaBaseResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: lahmaBaseResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -85,7 +85,7 @@
               <div v-if="communityFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="communityFeaturedImage.source_url" :alt="htmlDecoder(communitySection?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="communityResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: communityResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -96,7 +96,7 @@
               <div v-if="eventsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="eventsFeaturedImage.source_url" :alt="htmlDecoder(eventsSection?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="eventsSectionResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: eventsSectionResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -107,7 +107,7 @@
               <div v-if="pressFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="pressFeaturedImage.source_url" :alt="htmlDecoder(pressSection?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="pressSectionResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: pressSectionResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -118,7 +118,7 @@
               <div v-if="labsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="labsFeaturedImage.source_url" :alt="htmlDecoder(labsSection?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="labsSectionResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: labsSectionResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -129,7 +129,7 @@
               <div v-if="recipeFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
                 <img :src="recipeFeaturedImage.source_url" :alt="htmlDecoder(recipeSection?.title?.rendered)">
               </div>
-              <div v-dompurify-html:[sanitizeOptions]="recipeSectionResults" class="community-page-content" />
+              <div v-dompurify-html="{ html: recipeSectionResults, options: sanitizeOptions }" class="community-page-content" />
             </div>
           </div>
         </article>
@@ -139,7 +139,7 @@
         </article>
         <article id="supporters-page" ref="supporters">
           <h2>{{ htmlDecoder(supportersContent?.title?.rendered) }}</h2>
-          <div v-dompurify-html:[sanitizeOptions]="supportersContentResults" class="community-page-content" />
+          <div v-dompurify-html="{ html: supportersContentResults, options: sanitizeOptions }" class="community-page-content" />
         </article>
       </div>
     </div>

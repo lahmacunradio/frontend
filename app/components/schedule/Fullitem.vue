@@ -26,7 +26,7 @@
               Language: <span v-dompurify-html.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
-               <div v-dompurify-html:[sanitizeOptions]="onAirDescription" class="description-text" />
+               <div v-dompurify-html="{ html: onAirDescription, options: sanitizeOptions }" class="description-text" />
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               <b>{{ show.name }} </b>
             </NuxtLink>
             <div class="text-sm description">
-              <div v-dompurify-html:[sanitizeOptions]="show.description" class="description-text" />
+              <div v-dompurify-html="{ html: show.description, options: sanitizeOptions }" class="description-text" />
               <p v-if="latestEpisodeData" class="mt-2">
                 Last in archive:
                 <NuxtLink :to="latestEpisodeLink">
