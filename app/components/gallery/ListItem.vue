@@ -11,55 +11,50 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { mediaURL } from '~/constants'
+import { computed } from 'vue'
+import { useAsyncData, useNuxtApp } from '#imports'
 
-export default {
-  props: {
-    gallery: {
-      type: Object,
-      required: true
-    }
-  },
-  data () {
-    return {
-      featuredImage: null
-    }
-  },
-  async fetch () {
-    if (!this.featuredImageId) {
-      return false
-    }
-    this.featuredImage = await this.$axios.get(mediaURL + `/${this.featuredImageId}`)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Featured Image not found ', error))
-      })
-  },
-  computed: {
-    featuredImageId () {
-      if (!this.gallery && this.gallery.featured_media === 0) {
-        return false
-      }
-      return this.gallery.featured_media
-    },
-    previewImageSrc () {
-      if (this.featuredImage) {
-        return this.featuredImage.source_url
-      } else {
-        return this.gallery.acf.gallery[0].full_image_url
-      }
-    },
-    previewImageSrcset () {
-      if (this.featuredImage) {
-        const srcsetAssembly = `${this.featuredImage?.media_details?.sizes?.medium?.source_url} 768w, ${this.featuredImage?.media_details?.sizes?.large?.source_url} 1024w, ${this.featuredImage?.media_details?.sizes?.full?.source_url} 1458w`
-        return srcsetAssembly
-      } else {
-        return this.gallery.acf.gallery[0].medium_srcset
-      }
+const props = defineProps({
+  gallery: {
+    type: Object,
+    required: true
+  }
+})
+
+const featuredImageId = computed(() => {
+  if (!props.gallery || props.gallery.featured_media === 0) return false
+  return props.gallery.featured_media
+})
+
+const { $axios, $sentry } = useNuxtApp()
+
+const { data: featuredImage } = await useAsyncData(
+  () => featuredImageId.value ? `gallery-featured:${featuredImageId.value}` : `gallery-featured:none:${props.gallery.slug}`,
+  async () => {
+    if (!featuredImageId.value) return null
+    try {
+      const res = await $axios.get(`${mediaURL}/${featuredImageId.value}`)
+      return res.data
+    } catch (e) {
+      $sentry?.captureException(new Error('Featured Image not found ', { cause: e }))
+      return null
     }
   }
-}
+)
+
+const previewImageSrc = computed(() => {
+  if (featuredImage.value) return featuredImage.value.source_url
+  return props.gallery.acf.gallery[0].full_image_url
+})
+
+const previewImageSrcset = computed(() => {
+  if (featuredImage.value) {
+    return `${featuredImage.value?.media_details?.sizes?.medium?.source_url} 768w, ${featuredImage.value?.media_details?.sizes?.large?.source_url} 1024w, ${featuredImage.value?.media_details?.sizes?.full?.source_url} 1458w`
+  }
+  return props.gallery.acf.gallery[0].medium_srcset
+})
 </script>
 
 <style lang="scss" scoped>
