@@ -107,6 +107,7 @@ import { useAsyncData, useHead, useRoute, useNuxtApp } from '#app'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 import { usePlayerStore } from '~/stores/player'
 import { useArcsiSorting } from '@/composables/useArcsiSorting'
+import { truncate } from '~/plugins/mixinCommonMethods'
 
 const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const arcsiItemShadowbox = ref(false)

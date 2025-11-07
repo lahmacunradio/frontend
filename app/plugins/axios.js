@@ -3,13 +3,27 @@
 // Also provides $get/$post shortcuts returning only data.
 
 export default defineNuxtPlugin(() => {
+  // Only access private runtime config (arcsiToken) on the server.
+  // Accessing non-public keys on the client triggers a Nuxt runtime error.
   const runtimeConfig = useRuntimeConfig()
+  const isServer = import.meta.server
+  // Use public runtime token if exposed; fallback to private only server-side
+  const publicArcsiToken = runtimeConfig.public?.arcsiToken
+  const privateArcsiToken = isServer ? (runtimeConfig.arcsiToken || publicArcsiToken) : publicArcsiToken
+  if (isServer && !privateArcsiToken) {
+    console.warn('[axios] ARCSI token is not configured. Set ARCSI_TOKEN in your .env file to enable authenticated Arcsi requests.')
+  }
 
   const request = async (url, opts = {}) => {
     const headers = Object.assign({}, opts.headers || {})
-    // Attach Authentication-Token from runtimeConfig if present
-    if (runtimeConfig.arcsiToken && !headers['Authentication-Token']) {
-      headers['Authentication-Token'] = runtimeConfig.arcsiToken
+    // Attach Authentication-Token. If token is public, it's already safe client-side. If private only, we restrict to server.
+    if (privateArcsiToken && !headers['Authentication-Token'] && !headers['authentication-token']) {
+      const headerName = 'authentication-token' // API expects this exact casing
+      if (runtimeConfig.public?.arcsiToken) {
+        headers[headerName] = privateArcsiToken
+      } else if (isServer) {
+        headers[headerName] = privateArcsiToken
+      }
     }
 
     const method = (opts.method || 'GET').toUpperCase()

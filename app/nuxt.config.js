@@ -54,10 +54,13 @@ export default defineNuxtConfig({
     viewer: false
   },
   runtimeConfig: {
-    arcsiToken: process.env.ARCSI_TOKEN,
+    // Private values (only available server-side)
     subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
     sentryDsn: process.env.SENTRY_DSN,
+    // Public values (available on client). Expose arcsiToken here ONLY if it's safe to leak (e.g. read-only token).
+    // If this token grants write or privileged access, move it back to the private section and use server API proxy routes instead.
     public: {
+      arcsiToken: process.env.ARCSI_TOKEN,
       donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
       membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL
     }

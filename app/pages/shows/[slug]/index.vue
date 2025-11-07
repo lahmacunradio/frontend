@@ -113,6 +113,8 @@ import { computed, ref } from 'vue'
 import { useAsyncData, useHead, useRoute, useNuxtApp } from '#app'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 import { useArcsiSorting } from '@/composables/useArcsiSorting'
+// Bring in utilities otherwise available only via Options API mixin
+import { truncate, stripHTMLTags } from '~/plugins/mixinCommonMethods'
 
 const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const shadowbox = ref(false)
@@ -128,7 +130,7 @@ const { $axios, $sentry } = useNuxtApp()
 const slug = computed(() => route.params.slug || '')
 
 const { data, pending, error } = await useAsyncData(
-  () => `arcsi-show:${slug.value}`,
+  `arcsi-show:${slug.value}`,
   async () => {
     try {
       const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page`, config)
@@ -152,7 +154,9 @@ const showImage = computed(() => {
 
 const metaDescription = computed(() => {
   if (!showObject.value?.description) return ''
-  return truncate(showObject.value?.description, 150)
+  // Strip HTML tags before truncating to avoid broken meta content
+  const plain = stripHTMLTags(showObject.value?.description) || ''
+  return truncate(plain, 150)
 })
 
 const episodeTags = computed(() => {
