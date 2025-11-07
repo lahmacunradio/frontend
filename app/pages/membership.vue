@@ -2,9 +2,7 @@
   <div>
     <SubTitle :title="membershipContent?.acf?.page_title ?? 'Lahmacun Membership'" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="$fetchState.pending" class="center">
-        Loading...
-      </div>
+      <div v-if="pending" class="center">Loading...</div>
 
       <div v-if="membershipContent" class="mx-auto">
         <div class="mb-4">
@@ -62,103 +60,73 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useAsyncData, useNuxtApp } from '#app'
 import { membershipStripeURL } from '~/constants'
-
 import { useArcsiStore } from '~/stores/arcsi'
 import Dropdown from '~/components/Dropdown.vue'
 import RadioButton from '~/components/RadioButton.vue'
 
-export default {
-  created() {
-    // initialize Pinia arcsi store
-    this.arcsi = useArcsiStore()
-  },
-  data() {
-    return {
-      show_name: "",
-      is_recurring: "no",
-      currency: "eur",
-      membershipContent: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-        allowedAttributes: {
-          a: ['*'],
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          form: ['*'],
-          input: ['*']
-        }
-      }
-    }
+const arcsi = useArcsiStore()
 
-  },
-  async fetch() {
-    this.membershipContent = await this.$axios.get(`${membershipStripeURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Membership not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
-      })
-  },
-  mounted() {
-    let stripeScript = document.createElement('script')
-    stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
-    document.head.appendChild(stripeScript)
-  },
-  head() {
-    return {
-      title: this.membershipContent?.acf?.page_title ?? 'Lahmacun Membership',
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'Lahmacun Membership'
-        },
-      ]
-    }
-  },
-  computed: {
-    allShows() {
-      return this.arcsi ? this.arcsi.returnArcsiShows : null
-    },
-    arcsiShowsList() {
-      if (this.allShows) {
-        return this.allShows.filter(show => (
-          !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
-        )).sort((a, b) => a.name.localeCompare(b.name)).map(show => show.name)
-      }
-      return null
-    },
-  },
-  methods: {
-    selectShow(showname) {
-      this.show_name = showname.target.value
-    },
-  },
-
-  components: {
-    Dropdown,
-    RadioButton
-  }
-
+const show_name = ref('')
+const is_recurring = ref('no')
+const currency = ref('eur')
+const sanitizeOptions = {
+  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
+
+const { $axios, $sentry, $config } = useNuxtApp()
+const { data: membershipContent, pending, error } = await useAsyncData('membership-content', async () => {
+  try {
+    const res = await $axios.get(membershipStripeURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Membership not available', { cause: e }))
+    throw e
+  }
+})
+
+onMounted(() => {
+  const stripeScript = document.createElement('script')
+  stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
+  document.head.appendChild(stripeScript)
+})
+
+const allShows = computed(() => (arcsi ? arcsi.returnArcsiShows : []))
+const arcsiShowsList = computed(() => {
+  const list = Array.isArray(allShows.value) ? allShows.value : []
+  return list
+    .filter(show => !(show.archive_lahmastore_base_url === 'off-air' || !show.active))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map(show => show.name)
+})
+
+function selectShow(e) {
+  show_name.value = e.target.value
+}
+
+useHead(() => ({
+  title: membershipContent.value?.acf?.page_title ?? 'Lahmacun Membership',
+  meta: [
+    { hid: 'og:title', property: 'og:title', content: 'Lahmacun Membership' }
+  ]
+}))
 </script>
 
 <style scoped lang="scss">
+/* Replace Tailwind @apply with raw CSS definitions */
 #checkout-button {
-  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
-
-  &[disabled] {
-    @apply cursor-not-allowed bg-gray-800 text-gray-400;
-  }
+  background-color: #000;
+  color: #fff;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
+  border-radius: 0.125rem;
+  margin: 1rem 0;
 }
-
-p a {
-  @apply underline;
-}
+#checkout-button:hover { background-color: #1f2937; }
+#checkout-button[disabled] { cursor: not-allowed; background-color: #1f2937; color: #9ca3af; }
+p a { text-decoration: underline; }
 </style>

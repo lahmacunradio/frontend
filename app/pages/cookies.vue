@@ -2,9 +2,7 @@
   <div>
     <SubTitle title="Website cookies" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="$fetchState.pending" class="center">
-        Loading...
-      </div>
+      <div v-if="pending" class="center">Loading...</div>
       <article id="cookies-page" ref="cookies">
         <div v-if="cookiesContent">
           <h2>{{ cookiesContent.title.rendered }}</h2>
@@ -15,58 +13,36 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
+import { useAsyncData, useNuxtApp } from '#app'
 import { cookiesPageURL } from '~/constants'
 
-export default {
-  data () {
-    return {
-      cookiesContent: null,
-    }
-  },
-  async fetch () {
-    this.cookiesContent = await this.$axios.get(`${cookiesPageURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Cookies page info not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Cookies page info not available' })
-      })
-  },
-  head () {
-    return {
-      title: 'Lahmacun radio - Cookies',
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: 'Lahmacun radio - Cookie policy'
-        },
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'Lahmacun radio - Cookies'
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: 'Lahmacun radio - Cookie policy'
-        }
-      ]
-    }
-  },
-  computed: {
-    cookiesContentResults () {
-      if (!this.cookiesContent?.content?.rendered) {
-        return 'No content'
-      }
-      return this.cookiesContent?.content?.rendered.replace(/target="_top"/g, 'target="_blank"')
-    }
+const { $axios, $sentry } = useNuxtApp()
+const { data: cookiesContent, pending, error } = await useAsyncData('cookies-content', async () => {
+  try {
+    const res = await $axios.get(cookiesPageURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Cookies page info not available', { cause: e }))
+    throw e
   }
-}
+})
+
+const cookiesContentResults = computed(() => {
+  const html = cookiesContent.value?.content?.rendered
+  if (!html) return 'No content'
+  return html.replace(/target="_top"/g, 'target="_blank"')
+})
+
+useHead(() => ({
+  title: 'Lahmacun radio - Cookies',
+  meta: [
+    { hid: 'description', name: 'description', content: 'Lahmacun radio - Cookie policy' },
+    { hid: 'og:title', property: 'og:title', content: 'Lahmacun radio - Cookies' },
+    { hid: 'og:description', name: 'og:description', content: 'Lahmacun radio - Cookie policy' }
+  ]
+}))
 </script>
 
 <style lang="scss">

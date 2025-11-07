@@ -2,9 +2,7 @@
   <div>
     <SubTitle title="Lahmacun donate" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="$fetchState.pending" class="center">
-        Loading...
-      </div>
+      <div v-if="pending" class="center">Loading...</div>
 
       <div v-if="donateContent" class="max-w-4xl">
         <div class="mb-4">
@@ -23,54 +21,34 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useAsyncData, useNuxtApp } from '#app'
 import { donateStripeThanksURL } from '~/constants'
 
-export default {
-  data() {
-    return {
-      donateContent: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-        allowedAttributes: {
-          a: ['*'],
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          form: ['*'],
-          input: ['*']
-        }
-      }
-    }
-  },
-  async fetch() {
-    this.donateContent = await this.$axios.get(`${donateStripeThanksURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Donate not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
-      })
-  },
-  head() {
-    return {
-      title: 'Thank you for Lahmacun Donate',
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'Thank you for Lahmacun Donate'
-        },
-      ]
-    }
-  },
+const sanitizeOptions = {
+  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
+
+const { $axios, $sentry } = useNuxtApp()
+const { data: donateContent, pending, error } = await useAsyncData('donate-thanks', async () => {
+  try {
+    const res = await $axios.get(donateStripeThanksURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Donate not available', { cause: e }))
+    throw e
+  }
+})
+
+useHead(() => ({
+  title: 'Thank you for Lahmacun Donate',
+  meta: [
+    { hid: 'og:title', property: 'og:title', content: 'Thank you for Lahmacun Donate' }
+  ]
+}))
 </script>
 
 <style lang="scss" scoped>
-p a {
-  @apply underline;
-}
+p a { text-decoration: underline; }
 </style>

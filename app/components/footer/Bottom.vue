@@ -55,41 +55,31 @@
   </footer>
 </template>
 
-<script>
-import {
-  footerLogosUrl
-} from '~/constants'
+<script setup>
+import { footerLogosUrl } from '~/constants'
+import { useAsyncData, useNuxtApp } from '#app'
 
-export default {
-  name: 'Bottom',
-  data() {
-    return {
-      footerLogos: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
-        allowedAttributes: {
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          a: ['*']
-        }
-      }
-    }
-  },
-  async fetch() {
-    // logos
-    this.footerLogos = await this.$axios.get(`${footerLogosUrl}`)
-      .then((res) => {
-        if (res) {
-          return res.data?.acf
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Supporters content not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
-      })
+const sanitizeOptions = {
+  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
+  allowedAttributes: {
+    img: ['*'],
+    div: ['style', 'class', 'id'],
+    a: ['*']
   }
 }
 
+const { $axios, $sentry } = useNuxtApp()
+const { data } = await useAsyncData('footer-logos', async () => {
+  try {
+    const res = await $axios.get(`${footerLogosUrl}`)
+    return res.data?.acf
+  } catch (e) {
+    $sentry?.captureException(new Error('Supporters content not available ', { cause: e }))
+    return null
+  }
+})
+
+const footerLogos = computed(() => data.value || null)
 </script>
 
 <style lang="scss" scoped>
@@ -115,19 +105,28 @@ export default {
 
 <style lang="scss">
 .lahma-footer .supporters {
-  @apply text-white flex flex-col md:flex-row gap-x-12;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0 3rem;
+}
 
-  .supporters-content {
-    margin-top: 0.5rem;
-
-    p {
-      display: flex;
-      align-items: center;
-      row-gap: 1.5rem;
-      column-gap: 1rem;
-      margin: 0.5rem 0;
-      flex-wrap: wrap;
-    }
+@media (min-width: 768px) {
+  .lahma-footer .supporters {
+    flex-direction: row;
   }
+}
+
+.lahma-footer .supporters .supporters-content {
+  margin-top: 0.5rem;
+}
+
+.lahma-footer .supporters .supporters-content p {
+  display: flex;
+  align-items: center;
+  row-gap: 1.5rem;
+  column-gap: 1rem;
+  margin: 0.5rem 0;
+  flex-wrap: wrap;
 }
 </style>

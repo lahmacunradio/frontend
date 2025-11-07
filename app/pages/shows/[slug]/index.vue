@@ -1,14 +1,14 @@
 <template>
   <div>
     <SubTitle title="Lahmacun Shows" url="/shows/" />
-    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
+    <div v-if="pending" class="flex flex-col items-center justify-center py-8">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
     </div>
-    <div v-if="$fetchState.error" class="py-8 text-center">
+    <div v-else-if="error" class="py-8 text-center">
       Error happened
     </div>
-    <div v-if="showObject" class="container mt-10">
+    <div v-else-if="showObject" class="container mt-10">
       <div class="flex-row sm:flex">
         <div class="mb-4 sm:w-128 xsm:mr-8 show-image">
           <a class="cursor-pointer" @click="shadowbox = !shadowbox">
@@ -26,7 +26,7 @@
             </div>
           </div>
         </div>
-        <div class="mb-4 show-description">
+          <div class="mb-4 show-description">
           <h1 class="mt-0 font-bold h2">
             {{ showObject.name }}
           </h1>
@@ -76,12 +76,12 @@
           Archived Shows
         </h3>
         <div class="pt-4 pb-6 text-center change-order xsm:text-right">
-          <a id="bydate" ref="bydate" href="#" class="mr-2 selected change-order-button" @click.prevent="sortAirtime">
+          <a id="bydate" ref="bydate" href="#" :class="['mr-2', 'change-order-button', sortingType === 'air' ? 'selected' : '']" @click.prevent="sortAirtime">
             <i v-if="airtimeAsc" class="fa fa-sort-numeric-desc" aria-hidden="true" />
             <i v-else class="fa fa-sort-numeric-asc" aria-hidden="true" />
             Order by Air time
           </a>
-          <a id="alphabetical" ref="alphabetical" class="change-order-button" href="#" @click.prevent="sortAlphabeticaly">
+          <a id="alphabetical" ref="alphabetical" :class="['change-order-button', sortingType === 'abc' ? 'selected' : '']" href="#" @click.prevent="sortAlphabeticaly">
             <i v-if="alphabeticAsc" class="fa fa-sort-alpha-asc" aria-hidden="true" />
             <i v-else class="fa fa-sort-alpha-desc" aria-hidden="true" />
             Order by Title
@@ -108,131 +108,71 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from 'vue'
+import { useAsyncData, useHead, useRoute, useNuxtApp } from '#app'
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { useArcsiSorting } from '@/composables/useArcsiSorting'
 
-export default {
-  data() {
-    return {
-      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      shadowbox: false,
-      slug: this.$route.params.slug,
-      mediaServerURL,
-      sanitizeOptions: {
-        allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
-        allowedAttributes: {
-          img: ['*'],
-          iframe: ['*'],
-          a: ['*']
-        }
-      },
-      arcsiShowListFiltered: null,
-      showObject: null,
-      sortingType: 'air',
-      alphabeticAsc: false,
-      airtimeAsc: true
-    }
-  },
-  async fetch() {
-    this.showObject = await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
-      })
-  },
-  head() {
-    return {
-      title: this.showObject?.name,
-      meta: [
-        {
-          hid: 'description',
-          name: 'description',
-          content: this.metaDescription
-        },
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: this.showObject?.name
-        },
-        {
-          hid: 'og:description',
-          name: 'og:description',
-          content: this.metaDescription
-        },
-        {
-          hid: 'og:image',
-          property: 'og:image',
-          content: this.showImage
-        }
-      ]
-    }
-  },
-  computed: {
-    getToday() {
-      const d = new Date()
-      const year = d.getFullYear()
-      const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
-      return `${year}-${month}-${day}`
-    },
+const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+const shadowbox = ref(false)
 
-    arcsiEpisodesList() {
-      if (this.showObject?.items) {
-        const itemsSorted = this.showObject.items
-          .sort((a, b) => b.number - a.number)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        if (this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
-            .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-        } else if (!this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
-            .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
-        } else if (this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
-            .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
-        } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
-            .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
-        } else {
-          return itemsSorted
-        }
-      }
-      return null
-    },
-    showImage() {
-      const rootLink = mediaServerURL + this.slug + '/'
-      return rootLink + this.showObject?.cover_image_url
-    },
-    metaDescription() {
-      if (!this.showObject?.description) {
-        return ''
-      }
-      return this.truncate(this.showObject?.description, 150)
-    },
-    episodeTags() {
-      if (!this.showObject.tags) {
-        return false
-      }
-      return this.showObject.tags.filter(tag => tag.display_name.length > 0).sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
-    }
-  },
-  methods: {
-    sortAlphabeticaly() {
-      this.sortingType = 'abc'
-      this.alphabeticAsc = !this.alphabeticAsc
-      this.airtimeAsc = false
-      this.$refs.alphabetical.classList.add('selected')
-      this.$refs.bydate.classList.remove('selected')
-    },
-    sortAirtime() {
-      this.sortingType = 'air'
-      this.airtimeAsc = !this.airtimeAsc
-      this.alphabeticAsc = false
-      this.$refs.alphabetical.classList.remove('selected')
-      this.$refs.bydate.classList.add('selected')
+const route = useRoute()
+
+const sanitizeOptions = {
+  allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
+  allowedAttributes: { img: ['*'], iframe: ['*'], a: ['*'] }
+}
+
+const { $axios, $sentry } = useNuxtApp()
+const slug = computed(() => route.params.slug || '')
+
+const { data, pending, error } = await useAsyncData(
+  () => `arcsi-show:${slug.value}`,
+  async () => {
+    try {
+      const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page`, config)
+      return res.data
+    } catch (e) {
+      $sentry?.captureException(new Error('Show data not found', { cause: e }))
+      throw e
     }
   }
-}
+)
+
+const showObject = computed(() => data.value || null)
+
+// Reuse sorting composable
+const { sorted: arcsiEpisodesList, sortingType, alphabeticAsc, airtimeAsc, sortAlphabeticaly, sortAirtime } = useArcsiSorting(computed(() => showObject.value?.items || []))
+
+const showImage = computed(() => {
+  const rootLink = mediaServerURL + slug.value + '/'
+  return rootLink + (showObject.value?.cover_image_url || '')
+})
+
+const metaDescription = computed(() => {
+  if (!showObject.value?.description) return ''
+  return truncate(showObject.value?.description, 150)
+})
+
+const episodeTags = computed(() => {
+  if (!showObject.value?.tags) return false
+  return showObject.value.tags
+    .filter(tag => tag.display_name.length > 0)
+    .sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
+})
+
+// handlers provided by composable
+
+useHead({
+  title: computed(() => showObject.value?.name || 'Lahmacun Shows'),
+  meta: [
+    { hid: 'description', name: 'description', content: metaDescription },
+    { hid: 'og:title', property: 'og:title', content: computed(() => showObject.value?.name || '') },
+    { hid: 'og:description', name: 'og:description', content: metaDescription },
+    { hid: 'og:image', property: 'og:image', content: showImage }
+  ]
+})
 </script>
 
 <style lang="scss" scoped>
@@ -257,15 +197,18 @@ export default {
 
 .change-order-button {
   border: 1px solid #775a8f;
-  @apply py-2 px-4 rounded;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 
   &.selected,
   &:hover {
-    @apply bg-white bg-opacity-25;
+  background-color: rgba(255, 255, 255, 0.25);
   }
 
   @media (max-width: $mobile-width) {
-    @apply text-sm px-2;
+    font-size: 0.875rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
 </style>

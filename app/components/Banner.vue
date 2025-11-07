@@ -15,63 +15,46 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useAsyncData, useNuxtApp } from '#app'
 import { bannerTextURL } from '~/constants'
 
-export default {
-  name: 'Banner',
-  methods: {
-    dismiss_remember: function (event) {
-      // `this` inside methods points to the Vue instance
-      window.localStorage.lahma_cookie_info_banner_dismiss_date = new Date();
-      this.isRemembered = true
-    }
-  },
-  data() {
-    return {
-      //Note: as window object is not available in early phases in the instance creation, we need to update the value when the component is mounted
-      //Initial value can be assumed to be true so that nothing is displayed when rendering
-      isRemembered: false,
-      //banner text from CMS
-      bannertext_fetched: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-        allowedAttributes: {
-          a: ['*'],
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          form: ['*'],
-          input: ['*']
-        }
-      }
-    }
-  },
-  async fetch() {
-    this.bannertext_fetched = await this.$axios.get(`${bannerTextURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Banner text not available from CMS ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Banner text not available from CMS' })
-      })
-  },
+const sanitizeOptions = {
+  allowedTags: ['div', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
+}
 
-  mounted() {
-    var dismissalAge = (new Date() - new Date(window.localStorage.lahma_cookie_info_banner_dismiss_date)) / 1000 / 60 / 60 / 24; //convert from ms to days
-    this.isRemembered = (dismissalAge < 30) ? true : false; //show banner again after 30 days of last dismissal
-  },
-  computed: {
-    bannerText_computed() {
-      if (!this.bannertext_fetched?.content?.rendered) {
-        return 'No banner text content'
-      }
-      return this.bannertext_fetched?.content?.rendered
-    }
+const isRemembered = ref(false)
+const { $axios, $sentry } = useNuxtApp()
+const { data: bannertext_fetched, pending, error } = await useAsyncData('banner-text', async () => {
+  try {
+    const res = await $axios.get(bannerTextURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Banner text not available from CMS', { cause: e }))
+    throw e
   }
-};
+})
+
+const bannerText_computed = computed(() => {
+  if (!bannertext_fetched.value?.content?.rendered) return 'No banner text content'
+  return bannertext_fetched.value.content.rendered
+})
+
+function dismiss_remember() {
+  if (typeof window !== 'undefined') {
+    window.localStorage.lahma_cookie_info_banner_dismiss_date = new Date()
+  }
+  isRemembered.value = true
+}
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    const dismissalAge = (new Date() - new Date(window.localStorage.lahma_cookie_info_banner_dismiss_date)) / 86400000
+    isRemembered.value = dismissalAge < 30
+  }
+})
 </script>
 
 <style lang="scss">

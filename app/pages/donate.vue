@@ -2,9 +2,7 @@
   <div>
     <SubTitle :title="donateContent?.acf?.page_title ?? 'Lahmacun Donate'" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="$fetchState.pending" class="center">
-        Loading...
-      </div>
+      <div v-if="pending" class="center">Loading...</div>
 
       <div v-if="donateContent" class="mx-auto">
         <div class="mb-4">
@@ -63,73 +61,62 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useAsyncData, useNuxtApp } from '#app'
+import { computed, onMounted } from 'vue'
 import { donateStripeURL } from '~/constants'
 import RadioButton from '~/components/RadioButton.vue'
-
-export default {
-  components: { RadioButton },
-  data() {
-    return {
-      is_recurring: "no",
-      currency: "eur",
-      donateContent: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-        allowedAttributes: {
-          a: ['*'],
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          form: ['*'],
-          input: ['*']
-        }
-      }
-    }
-
-  },
-  async fetch() {
-    this.donateContent = await this.$axios.get(`${donateStripeURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Donate not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
-      })
-  },
-
-  mounted() {
-    let stripeScript = document.createElement('script')
-    stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
-    document.head.appendChild(stripeScript)
-  },
-  head() {
-    return {
-      title: this.donateContent?.acf?.page_title ?? 'Lahmacun Donate',
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'Lahmacun Donate'
-        },
-      ]
-    }
-  },
+const is_recurring = ref('no')
+const currency = ref('eur')
+const sanitizeOptions = {
+  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
+
+const { $axios, $sentry, $config } = useNuxtApp()
+const { data: donateContent, pending, error } = await useAsyncData('donate-content', async () => {
+  try {
+    const res = await $axios.get(donateStripeURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Donate not available', { cause: e }))
+    throw e
+  }
+})
+
+onMounted(() => {
+  const stripeScript = document.createElement('script')
+  stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
+  document.head.appendChild(stripeScript)
+})
+
+useHead(() => ({
+  title: donateContent.value?.acf?.page_title ?? 'Lahmacun Donate',
+  meta: [
+    { hid: 'og:title', property: 'og:title', content: 'Lahmacun Donate' }
+  ]
+}))
 </script>
 
 <style scoped lang="scss">
+/* Replaced Tailwind @apply with explicit CSS to avoid build errors */
 #checkout-button {
-  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
-
-  &[disabled] {
-    @apply cursor-not-allowed bg-gray-800 text-gray-400;
-  }
+  background-color: #000; /* bg-black */
+  color: #fff; /* text-white */
+  font-weight: 700; /* font-bold */
+  padding: 0.5rem 1rem; /* py-2 px-4 */
+  border-radius: 0.125rem; /* rounded-sm */
+  margin: 1rem 0; /* my-4 */
 }
-
+#checkout-button:hover {
+  background-color: #1f2937; /* hover:bg-gray-800 */
+}
+#checkout-button[disabled] {
+  cursor: not-allowed; /* cursor-not-allowed */
+  background-color: #1f2937; /* bg-gray-800 */
+  color: #9ca3af; /* text-gray-400 */
+}
 p a {
-  @apply underline;
+  text-decoration: underline; /* underline */
 }
 </style>

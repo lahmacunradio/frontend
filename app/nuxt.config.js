@@ -34,7 +34,6 @@ export default defineNuxtConfig({
   plugins: [
     // Ensure $axios and $config are available very early
     '~/plugins/axios',
-    '~/plugins/compat-fetch',
     // App helpers
     '~/plugins/mixinCommonMethods',
     '~/plugins/pinia-persist',

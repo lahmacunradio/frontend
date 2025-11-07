@@ -2,9 +2,7 @@
   <div>
     <SubTitle title="Lahmacun membership" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="$fetchState.pending" class="center">
-        Loading...
-      </div>
+      <div v-if="pending" class="center">Loading...</div>
 
       <div v-if="membershipContent" class="max-w-4xl">
         <div class="mb-4">
@@ -19,58 +17,36 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { useAsyncData, useNuxtApp } from '#app'
 import { membershipStripeCancelURL } from '~/constants'
 
-export default {
-  data() {
-    return {
-      membershipContent: null,
-      sanitizeOptions: {
-        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-        allowedAttributes: {
-          a: ['*'],
-          img: ['*'],
-          div: ['style', 'class', 'id'],
-          form: ['*'],
-          input: ['*']
-        }
-      }
-    }
-  },
-  async fetch() {
-    this.membershipContent = await this.$axios.get(`${membershipStripeCancelURL}`)
-      .then((res) => {
-        if (res) {
-          return res.data
-        }
-      })
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Membership not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
-      })
-  },
-  head() {
-    return {
-      title: 'Cancel Lahmacun Membership',
-      meta: [
-        {
-          hid: 'og:title',
-          property: 'og:title',
-          content: 'Cancel Lahmacun Membership'
-        },
-      ]
-    }
-  },
+const sanitizeOptions = {
+  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
+
+const { $axios, $sentry, $config } = useNuxtApp()
+const { data: membershipContent, pending, error } = await useAsyncData('membership-cancel', async () => {
+  try {
+    const res = await $axios.get(membershipStripeCancelURL)
+    return res?.data
+  } catch (e) {
+    $sentry?.captureException(new Error('Membership not available', { cause: e }))
+    throw e
+  }
+})
+
+useHead(() => ({
+  title: 'Cancel Lahmacun Membership',
+  meta: [
+    { hid: 'og:title', property: 'og:title', content: 'Cancel Lahmacun Membership' }
+  ]
+}))
 </script>
 
 <style lang="scss" scoped>
-#checkout-button {
-  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm cursor-pointer;
-}
-
-p a {
-  @apply underline;
-}
+#checkout-button { background-color: #000; color: #fff; font-weight: 700; padding: 0.5rem 1rem; border-radius: 0.125rem; cursor: pointer; }
+#checkout-button:hover { background-color: #1f2937; }
+p a { text-decoration: underline; }
 </style>
