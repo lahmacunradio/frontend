@@ -5,7 +5,7 @@
         <div class="main-title">
           Lahmacun Radio
         </div>
-        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
+        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="size-24 logo">
       </div>
       <div class="xxsm:mt-2 xsm:my-4 md:mr-8">
         <client-only>

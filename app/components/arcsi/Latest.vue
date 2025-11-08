@@ -42,16 +42,14 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '~/tailwind.config.js'
 import { useArcsiStore } from '~/stores/arcsi'
 import { useAsyncData, useNuxtApp } from '#app'
 import { arcsiItemBaseURL, config } from '~/constants'
 
-const fullConfig = resolveConfig(tailwindConfig)
-const tabletSize = fullConfig.theme.screens.md
-const desktopSize = fullConfig.theme.screens.lg
-const largeScreenSize = fullConfig.theme.screens['2xl']
+const { screens } = useTailwindBreakpoints()
+const tabletSize = screens.md
+const desktopSize = screens.lg
+const largeScreenSize = screens['2xl']
 
 const arcsi = useArcsiStore()
 
