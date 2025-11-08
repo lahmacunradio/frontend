@@ -21,7 +21,7 @@ importers:
         specifier: ^2.31.0
         version: 2.31.0
       nuxt:
-        specifier: ^3.12.0
+        specifier: ^3.14.1592
         version: 3.20.1(@parcel/watcher@2.5.1)(@types/node@24.10.0)(@vue/compiler-sfc@3.5.24)(db0@0.3.4)(eslint@7.32.0)(ioredis@5.8.2)(magicast@0.5.1)(optionator@0.9.4)(rollup@4.53.1)(sass@1.93.3)(terser@5.44.1)(typescript@5.9.3)(vite@7.2.2(@types/node@24.10.0)(jiti@2.6.1)(sass@1.93.3)(terser@5.44.1)(yaml@2.8.1))(yaml@2.8.1)
       pinia:
         specifier: ^2.2.4
@@ -40,8 +40,8 @@ importers:
         specifier: ^5.3.5
         version: 5.3.5(magicast@0.5.1)(webpack@5.102.1)(yaml@2.8.1)
       '@pinia/nuxt':
-        specifier: ^0.4.11
-        version: 0.4.11(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
+        specifier: ^0.5.5
+        version: 0.5.5(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.21(postcss@8.5.6)
@@ -1065,8 +1065,8 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@pinia/nuxt@0.4.11':
-    resolution: {integrity: sha512-bhuNFngJpmBCdAqWguezNJ/oJFR7wvKieqiZrmmdmPR07XjsidAw8RLXHMZE9kUm32M9E6T057OBbG/22jERTg==}
+  '@pinia/nuxt@0.5.5':
+    resolution: {integrity: sha512-wjxS7YqIesh4OLK+qE3ZjhdOJ5pYZQ+VlEmZNtTwzQn1Kavei/khovx7mzXVXNA/mvSPXVhb9xBzhyS3XMURtw==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -6345,7 +6345,7 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.1
       '@parcel/watcher-win32-x64': 2.5.1
 
-  '@pinia/nuxt@0.4.11(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))':
+  '@pinia/nuxt@0.5.5(magicast@0.5.1)(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))':
     dependencies:
       '@nuxt/kit': 3.20.1(magicast@0.5.1)
       pinia: 2.3.1(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
