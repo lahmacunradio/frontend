@@ -1,4 +1,4 @@
-FROM node:14-bullseye-slim
+FROM node:20.19.5
 
 # Ensure apt is non-interactive and up-to-date, then install required packages
 RUN apt-get update \
@@ -17,13 +17,20 @@ RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 ENV APP_ROOT=/src
 
 WORKDIR ${APP_ROOT}
-COPY package.json pnpm-lock.yaml* ./
 
+# Copy package files for dependency installation
+COPY package.json pnpm-lock.yaml* .npmrc* ./
+
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
-COPY . ${APP_ROOT}
+# Copy application source code (node_modules excluded via .dockerignore)
+COPY . .
 
+# Build the application
 RUN pnpm build
+
+# Clean up pnpm store to reduce image size
 RUN pnpm store prune
 
 EXPOSE 3333
