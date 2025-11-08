@@ -72,8 +72,8 @@
           <i class="fa fa-fast-forward" aria-hidden="true" />
         </a>
       </div>
-      <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap">
-        <div class="inline-block w-4 align-middle">
+      <div v-if="!isTouchEnabled" id="myVolume" class="my-2 whitespace-nowrap flex items-center gap-2">
+        <div class="w-4 align-middle">
           <i v-if="currentVolume === '0'" class="fa fa-microphone-slash" />
           <i v-else-if="currentVolume < '0.3'" class="fa fa-volume-off" />
           <i v-else-if="currentVolume < '0.7'" class="fa fa-volume-down" />
@@ -87,6 +87,7 @@
           min="0"
           max="1"
           step="0.01"
+          :style="{ '--progress': currentVolume * 100 + '%' }"
           @input.passive="volumeBar($event.target.value)"
         >
       </div>

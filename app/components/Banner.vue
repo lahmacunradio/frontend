@@ -6,7 +6,7 @@
           <div class="w-4 h-4">
             <IconCookie />
           </div>
-          <div v-dompurify-html="{ html: bannerText_computed, options: sanitizeOptions }" />
+          <div class="h-6" v-dompurify-html="{ html: bannerText_computed, options: sanitizeOptions }" />
           <button @click="dismiss_remember">OK</button>
         </div>
 
@@ -78,10 +78,6 @@ onMounted(() => {
     padding: 0 0.75rem;
     font-size: .875rem;
     transition: all .2s cubic-bezier(.4, 0, .2, 1);
-    background-color: #00000000;
-    &:hover {
-      background-color: #00000012;
-    }
   }
 }
 </style>

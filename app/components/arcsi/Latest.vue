@@ -42,16 +42,14 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import resolveConfig from 'tailwindcss/resolveConfig'
-import tailwindConfig from '~/tailwind.config.js'
 import { useArcsiStore } from '~/stores/arcsi'
 import { useAsyncData, useNuxtApp } from '#app'
 import { arcsiItemBaseURL, config } from '~/constants'
 
-const fullConfig = resolveConfig(tailwindConfig)
-const tabletSize = fullConfig.theme.screens.md
-const desktopSize = fullConfig.theme.screens.lg
-const largeScreenSize = fullConfig.theme.screens['2xl']
+const { screens } = useTailwindBreakpoints()
+const tabletSize = screens.md
+const desktopSize = screens.lg
+const largeScreenSize = screens['2xl']
 
 const arcsi = useArcsiStore()
 
@@ -150,12 +148,23 @@ function nextBlock() {
 onMounted(() => {
   if (typeof window !== 'undefined') {
     window.addEventListener('resize', changeBreakpoint, { passive: true })
-    const viewport = slider.value
-    if (viewport) episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
-    setTimeout(() => {
-      changeBreakpoint()
-      numberOfEpisodes.value = arcsiEpisodesListSortedLatest.value?.length || numberOfEpisodes.value
-    }, 3000)
+
+    // Wait for stylesheets to load before measuring layout
+    const initializeLayout = () => {
+      const viewport = slider.value
+      if (viewport) episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
+      setTimeout(() => {
+        changeBreakpoint()
+        numberOfEpisodes.value = arcsiEpisodesListSortedLatest.value?.length || numberOfEpisodes.value
+      }, 3000)
+    }
+
+    // Check if stylesheets are already loaded
+    if (document.readyState === 'complete') {
+      initializeLayout()
+    } else {
+      window.addEventListener('load', initializeLayout, { once: true })
+    }
   }
 })
 

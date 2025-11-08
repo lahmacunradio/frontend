@@ -129,6 +129,7 @@ export function getLanguageGraph (type) {
   if (type === 'en_uk') {
     return '🇬🇧'
   }
+  return '🌐'
 }
 
 // Input: all active arcsi shows

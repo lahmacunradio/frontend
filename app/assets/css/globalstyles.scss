@@ -350,3 +350,32 @@ span.moresign {
     @apply font-bold py-2 px-4 rounded uppercase;
   }
 }
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  cursor: pointer;
+  background: linear-gradient(to right, $lahma-pink var(--progress), black var(--progress));
+  height: 10px;
+  border-radius: 2px;
+
+
+  /* Thumb - Webkit/Blink */
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: transparent;
+  }
+
+  /* Thumb - Firefox */
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: transparent;
+    border: none;
+  }
+}
