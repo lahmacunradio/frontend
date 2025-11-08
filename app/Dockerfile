@@ -9,23 +9,23 @@ RUN apt-get update \
         build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Yarn (official repo)
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarnkey.gpg \
-    && echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends yarn \
-    && rm -rf /var/lib/apt/lists/*
+# Install pnpm
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 ENV APP_ROOT=/src
 
 WORKDIR ${APP_ROOT}
+COPY package.json pnpm-lock.yaml* ./
+
+RUN pnpm install --frozen-lockfile
+
 COPY . ${APP_ROOT}
 
-RUN yarn install --ignore-engines
-
-RUN yarn build
-RUN yarn cache clean
+RUN pnpm build
+RUN pnpm store prune
 
 EXPOSE 3333
 
-CMD [ "yarn", "start" ]
+CMD [ "pnpm", "start" ]

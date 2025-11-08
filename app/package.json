@@ -4,6 +4,7 @@
   "description": "Lahmacun Radio Frontend",
   "author": "Lahma team",
   "private": true,
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

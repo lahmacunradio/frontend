@@ -25,8 +25,8 @@
 
 ```bash
 cd app
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 The dev server will start at `http://localhost:3333` (or next available port).
@@ -52,5 +52,5 @@ The dev server will start at `http://localhost:3333` (or next available port).
 ### Port conflicts
 If port 3333 is already in use:
 ```bash
-npm run dev -- --port 3082
+pnpm dev -- --port 3082
 ```
