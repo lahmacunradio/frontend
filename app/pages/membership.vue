@@ -67,7 +67,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { useAsyncData, useNuxtApp } from '#app'
+import { useAsyncData, useNuxtApp, useRuntimeConfig } from '#app'
 import { membershipStripeURL } from '~/constants'
 import { useArcsiStore } from '~/stores/arcsi'
 import Dropdown from '~/components/Dropdown.vue'
@@ -83,7 +83,8 @@ const sanitizeOptions = {
   allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
 
-const { $axios, $sentry, $config } = useNuxtApp()
+const { $axios, $sentry } = useNuxtApp()
+const runtimeConfig = useRuntimeConfig()
 const { data: membershipContent, pending, error } = await useAsyncData('membership-content', async () => {
   try {
     const res = await $axios.get(membershipStripeURL)
@@ -107,7 +108,10 @@ function selectShow(e) {
   show_name.value = e.target.value
 }
 
-const membershipAction = computed(() => $config.public?.membershipStripeFormUrl || '')
+const membershipAction = computed(() => runtimeConfig.public?.membershipStripeFormUrl || '')
+if (!membershipAction.value) {
+  console.warn('[membership] Missing MEMBERSHIP_STRIPE_FORM_URL. Current runtimeConfig.public:', runtimeConfig.public)
+}
 
 useHead(() => ({
   title: membershipContent.value?.acf?.page_title ?? 'Lahmacun Membership',

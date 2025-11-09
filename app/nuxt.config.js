@@ -86,9 +86,16 @@ export default defineNuxtConfig({
     // If this token grants write or privileged access, move it back to the private section and use server API proxy routes instead.
     public: {
       arcsiToken: process.env.ARCSI_TOKEN,
-      donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
-      membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL,
-      subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
+      // Provide sensible fallbacks if env vars are missing so UX doesn't break
+      donateStripeFormUrl:
+        process.env.DONATE_STRIPE_FORM_URL ||
+        'https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_listener',
+      membershipStripeFormUrl:
+        process.env.MEMBERSHIP_STRIPE_FORM_URL ||
+        'https://cms.lahmacun.hu/wp-json/stripe/return_checkout_session_membership',
+      subscriptionCancelUrl:
+        process.env.SUBSCRIPTION_CANCEL_URL ||
+        'https://billing.stripe.com/p/login/bIYaHhfXYepr39C000',
     },
   },
   vite: {

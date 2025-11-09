@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import { useAsyncData, useNuxtApp } from '#app'
+import { useAsyncData, useNuxtApp, useRuntimeConfig } from '#app'
 import { donateStripeURL } from '~/constants'
 import RadioButton from '~/components/RadioButton.vue'
 import { ref, computed } from 'vue'
@@ -79,7 +79,8 @@ const sanitizeOptions = {
   allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
 }
 
-const { $axios, $sentry, $config } = useNuxtApp()
+const { $axios, $sentry } = useNuxtApp()
+const runtimeConfig = useRuntimeConfig()
 const { data: donateContent, pending, error } = await useAsyncData('donate-content', async () => {
   try {
     const res = await $axios.get(donateStripeURL)
@@ -91,7 +92,11 @@ const { data: donateContent, pending, error } = await useAsyncData('donate-conte
 })
 
 // Ensure we only attempt redirect when action exists
-const donateAction = computed(() => $config.public.donateStripeFormUrl || '')
+const donateAction = computed(() => runtimeConfig.public?.donateStripeFormUrl || '')
+if (!donateAction.value) {
+  // Debug log for missing env var
+  console.warn('[donate] Missing DONATE_STRIPE_FORM_URL. Current runtimeConfig.public:', runtimeConfig.public)
+}
 
 useHead(() => ({
   title: donateContent.value?.acf?.page_title ?? 'Lahmacun Donate',
