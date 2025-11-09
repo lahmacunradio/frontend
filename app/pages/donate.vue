@@ -14,7 +14,7 @@
           </div>
 
           <div>
-            <form :action="$config.donateStripeFormUrl" method="GET">
+            <form :action="$config.public.donateStripeFormUrl" method="GET">
               <div>
                 <p class="mb-2">
                   <strong>

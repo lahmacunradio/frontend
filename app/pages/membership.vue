@@ -14,7 +14,7 @@
           </div>
 
           <div>
-            <form :action="$config.membershipStripeFormUrl" method="GET">
+            <form :action="$config.public.membershipStripeFormUrl" method="GET">
               <div class="selector mb-6">
                 <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
                 <Dropdown v-model="show_name" :options="arcsiShowsList"

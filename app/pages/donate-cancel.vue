@@ -10,7 +10,7 @@
         </div>
         <div v-dompurify-html="{ html: donateContent.content.rendered, options: sanitizeOptions }" />
         <div class="block mt-6">
-          <a id="checkout-button" :href="$config.subscriptionCancelUrl" target="_blank">Yes, cancel my donation</a>
+          <a id="checkout-button" :href="$config.public.subscriptionCancelUrl" target="_blank">Yes, cancel my donation</a>
         </div>
       </div>
     </div>
