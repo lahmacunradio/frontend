@@ -18,7 +18,6 @@ export default defineNuxtPlugin(() => {
     const headers = Object.assign({}, opts.headers || {})
     // Attach Authentication-Token. If token is public, it's already safe client-side. If private only, we restrict to server.
     const isArcsiRequest = typeof url === 'string' && url.includes('arcsi.lahmacun.hu')
-    console.log('isArcsiRequest:', isArcsiRequest, url)
 
     if (isArcsiRequest && privateArcsiToken && !headers['Authentication-Token'] && !headers['authentication-token']) {
       const headerName = 'authentication-token' // API expects this exact casing
