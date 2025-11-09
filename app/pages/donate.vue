@@ -52,7 +52,6 @@
                 id="checkout-button"
                 :disabled="!donateAction"
               >{{ donateContent?.acf?.checkout }}</button>
-              <p v-if="!donateAction" class="text-sm text-red-600">Donation endpoint not configured. Set DONATE_STRIPE_FORM_URL env variable.</p>
             </form>
             <p>{{ donateContent?.acf?.cancel_text }}
               <NuxtLink to="/donate-cancel">

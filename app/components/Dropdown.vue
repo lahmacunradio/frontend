@@ -1,7 +1,7 @@
 <template>
   <div class="pv-dropdown">
     <select
-      :value="valueToString(value)"
+      :value="valueToString(currentValue)"
       @change="onChange"
       :disabled="disabled"
       class="pv-select"
@@ -22,12 +22,20 @@
 export default {
   name: "Dropdown",
   props: {
+    // Vue 2 legacy prop name (kept for backward compatibility)
     value: { required: false },
+    // Vue 3 v-model uses modelValue + update:modelValue
+    modelValue: { required: false },
     options: { type: Array, default: () => [] },
     optionLabel: { type: String, default: "label" },
     optionValue: { type: String, default: "value" },
     placeholder: { type: String, default: "" },
     disabled: { type: Boolean, default: false },
+  },
+  computed: {
+    currentValue() {
+      return this.modelValue !== undefined ? this.modelValue : this.value;
+    }
   },
   methods: {
     onChange(e) {
@@ -36,15 +44,19 @@ export default {
       const match = this.options.find((o) => this.optionValueString(o) === raw);
       if (match !== undefined) {
         const val = this.getOptionValue(match);
+        this.$emit('update:modelValue', val);
         this.$emit('input', val);
         this.$emit('change', val);
         return;
       }
       // fallback: try to parse JSON, otherwise emit raw
       try {
-        this.$emit('input', JSON.parse(raw));
-        this.$emit('change', JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        this.$emit('update:modelValue', parsed);
+        this.$emit('input', parsed);
+        this.$emit('change', parsed);
       } catch (err) {
+        this.$emit('update:modelValue', raw);
         this.$emit('input', raw);
         this.$emit('change', raw);
       }

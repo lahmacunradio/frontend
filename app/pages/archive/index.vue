@@ -2,17 +2,6 @@
   <div>
     <SubTitle title="Lahmacun Archive" :maintitle="true" />
     <div class="container mt-8">
-      <!-- no search for now, is buggy
-      <div v-if="defaultEpisodes" class="flex justify-between">
-        <AutoCompleteSearch
-          :default-items="defaultEpisodes"
-          suggestion-attribute="name"
-          :search-fields="searchFields"
-          place-holder="Search"
-          @update="onUpdate"
-        />
-      </div>
-      -->
       <div v-if="pending" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>

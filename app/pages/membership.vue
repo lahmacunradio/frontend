@@ -50,7 +50,6 @@
                 id="checkout-button"
                 :disabled="show_name.length === 0 || !membershipAction"
               >{{ membershipContent?.acf?.continue_button }}</button>
-              <p v-if="!membershipAction" class="text-sm text-red-600">Membership endpoint not configured. Set MEMBERSHIP_STRIPE_FORM_URL env variable.</p>
 
             </form>
             <p>{{ membershipContent?.acf?.cancel_text }}
