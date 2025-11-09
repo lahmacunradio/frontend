@@ -15,12 +15,15 @@
 
           <div>
             <form :action="$config.public.membershipStripeFormUrl" method="GET">
+              <input type="hidden" name="show_name" :value="show_name">
+              <input type="hidden" name="is_recurring" :value="is_recurring">
+              <input type="hidden" name="currency" :value="currency">
+
               <div class="selector mb-6">
                 <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
                 <Dropdown v-model="show_name" :options="arcsiShowsList"
                   :placeholder="membershipContent?.acf?.choose_select || 'Choose from list'" scrollHeight="300px" />
               </div>
-              <input type="hidden" name="show_name" :value="show_name">
 
               <div class="flex gap-4 mt-4 mb-6 radios">
                 <div class="flex items-center gap-2">
@@ -61,7 +64,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useAsyncData, useNuxtApp } from '#app'
 import { membershipStripeURL } from '~/constants'
 import { useArcsiStore } from '~/stores/arcsi'
@@ -87,12 +90,6 @@ const { data: membershipContent, pending, error } = await useAsyncData('membersh
     $sentry?.captureException(new Error('Membership not available', { cause: e }))
     throw e
   }
-})
-
-onMounted(() => {
-  const stripeScript = document.createElement('script')
-  stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
-  document.head.appendChild(stripeScript)
 })
 
 const allShows = computed(() => (arcsi ? arcsi.returnArcsiShows : []))

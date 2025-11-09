@@ -15,6 +15,9 @@
 
           <div>
             <form :action="$config.public.donateStripeFormUrl" method="GET">
+              <input type="hidden" name="is_recurring" :value="is_recurring">
+              <input type="hidden" name="currency" :value="currency">
+
               <div>
                 <p class="mb-2">
                   <strong>
@@ -63,7 +66,6 @@
 
 <script setup>
 import { useAsyncData, useNuxtApp } from '#app'
-import { computed, onMounted } from 'vue'
 import { donateStripeURL } from '~/constants'
 import RadioButton from '~/components/RadioButton.vue'
 const is_recurring = ref('no')
@@ -82,12 +84,6 @@ const { data: donateContent, pending, error } = await useAsyncData('donate-conte
     $sentry?.captureException(new Error('Donate not available', { cause: e }))
     throw e
   }
-})
-
-onMounted(() => {
-  const stripeScript = document.createElement('script')
-  stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
-  document.head.appendChild(stripeScript)
 })
 
 useHead(() => ({
