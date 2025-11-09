@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 export default defineNuxtConfig({
   compatibilityDate: "2025-11-06",
   components: true,
+  devtools: { enabled: process.env.NODE_ENV !== 'production' },
   devServer: {
     port: 3333,
     host: "0.0.0.0",

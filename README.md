@@ -3,6 +3,7 @@
 > Frontend for Lahmacun Radio 2021, using arcsi, stream and wp APIs. 
 > 
 > Made in Vue/Nuxt.js (v2), with Tailwindcss framework
+> updated to Nuxt3 + Vite + Typescript in 2024
 > 
 > 水果湯
 
@@ -10,7 +11,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## Dev env
 #### Node
-Node version `>=14.18.2` (currently using 20.19.5)
+Node version `20.19.5`
 
 Node Version Manager (.nvmrc) has the recommended version, run `nvm install` and `nvm use` in `app` folder
 #### pnpm
@@ -57,6 +58,13 @@ $ docker compose down
 ```
 
 ## Local Dev environment + IDE Setup
+``` bash
+# Use the dev image for docker
+$ docker compose -f docker-compose.dev.yml build
+
+# Load the app
+$ docker compose -f docker-compose.dev.yml up -d
+```
 
 ### Add allow CORS plugin to your browser
 Chrome/Firefox: Allow CORS
@@ -67,15 +75,4 @@ Chrome/Firefox: Allow CORS
 
 ### Browser helpers
 - Vue devtools
-
-### Add SCSS watcher to your IDE
-#### Storm:
-
-Preferences -> File Watchers -> Add SCSS Watcher
-
-Program: ``` /usr/local/bin/node-sass ```
-
-Arguments: ```` --output-style compressed $FileName$ $FileNameWithoutExtension$.css ````
-
-#### VSCode:
-eg. Scss-to-css extension (should work automatically)
+- Nuxt devtools

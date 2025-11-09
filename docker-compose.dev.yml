@@ -5,11 +5,15 @@ services:
     build: ./app
     ports:
       - 3333:3333
-    # Use the production command from Dockerfile (pnpm start)
-    # No volumes mounted - uses built app inside container
+    command: pnpm dev
+    volumes:
+      - ./app:/src
+      - /src/node_modules
+      - pnpm-store:/pnpm/store
     environment:
       - HOST=0.0.0.0
-      - NODE_ENV=production
+      - CHOKIDAR_USEPOLLING=true
+      - NODE_ENV=development
   proxy:
     image: nginx:1.19
     restart: always
@@ -36,3 +40,4 @@ services:
 volumes:
   certbot-etc:
   challenge:
+  pnpm-store:
