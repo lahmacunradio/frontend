@@ -4,6 +4,7 @@
       type="radio"
       :name="name"
       :id="id"
+      :value="option"
       :disabled="disabled"
       :checked="isChecked"
       @change="onChange"
@@ -19,7 +20,10 @@
 export default {
   name: 'RadioButton',
   props: {
-    value: { required: false }, // v-model current value
+    // Vue 2 legacy prop name (kept for backward compatibility)
+    value: { required: false },
+    // Vue 3 v-model uses modelValue + update:modelValue
+    modelValue: { required: false },
     option: { required: true }, // this radio's value
     name: { type: String, default: null },
     id: { type: String, default: null },
@@ -28,12 +32,16 @@ export default {
   },
   computed: {
     isChecked() {
-      return this.value === this.option;
+      // Prefer modelValue (Vue 3) falling back to value (Vue 2 style)
+      const current = this.modelValue !== undefined ? this.modelValue : this.value;
+      return current === this.option;
     }
   },
   methods: {
     onChange() {
-      this.$emit('input', this.option);
+      // Emit both Vue 3 and legacy events so v-model works across migration
+      this.$emit('update:modelValue', this.option);
+      this.$emit('input', this.option); // legacy
       this.$emit('change', this.option);
     }
   }

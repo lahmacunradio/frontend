@@ -14,9 +14,7 @@
           </div>
 
           <div>
-            <form :action="$config.public.donateStripeFormUrl" method="GET">
-              <input type="hidden" name="is_recurring" :value="is_recurring">
-              <input type="hidden" name="currency" :value="currency">
+            <form :action="donateAction" method="GET">
 
               <div>
                 <p class="mb-2">
@@ -49,7 +47,12 @@
 
               </div>
 
-              <button type="submit" id="checkout-button">{{ donateContent?.acf?.checkout }}</button>
+              <button
+                type="submit"
+                id="checkout-button"
+                :disabled="!donateAction"
+              >{{ donateContent?.acf?.checkout }}</button>
+              <p v-if="!donateAction" class="text-sm text-red-600">Donation endpoint not configured. Set DONATE_STRIPE_FORM_URL env variable.</p>
             </form>
             <p>{{ donateContent?.acf?.cancel_text }}
               <NuxtLink to="/donate-cancel">
@@ -68,6 +71,7 @@
 import { useAsyncData, useNuxtApp } from '#app'
 import { donateStripeURL } from '~/constants'
 import RadioButton from '~/components/RadioButton.vue'
+import { ref, computed } from 'vue'
 const is_recurring = ref('no')
 const currency = ref('eur')
 const sanitizeOptions = {
@@ -85,6 +89,9 @@ const { data: donateContent, pending, error } = await useAsyncData('donate-conte
     throw e
   }
 })
+
+// Ensure we only attempt redirect when action exists
+const donateAction = computed(() => $config.public.donateStripeFormUrl || '')
 
 useHead(() => ({
   title: donateContent.value?.acf?.page_title ?? 'Lahmacun Donate',

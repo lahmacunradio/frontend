@@ -14,10 +14,8 @@
           </div>
 
           <div>
-            <form :action="$config.public.membershipStripeFormUrl" method="GET">
+            <form :action="membershipAction" method="GET">
               <input type="hidden" name="show_name" :value="show_name">
-              <input type="hidden" name="is_recurring" :value="is_recurring">
-              <input type="hidden" name="currency" :value="currency">
 
               <div class="selector mb-6">
                 <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
@@ -47,8 +45,12 @@
                 </div>
               </div>
 
-              <button type="submit" id="checkout-button" :disabled="show_name.length === 0">{{
-                membershipContent?.acf?.continue_button }}</button>
+              <button
+                type="submit"
+                id="checkout-button"
+                :disabled="show_name.length === 0 || !membershipAction"
+              >{{ membershipContent?.acf?.continue_button }}</button>
+              <p v-if="!membershipAction" class="text-sm text-red-600">Membership endpoint not configured. Set MEMBERSHIP_STRIPE_FORM_URL env variable.</p>
 
             </form>
             <p>{{ membershipContent?.acf?.cancel_text }}
@@ -104,6 +106,8 @@ const arcsiShowsList = computed(() => {
 function selectShow(e) {
   show_name.value = e.target.value
 }
+
+const membershipAction = computed(() => $config.public?.membershipStripeFormUrl || '')
 
 useHead(() => ({
   title: membershipContent.value?.acf?.page_title ?? 'Lahmacun Membership',
