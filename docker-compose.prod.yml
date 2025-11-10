@@ -11,6 +11,7 @@ services:
       - HOST=0.0.0.0
       - PORT=3333
       - NODE_ENV=production
+      - ARCSI_TOKEN=${ARCSI_TOKEN}
     # Load env vars for runtime (e.g. ARCSI_TOKEN) from the app/.env file
     env_file:
       - ./app/.env
