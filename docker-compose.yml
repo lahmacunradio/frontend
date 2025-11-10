@@ -11,8 +11,8 @@ services:
       - HOST=0.0.0.0
       - PORT=3333
       - NODE_ENV=production
-      - ARCSI_TOKEN=${ARCSI_TOKEN}
-    # Load env vars for runtime (e.g. ARCSI_TOKEN) from the app/.env file
+    # Load environment variables (ARCSI_TOKEN, etc.) from app/.env
+    # These are injected into the container at runtime for Nuxt to read via process.env
     env_file:
       - ./app/.env
   proxy:
