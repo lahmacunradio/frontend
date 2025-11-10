@@ -81,6 +81,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     // Private values (only available server-side)
+    // Arcsi token kept private (also duplicated in public if intentionally exposed)
+    // If this token should NOT be exposed to clients, remove it from the public section below.
+    arcsiToken: process.env.ARCSI_TOKEN,
     sentryDsn: process.env.SENTRY_DSN,
     // Public values (available on client). Expose arcsiToken here ONLY if it's safe to leak (e.g. read-only token).
     // If this token grants write or privileged access, move it back to the private section and use server API proxy routes instead.

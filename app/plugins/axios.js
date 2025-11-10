@@ -7,9 +7,9 @@ export default defineNuxtPlugin(() => {
   // Accessing non-public keys on the client triggers a Nuxt runtime error.
   const runtimeConfig = useRuntimeConfig()
   const isServer = import.meta.server
-  // Use public runtime token if exposed; fallback to private only server-side
+  // Prefer private token (server-only) and fall back to public exposure if intentionally exposed.
   const publicArcsiToken = runtimeConfig.public?.arcsiToken
-  const privateArcsiToken = isServer ? (runtimeConfig.arcsiToken || publicArcsiToken) : publicArcsiToken
+  const privateArcsiToken = runtimeConfig.arcsiToken || publicArcsiToken
   if (isServer && !privateArcsiToken) {
     console.warn('[axios] ARCSI token is not configured. Set ARCSI_TOKEN in your .env file to enable authenticated Arcsi requests.')
   }
@@ -17,13 +17,13 @@ export default defineNuxtPlugin(() => {
   const request = async (url, opts = {}) => {
     const headers = Object.assign({}, opts.headers || {})
     // Attach Authentication-Token. If token is public, it's already safe client-side. If private only, we restrict to server.
-    const isArcsiRequest = typeof url === 'string' && url.includes('arcsi.lahmacun.hu')
+  // Detect Arcsi requests by domain OR common path fragments (supports relative proxy paths)
+  const isArcsiRequest = typeof url === 'string' && /arcsi\.lahmacun\.hu|\/wp-json\/arcsi|\/arcsi\//.test(url)
 
     if (isArcsiRequest && privateArcsiToken && !headers['Authentication-Token'] && !headers['authentication-token']) {
       const headerName = 'authentication-token' // API expects this exact casing
-      if (runtimeConfig.public?.arcsiToken) {
-        headers[headerName] = privateArcsiToken
-      } else if (isServer) {
+      // If token is publicly exposed, allow client usage; otherwise restrict to server-side.
+      if (publicArcsiToken || isServer) {
         headers[headerName] = privateArcsiToken
       }
     }
