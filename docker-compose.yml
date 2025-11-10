@@ -11,11 +11,9 @@ services:
       - HOST=0.0.0.0
       - PORT=3333
       - NODE_ENV=production
-      # Provide Arcsi token at runtime so Nuxt server can attach authentication header.
-      # Ensure you create a .env file or export ARCSI_TOKEN before `docker compose up`.
-      - ARCSI_TOKEN=${ARCSI_TOKEN}
+    # Load env vars for runtime (e.g. ARCSI_TOKEN) from the app/.env file
     env_file:
-      - .env
+      - ./app/.env
   proxy:
     image: nginx:1.19
     restart: always
