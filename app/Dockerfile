@@ -27,7 +27,22 @@ RUN pnpm install --frozen-lockfile
 # Copy application source code (node_modules excluded via .dockerignore)
 COPY . .
 
-# Build the application
+# Accept build-time environment variables
+# These are needed during `pnpm build` so Nuxt can bake them into the client bundle
+ARG ARCSI_TOKEN
+ARG SENTRY_DSN
+ARG DONATE_STRIPE_FORM_URL
+ARG MEMBERSHIP_STRIPE_FORM_URL
+ARG SUBSCRIPTION_CANCEL_URL
+
+# Set as environment variables so the build process can read them
+ENV ARCSI_TOKEN=$ARCSI_TOKEN
+ENV SENTRY_DSN=$SENTRY_DSN
+ENV DONATE_STRIPE_FORM_URL=$DONATE_STRIPE_FORM_URL
+ENV MEMBERSHIP_STRIPE_FORM_URL=$MEMBERSHIP_STRIPE_FORM_URL
+ENV SUBSCRIPTION_CANCEL_URL=$SUBSCRIPTION_CANCEL_URL
+
+# Build the application with env vars available
 RUN pnpm build
 
 # Clean up pnpm store to reduce image size

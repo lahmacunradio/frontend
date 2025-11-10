@@ -2,7 +2,15 @@ version: '3'
 
 services:
   app:
-    build: ./app
+    build:
+      context: ./app
+      args:
+        # Pass build-time arguments for Nuxt build process
+        - ARCSI_TOKEN=${ARCSI_TOKEN}
+        - SENTRY_DSN=${SENTRY_DSN}
+        - DONATE_STRIPE_FORM_URL=${DONATE_STRIPE_FORM_URL}
+        - MEMBERSHIP_STRIPE_FORM_URL=${MEMBERSHIP_STRIPE_FORM_URL}
+        - SUBSCRIPTION_CANCEL_URL=${SUBSCRIPTION_CANCEL_URL}
     ports:
       - 3333:3333
     # Use the production command from Dockerfile (pnpm start)
@@ -11,7 +19,7 @@ services:
       - HOST=0.0.0.0
       - PORT=3333
       - NODE_ENV=production
-    # Load environment variables (ARCSI_TOKEN, etc.) from app/.env
+    # Load runtime environment variables from app/.env
     env_file:
       - ./app/.env
   proxy:
