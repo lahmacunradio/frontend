@@ -26,7 +26,7 @@
         <img src="@/assets/img/arrow-left.svg" alt="" />
       </a>
       <a
-        v-show="sliderPosition < numberOfEpisodes - visibleEpisodes"
+        v-show="sliderPosition < arcsiEpisodesListSortedLatest.length - visibleEpisodes"
         ref="button-next"
         href="#"
         class="latest-nav next"
@@ -106,18 +106,25 @@ function changeBreakpoint() {
   const windowWidth = window.innerWidth
   const viewport = slider.value
   if (!viewport) return
+
+  const maxPosition = arcsiEpisodesListSortedLatest.value.length - visibleEpisodes.value
+
   if (windowWidth >= parseInt(largeScreenSize)) {
     visibleEpisodes.value = 4
-    if (sliderPosition.value < numberOfEpisodes.value) sliderPosition.value = sliderPosition.value - 1
   } else if (windowWidth >= parseInt(desktopSize) && windowWidth < parseInt(largeScreenSize)) {
     visibleEpisodes.value = 3
-    if (sliderPosition.value < numberOfEpisodes.value) sliderPosition.value = sliderPosition.value - 1
   } else if (windowWidth <= parseInt(tabletSize)) {
     visibleEpisodes.value = 1
   } else {
     visibleEpisodes.value = 2
-    if (sliderPosition.value < numberOfEpisodes.value) sliderPosition.value = sliderPosition.value - 1
   }
+
+  // Ensure slider position doesn't exceed the new maximum
+  const newMaxPosition = arcsiEpisodesListSortedLatest.value.length - visibleEpisodes.value
+  if (sliderPosition.value > newMaxPosition) {
+    sliderPosition.value = Math.max(0, newMaxPosition)
+  }
+
   episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
   resizeTimeout = setTimeout(() => reInitSlider(), 1)
 }
@@ -140,7 +147,7 @@ function previousBlock() {
 
 function nextBlock() {
   if (!episodes.value) return
-  if (sliderPosition.value === numberOfEpisodes.value - visibleEpisodes.value) return
+  if (sliderPosition.value === arcsiEpisodesListSortedLatest.value.length - visibleEpisodes.value) return
   sliderPosition.value++
   episodes.value.style.transform = `translateX(-${episodeWidth.value * sliderPosition.value}px)`
 }
