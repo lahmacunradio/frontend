@@ -6,7 +6,7 @@
 export * from '../node_modules/ufo/dist/index.mjs'
 
 // Import specific functions to create aliases if needed
-import { joinURL, hasProtocol } from '../node_modules/ufo/dist/index.mjs'
+import { joinURL } from '../node_modules/ufo/dist/index.mjs'
 
 // Provide missing exports that some Nuxt/Vite versions expect
 export const joinRelativeURL = joinURL

@@ -38,6 +38,7 @@ const { data: bannertext_fetched, pending, error } = await useAsyncData('banner-
 })
 
 const bannerText_computed = computed(() => {
+  if (error.value) return 'Banner temporarily unavailable'
   if (!bannertext_fetched.value?.content?.rendered) return 'No banner text content'
   return bannertext_fetched.value.content.rendered
 })

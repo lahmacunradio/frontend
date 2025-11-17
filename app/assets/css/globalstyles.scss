@@ -357,7 +357,7 @@ input[type="range"] {
   appearance: none;
   width: 100%;
   cursor: pointer;
-  background: linear-gradient(to right, $lahma-pink var(--progress), black var(--progress));
+  background: linear-gradient(to right, $lahma-pink var(--progress), $black-color var(--progress));
   height: 10px;
   border-radius: 2px;
 
