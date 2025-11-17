@@ -18,7 +18,7 @@
         <a href="#" @click.prevent="loadMoreEpisodes">
           <b>Load {{ startNumberofEpisodes }} more episodes</b>
           <br>
-          (showing {{ numberOfEpisodes }} episodes)
+          (showing {{ arcsiEpisodesListSortedLatest.length }} episodes)
         </a>
       </div>
     </div>
@@ -34,8 +34,8 @@ import { useArcsiStore } from '~/stores/arcsi'
 const arcsi = useArcsiStore()
 
 const startIndex = ref(1)
-const numberOfEpisodes = ref(12)
 const startNumberofEpisodes = 12
+const numberOfEpisodes = ref(startNumberofEpisodes)
 const searchFields = ['name', 'description']
 
 const { $axios, $sentry } = useNuxtApp()
@@ -55,10 +55,6 @@ const { data: defaultEpisodes, pending, error } = await useAsyncData(
 
 const arcsiEpisodes = ref(defaultEpisodes.value || [])
 
-watch(defaultEpisodes, (val) => {
-  if (Array.isArray(val)) arcsiEpisodes.value = val
-})
-
 const getToday = computed(() => {
   const d = new Date()
   const year = d.getFullYear()
@@ -69,7 +65,11 @@ const getToday = computed(() => {
 
 const arcsiEpisodesListSortedLatest = computed(() => {
   const list = Array.isArray(arcsiEpisodes.value) ? [...arcsiEpisodes.value] : []
-  return list
+  // Remove duplicates based on episode id
+  const uniqueList = list.filter((item, index, self) =>
+    index === self.findIndex(t => t.id === item.id)
+  )
+  return uniqueList
     .filter(item => item.play_date < getToday.value)
     .filter(item => item.archived === true)
     .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
@@ -83,7 +83,7 @@ async function loadMoreEpisodes () {
     const res = await $axios.get(`${arcsiItemBaseURL}/latest?size=${startNumberofEpisodes}&page=${startIndex.value}`, config)
     const newEpisodes = res.data
     arcsiEpisodes.value = arcsiEpisodes.value.concat(newEpisodes)
-    numberOfEpisodes.value = numberOfEpisodes.value * 2
+    numberOfEpisodes.value = numberOfEpisodes.value + startNumberofEpisodes
   } catch (e) {
     $sentry?.captureException(new Error('Arcsi is not available at the moment', { cause: e }))
     throw e
