@@ -1,34 +1,26 @@
 import { defineStore } from 'pinia'
 import { arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
-export const useArcsiStore = defineStore('arcsi', {
+export const useGlobalDataStore = defineStore('globalData', {
   state: () => ({
-    allShows: [],
+    allShowsList: [],
     rareShows: null,
     customSchedule: null,
-    lastFetched: 0,
-    isLoading: false,
-    errorMessage: null
+    lastFetched: 0
   }),
   getters: {
     returnArcsiShows: (state) => {
-      if (!state.allShows?.length) return []
-      return [...state.allShows].sort((a, b) => a.name.localeCompare(b.name))
+      if (!state.allShowsList?.length) return []
+      return [...state.allShowsList].sort((a, b) => a.name.localeCompare(b.name))
     },
     returnRareShows: (state) => state.rareShows,
-    returnCustomSchedule: (state) => state.customSchedule,
-    getIsLoading: (state) => state.isLoading,
-    getErrorMessage: (state) => state.errorMessage
+    returnCustomSchedule: (state) => state.customSchedule
   },
   actions: {
-    refreshAllShowsList (shows) { this.allShows = shows },
-    refreshRareShows (shows) { this.rareShows = shows },
-    refreshCustomSchedule (schedule) { this.customSchedule = schedule },
-    async fetchGlobalData (force = true) {
+    async fetchGlobalData(force = false) {
       const now = Date.now()
+      // Throttle unless force requested (e.g. on navigation); adjust window if needed.
       if (!force && now - this.lastFetched < 5000) return
-      this.isLoading = true
-      this.errorMessage = null
       const { $axios, $sentry } = useNuxtApp()
       const noCacheCfg = {
         ...config,
@@ -45,16 +37,17 @@ export const useArcsiStore = defineStore('arcsi', {
           $axios.get(rareShowsURL, { params: { t: now } }),
           $axios.get(customScheduleURL, { params: { t: now } })
         ])
-        this.allShows = allShowsRes.data
+        this.allShowsList = allShowsRes.data
         this.rareShows = rareRes.data.acf
         this.customSchedule = customRes.data.acf
         this.lastFetched = now
       } catch (e) {
         if ($sentry) $sentry.captureException(e)
-        this.errorMessage = 'Failed to refresh radio data'
-      } finally {
-        this.isLoading = false
+        // Silent fail: UI can show stale data; consider exposing an error flag if needed.
       }
-    }
+    },
+    refreshAllShowsList(payload) { this.allShowsList = payload },
+    refreshRareShows(payload) { this.rareShows = payload },
+    refreshCustomSchedule(payload) { this.customSchedule = payload }
   }
 })
