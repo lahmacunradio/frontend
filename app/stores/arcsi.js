@@ -29,25 +29,17 @@ export const useArcsiStore = defineStore('arcsi', {
       if (!force && now - this.lastFetched < 5000) return
       this.isLoading = true
       this.errorMessage = null
-      const { $axios, $sentry } = useNuxtApp()
-      const noCacheCfg = {
-        ...config,
-        headers: {
-          ...(config && config.headers),
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache'
-        },
-        params: { t: now }
-      }
+      const { $sentry } = useNuxtApp()
       try {
+        // Use local proxy API routes to avoid CORS issues
         const [allShowsRes, rareRes, customRes] = await Promise.all([
-          $axios.get(arcsiShowsBaseURL + '/all_without_items', noCacheCfg),
-          $axios.get(rareShowsURL, { params: { t: now } }),
-          $axios.get(customScheduleURL, { params: { t: now } })
+          $fetch('/api/arcsi/shows', { params: { t: now } }),
+          $fetch('/api/rare-shows', { params: { t: now } }),
+          $fetch('/api/custom-schedule', { params: { t: now } })
         ])
-        this.allShows = allShowsRes.data
-        this.rareShows = rareRes.data.acf
-        this.customSchedule = customRes.data.acf
+        this.allShows = allShowsRes
+        this.rareShows = rareRes.acf
+        this.customSchedule = customRes.acf
         this.lastFetched = now
       } catch (e) {
         if ($sentry) $sentry.captureException(e)
