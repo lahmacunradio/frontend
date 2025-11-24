@@ -133,9 +133,12 @@ const { data, pending, error } = await useAsyncData(
   `arcsi-show:${slug.value}`,
   async () => {
     try {
+      console.log(`Fetching show data for slug: ${slug.value}`)
       const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page`, config)
+      console.log(`Fetch success for ${slug.value}`)
       return res.data
     } catch (e) {
+      console.error(`Error fetching show data for ${slug.value}:`, e)
       $sentry?.captureException(new Error('Show data not found', { cause: e }))
       return null // Do not throw, let Nuxt handle error state
     }
@@ -162,8 +165,8 @@ const metaDescription = computed(() => {
 const episodeTags = computed(() => {
   if (!showObject.value?.tags) return false
   return showObject.value.tags
-    .filter(tag => tag.display_name.length > 0)
-    .sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
+    .filter(tag => tag && tag.display_name && tag.display_name.length > 0)
+    .sort((a, b) => (a?.clean_name || '').localeCompare(b?.clean_name || ''))
 })
 
 // handlers provided by composable

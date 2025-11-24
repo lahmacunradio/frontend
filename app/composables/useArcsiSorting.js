@@ -23,8 +23,8 @@ export function useArcsiSorting (itemsRef, options = {}) {
         : new Date(a.play_date) - new Date(b.play_date))
     } else if (sortingType.value === 'abc') {
       return primed.sort((a, b) => alphabeticAsc.value
-        ? a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })
-        : b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
+        ? (a.name || '').localeCompare(b.name || '', 'en', { sensitivity: 'base' })
+        : (b.name || '').localeCompare(a.name || '', 'en', { sensitivity: 'base' }))
     }
     return primed
   })
