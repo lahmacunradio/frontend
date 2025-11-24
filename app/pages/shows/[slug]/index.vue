@@ -137,7 +137,7 @@ const { data, pending, error } = await useAsyncData(
       return res.data
     } catch (e) {
       $sentry?.captureException(new Error('Show data not found', { cause: e }))
-      throw e
+      return null // Do not throw, let Nuxt handle error state
     }
   }
 )
