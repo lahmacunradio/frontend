@@ -133,12 +133,9 @@ const { data, pending, error } = await useAsyncData(
   `arcsi-show:${slug.value}`,
   async () => {
     try {
-      console.log(`Fetching show data for slug: ${slug.value}`)
       const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page`, config)
-      console.log(`Fetch success for ${slug.value}`)
       return res.data
     } catch (e) {
-      console.error(`Error fetching show data for ${slug.value}:`, e)
       $sentry?.captureException(new Error('Show data not found', { cause: e }))
       return null // Do not throw, let Nuxt handle error state
     }
