@@ -113,10 +113,7 @@ export function convertHourMinuteSecond (value) {
 export function stripHTMLTags (htmlString) {
   if (!htmlString) { return false }
   const stripped = htmlString.replace(/(<([^>]+)>)/gi, '')
-
-  const textarea = document.createElement('textarea')
-  textarea.innerHTML = stripped
-  return textarea.value
+  return decode(stripped)
 }
 
 export function getLanguageGraph (type) {
