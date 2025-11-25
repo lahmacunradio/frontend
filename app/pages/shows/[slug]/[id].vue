@@ -85,7 +85,7 @@
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
-                <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+                <img :src="getEpisodeImage(arcsi)" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
                 <h5 class="mt-4">
@@ -104,7 +104,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useAsyncData, useHead, useRoute, useNuxtApp } from '#app'
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiBaseURL, config } from '~/constants'
 import { usePlayerStore } from '~/stores/player'
 import { useArcsiSorting } from '@/composables/useArcsiSorting'
 import { truncate } from '~/plugins/mixinCommonMethods'
@@ -169,7 +169,20 @@ const airDate = computed(() => {
   return $date(arcsiEpisode.value.play_date).format('yyyy. MMMM Do.')
 })
 
-const episodeImage = computed(() => arcsiEpisode.value?.image_url)
+const episodeImage = computed(() => {
+  if (arcsiEpisode.value?.image_url && arcsiEpisode.value.image_url.length > 0) {
+    return arcsiEpisode.value.image_url
+  }
+  return arcsiShow.value?.cover_image_url || ''
+})
+
+// Helper to get episode image with fallback to show cover
+const getEpisodeImage = (episode) => {
+  if (episode?.image_url && episode.image_url.length > 0) {
+    return episode.image_url
+  }
+  return arcsiShow.value?.cover_image_url || ''
+}
 
 const metaDescription = computed(() => {
   if (!arcsiEpisode.value?.description) {

@@ -16,7 +16,6 @@ export const config = {
 // local server 'http://localhost:40'; //
 // local server 'http://docker.for.mac.localhost:40'; //
 
-// export const mediaServerURL = 'https://media.lahmacun.hu/'
 export const mediaServerURL = 'https://media.lahmacun.hu/'
 
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'
