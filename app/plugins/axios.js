@@ -31,14 +31,21 @@ export default defineNuxtPlugin(() => {
     const method = (opts.method || 'GET').toUpperCase()
     const body = opts.body || opts.data // allow axios-like opts.data
 
+    const timeoutMs = typeof opts.timeout === 'number' ? opts.timeout : 15000
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+
     try {
       const data = await $fetch(url, {
         method,
         headers,
-        body
+        body,
+        signal: controller.signal
       })
+      clearTimeout(timer)
       return { data, status: 200, headers: {}, config: { url, method } }
     } catch (error) {
+      clearTimeout(timer)
       // Normalize error to axios-like shape
       const e = error || {}
       const response = {

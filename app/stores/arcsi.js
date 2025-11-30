@@ -4,6 +4,7 @@ import { arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/co
 export const useArcsiStore = defineStore('arcsi', {
   state: () => ({
     allShows: [],
+    sortedShows: [],
     rareShows: null,
     customSchedule: null,
     lastFetched: 0,
@@ -11,17 +12,18 @@ export const useArcsiStore = defineStore('arcsi', {
     errorMessage: null
   }),
   getters: {
-    returnArcsiShows: (state) => {
-      if (!state.allShows?.length) return []
-      return [...state.allShows].sort((a, b) => a.name.localeCompare(b.name))
-    },
+    returnArcsiShows: (state) => state.sortedShows,
     returnRareShows: (state) => state.rareShows,
     returnCustomSchedule: (state) => state.customSchedule,
     getIsLoading: (state) => state.isLoading,
     getErrorMessage: (state) => state.errorMessage
   },
   actions: {
-    refreshAllShowsList (shows) { this.allShows = shows },
+    refreshAllShowsList (shows) {
+      this.allShows = Array.isArray(shows) ? shows : []
+      // Pre-compute and cache sorted list to avoid repeated cloning + sorting per render
+      this.sortedShows = [...this.allShows].sort((a, b) => a.name.localeCompare(b.name))
+    },
     refreshRareShows (shows) { this.rareShows = shows },
     refreshCustomSchedule (schedule) { this.customSchedule = schedule },
     async fetchGlobalData (force = true) {
@@ -31,13 +33,14 @@ export const useArcsiStore = defineStore('arcsi', {
       this.errorMessage = null
       const { $sentry } = useNuxtApp()
       try {
-        // Use local proxy API routes to avoid CORS issues
+        // Use local proxy API routes (now internally cached) to avoid CORS issues
         const [allShowsRes, rareRes, customRes] = await Promise.all([
-          $fetch('/api/arcsi/shows', { params: { t: now } }),
-          $fetch('/api/rare-shows', { params: { t: now } }),
-          $fetch('/api/custom-schedule', { params: { t: now } })
+          $fetch('/api/arcsi/shows'),
+          $fetch('/api/rare-shows'),
+          $fetch('/api/custom-schedule')
         ])
         this.allShows = allShowsRes
+        this.sortedShows = [...this.allShows].sort((a, b) => a.name.localeCompare(b.name))
         this.rareShows = rareRes.acf
         this.customSchedule = customRes.acf
         this.lastFetched = now

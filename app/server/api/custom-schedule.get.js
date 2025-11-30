@@ -1,12 +1,17 @@
 export default defineEventHandler(async (event) => {
+  const storage = useStorage('cache')
+  const cacheKey = 'custom_schedule_v1'
+  const ttlMs = 10 * 60 * 1000 // 10 minutes
+  const now = Date.now()
+  const query = getQuery(event) || {}
+  const forceBypass = String(query.force || '').trim() === '1'
+  const cached = await storage.getItem(cacheKey)
+  if (!forceBypass && cached && cached.expires > now) {
+    return cached.data
+  }
   try {
-    const response = await $fetch('https://cms.lahmacun.hu/wp-json/wp/v2/pages/3679', {
-      headers: {
-        'Cache-Control': 'no-cache',
-        Pragma: 'no-cache'
-      },
-      params: { t: Date.now() }
-    })
+    const response = await $fetch('https://cms.lahmacun.hu/wp-json/wp/v2/pages/3679')
+    await storage.setItem(cacheKey, { data: response, expires: now + ttlMs })
     return response
   } catch (error) {
     throw createError({
