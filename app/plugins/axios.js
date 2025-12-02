@@ -36,14 +36,29 @@ export default defineNuxtPlugin(() => {
     const timer = setTimeout(() => controller.abort(), timeoutMs)
 
     try {
-      const data = await $fetch(url, {
+      // Use $fetch.raw to get access to response headers
+      const response = await $fetch.raw(url, {
         method,
         headers,
         body,
         signal: controller.signal
       })
       clearTimeout(timer)
-      return { data, status: 200, headers: {}, config: { url, method } }
+      
+      // Extract headers from the Response object
+      const responseHeaders = {}
+      if (response.headers) {
+        response.headers.forEach((value, key) => {
+          responseHeaders[key] = value
+        })
+      }
+      
+      return { 
+        data: response._data, 
+        status: response.status || 200, 
+        headers: responseHeaders, 
+        config: { url, method } 
+      }
     } catch (error) {
       clearTimeout(timer)
       // Normalize error to axios-like shape
