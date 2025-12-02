@@ -44,7 +44,7 @@ export default defineNuxtPlugin(() => {
         signal: controller.signal
       })
       clearTimeout(timer)
-      
+
       // Extract headers from the Response object
       const responseHeaders = {}
       if (response.headers) {
@@ -52,12 +52,12 @@ export default defineNuxtPlugin(() => {
           responseHeaders[key] = value
         })
       }
-      
-      return { 
-        data: response._data, 
-        status: response.status || 200, 
-        headers: responseHeaders, 
-        config: { url, method } 
+
+      return {
+        data: response._data,
+        status: response.status || 200,
+        headers: responseHeaders,
+        config: { url, method }
       }
     } catch (error) {
       clearTimeout(timer)
