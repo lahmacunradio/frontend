@@ -74,7 +74,7 @@ export default defineNuxtConfig({
     { src: "~/plugins/sentry.client", mode: "client" },
     "~/plugins/date-fns",
   ],
-  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt"],
+  modules: ["@nuxtjs/tailwindcss", "@pinia/nuxt", "@nuxt/eslint"],
   tailwindcss: {
     // Disable the viewer dev route to avoid deprecated handler warning
     viewer: false,
