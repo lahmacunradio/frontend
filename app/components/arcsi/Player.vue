@@ -12,7 +12,7 @@
         @pause="setPauseState()"
         @loadedmetadata="getDuration()"
         @loadeddata="findIfArcsiSeek()"
-        @timeupdate.passive="debounceFunction(getPosition(), 1000)"
+        @timeupdate.passive="debouncedGetPosition"
         @ended="stopArcsi()"
       />
     </template>
@@ -176,6 +176,7 @@ export default {
     this.player = usePlayerStore()
     this.arcsi = useArcsiStore()
     this.audio = document.getElementById('arcsiplayer')
+    this.debouncedGetPosition = this.debounceFunction(this.getPosition, 1000)
   },
   mounted () {
     if (this.currentVolume !== this.arcsiVolume) {
@@ -195,6 +196,9 @@ export default {
     this.audio = document.getElementById('arcsiplayer')
   },
   beforeDestroy () {
+    if (this.debouncedGetPosition && this.debouncedGetPosition.cancel) {
+      this.debouncedGetPosition.cancel()
+    }
     clearTimeout(this.timeOutHelper)
     clearInterval(this.docTitleSetter)
     this.timeOutHelper = null
