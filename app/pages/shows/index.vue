@@ -43,10 +43,6 @@ import { mediaServerURL } from '~/constants'
 import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
-  created() {
-    // initialize Pinia store
-    this.arcsi = useArcsiStore()
-  },
   data () {
     return {
       mediaServerURL,
@@ -95,13 +91,17 @@ export default {
       return null
     }
   },
+  created() {
+    // initialize Pinia store
+    this.arcsi = useArcsiStore()
+  },
   mounted () {
     if (this.fullSchedule) {
       this.arcsiShows = [...this.fullSchedule]
       this.defaultArcsiShows = [...this.fullSchedule]
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.defaultArcsiShows = null
     this.arcsiShows = null
   },
