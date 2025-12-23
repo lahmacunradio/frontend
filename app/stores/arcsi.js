@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const useArcsiStore = defineStore('arcsi', {
   state: () => ({

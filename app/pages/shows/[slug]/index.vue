@@ -133,7 +133,7 @@ const { data, pending, error } = await useAsyncData(
   `arcsi-show:${slug.value}`,
   async () => {
     try {
-      const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page`, config)
+      const res = await $axios.get(`${arcsiBaseURL}/show/${slug.value}/page?filter=archived`, config)
       return res.data
     } catch (e) {
       $sentry?.captureException(new Error('Show data not found', { cause: e }))

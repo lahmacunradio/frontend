@@ -5,6 +5,6 @@ export default withNuxt({
     'components/icon/Sandclock.vue'
   ],
   rules: {
-    // Add any custom rules here
+    'vue/first-attribute-linebreak': 'off'
   }
 })
