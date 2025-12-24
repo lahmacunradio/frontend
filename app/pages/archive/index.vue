@@ -2,6 +2,8 @@
   <div>
     <SubTitle title="Lahmacun Archive" :maintitle="true" />
     <div class="container mt-8">
+      <input v-model="term" class="input" type="search" placeholder="Search">
+
       <div v-if="pending" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
@@ -9,7 +11,6 @@
       <div v-if="error" class="py-8 text-center">
         Error happened
       </div>
-      <input v-model="term" class="input" type="search" placeholder="Search">
 
       <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode.id || i">
@@ -49,16 +50,7 @@ const fetchEpisodes = async () => {
   pending.value = true
   error.value = null
   try {
-    let data = await $axios.$get(`${arcsiItemBaseURL}/search?size=${startNumberofEpisodes}&page=${startIndex.value}&param=${term.value}`, config)
-
-    // Handle case where data is returned as a string
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data)
-      } catch (e) {
-        console.error('Failed to parse Arcsi data JSON:', e)
-      }
-    }
+    const data = await $axios.$get(`${arcsiItemBaseURL}/search?size=${startNumberofEpisodes}&page=${startIndex.value}&param=${term.value}`, config)
 
     if (Array.isArray(data)) {
       if (startIndex.value === 1) {
@@ -77,9 +69,7 @@ const fetchEpisodes = async () => {
   } finally {
     pending.value = false
   }
-)
-
-const arcsiEpisodes = ref(defaultEpisodes.value || [])
+}
 
 const getToday = computed(() => {
   const d = new Date()
@@ -103,19 +93,6 @@ const arcsiEpisodesListSortedLatest = computed(() => {
 
 const arcsiList = computed(() => [...(arcsi?.returnArcsiShows || [])])
 
-async function loadMoreEpisodes () {
-  startIndex.value++
-  try {
-    const res = await $axios.get(`${arcsiItemBaseURL}/latest?size=${startNumberofEpisodes}&page=${startIndex.value}`, config)
-    const newEpisodes = res.data
-    arcsiEpisodes.value = arcsiEpisodes.value.concat(newEpisodes)
-    numberOfEpisodes.value = numberOfEpisodes.value + startNumberofEpisodes
-  } catch (e) {
-    $sentry?.captureException(new Error('Arcsi is not available at the moment', { cause: e }))
-    throw e
-  }
-}
-
 onMounted(() => {
   fetchEpisodes()
 })
@@ -124,19 +101,6 @@ watch(term, () => {
   startIndex.value = 1
   fetchEpisodes()
 })
-
-const arcsiEpisodesListSortedLatest = computed(() => {
-  const list = Array.isArray(arcsiEpisodes.value) ? [...arcsiEpisodes.value] : []
-  // Remove duplicates based on episode id
-  const uniqueList = list.filter((item, index, self) =>
-    index === self.findIndex(t => t.id === item.id)
-  )
-  return uniqueList
-    .filter(item => item.archived === true)
-    .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-})
-
-const arcsiList = computed(() => [...(arcsi?.returnArcsiShows || [])])
 
 async function loadMoreEpisodes() {
   startIndex.value++
