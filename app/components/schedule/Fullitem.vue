@@ -23,10 +23,10 @@
             </NuxtLink>
             <div class="mb-2 text-sm onair-meta">
               {{ showFrequency(show.frequency, show.week) }} |
-              Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
+              Language: <span v-dompurify-html.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
-               <div v-sanitize="[ sanitizeOptions, onAirDescription ]" class="description-text" />
+               <div v-dompurify-html="{ html: onAirDescription, options: sanitizeOptions }" class="description-text" />
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               <b>{{ show.name }} </b>
             </NuxtLink>
             <div class="text-sm description">
-              <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
+              <div v-dompurify-html="{ html: show.description, options: sanitizeOptions }" class="description-text" />
               <p v-if="latestEpisodeData" class="mt-2">
                 Last in archive:
                 <NuxtLink :to="latestEpisodeLink">
@@ -68,10 +68,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { usePlayerStore } from '~/stores/player'
 import { arcsiBaseURL, config } from '~/constants'
 
 export default {
+  created () {
+    // initialize Pinia player store for this component
+    this.player = usePlayerStore()
+  },
   props: {
     show: {
       type: Object,
@@ -91,11 +95,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({   
-      streamShowTitle: 'player/getStreamShowTitle',
-      streamEpisodeTitle: 'player/getStreamEpisodeTitle',
-      onAirImage: 'player/getStreamEpisodeImageURL'
-    }),
+    streamShowTitle () { return this.player ? this.player.getStreamShowTitle : '' },
+    streamEpisodeTitle () { return this.player ? this.player.getStreamEpisodeTitle : '' },
+    onAirImage () { return this.player ? this.player.getStreamEpisodeImageURL : '' },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },

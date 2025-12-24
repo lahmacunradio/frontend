@@ -20,45 +20,48 @@ import { contentApiURL, tagsURL } from '~/constants'
 export default {
   data () {
     return {
-      tag: this.$route.params.tag,
+      tag: null,
       tagsPosts: null
     }
   },
-  async fetch () {
-    const tagId = await this.$axios.get(`${tagsURL}?slug=${this.tag}`)
-      .then(res => res.data[0].id)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('No tags ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'No tags' })
-      })
-    this.tagsPosts = await this.$axios.get(`${contentApiURL}/posts?tags=${tagId}&per_page=100`)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('No tags ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'No tags' })
-      })
-  },
-  head () {
-    return {
+  async mounted () {
+    this.tag = this.$route.params.tag
+
+    useHead({
       title: `Lahmacun News Tag: ${this.tag}`,
       meta: [
         {
-          hid: 'description',
           name: 'description',
           content: `Post Tagged with ${this.tag}`
         },
         {
-          hid: 'og:title',
           property: 'og:title',
           content: `Lahmacun News Tag: ${this.tag}`
         },
         {
-          hid: 'og:description',
-          name: 'og:description',
+          property: 'og:description',
           content: `Post Tagged with ${this.tag}`
         }
       ]
+    })
+
+    try {
+      const tagResponse = await this.$axios.get(`${tagsURL}?slug=${this.tag}`)
+      const tagId = tagResponse.data[0]?.id
+
+      if (!tagId) {
+        throw new Error('Tag not found')
+      }
+
+      const postsResponse = await this.$axios.get(`${contentApiURL}/posts?tags=${tagId}&per_page=100`)
+      this.tagsPosts = postsResponse.data
+    } catch (error) {
+      this.$sentry?.captureException(new Error('No tags ', error))
+      this.$nuxt?.error({ statusCode: 404, message: 'No tags' })
     }
+  },
+  beforeUnmount () {
+    this.tagsPosts = null
   }
 }
 </script>

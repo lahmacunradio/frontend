@@ -29,14 +29,16 @@
 
 <script>
 export default {
-  model: {
-    prop: 'items',
-    event: 'change'
-  },
   props: {
     defaultItems: {
       required: true,
       type: Array
+    },
+    // Vue 3 v-model support: parent can bind v-model to get selected results array
+    modelValue: {
+      required: false,
+      type: Array,
+      default: () => []
     },
     suggestionAttribute: {
       required: false,
@@ -94,7 +96,10 @@ export default {
     },
     emitResult (result) {
       this.isOpen = false
+      // Legacy custom event for existing listeners
       this.$emit('update', result)
+      // Standard Vue 3 v-model event
+      this.$emit('update:modelValue', result)
     },
     onClick (item) {
       this.value = this.suggestionAttribute ? item[this.suggestionAttribute] : item

@@ -1,12 +1,21 @@
 <template>
   <div>
     <section class="grid-cols-2 mb-16 md:grid home-top">
-      <div v-if="sortNews" class="bg-white">
-        <NewsHome :news="sortNews[newsStart]" @changenews="changeIt($event)" />
+      <div class="bg-white">
+        <!-- News loading / error / content states -->
+        <div v-if="newsPending" class="p-8 text-center text-gray-500">Loading news...</div>
+        <div v-else-if="newsError" class="p-8 text-center text-red-500">Failed to load news</div>
+        <NewsHome
+          v-else-if="sortedNews.length > 0"
+          :news="sortedNews[newsStart]"
+          @changenews="changeIt($event)"
+        />
+        <div v-else class="p-8 text-center text-gray-500">No news available</div>
       </div>
       <div>
         <client-only>
-          <ScheduleHome :shows="sortShowsForSchedule" />
+          <div v-if="!fullSchedule || fullSchedule.length === 0" class="p-8 text-center text-gray-500">Loading schedule...</div>
+          <ScheduleHome v-else :shows="sortShowsForSchedule" />
         </client-only>
       </div>
     </section>
@@ -16,61 +25,64 @@
   </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex'
+<script setup>
+import { computed, ref } from 'vue'
+import { useAsyncData, useNuxtApp } from '#app'
 import { newsURL } from '~/constants'
+import { useArcsiStore } from '~/stores/arcsi'
 
-export default {
-  data () {
-    return {
-      newsLimit: 9,
-      newsStart: 0,
-      newsList: null
-    }
-  },
-  async fetch () {
-    this.newsList = await this.$axios.get(newsURL)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$nuxt.error({ statusCode: 404, message: error + ' not found' })
-      })
-  },
-  computed: {
-    ...mapGetters({
-      fullSchedule: 'returnArcsiShows',
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
-    }),
-    sortShowsForSchedule () {
-      return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
-    },
-    newsListState () {
-      if (!this.newsList) {
-        return false
-      }
-      return this.newsLimit ? this.newsList.slice(0, this.newsLimit) : this.newsList
-    },
-    sortNews () {
-      if (!this.newsList) {
-        return false
-      }
-      return [...this.newsListState].sort((a, b) => a.date - b.date)
-    }
-  },
-  methods: {
-    changeIt (direction) {
-      if (this.newsStart === 0 && direction === 'previous') {
-        this.newsStart = this.newsLimit - 1
-      } else if (direction === 'next' && this.newsStart === this.newsLimit - 1) {
-        this.newsStart = 0
-      } else if (direction === 'previous') {
-        this.newsStart--
-      } else if (direction === 'next') {
-        this.newsStart++
-      }
-    }
+// Pinia store
+const arcsi = useArcsiStore()
+
+// pagination state
+const newsLimit = 9
+const newsStart = ref(0)
+
+// Fetch news using Nuxt 3 useAsyncData + axios plugin
+const { $axios, error: nuxtError } = useNuxtApp()
+const { data: newsList, pending: newsPending, error: newsError } = await useAsyncData('news-list', async () => {
+  try {
+    const res = await $axios.get(newsURL)
+    return res.data || []
+  } catch (e) {
+    // propagate so newsError is set
+    throw e
   }
+})
 
+// Derived slices & sorts
+const limitedNews = computed(() => {
+  const list = Array.isArray(newsList.value) ? newsList.value : []
+  return newsLimit ? list.slice(0, newsLimit) : list
+})
+
+const sortedNews = computed(() => {
+  const list = limitedNews.value
+  return [...list]
+    .filter(n => n && n.date)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+})
+
+// Schedule related computed
+const fullSchedule = computed(() => arcsi.returnArcsiShows)
+const sortShowsForSchedule = computed(() => {
+  const shows = Array.isArray(fullSchedule.value) ? fullSchedule.value : []
+  return [...shows]
+    .filter(s => s && s.day != null && s.start)
+    .sort((a, b) => Number(a.day) - Number(b.day))
+    .sort((a, b) => parseInt(String(a.start).replace(':', ''), 10) - parseInt(String(b.start).replace(':', ''), 10))
+})
+
+function changeIt (direction) {
+  if (newsStart.value === 0 && direction === 'previous') {
+    newsStart.value = newsLimit - 1
+  } else if (direction === 'next' && newsStart.value === newsLimit - 1) {
+    newsStart.value = 0
+  } else if (direction === 'previous') {
+    newsStart.value--
+  } else if (direction === 'next') {
+    newsStart.value++
+  }
 }
 </script>
 

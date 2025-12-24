@@ -5,7 +5,7 @@
         <div class="main-title">
           Lahmacun Radio
         </div>
-        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="w-24 logo">
+        <img src="@/assets/img/lahma_logo_1.svg" alt="Lahmacun Radio" class="size-24 logo">
       </div>
       <div class="xxsm:mt-2 xsm:my-4 md:mr-8">
         <client-only>
@@ -24,6 +24,7 @@
 
 <script>
 import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL, config } from '~/constants'
+import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
   data () {
@@ -35,6 +36,8 @@ export default {
     }
   },
   created () {
+    // initialize Pinia store and start clock
+    this.arcsi = useArcsiStore()
     this.getNow()
   },
   mounted () {
@@ -42,7 +45,7 @@ export default {
       this.interval = setInterval(this.getNow, 60 * 1000)
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.interval)
     this.interval = null
   },
@@ -71,31 +74,31 @@ export default {
     async refreshAllShows () {
       await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
         .then((res) => {
-          this.$store.commit('refreshAllShowsList', res.data)
+          this.arcsi.refreshAllShowsList(res.data)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'All shows endpoint not found' }) : null
         })
     },
     async refreshRareShows () {
       await this.$axios.get(rareShowsURL)
         .then((res) => {
-          this.$store.commit('refreshRareShows', res.data?.acf)
+          this.arcsi.refreshRareShows(res.data?.acf)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Rare Shows not found' }) : null
         })
     },
     async refreshCustomSchedule () {
       await this.$axios.get(customScheduleURL)
         .then((res) => {
-          this.$store.commit('refreshCustomSchedule', res.data?.acf)
+          this.arcsi.refreshCustomSchedule(res.data?.acf)
         })
         .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Custom schedule not found' })
+          this.$sentry && this.$sentry.captureException && this.$sentry.captureException(e)
+          this.$nuxt && this.$nuxt.error ? this.$nuxt.error({ statusCode: 404, message: 'Custom schedule not found' }) : null
         })
     }
 

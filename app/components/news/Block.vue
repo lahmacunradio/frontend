@@ -19,7 +19,7 @@
         </h5>
       </NuxtLink>
       <div class="news-text">
-        <div v-sanitize="[ sanitizeOptions, truncatedNews ]" />
+        <div v-dompurify-html="{ html: truncatedNews, options: sanitizeOptions }" />
       </div>
     </div>
     <div v-if="newsTags" class="mt-2 tags">
@@ -46,8 +46,8 @@ export default {
   },
   data () {
     return {
-      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
-      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImage: '/lahmacun-logo-dummy.png',
+      newsImageSmall: '/lahmacun-logo-dummy.png',
       newsTags: null,
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],

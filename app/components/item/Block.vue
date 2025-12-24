@@ -16,7 +16,7 @@
         {{ item.subTitle }}
       </h5>
       <div v-if="item.description" class="mt-2 item-text">
-        <div v-sanitize="item.description" />
+        <div v-dompurify-html="item.description" />
       </div>
       <TagList v-if="item.tags" :tags="item.tags" class="mt-2" />
     </div>
@@ -34,8 +34,8 @@ export default {
   },
   data () {
     return {
-      image: require('@/assets/img/lahmacun-logo-dummy.png'),
-      smallImage: require('@/assets/img/lahmacun-logo-dummy.png')
+      image: '/lahmacun-logo-dummy.png',
+      smallImage: '/lahmacun-logo-dummy.png'
     }
   },
   computed: {

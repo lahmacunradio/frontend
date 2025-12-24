@@ -37,30 +37,28 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { mediaServerURL } from '~/constants'
+import { usePlayerStore } from '~/stores/player'
 
 export default {
   validate ({ params, store }) {
-    // Check if arcsiShows exists
-    return store.state.arcsiShows.length
+    // Validation moved to Pinia; keep route valid and rely on store population
+    return true
   },
   data () {
     return {
     }
   },
   computed: {
-    ...mapGetters('player', {
-      arcsiEpisode: 'getArcsiEpisode',
-      arcsiVisible: 'getArcsiVisibility',
-      isArcsiPlaying: 'getArcsiPlayState'
-
-    }),
+    arcsiEpisode () { return this.player ? this.player.getArcsiEpisode : null },
+    arcsiVisible () { return this.player ? this.player.getArcsiVisibility : false },
+    isArcsiPlaying () { return this.player ? this.player.getArcsiPlayState : false },
     arcsiAudio () {
       if (!this.arcsiEpisode?.play_file_name) {
         return false
       }
-      const showSlug = this.arcsiEpisode.shows?.[0].archive_lahmastore_base_url
+      // Guard against missing shows array or missing first show
+      const showSlug = this.arcsiEpisode?.shows?.[0]?.archive_lahmastore_base_url || this.arcsiEpisode?.shows?.[0]?.archive_lahmastore || ''
       const episodeNumber = this.arcsiEpisode.number
       const fileName = this.arcsiEpisode.play_file_name
       return `${mediaServerURL}${showSlug}/${episodeNumber}/${fileName}`
@@ -68,11 +66,15 @@ export default {
   },
   methods: {
     stopArcsi () {
-      this.$store.commit('player/isArcsiPlaying', false)
+      if (this.player) this.player.setIsArcsiPlaying(false)
     },
     togglePlayerVisibility (state) {
-      this.$store.commit('player/isArcsiVisible', state)
+      if (this.player) this.player.setIsArcsiVisible(state)
     }
+  }
+
+  ,created () {
+    this.player = usePlayerStore()
   }
 
 }

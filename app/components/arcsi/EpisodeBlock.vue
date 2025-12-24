@@ -2,7 +2,7 @@
   <div v-if="episode" class="latest-arcsi-blokk">
     <NuxtLink :to="`/shows/${showslug}/${episodeLink}`" class="relative block w-full mb-2">
       <div class="absolute bottom-0 z-10 w-full p-2 text-center text-white bg-black">
-        <b>{{ episode.shows[0].name }}</b>
+        <b>{{ episode.shows?.[0]?.name || '' }}</b>
       </div>
       <div class="arcsi-img aspect-ratio-1/1">
         <img class="block" :src="episodeImage" :alt="episode.name">
@@ -13,7 +13,7 @@
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
       <p class="text-white">
-        Date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}
+  Date: {{ $date(episode.play_date).format('yyyy. MMMM Do.') }}
       </p>
     </NuxtLink>
     <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
@@ -47,7 +47,10 @@ export default {
   },
   computed: {
     episodeImage() {
-      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
+      if (this.episode?.image_url && this.episode.image_url.length > 0) return this.episode.image_url
+      const showId = this.episode?.shows?.[0]?.id
+      const show = showId ? this.arcsilist.find(item => item.id === showId) : null
+      return show ? show.cover_image_url : ''
     },
     episodeLink() {
       if (!this.episode.name_slug) {
@@ -63,7 +66,9 @@ export default {
     }
   },
   created() {
-    this.showslug = this.arcsilist.find(item => item.id === this.episode.shows[0].id).archive_lahmastore_base_url
+    const showId = this.episode?.shows?.[0]?.id
+    const show = showId ? this.arcsilist.find(item => item.id === showId) : null
+    this.showslug = show ? (show.archive_lahmastore_base_url || show.archive_lahmastore || '') : ''
   }
 }
 </script>
