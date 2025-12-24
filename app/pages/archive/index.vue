@@ -60,8 +60,6 @@ const fetchEpisodes = async () => {
       }
     }
 
-    console.log('Arcsi Archive Data:', data)
-
     if (Array.isArray(data)) {
       if (startIndex.value === 1) {
         arcsiEpisodes.value = data
@@ -78,6 +76,43 @@ const fetchEpisodes = async () => {
     $sentry?.captureException(new Error('Arcsi is not available at the moment', { cause: e }))
   } finally {
     pending.value = false
+  }
+)
+
+const arcsiEpisodes = ref(defaultEpisodes.value || [])
+
+const getToday = computed(() => {
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
+  const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
+  return `${year}-${month}-${day}`
+})
+
+const arcsiEpisodesListSortedLatest = computed(() => {
+  const list = Array.isArray(arcsiEpisodes.value) ? [...arcsiEpisodes.value] : []
+  // Remove duplicates based on episode id
+  const uniqueList = list.filter((item, index, self) =>
+    index === self.findIndex(t => t.id === item.id)
+  )
+  return uniqueList
+    .filter(item => item.play_date < getToday.value)
+    .filter(item => item.archived === true)
+    .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
+})
+
+const arcsiList = computed(() => [...(arcsi?.returnArcsiShows || [])])
+
+async function loadMoreEpisodes () {
+  startIndex.value++
+  try {
+    const res = await $axios.get(`${arcsiItemBaseURL}/latest?size=${startNumberofEpisodes}&page=${startIndex.value}`, config)
+    const newEpisodes = res.data
+    arcsiEpisodes.value = arcsiEpisodes.value.concat(newEpisodes)
+    numberOfEpisodes.value = numberOfEpisodes.value + startNumberofEpisodes
+  } catch (e) {
+    $sentry?.captureException(new Error('Arcsi is not available at the moment', { cause: e }))
+    throw e
   }
 }
 
