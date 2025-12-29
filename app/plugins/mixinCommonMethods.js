@@ -87,18 +87,13 @@ export function slugify (str) {
 
 export function debounceFunction (func, delay = 300) {
   let debounceTimer
-  class debounced {
-    constructor() {
-      // console.log("debouncing call..");
-      const context = this
-      const args = arguments
-      clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => func.apply(context, args), delay)
-      // console.log("..done");
-    }
-    static cancel() {
-      clearTimeout(debounceTimer)
-    }
+  function debounced(...args) {
+    const context = this
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => func.apply(context, args), delay)
+  }
+  debounced.cancel = function() {
+    clearTimeout(debounceTimer)
   }
   return debounced
 }

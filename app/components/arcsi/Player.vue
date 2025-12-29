@@ -1,21 +1,9 @@
 <template>
   <div class="arcsiplayer">
-    <template>
-      <audio
-        id="arcsiplayer"
-        ref="arcsiplayer"
-        preload="metadata"
-  :title="(episode.shows?.[0]?.name || '') + ' - ' + episode.name"
-        :src="source"
-        :autoplay="isSafari"
-        @play="setPlayState()"
-        @pause="setPauseState()"
-        @loadedmetadata="getDuration()"
-        @loadeddata="findIfArcsiSeek()"
-        @timeupdate.passive="debouncedGetPosition"
-        @ended="stopArcsi()"
-      />
-    </template>
+      <audio id="arcsiplayer" ref="arcsiplayer" preload="metadata"
+        :title="(episode.shows?.[0]?.name || '') + ' - ' + episode.name" :src="source" :autoplay="isSafari"
+        @play="setPlayState()" @pause="setPauseState()" @loadedmetadata="getDuration()" @loadeddata="findIfArcsiSeek()"
+        @timeupdate.passive="debouncedGetPosition" @ended="stopArcsi()" />
     <div v-if="duration && duration === 0" class="flex items-center py-4 preload">
       <img src="@/assets/img/preloader.svg" class="h-4 mr-4" alt="preload">
       <p>Preloading...</p>
@@ -46,7 +34,7 @@
           {{ (episode.shows?.[0]?.name || '') + ' - ' + episode.name }}
         </h5>
       </div>
-      <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{'mb-2': isTouchEnabled}">
+      <div class="flex items-center w-full md:mr-6 md:w-64 min-w-1/4 2xl:min-w-0" :class="{ 'mb-2': isTouchEnabled }">
         <a href="#" class="mr-2 text-xs" @click.prevent="seekBackward(10)" @dblclick.prevent="seekBackward(20)">
           <i class="fa fa-fast-backward" aria-hidden="true" />
         </a>
@@ -54,16 +42,9 @@
           {{ seek && seek > 1 ? currentSeek : '0:00:00' }}
         </div>
         <div id="myProgress" class="mx-2 my-2">
-          <div id="myBar" :style="{width: (progress * 100).toFixed(2) + '%'}" />
-          <input
-            id="progressingRange"
-            :value="progress"
-            type="range"
-            min="0"
-            max="1"
-            step="0.001"
-            @change="seekBar($event.target.value)"
-          >
+          <div id="myBar" :style="{ width: (progress * 100).toFixed(2) + '%' }" />
+          <input id="progressingRange" :value="progress" type="range" min="0" max="1" step="0.001"
+            @change="seekBar($event.target.value)">
         </div>
         <div class="text-sm">
           {{ currentDuration }}
@@ -79,17 +60,8 @@
           <i v-else-if="currentVolume < '0.7'" class="fa fa-volume-down" />
           <i v-else class="fa fa-volume-up" />
         </div>
-        <input
-          id="volumeRange"
-          v-model="currentVolume"
-          class="align-middle"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          :style="{ '--progress': currentVolume * 100 + '%' }"
-          @input.passive="volumeBar($event.target.value)"
-        >
+        <input id="volumeRange" v-model="currentVolume" class="align-middle" type="range" min="0" max="1" step="0.01"
+          :style="{ '--progress': currentVolume * 100 + '%' }" @input.passive="volumeBar($event.target.value)">
       </div>
     </div>
   </div>
@@ -110,61 +82,64 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
-      pageTitle: document?.title || '',
+      pageTitle: '',
       audio: null,
       currentVolume: '1',
       currentProgress: '0',
       duration: 0,
       seek: 0,
       timeOutHelper: null,
-      docTitleSetter: null
+      docTitleSetter: null,
+      debouncedGetPosition: null
     }
   },
   computed: {
-    arcsiIsPlaying () { return this.player ? this.player.getArcsiPlayState : false },
-    isStreamPlaying () { return this.player ? this.player.getStreamPlayState : false },
-    arcsiVolume () { return this.player ? this.player.getArcsiVolume : 1 },
-    arcsiPlayHistory () { return this.player ? this.player.getArcsiPlayHistory : {} },
-    progress () {
-      if (!this.audio) {
-        return false
+    arcsiIsPlaying() { return this.player ? this.player.getArcsiPlayState : false },
+    isStreamPlaying() { return this.player ? this.player.getStreamPlayState : false },
+    arcsiVolume() { return this.player ? this.player.getArcsiVolume : 1 },
+    arcsiPlayHistory() { return this.player ? this.player.getArcsiPlayHistory : {} },
+    progress() {
+      if (!this.duration || this.duration === 0) {
+        return 0
       }
-      return (this.seek / this.duration).toFixed(2)
+      return this.seek / this.duration
     },
-    currentDuration () {
+    currentDuration() {
       return this.convertHourMinuteSecond(this.duration)
     },
-    currentSeek () {
+    currentSeek() {
       return this.convertHourMinuteSecond(this.seek)
     },
-    playerData () {
+    playerData() {
       return {
         player: 'arcsi',
         data: this.episode
       }
     },
-    arcsiList () {
+    arcsiList() {
       return this.arcsi ? this.arcsi.returnArcsiShows : []
     },
-    arcsiShow () {
+    arcsiShow() {
       if (!this.arcsiList) {
         return false
       }
       const showID = this.episode?.shows?.[0].id
       return this.arcsiList?.find(show => show.id === showID)
     },
-    isTouchEnabled () {
+    isTouchEnabled() {
+      if (typeof window === 'undefined') return false
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
-    isSafari () {
+    isSafari() {
+      if (typeof navigator === 'undefined') return false
       return (navigator.vendor.match(/apple/i) || '').length > 0
     }
   },
   watch: {
     'player.isStreamPlaying': {
-      handler () {
+      handler() {
         if (this.isStreamPlaying) {
           this.audio?.pause()
         }
@@ -172,48 +147,52 @@ export default {
       deep: true
     }
   },
-  created () {
+  created() {
     this.player = usePlayerStore()
     this.arcsi = useArcsiStore()
-    this.audio = document.getElementById('arcsiplayer')
-    this.debouncedGetPosition = this.debounceFunction(this.getPosition, 1000)
   },
-  mounted () {
+  mounted() {
+    this.pageTitle = document?.title || ''
+    this.audio = document.getElementById('arcsiplayer')
+    this.debouncedGetPosition = this.debounceFunction(this.getPosition.bind(this), 100)
+
     if (this.currentVolume !== this.arcsiVolume) {
       this.currentVolume = this.arcsiVolume
       this.setVolume(parseFloat(this.arcsiVolume))
     }
     this.setMetaData()
-  if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
+    if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
     if (!this.isSafari) {
       this.pauseArcsi()
     }
   },
-  beforeUpdate () {
+  beforeUpdate() {
     if (this.duration === 0) {
       this.findIfArcsiSeek()
     }
     this.audio = document.getElementById('arcsiplayer')
   },
-  beforeDestroy () {
+  beforeUnmount() {
     if (this.debouncedGetPosition && this.debouncedGetPosition.cancel) {
       this.debouncedGetPosition.cancel()
     }
     clearTimeout(this.timeOutHelper)
     clearInterval(this.docTitleSetter)
     this.timeOutHelper = null
+    this.docTitleSetter = null
     if (this.arcsiIsPlaying) {
-  if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
+      if (this.player) this.player.setCurrentlyPlayingArcsi(this.episode)
     }
-    if ('mediaSession' in navigator) {
-      navigator.mediaSession.setActionHandler('pause', () => null)
+    if (typeof navigator !== 'undefined' && 'mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('pause', null)
     }
   },
-  destroyed () {
+  unmounted() {
     this.audio = null
+    this.debouncedGetPosition = null
   },
   methods: {
-    setPlayState () {
+    setPlayState() {
       const playHistory = {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
@@ -225,7 +204,7 @@ export default {
         this.player.setIsStreamPlaying(false)
       }
     },
-    setPauseState () {
+    setPauseState() {
       const playHistory = {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
@@ -235,7 +214,7 @@ export default {
         this.player.setArcsiProgressHistory(playHistory)
       }
     },
-    setMetaData () {
+    setMetaData() {
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.episode.name,
@@ -250,7 +229,7 @@ export default {
         })
       }
     },
-    async playArcsi () {
+    async playArcsi() {
       await this.audio?.play()
       this.setPlayState()
       this.setMetaData()
@@ -275,7 +254,7 @@ export default {
         value: 1
       })
     },
-    pauseArcsi () {
+    pauseArcsi() {
       if (this.arcsiIsPlaying) {
         this.audio?.pause()
       }
@@ -286,7 +265,7 @@ export default {
       const ogTitle = document.querySelector("meta[property='og:title']")
       document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
     },
-    toggleArcsi () {
+    toggleArcsi() {
       const arcsiReady = this.$refs.arcsiplayer?.readyState > 2
       if (!arcsiReady && this.seek === 0) {
         return false
@@ -297,7 +276,7 @@ export default {
         this.playArcsi()
       }
     },
-    stopArcsi () {
+    stopArcsi() {
       if (this.audio) {
         this.$refs.arcsiplayer.currentTime = 0
         this.audio.pause()
@@ -312,37 +291,37 @@ export default {
         this.player.setIsArcsiPlaying(false)
       }
     },
-    setVolume (volume) {
+    setVolume(volume) {
       if (this.audio) {
         this.audio.volume = volume
       }
       this.currentVolume = volume
     },
-    volumeBar (value) {
+    volumeBar(value) {
       this.setVolume(parseFloat(value))
-  if (this.player) this.player.setArcsiVolume(value)
+      if (this.player) this.player.setArcsiVolume(value)
     },
-    seekBar (value) {
+    seekBar(value) {
       this.$refs.arcsiplayer.currentTime = this.duration * parseFloat(value)
       const playHistory = {
         episodeID: this.episode.id,
         value: Math.round(this.seek)
       }
-  if (this.player) this.player.setArcsiProgressHistory(playHistory)
+      if (this.player) this.player.setArcsiProgressHistory(playHistory)
     },
-    setSeek (seek) {
+    setSeek(seek) {
       if (!this.$refs.arcsiplayer) {
         return false
       }
       this.$refs.arcsiplayer.currentTime = seek
     },
-    getDuration () {
+    getDuration() {
       this.duration = this.$refs.arcsiplayer?.duration
     },
-    getPosition () {
+    getPosition() {
       this.seek = this.$refs.arcsiplayer?.currentTime || 0
     },
-    async findIfArcsiSeek () {
+    async findIfArcsiSeek() {
       if (!this.$refs.arcsiplayer) {
         return false
       }
@@ -364,13 +343,13 @@ export default {
         this.pauseArcsi()
       }
     },
-    seekBackward (time) {
+    seekBackward(time) {
       if (this.seek < time) {
         return false
       }
       this.setSeek(this.seek - time)
     },
-    seekForward (time) {
+    seekForward(time) {
       if (this.seek > this.duration - time) {
         return false
       }
@@ -383,29 +362,35 @@ export default {
 <style lang="scss" scoped>
 h5 {
   line-height: 1.2em;
+
   a {
     color: $black-color;
+
     &:hover {
       text-decoration: underline;
     }
   }
+
   span {
     font-weight: normal;
   }
 }
+
 #myProgress {
   width: 100%;
   background-color: $black-color;
+
+  input[type="range" i]::-webkit-slider-thumb {
+    opacity: 0;
+    transition: opacity 0.2s;
+    transform: translateY(3px);
+  }
+
+  &:hover {
     input[type="range" i]::-webkit-slider-thumb {
-      opacity: 0;
-      transition: opacity 0.2s;
-      transform: translateY(3px);
+      opacity: 1;
     }
-    &:hover {
-      input[type="range" i]::-webkit-slider-thumb {
-        opacity: 1;
-      }
-    }
+  }
 }
 
 #myBar {
@@ -433,28 +418,31 @@ h5 {
     opacity: 0;
     transition: opacity 0.2s;
   }
-    &:hover {
-      input[type="range" i]::-webkit-slider-thumb {
-        opacity: 1;
-      }
-    }
-}
 
-/* Only for Safari  */
-@media not all and (min-resolution:.001dpcm){ @supports (-webkit-appearance:none) {
-  #myVolume {
+  &:hover {
     input[type="range" i]::-webkit-slider-thumb {
       opacity: 1;
     }
   }
-  #volumeRange {
-    height: 0.4rem;
-    border-radius: 1rem;
-    -webkit-appearance: none !important;
-    appearance: none;
-    background-color: $black-color;
+}
 
+/* Only for Safari  */
+@media not all and (min-resolution:.001dpcm) {
+  @supports (-webkit-appearance:none) {
+    #myVolume {
+      input[type="range" i]::-webkit-slider-thumb {
+        opacity: 1;
+      }
+    }
+
+    #volumeRange {
+      height: 0.4rem;
+      border-radius: 1rem;
+      -webkit-appearance: none !important;
+      appearance: none;
+      background-color: $black-color;
+
+    }
   }
-}}
-
+}
 </style>
