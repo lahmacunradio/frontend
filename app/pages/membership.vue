@@ -20,36 +20,33 @@
               <div class="selector mb-6">
                 <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
                 <Dropdown v-model="show_name" :options="arcsiShowsList"
-                  :placeholder="membershipContent?.acf?.choose_select || 'Choose from list'" scrollHeight="300px" />
+                  :placeholder="membershipContent?.acf?.choose_select || 'Choose from list'" scroll-height="300px" />
               </div>
 
               <div class="flex gap-4 mt-4 mb-6 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="one-time" name="is_recurring" option="no" v-model="is_recurring" />
+                  <RadioButton id="one-time" v-model="is_recurring" name="is_recurring" option="no" />
                   <label for="one-time">{{ membershipContent?.acf?.one_time }}</label>
                 </div>
                 <div class="flex items-center gap-2">
-                  <RadioButton id="recurring" name="is_recurring" option="yes" v-model="is_recurring" />
+                  <RadioButton id="recurring" v-model="is_recurring" name="is_recurring" option="yes" />
                   <label for="recurring">{{ membershipContent?.acf?.recurring }}</label>
                 </div>
               </div>
 
               <div class="flex gap-4 my-4 radios">
                 <div class="flex items-center gap-2">
-                  <RadioButton id="eur" name="currency" option="eur" v-model="currency" />
+                  <RadioButton id="eur" v-model="currency" name="currency" option="eur" />
                   <label for="eur">{{ membershipContent?.acf?.currency_main }}</label>
                 </div>
                 <div class="flex items-center gap-2">
-                  <RadioButton id="huf" name="currency" option="huf" v-model="currency" />
+                  <RadioButton id="huf" v-model="currency" name="currency" option="huf" />
                   <label for="huf">{{ membershipContent?.acf?.currency_huf }}</label>
                 </div>
               </div>
 
-              <button
-                type="submit"
-                id="checkout-button"
-                :disabled="show_name.length === 0 || !membershipAction"
-              >{{ membershipContent?.acf?.continue_button }}</button>
+              <button id="checkout-button" type="submit" :disabled="show_name.length === 0 || !membershipAction">{{
+                membershipContent?.acf?.continue_button }}</button>
 
             </form>
             <p>{{ membershipContent?.acf?.cancel_text }}
@@ -84,7 +81,7 @@ const sanitizeOptions = {
 
 const { $axios, $sentry } = useNuxtApp()
 const runtimeConfig = useRuntimeConfig()
-const { data: membershipContent, pending, error } = await useAsyncData('membership-content', async () => {
+const { data: membershipContent, pending } = await useAsyncData('membership-content', async () => {
   try {
     const res = await $axios.get(membershipStripeURL)
     return res?.data
@@ -102,10 +99,6 @@ const arcsiShowsList = computed(() => {
     .sort((a, b) => a.name.localeCompare(b.name))
     .map(show => show.name)
 })
-
-function selectShow(e) {
-  show_name.value = e.target.value
-}
 
 const membershipAction = computed(() => runtimeConfig.public?.membershipStripeFormUrl || '')
 if (!membershipAction.value) {
@@ -130,7 +123,18 @@ useHead(() => ({
   border-radius: 0.125rem;
   margin: 1rem 0;
 }
-#checkout-button:hover { background-color: #1f2937; }
-#checkout-button[disabled] { cursor: not-allowed; background-color: #1f2937; color: #9ca3af; }
-p a { text-decoration: underline; }
+
+#checkout-button:hover {
+  background-color: #1f2937;
+}
+
+#checkout-button[disabled] {
+  cursor: not-allowed;
+  background-color: #1f2937;
+  color: #9ca3af;
+}
+
+p a {
+  text-decoration: underline;
+}
 </style>

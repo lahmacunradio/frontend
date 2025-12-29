@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <client-only>
     <transition name="modal">
       <div v-if="showModal" id="modal-template">
         <div class="modal-mask" @click="$emit('close')">
@@ -24,7 +24,7 @@
         </div>
       </div>
     </transition>
-  </div>
+  </client-only>
 </template>
 
 <script>
@@ -47,7 +47,7 @@ export default {
     },
     visibility: {
       type: Boolean,
-      required: true,
+      required: false,
       default: false
     }
   },
@@ -68,10 +68,14 @@ export default {
   },
   watch: {
     showModal (val) {
-      val ? document.body.style.overflow = 'hidden' : document.body.style.overflow = ''
+      if (val) {
+        document.body.style.overflow = 'hidden'
+      } else {
+        document.body.style.overflow = ''
+      }
     }
   },
-  beforeDestroy () {
+  beforeUnmount () {
     // avoid stuck overflow hidden
     document.body.style.overflow = ''
   }

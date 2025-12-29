@@ -1,109 +1,112 @@
 <template>
-  <div class="stations nowplaying altalanosinfok">
-    <div class="radio-player-widget">
-      <template v-if="is_playing">
-        <audio id="lahmastream" ref="player" :title="np.now_playing.song.text" />
-      </template>
+  <client-only>
+    <div class="stations nowplaying altalanosinfok">
+      <div class="radio-player-widget">
+        <template v-if="is_playing">
+          <audio id="lahmastream" ref="player" :title="np.now_playing.song.text" />
+        </template>
 
-      <div class="now-playing-details">
-        <div class="radio-controls">
-          <a class="bigplay-button" href="#" @click.prevent="toggle()">
-            <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
-            <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
-          </a>
-          <!-- old show image -->
-          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
-            <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-              <div v-if="show_check === true" class="onair">On air</div>
-              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
+        <div class="now-playing-details">
+          <div class="radio-controls">
+            <a class="bigplay-button" href="#" @click.prevent="toggle()">
+              <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
+              <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
             </a>
-            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal"
-              @close="closeModal" />
-          </div>
-
-          <div class="play-volume-controls">
-            <div v-if="false">
-              <!-- old play button -->
-              <div v-if="is_playing" class="radio-control-play-button">
-                <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
-                  <i class="material-icons lg" aria-hidden="true">pause_circle_outline</i>
-                </a>
-              </div>
-              <div v-else class="radio-control-play-button">
-                <a href="#" role="button" :title="'play_btn'" :aria-label="'play_btn'" @click.prevent="toggle()">
-                  <i class="material-icons lg" aria-hidden="true">play_circle_outline</i>
-                </a>
-              </div>
-            </div>
-
-            <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
-              <div class="media-body">
-                <div>
-                  <h4 :title="show_title" class="now-playing-title">
-                    <nuxt-link v-if="show_check === true" :to="show_url">
-                      <span>{{ show_title }}&nbsp;</span>
-                      <i class="fa fa-link" aria-hidden="true" />
-                    </nuxt-link>
-
-                    <a v-if="check_offairlink === true" :href="np.now_playing.song.custom_fields.offairlink"
-                      target="_blank">
-                      <span>{{ show_title }}&nbsp;</span>
-                      <i class="fa fa-link" aria-hidden="true" />
-                    </a>
-
-                    <span v-if="show_check === false && check_offairlink === false">{{ show_title }}</span>
-                  </h4>
-                  <h5 :title="show_subtitle" class="now-playing-artist">
-                    {{ show_subtitle }}
-                  </h5>
-                </div>
-              </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls"
-                class="hidden radio-controls-standalone volumecontrolos sm:flex items-center gap-2">
-                <i class="fa fa-volume-off" />
-                <div class="radio-control-volume-slider">
-                  <input type="range" class="align-middle" v-model="volume" min="0" max="100" aria-label="volume" :style="{ '--progress': volume + '%' }" />
-                </div>
-                <i class="fa fa-volume-up" />
-              </div>
-            </div>
-
-            <div v-if="time_display_played" class="time-display" style="display:none;">
-              <div class="time-display-played text-secondary">
-                {{ time_display_played }}
-              </div>
-              <div class="time-display-progress">
-                <div class="progress">
-                  <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: time_percent + '%' }" />
-                </div>
-              </div>
-              <div class="time-display-total text-secondary">
-                {{ time_display_total }}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="radio-control-select-stream" style="display:none;">
-          <div v-if="streams.length > 1" class="dropdown">
-            <button id="btn-select-stream" class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              {{ current_stream.name }}
-            </button>
-            <div class="dropdown-menu" aria-labelledby="btn-select-stream">
-              <a v-for="stream in streams" :key="stream.name" class="dropdown-item" href="javascript:;"
-                @click="switchStream(stream)">
-                {{ stream.name }}
+            <!-- old show image -->
+            <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
+              <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
+                <div v-if="show_check === true" class="onair">On air</div>
+                <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
               </a>
+              <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal"
+                @close="closeModal" />
+            </div>
+
+            <div class="play-volume-controls">
+              <div v-if="false">
+                <!-- old play button -->
+                <div v-if="is_playing" class="radio-control-play-button">
+                  <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
+                    <i class="material-icons lg" aria-hidden="true">pause_circle_outline</i>
+                  </a>
+                </div>
+                <div v-else class="radio-control-play-button">
+                  <a href="#" role="button" :title="'play_btn'" :aria-label="'play_btn'" @click.prevent="toggle()">
+                    <i class="material-icons lg" aria-hidden="true">play_circle_outline</i>
+                  </a>
+                </div>
+              </div>
+
+              <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
+                <div class="media-body">
+                  <div>
+                    <h4 :title="show_title" class="now-playing-title">
+                      <nuxt-link v-if="show_check === true" :to="show_url">
+                        <span>{{ show_title }}&nbsp;</span>
+                        <i class="fa fa-link" aria-hidden="true" />
+                      </nuxt-link>
+
+                      <a v-if="check_offairlink === true" :href="np.now_playing.song.custom_fields.offairlink"
+                        target="_blank">
+                        <span>{{ show_title }}&nbsp;</span>
+                        <i class="fa fa-link" aria-hidden="true" />
+                      </a>
+
+                      <span v-if="show_check === false && check_offairlink === false">{{ show_title }}</span>
+                    </h4>
+                    <h5 :title="show_subtitle" class="now-playing-artist">
+                      {{ show_subtitle }}
+                    </h5>
+                  </div>
+                </div>
+                <div v-if="!isTouchEnabled" id="radio-player-controls"
+                  class="hidden radio-controls-standalone volumecontrolos sm:flex items-center gap-2">
+                  <i class="fa fa-volume-off" />
+                  <div class="radio-control-volume-slider">
+                    <input type="range" class="align-middle" v-model="volume" min="0" max="100" aria-label="volume"
+                      :style="{ '--progress': volume + '%' }" />
+                  </div>
+                  <i class="fa fa-volume-up" />
+                </div>
+              </div>
+
+              <div v-if="time_display_played" class="time-display" style="display:none;">
+                <div class="time-display-played text-secondary">
+                  {{ time_display_played }}
+                </div>
+                <div class="time-display-progress">
+                  <div class="progress">
+                    <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: time_percent + '%' }" />
+                  </div>
+                </div>
+                <div class="time-display-total text-secondary">
+                  {{ time_display_total }}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div v-if="false" class="hidden sand-clock sm:block">
-          <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
+
+          <div class="radio-control-select-stream" style="display:none;">
+            <div v-if="streams.length > 1" class="dropdown">
+              <button id="btn-select-stream" class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{ current_stream.name }}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btn-select-stream">
+                <a v-for="stream in streams" :key="stream.name" class="dropdown-item" href="javascript:;"
+                  @click="switchStream(stream)">
+                  {{ stream.name }}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div v-if="false" class="hidden sand-clock sm:block">
+            <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </client-only>
 </template>
 
 <script>
@@ -386,7 +389,7 @@ export default {
     // Start polling the streaming server's (Azuracast) nowplaying API
     this.checkNowPlaying()
   },
-  beforeDestroy() {
+  beforeUnmount() {
     clearInterval(this.np_interval)
     clearInterval(this.clock_interval)
     clearInterval(this.docTitleSetter)
@@ -911,5 +914,4 @@ a.programimage {
     position: relative;
   }
 }
-
 </style>

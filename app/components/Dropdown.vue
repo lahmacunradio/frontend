@@ -2,9 +2,9 @@
   <div class="pv-dropdown">
     <select
       :value="valueToString(currentValue)"
-      @change="onChange"
-      :disabled="disabled"
       class="pv-select"
+      :disabled="disabled"
+      @change="onChange"
     >
       <option v-if="placeholder" value="">{{ placeholder }}</option>
       <option
@@ -20,12 +20,10 @@
 
 <script>
 export default {
-  name: "Dropdown",
+  name: "DropDown",
   props: {
-    // Vue 2 legacy prop name (kept for backward compatibility)
-    value: { required: false },
     // Vue 3 v-model uses modelValue + update:modelValue
-    modelValue: { required: false },
+    modelValue: { required: false, type: null, default: undefined },
     options: { type: Array, default: () => [] },
     optionLabel: { type: String, default: "label" },
     optionValue: { type: String, default: "value" },

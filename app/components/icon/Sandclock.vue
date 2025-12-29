@@ -631,7 +631,7 @@ export default {
 	}
 	this.showProgress (this.computedProgress)
   },
-  beforeDestroy () {
+  beforeUnmount () {
     clearInterval(this.dropInterval)
   },
   computed: {

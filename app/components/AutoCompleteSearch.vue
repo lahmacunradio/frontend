@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <client-only>
     <input
       v-model="value"
       class="input"
@@ -24,7 +24,7 @@
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
       </li>
     </ul>
-  </div>
+  </client-only>
 </template>
 
 <script>
@@ -65,7 +65,7 @@ export default {
   mounted () {
     document.addEventListener('click', this.handleClickOutside)
   },
-  destroyed () {
+  unmounted () {
     document.removeEventListener('click', this.handleClickOutside)
     this.suggestions = []
   },
