@@ -60,6 +60,7 @@ const sliderPosition = ref(0)
 const episodeWidth = ref(300)
 const arcsiEpisodes = ref([])
 let resizeTimeout
+let initTimeout // Track initialization timeout
 
 const slider = ref(null)
 const episodes = ref(null)
@@ -160,7 +161,7 @@ onMounted(() => {
     const initializeLayout = () => {
       const viewport = slider.value
       if (viewport) episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
-      setTimeout(() => {
+      initTimeout = setTimeout(() => {
         changeBreakpoint()
         numberOfEpisodes.value = arcsiEpisodesListSortedLatest.value?.length || numberOfEpisodes.value
       }, 3000)
@@ -177,6 +178,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimeout(resizeTimeout)
+  clearTimeout(initTimeout)
   if (typeof window !== 'undefined') {
     window.removeEventListener('resize', changeBreakpoint)
   }

@@ -403,6 +403,12 @@ export default {
       try { this._unwatchArcsiPlay() } catch (e) { /* ignore */ }
       this._unwatchArcsiPlay = null
     }
+    // Clean up audio element to prevent memory leak
+    if (this.audio) {
+      this.audio.pause()
+      this.audio.src = ''
+      this.audio = null
+    }
   },
   methods: {
     play() {
@@ -414,6 +420,7 @@ export default {
       this.showCurrentMetadata()
 
       document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+      clearInterval(this.docTitleSetter)
       this.docTitleSetter = setInterval(() => {
         if (this.is_playing) {
           document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
@@ -430,6 +437,7 @@ export default {
         episode_title: this.show_subtitle
       })
 
+      clearInterval(this.np_interval)
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
       if ('mediaSession' in navigator) {

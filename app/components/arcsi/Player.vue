@@ -236,6 +236,7 @@ export default {
 
       const showName = this.episode.shows?.[0]?.name || ''
       document.title = `🔈 ${showName} - ${this.episode.name}`
+      clearInterval(this.docTitleSetter)
       this.docTitleSetter = setInterval(() => {
         if (this.arcsiIsPlaying) {
           document.title = `🔈 ${showName} - ${this.episode.name}`
@@ -328,6 +329,9 @@ export default {
       const arcsiReady = await this.$refs.arcsiplayer?.readyState > 2
       const arcsiPlayerSeek = await this.arcsiPlayHistory[this.episode.id]
       const arcsiPlayPosition = await arcsiPlayerSeek?.playPosition
+
+      // Clear any existing timeout before creating a new one
+      clearTimeout(this.timeOutHelper)
 
       if (arcsiReady && this.arcsiIsPlaying && arcsiPlayerSeek && arcsiPlayPosition !== 0) {
         this.timeOutHelper = setTimeout(() => {

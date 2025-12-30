@@ -42,7 +42,8 @@ export default {
       showsByDate: [],
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       dayNamesShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      showDay: false
+      showDay: false,
+      scrollTimeout: null
     }
   },
   computed: {
@@ -55,11 +56,14 @@ export default {
       this.openDay()
     }
   },
+  beforeUnmount () {
+    clearTimeout(this.scrollTimeout)
+  },
   methods: {
     openDay () {
       this.showDay = !this.showDay
       if (this.showDay) {
-        setTimeout(() => {
+        this.scrollTimeout = setTimeout(() => {
           this.scrollToRef(this.dayNamesShort[this.index])
         }, 100)
       }
