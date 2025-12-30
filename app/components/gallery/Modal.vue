@@ -75,15 +75,15 @@ export default {
   beforeUnmount () {
     // avoid stuck overflow hidden
     document.body.style.overflow = ''
-    document.removeEventListener('keydown', this.bindControls)
+    document.removeEventListener('keydown', this.boundBindControls)
   },
   mounted () {
     if (this.gallery && this.galleryItemId) {
       this.galleryPosition = this.galleryItemId
     }
-    document.addEventListener('keydown', (e) => {
-      this.bindControls(e)
-    })
+    // Store bound reference so we can remove the exact same function
+    this.boundBindControls = this.bindControls.bind(this)
+    document.addEventListener('keydown', this.boundBindControls)
   },
   methods: {
     bindControls (e) {
