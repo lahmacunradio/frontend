@@ -1,27 +1,6 @@
 import { defineStore } from 'pinia'
 
-const PLAY_HISTORY_KEY = 'lahma_arcsi_play_history'
 const MAX_HISTORY_ENTRIES = 100
-
-// Helper to safely access localStorage (SSR-safe)
-function getStoredPlayHistory() {
-  if (typeof window === 'undefined') return {}
-  try {
-    const stored = localStorage.getItem(PLAY_HISTORY_KEY)
-    return stored ? JSON.parse(stored) : {}
-  } catch {
-    return {}
-  }
-}
-
-function savePlayHistory(history) {
-  if (typeof window === 'undefined') return
-  try {
-    localStorage.setItem(PLAY_HISTORY_KEY, JSON.stringify(history))
-  } catch {
-    // localStorage full or unavailable - silently fail
-  }
-}
 
 function pruneHistory(history) {
   const entries = Object.entries(history)
@@ -41,13 +20,14 @@ export const usePlayerStore = defineStore('player', {
     streamVolume: 55,
     arcsiEpisode: {},
     arcsiVolume: 1,
+    arcsiPlayHistory: {},
     isArcsiPlaying: false,
     isArcsiVisible: false,
     showsByDate: []
   }),
   getters: {
     getArcsiEpisode: (state) => state.arcsiEpisode,
-    getArcsiPlayHistory: () => getStoredPlayHistory(),
+    getArcsiPlayHistory: (state) => state.arcsiPlayHistory,
     getArcsiVolume: (state) => state.arcsiVolume,
     getArcsiPlayState: (state) => state.isArcsiPlaying,
     getArcsiVisibility: (state) => state.isArcsiVisible,
@@ -81,18 +61,21 @@ export const usePlayerStore = defineStore('player', {
       this.streamVolume = volume
     },
     setArcsiProgressHistory(progress) {
-      // Read current history from localStorage
-      const currentHistory = getStoredPlayHistory()
-
       // Add new entry
-      currentHistory[progress.episodeID] = {
-        playDate: Date.now(),
-        playPosition: progress.value
+      const updated = {
+        ...this.arcsiPlayHistory,
+        [progress.episodeID]: {
+          showID: progress.showID || '',
+          showName: progress.showName || '',
+          episodeSlug: progress.episodeSlug || '',
+          episodeName: progress.episodeName || '',
+          playDate: Date.now(),
+          playPosition: progress.value
+        }
       }
 
-      // Prune to keep only last 30 entries and save
-      const prunedHistory = pruneHistory(currentHistory)
-      savePlayHistory(prunedHistory)
+      // Prune to keep only last entries and save to state
+      this.arcsiPlayHistory = pruneHistory(updated)
     },
     setIsArcsiPlaying(trigger) {
       this.isArcsiPlaying = trigger

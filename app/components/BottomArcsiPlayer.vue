@@ -1,8 +1,8 @@
 <template>
   <div class="bottomarcsiplayer">
     <div class="relative playerblock">
-      <div class="px-4" :class="arcsiVisible ? 'h-auto' : 'h-0'">
-        <div v-if="arcsiEpisode && arcsiAudio">
+      <div class="px-4" :class="isArcsiVisible ? 'h-auto' : 'h-0'">
+        <div v-if="hasArcsiEpisode && arcsiAudio">
           <client-only>
             <ArcsiPlayer :source="arcsiAudio" :episode="arcsiEpisode" />
           </client-only>
@@ -19,8 +19,8 @@
       </div>
       <div class="close">
         <a href="#" class="block bg-white rounded-t-lg control-ear"
-          @click.prevent="togglePlayerVisibility(!arcsiVisible)">
-          <div v-if="arcsiVisible">
+          @click.prevent="togglePlayerVisibility(!isArcsiVisible)">
+          <div v-if="isArcsiVisible">
             X
           </div>
           <div v-else class="arcsi-logo">
@@ -34,52 +34,44 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed } from 'vue'
+import { storeToRefs } from 'pinia'
 import { mediaServerURL } from '~/constants'
 import { usePlayerStore } from '~/stores/player'
+import ArcsiPlayer from '~/components/arcsi/Player.vue'
 
-export default {
-  validate({ params, store }) {
-    // Validation moved to Pinia; keep route valid and rely on store population
-    return true
-  },
-  data() {
-    return {
-    }
-  },
-  computed: {
-    arcsiEpisode() { return this.player ? this.player.getArcsiEpisode : null },
-    arcsiVisible() { return this.player ? this.player.getArcsiVisibility : false },
-    isArcsiPlaying() { return this.player ? this.player.getArcsiPlayState : false },
-    arcsiAudio() {
-      if (!this.arcsiEpisode?.play_file_name) {
-        return false
-      }
-      // Guard against missing shows array or missing first show
-      const showSlug = this.arcsiEpisode?.shows?.[0]?.archive_lahmastore_base_url || this.arcsiEpisode?.shows?.[0]?.archive_lahmastore || ''
-      const episodeNumber = this.arcsiEpisode.number
-      const fileName = this.arcsiEpisode.play_file_name
-      return `${mediaServerURL}${showSlug}/${episodeNumber}/${fileName}`
-    }
-  },
-  created: function () {
-    this.player = usePlayerStore()
-  },
-  methods: {
-    stopArcsi() {
-      if (this.player) this.player.setIsArcsiPlaying(false)
-    },
-    togglePlayerVisibility(state) {
-      if (this.player) this.player.setIsArcsiVisible(state)
-    }
+const player = usePlayerStore()
+const { arcsiEpisode, isArcsiVisible, isArcsiPlaying } = storeToRefs(player)
+
+const hasArcsiEpisode = computed(() => {
+  return arcsiEpisode.value && Object.keys(arcsiEpisode.value).length > 0
+})
+
+const arcsiAudio = computed(() => {
+  if (!arcsiEpisode.value?.play_file_name) {
+    return false
   }
+  // Guard against missing shows array or missing first show
+  const showSlug = arcsiEpisode.value?.shows?.[0]?.archive_lahmastore_base_url || arcsiEpisode.value?.shows?.[0]?.archive_lahmastore || ''
+  const episodeNumber = arcsiEpisode.value.number
+  const fileName = arcsiEpisode.value.play_file_name
+  return `${mediaServerURL}${showSlug}/${episodeNumber}/${fileName}`
+})
 
-
-
+const togglePlayerVisibility = (state) => {
+  player.setIsArcsiVisible(state)
 }
+
 </script>
 
 <style lang="scss" scoped>
+.close {
+  position: absolute;
+  top: -2rem;
+  right: 1rem;
+}
+
 .bottomarcsiplayer {
   bottom: 0;
   left: 0;
@@ -98,13 +90,27 @@ export default {
 }
 
 .arcsi-logo {
-  width: 1.4rem;
-  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
 }
 
-.close {
-  position: absolute;
-  top: -2rem;
-  right: 1rem;
+.rotate-element {
+  animation: rotation 7s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(359deg);
+  }
 }
 </style>
