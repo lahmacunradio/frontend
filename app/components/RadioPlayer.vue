@@ -332,6 +332,8 @@ export default {
       return url
     },
     isTouchEnabled() {
+      // Guard for SSR - window and navigator don't exist on server
+      if (typeof window === 'undefined') return false
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
@@ -346,7 +348,7 @@ export default {
     // replaced Vuex watcher with Pinia watcher set up in created()
   },
   created() {
-    // initialize Pinia player and arcsi stores for this component
+    // initialize Pinia player and arcsi stores for this component (safe for SSR)
     this.player = usePlayerStore()
     this.arcsi = useArcsiStore()
     // Watch Pinia player's Arcsi play state and stop stream if Arcsi starts
@@ -357,6 +359,11 @@ export default {
         }
       })
     }
+  },
+  mounted() {
+    // All browser-only code here - does NOT run during SSR
+    if (typeof window === 'undefined') return
+
     this.audio = document.createElement('audio')
     this.clock_interval = setInterval(this.iterateTimer, 1000)
     // Handle audio errors.
