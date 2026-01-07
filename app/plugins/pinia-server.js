@@ -1,12 +1,7 @@
-import { useArcsiStore } from '~/stores/arcsi'
+// Disabled: Global data fetching is now handled by middleware/global-data.global.js
+// This prevents duplicate fetches that were causing unnecessary memory churn on SSR.
+// The plugin is kept as a no-op to avoid breaking nuxt.config.js references.
 
-export default defineNuxtPlugin(async () => {
-  const arcsi = useArcsiStore()
-  // If already hydrated on client, skip.
-  if (process.client && arcsi.allShows?.length > 0) return
-  try {
-    await arcsi.fetchGlobalData(true)
-  } catch (e) {
-    console.error('Error loading arcsi data:', e)
-  }
+export default defineNuxtPlugin(() => {
+  // No-op: Middleware handles data fetching
 })

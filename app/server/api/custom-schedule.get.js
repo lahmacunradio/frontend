@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const storage = useStorage('cache')
-  const cacheKey = 'custom_schedule_v1'
+  const cacheKey = 'custom_schedule_v2' // bumped version to invalidate old full-response cache
   const ttlMs = 10 * 60 * 1000 // 10 minutes
   const now = Date.now()
   const query = getQuery(event) || {}
@@ -11,8 +11,10 @@ export default defineEventHandler(async (event) => {
   }
   try {
     const response = await $fetch('https://cms.lahmacun.hu/wp-json/wp/v2/pages/3679')
-    await storage.setItem(cacheKey, { data: response, expires: now + ttlMs })
-    return response
+    // Only cache and return the acf field to reduce memory footprint
+    const acfOnly = { acf: response.acf }
+    await storage.setItem(cacheKey, { data: acfOnly, expires: now + ttlMs })
+    return acfOnly
   } catch (error) {
     throw createError({
       statusCode: error.statusCode || 500,
