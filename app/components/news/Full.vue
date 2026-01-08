@@ -30,9 +30,9 @@
           {{ htmlDecoder(news.title.rendered) }}
         </h1>
         <p class="mb-4 news-time">
-          {{ $date(news.date).format('yyyy. MMMM Do.') }}
+          {{ $moment(news.date).format('yyyy. MMMM Do.') }}
         </p>
-        <div v-dompurify-html="{ html: news.content.rendered, options: sanitizeOptions }" class="text-content news-text" />
+        <div v-sanitize="[ sanitizeOptions, news.content.rendered ]" class="text-content news-text" />
       </div>
     </div>
   </div>
@@ -53,8 +53,8 @@ export default {
   data () {
     return {
       newsImageShadowbox: false,
-      newsImage: '/lahmacun-logo-dummy.png',
-      newsImageSmall: '/lahmacun-logo-dummy.png',
+      newsImage: require('@/assets/img/lahmacun-logo-dummy.png'),
+      newsImageSmall: require('@/assets/img/lahmacun-logo-dummy.png'),
       postTagsArray: [],
       sanitizeOptions: {
         allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],

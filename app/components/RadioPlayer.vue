@@ -17,8 +17,7 @@
               <div v-if="show_check === true" class="onair">On air</div>
               <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
             </a>
-            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal"
-              @close="closeModal" />
+            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="play-volume-controls">
@@ -45,8 +44,11 @@
                       <i class="fa fa-link" aria-hidden="true" />
                     </nuxt-link>
 
-                    <a v-if="check_offairlink === true" :href="np.now_playing.song.custom_fields.offairlink"
-                      target="_blank">
+                    <a
+                      v-if="check_offairlink === true"
+                      :href="np.now_playing.song.custom_fields.offairlink"
+                      target="_blank"
+                    >
                       <span>{{ show_title }}&nbsp;</span>
                       <i class="fa fa-link" aria-hidden="true" />
                     </a>
@@ -58,11 +60,15 @@
                   </h5>
                 </div>
               </div>
-              <div v-if="!isTouchEnabled" id="radio-player-controls"
-                class="hidden radio-controls-standalone volumecontrolos sm:flex items-center gap-2">
+              <div v-if="!isTouchEnabled" id="radio-player-controls" class="hidden radio-controls-standalone volumecontrolos sm:block">
                 <i class="fa fa-volume-off" />
                 <div class="radio-control-volume-slider">
-                  <input type="range" class="align-middle" v-model="volume" min="0" max="100" aria-label="volume" :style="{ '--progress': volume + '%' }" />
+                  <vue-slider
+                    v-model="volume"
+                    :height="16"
+                    tooltip="none"
+                    :dot-size="16"
+                  />
                 </div>
                 <i class="fa fa-volume-up" />
               </div>
@@ -74,7 +80,7 @@
               </div>
               <div class="time-display-progress">
                 <div class="progress">
-                  <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: time_percent + '%' }" />
+                  <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: time_percent+'%' }" />
                 </div>
               </div>
               <div class="time-display-total text-secondary">
@@ -86,13 +92,18 @@
 
         <div class="radio-control-select-stream" style="display:none;">
           <div v-if="streams.length > 1" class="dropdown">
-            <button id="btn-select-stream" class="btn btn-sm btn-outline-primary dropdown-toggle" type="button"
-              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button
+              id="btn-select-stream"
+              class="btn btn-sm btn-outline-primary dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
               {{ current_stream.name }}
             </button>
             <div class="dropdown-menu" aria-labelledby="btn-select-stream">
-              <a v-for="stream in streams" :key="stream.name" class="dropdown-item" href="javascript:;"
-                @click="switchStream(stream)">
+              <a v-for="stream in streams" :key="stream.name" class="dropdown-item" href="javascript:;" @click="switchStream(stream)">
                 {{ stream.name }}
               </a>
             </div>
@@ -107,12 +118,17 @@
 </template>
 
 <script>
-import { arcsiBaseURL, config } from '~/constants'
-import { usePlayerStore } from '~/stores/player'
-import { useArcsiStore } from '~/stores/arcsi'
+import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.min.js'
+import 'vue-slider-component/dist-css/vue-slider-component.css'
+// import theme
+import 'vue-slider-component/theme/default.css'
+import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { mapGetters } from 'vuex'
 
 export default {
-  components: {},
+  components: {
+    VueSlider
+  },
   props: {
     nowPlayingUri: {
       type: String,
@@ -123,7 +139,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       streamModal: false,
       show: null,
@@ -167,35 +183,32 @@ export default {
       timeOutHelper: null,
 
       // rework the checks
-      default_art_url: '/defaultshowart.jpg',
-      default_azuracast_art_url: '/generic_song.jpg',
+      default_art_url: require('@/assets/img/stream/defaultshowart.jpg'),
+      default_azuracast_art_url: require('@/assets/img/stream/generic_song.jpg'),
       docTitleSetter: null,
     }
   },
-
   computed: {
-    rareShows() {
-      return this.arcsi ? this.arcsi.returnRareShows : null
-    },
-    customSchedule() {
-      return this.arcsi ? this.arcsi.returnCustomSchedule : null
-    },
-    rareShowThursday() {
+    ...mapGetters({
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule',
+    }),
+    rareShowThursday () {
       if (!this.rareShows) {
         return false
       }
       return this.rareShows.rare_thursday.find(item => item.active === true)
     },
-    rareShowFriday() {
+    rareShowFriday () {
       if (!this.rareShows) {
         return false
       }
       return this.rareShows.rare_friday.find(item => item.active === true)
     },
-    getToday() {
+    getToday (){
       return this.getTodayNumeric()
     },
-    streams() {
+    streams () {
       const allStreams = []
       this.np.station.mounts.forEach(function (mount) {
         allStreams.push({
@@ -211,14 +224,14 @@ export default {
       })
       return allStreams
     },
-    arcsiList() {
-      return this.arcsi ? this.arcsi.returnArcsiShows : []
+    arcsiList () {
+      return [...this.$store.getters.returnArcsiShows]
     },
-    currentShowArcsi() {
+    currentShowArcsi () {
       // Legacy function used in building the page; this.show is computed elsewhere
       return this.show
     },
-    time_percent() {
+    time_percent () {
       const timePlayed = this.np.now_playing.elapsed
       const timeTotal = this.np.now_playing.duration
       if (!timeTotal) {
@@ -229,7 +242,7 @@ export default {
       }
       return (timePlayed / timeTotal) * 100
     },
-    time_display_played() {
+    time_display_played () {
       let timePlayed = this.np.now_playing.elapsed
       const timeTotal = this.np.now_playing.duration
       if (!timeTotal) {
@@ -240,57 +253,60 @@ export default {
       }
       return this.formatTime(timePlayed)
     },
-    time_display_total() {
+    time_display_total () {
       const timeTotal = this.np.now_playing.duration
       return (timeTotal) ? this.formatTime(timeTotal) : null
     },
-    nowPlayingInfoAvailable() {
+    nowPlayingInfoAvailable (){
       return (this.np?.now_playing?.playlist != '' || this.np?.live?.is_live)
     },
-    show_title() {
+    show_title () {
       let title = ''
       if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
-      {
-        if (this.np.live.is_live) { title = this.np.live.streamer_name } else { title = this.np.now_playing.song.artist }
-      } else // Fallback: show metadata needs to be served from arcsi
-      { title = this.show?.name }
-      // Update show name in stream in store for other components
-      if (this.player) this.player.setStreamShowTitle(title)
-      return title
+        {
+          if (this.np.live.is_live) 
+            {title = this.np.live.streamer_name} else 
+            {title = this.np.now_playing.song.artist}
+        } else // Fallback: show metadata needs to be served from arcsi
+        { title=this.show?.name } 
+        // Update show name in stream in store for other components
+        this.$store.commit('player/setStreamShowTitle', title)
+        return title
     },
-    show_subtitle() {
+    show_subtitle () {
       let title = ''
       if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaying API response
       {
-        if (this.np.live.is_live) {
-          title = this.np.now_playing.song.title
-        } else {
-          title = this.np.now_playing.song.title
+        if (this.np.live.is_live) { 
+          title = this.np.now_playing.song.title 
+        } else 
+        { 
+          title = this.np.now_playing.song.title 
         }
       } else // Use arcsi data as fallback
       {
         title = this.latestEpisodeData?.name
       }
-      if (this.player) this.player.setStreamEpisodeTitle(title)
+      this.$store.commit('player/setStreamEpisodeTitle', title)
       return title
     },
-    show_check() {
+    show_check () {
       return !!(
         this.np.live.is_live ||
-        this.np.now_playing.playlist !== 'OFF AIR' &&
-        this.np.now_playing.playlist !== 'Off Air Ambient' &&
-        this.np.now_playing.playlist !== 'Jingle Donate' &&
+        this.np.now_playing.playlist !== 'OFF AIR' && 
+        this.np.now_playing.playlist !== 'Off Air Ambient' && 
+        this.np.now_playing.playlist !== 'Jingle Donate' && 
         this.np.now_playing.playlist !== 'Jingle Station ID'
       )
     },
-    check_offairlink() {
+    check_offairlink () {
       return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
     },
-    show_url() {
+    show_url () {
       const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
       return '/shows/' + url
     },
-    show_art_url() {
+    show_art_url () {
       let url = ''
       if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
       {
@@ -325,35 +341,31 @@ export default {
       {
         url = this.latestEpisodeData?.image_url
       }
-      if (this.player) this.player.setStreamEpisodeImageURL(url)
+      this.$store.commit('player/setStreamEpisodeImageURL', url)
       return url
     },
-    isTouchEnabled() {
+    isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     }
   },
   watch: {
-    volume(volume) {
+    volume (volume) {
       if (isNaN(volume)) {
-        volume = (this.player && this.player.getStreamVolume) ? this.player.getStreamVolume : 50
+        volume = this.$store.getters['player/getStreamVolume'] || 50
       }
       this.audio.volume = Math.min((Math.exp(volume / 100) - 1) / (Math.E - 1), 1)
-      if (this.player) this.player.setStreamVolume(volume)
+      this.$store.commit('player/setStreamVolume', volume)
     },
-    // replaced Vuex watcher with Pinia watcher set up in created()
-  },
-  created() {
-    // initialize Pinia player and arcsi stores for this component
-    this.player = usePlayerStore()
-    this.arcsi = useArcsiStore()
-    // Watch Pinia player's Arcsi play state and stop stream if Arcsi starts
-    if (this.player && this.$watch) {
-      this._unwatchArcsiPlay = this.$watch(() => this.player.getArcsiPlayState, (val) => {
-        if (val) {
+    '$store.state.player.isArcsiPlaying': {
+      handler () {
+        if (this.$store.getters['player/getArcsiPlayState']) {
           this.stop()
         }
-      })
+      },
+      deep: true
     }
+  },
+  created () {
     this.audio = document.createElement('audio')
     this.clock_interval = setInterval(this.iterateTimer, 1000)
     // Handle audio errors.
@@ -373,8 +385,8 @@ export default {
       }
     }
     // Check webstorage for existing volume preference.
-    if (this.player && this.volume !== this.player.getStreamVolume) {
-      this.volume = this.player.getStreamVolume
+    if (this.volume !== this.$store.getters['player/getStreamVolume']) {
+      this.volume = this.$store.getters['player/getStreamVolume']
     }
     // Check the query string if browser supports easy query string access.
     if (typeof URLSearchParams !== 'undefined') {
@@ -386,7 +398,7 @@ export default {
     // Start polling the streaming server's (Azuracast) nowplaying API
     this.checkNowPlaying()
   },
-  beforeDestroy() {
+  beforeDestroy () {
     clearInterval(this.np_interval)
     clearInterval(this.clock_interval)
     clearInterval(this.docTitleSetter)
@@ -396,13 +408,9 @@ export default {
     this.np_timeout = null
     this.clock_interval = null
     this.timeOutHelper = null
-    if (this._unwatchArcsiPlay) {
-      try { this._unwatchArcsiPlay() } catch (e) { /* ignore */ }
-      this._unwatchArcsiPlay = null
-    }
   },
   methods: {
-    play() {
+    play () {
       this.audio.src = this.current_stream.url
       if (!this.is_playing) {
         this.audio.play()
@@ -419,13 +427,14 @@ export default {
         }
       }, 3000)
 
-      if (this.player) { this.player.setIsArcsiPlaying(false); this.player.setIsStreamPlaying(true) }
+      this.$store.commit('player/isArcsiPlaying', false)
+      this.$store.commit('player/isStreamPlaying', true)
 
       // Google Analytics 3 play
-      gtag('event', 'Radio play', {
-        show_title: this.show_title,
-        episode_title: this.show_subtitle
-      })
+        gtag('event', 'Radio play', {
+          show_title: this.show_title,
+          episode_title: this.show_subtitle
+        })
 
       this.np_interval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
@@ -435,7 +444,7 @@ export default {
         })
       }
     },
-    showCurrentMetadata() {
+    showCurrentMetadata () {
       // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
       if ('mediaSession' in navigator && this.is_playing) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -447,13 +456,13 @@ export default {
         })
       }
     },
-    stop() {
+    stop () {
       this.is_playing = false
       if (this.is_playing) {
         this.audio.pause()
       }
       this.audio.src = ''
-      if (this.player) this.player.setIsStreamPlaying(false)
+      this.$store.commit('player/isStreamPlaying', false)
 
       clearInterval(this.docTitleSetter)
       const ogTitle = document.querySelector("meta[property='og:title']")
@@ -466,18 +475,18 @@ export default {
         navigator.mediaSession.setActionHandler('pause', () => null)
       }
     },
-    toggle() {
+    toggle () {
       if (this.is_playing) {
         this.stop()
       } else {
         this.play()
       }
     },
-    switchStream(newStream) {
+    switchStream (newStream) {
       this.current_stream = newStream
       this.play()
     },
-    checkNowPlaying() {
+    checkNowPlaying () {
       this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
         this.np = npNew
@@ -491,33 +500,33 @@ export default {
           })
           this.current_stream = currentStream
         }
-        // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
-        // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons:
-        // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
-        // 2. We may need some recurring calculation logic if we want day changes not to need site reload
-        // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit))
-        const groupedShows = this.groupShowsByDay(this.arcsiList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
-        if (this.player) this.player.setShowsByDate(groupedShows)
-        //Compute current show
-        if (this.nowPlayingInfoAvailable) {
-          //Compute by name
-          this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title))
-        } else {
-          // Compute by time
-          const todayShows = groupedShows[0]
-          for (let i = 0; i < todayShows.length; i++) {
-            this.show = todayShows[i]
-            if (this.removeMinutesAndSeconds(this.show.start) <= this.getCurrentTimeHourCET() && this.removeMinutesAndSeconds(this.show.end) >= this.getCurrentTimeHourCET()) { //as shows are timely ordered in input array, the first hit will be the currently running show
-              break
-            }
+      // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
+      // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons: 
+      // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
+      // 2. We may need some recurring calculation logic if we want day changes not to need site reload
+      // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
+      const groupedShows = this.groupShowsByDay(this.arcsiList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
+      this.$store.commit('player/setShowsByDate', groupedShows)
+      //Compute current show      
+      if (this.nowPlayingInfoAvailable){
+        //Compute by name
+        this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title))
+      } else {
+        // Compute by time
+        const todayShows = groupedShows[0]
+        for (let i = 0; i < todayShows.length; i++) {
+          this.show = todayShows[i]
+          if (this.removeMinutesAndSeconds(this.show.start)<=this.getCurrentTimeHourCET() && this.removeMinutesAndSeconds(this.show.end) >= this.getCurrentTimeHourCET() ) { //as shows are timely ordered in input array, the first hit will be the currently running show
+            break
           }
         }
-        if (this.show_check) {
-          this.getLatestEpisodeFromArcsi()
-        } else {
-          this.latestEpisodeData = null
-        }
-
+      }  
+      if (this.show_check){
+        this.getLatestEpisodeFromArcsi()
+      } else {
+        this.latestEpisodeData = null
+      }
+      
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
@@ -526,14 +535,14 @@ export default {
         this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
       })
     },
-    iterateTimer() {
+    iterateTimer () {
       const npElapsed = this.np.now_playing.elapsed
       const npTotal = this.np.now_playing.duration
       if (npElapsed < npTotal) {
         this.np.now_playing.elapsed = npElapsed + 1
       }
     },
-    formatTime(time) {
+    formatTime (time) {
       const secNum = parseInt(time, 10)
       let hours = Math.floor(secNum / 3600)
       let minutes = Math.floor((secNum - (hours * 3600)) / 60)
@@ -549,18 +558,18 @@ export default {
       }
       return (hours !== '00' ? hours + ':' : '') + minutes + ':' + seconds
     },
-    closeModal() {
+    closeModal () {
       this.streamModal = false
     },
     getLatestEpisodeFromArcsi() {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=latest', config)
-        .then((res) => {
-          this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
-        })
-        .catch((error) => {
-          console.log(error)
-          this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
-        })
+    this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=latest', config)
+      .then((res) => {
+        this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
+      })
+      .catch((error) => {
+        console.log(error)
+        this.$nuxt.error({ statusCode: 404, message: 'Show archive not found' })
+      })
     },
   }
 }
@@ -568,161 +577,128 @@ export default {
 
 <style lang="scss" scoped>
 .radio-player-widget {
-  min-width: 300px;
-
+    min-width: 300px;
   @media (max-width: $small-width) {
     min-width: auto;
   }
-
-  max-width: 400px;
-  width: 100%;
-
-  .now-playing-details {
-    display: flex;
-    align-items: center;
-
-    .now-playing-art {
-      margin-right: 0.7rem;
-
-      @media (max-width: $extra-small-width) {
-        display: none;
-      }
-    }
-
-    .now-playing-main {
-      flex: 1;
-      min-width: 0;
-      position: relative;
-      height: 70px;
-
-      @media (max-width: $extra-small-width) {
-        height: auto;
-        margin-top: 0.25rem;
-        padding-right: 0.5rem;
-      }
-
-      .media-body {
-        overflow: auto;
-      }
-
-      &.player-no-volume-touch {
-        @media (max-width: $mobile-width) {
-          max-width: 60vw;
-
-          .now-playing-title,
-          .now-playing-artist {
-            white-space: normal;
+    max-width: 400px;
+    width: 100%;
+    .now-playing-details {
+        display: flex;
+        align-items: center;
+        .now-playing-art {
+          margin-right: 0.7rem;
+          @media (max-width: $extra-small-width) {
+            display: none;
           }
         }
-      }
-    }
-
-    h4,
-    h5 {
-      line-height: 1.3;
-    }
-
-    h4 {
-      font-size: 0.9rem;
-    }
-
-    h5 {
-      font-size: 0.8rem;
-      font-weight: normal;
-    }
-
-    .now-playing-title,
-    .now-playing-artist {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-
-      @media (max-width: $small-width) {
-        white-space: normal;
-      }
-
-      a {
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-    }
-
-    .time-display {
-      font-size: 10px;
-      flex-direction: row;
-      align-items: center;
-      display: flex;
-      width: 200px;
-      height: 1.2rem;
-      position: absolute;
-      bottom: 0;
-
-      .time-display-played {
-        margin-right: .5rem;
-        width: 2rem;
-      }
-
-      .progress {
-        @apply bg-gray-300;
-      }
-
-      .time-display-progress {
-        flex: 1 1 auto;
-
-        .progress-bar {
-          -webkit-transition: width 1s;
-          /* Safari */
-          transition: width 1s;
-          transition-timing-function: linear;
-          background: $lahma-pink;
-          height: 0.5rem;
+        .now-playing-main {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            height: 70px;
+            @media (max-width: $extra-small-width) {
+              height: auto;
+              margin-top: 0.25rem;
+              padding-right: 0.5rem;
+            }
+            .media-body {
+              overflow: auto;
+            }
+          &.player-no-volume-touch {
+            @media (max-width: $mobile-width) {
+              max-width: 60vw;
+              .now-playing-title, .now-playing-artist {
+                  white-space: normal;
+              }
+            }
+          }
         }
-      }
-
-      .time-display-total {
-        margin-left: .5rem;
-      }
+        h4, h5 {
+            line-height: 1.3;
+        }
+        h4 {
+            font-size: 0.9rem;
+        }
+        h5 {
+            font-size: 0.8rem;
+            font-weight: normal;
+        }
+        .now-playing-title,
+        .now-playing-artist {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            @media (max-width: $small-width) {
+              white-space: normal;
+            }
+            a {
+              display: block;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+        }
+        .time-display {
+            font-size: 10px;
+            flex-direction: row;
+            align-items: center;
+            display: flex;
+            width: 200px;
+            height: 1.2rem;
+            position: absolute;
+            bottom: 0;
+            .time-display-played {
+                margin-right: .5rem;
+                width: 2rem;
+            }
+            .progress {
+              @apply bg-gray-300;
+            }
+            .time-display-progress {
+                flex: 1 1 auto;
+                .progress-bar {
+                    -webkit-transition: width 1s; /* Safari */
+                    transition: width 1s;
+                    transition-timing-function: linear;
+                    background: $lahma-pink;
+                    height: 0.5rem;
+                }
+            }
+            .time-display-total {
+                margin-left: .5rem;
+            }
+        }
     }
-  }
-
-  hr {
-    margin-top: .5rem;
-    margin-bottom: .5rem;
-  }
-
-  i.material-icons {
-    line-height: 1;
-
-    &.lg {
-      font-size: 2rem;
+    hr {
+        margin-top: .5rem;
+        margin-bottom: .5rem;
     }
-  }
-
-  .radio-controls {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    min-width: 300px;
-
-    @media (max-width: $mobile-width) {
-      margin-right: 0;
-      min-width: auto;
+    i.material-icons {
+        line-height: 1;
+        &.lg {
+          font-size: 2rem;
+        }
     }
-
-    .radio-control-play-button {
-      margin-right: 0.5em;
+    .radio-controls {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        min-width: 300px;
+        @media (max-width: $mobile-width) {
+          margin-right: 0;
+          min-width: auto;
+        }
+        .radio-control-play-button {
+            margin-right: 0.5em;
+        }
+        .radio-control-select-stream {
+            flex: 1 1 auto;
+        }
+        .radio-control-mute-button,
+        .radio-control-max-volume-button {
+            flex-shrink: 0;
+        }
     }
-
-    .radio-control-select-stream {
-      flex: 1 1 auto;
-    }
-
-    .radio-control-mute-button,
-    .radio-control-max-volume-button {
-      flex-shrink: 0;
-    }
-  }
 }
 
 /* player overrides */
@@ -734,121 +710,100 @@ export default {
 }
 
 @keyframes pulseonair {
-  from {
-    opacity: 0;
-  }
-
-  45% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-  }
+  from { opacity: 0; }
+  45% { opacity: 1; }
+  50% { opacity: 1; }
+  to { opacity: 0; }
 }
 
 a.programimage {
-  width: 70px;
-  height: 70px;
-
-  @media (max-width: $small-width) {
-    width: 60px;
-    height: 60px;
-  }
-
-  display: block;
-  overflow: hidden;
-  position: relative;
-
-  img {
-    object-fit: cover;
-    height: 100%;
-    width: 100%;
-    max-width: 70px;
-    max-height: 70px;
-  }
-
-  .onair {
-    position: absolute;
-    bottom: 0;
-    background: #da1313;
-    padding: 0.2em;
-    font-size: 0.8em;
-    color: white;
-    width: 100%;
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 500;
-    animation-name: pulseonair;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-  }
+    width: 70px;
+    height: 70px;
+    @media (max-width: $small-width) {
+      width: 60px;
+      height: 60px;
+    }
+    display: block;
+    overflow: hidden;
+    position: relative;
+    img {
+        object-fit: cover;
+        height: 100%;
+        width: 100%;
+        max-width: 70px;
+        max-height: 70px;
+    }
+    .onair {
+      position: absolute;
+      bottom: 0;
+      background: #da1313;
+      padding: 0.2em;
+      font-size: 0.8em;
+      color: white;
+      width: 100%;
+      text-align: center;
+      text-transform: uppercase;
+      font-weight: 500;
+      animation-name: pulseonair;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
 }
 
 .media-body {
-  max-height: 70px;
-  display: block;
-
-  h4,
-  h5 {
-    text-overflow: initial;
-    overflow: unset;
-    cursor: default;
-    word-break: inherit;
-    text-transform: none;
-    white-space: normal;
-  }
-
-  h5 {
-    font-size: 0.9em;
-    text-transform: none;
-  }
+    max-height: 70px;
+    display: block;
+    h4, h5 {
+      text-overflow: initial;
+      overflow: unset;
+      cursor: default;
+      word-break: inherit;
+      text-transform: none;
+      white-space: normal;
+    }
+    h5 {
+      font-size: 0.9em;
+      text-transform: none;
+    }
 }
 
 .play-volume-controls {
   position: relative;
   width: 250px;
-
   @media (max-width: $notebook-width) {
     width: auto;
   }
-
   @media (max-width: $mobile-width) {
     width: auto;
   }
 }
-
 #radio-player-controls.radio-controls-standalone {
-  position: absolute;
-  background: transparent;
-  bottom: 0;
-  padding: 0 3px;
-  line-height: 1;
-  white-space: nowrap;
-
-  >div {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .radio-control-volume-slider {
-    margin: 0.25rem 0;
-    border-radius: 0.25rem;
-  }
+    position: absolute;
+    background: transparent;
+    bottom: 3px;
+    padding-left: 3px;
+    line-height: 1;
+    white-space: nowrap;
+    > div {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .radio-control-volume-slider {
+        width: 8rem;
+        height: 0.5rem;
+        margin: 0.25rem 0.4rem;
+        overflow: hidden;
+        border-radius: 0.25rem;
+    }
 }
 
 .creditswrap {
-  display: none;
+    display:none;
 }
 
 .now-playing-title {
   font-weight: 500;
   margin-bottom: 0.2rem;
-
   a i {
     color: #8d769f;
     -webkit-transition: 0.7s all linear;
@@ -856,7 +811,6 @@ a.programimage {
     transition: 0.7s all linear;
     transform: rotate(90deg);
   }
-
   a:hover i {
     color: $black-color;
   }
@@ -871,24 +825,19 @@ a.programimage {
   display: flex;
   align-content: center;
   align-items: center;
-
   @media (max-width: $mobile-width) {
-    width: 5rem;
-  }
-
+      width: 5rem;
+    }
   @media (max-width: $small-width) {
     min-width: auto;
   }
-
   img {
     padding: 0 0.75rem;
     max-height: 65px;
-
     @media (max-width: $mobile-width) {
       height: 65px;
       padding: 0 1rem 0 0;
     }
-
     @media (max-width: $small-width) {
       height: 55px;
       padding: 0 0.5rem 0 0;
@@ -899,17 +848,33 @@ a.programimage {
 .sand-clock {
   position: relative;
   min-width: 43px;
-
   img {
     height: 80px;
-
     @media (max-width: $mobile-width) {
       height: 55px;
     }
-
     z-index: 10;
     position: relative;
   }
 }
 
+</style>
+
+<style lang="scss">
+.radio-control-volume-slider {
+  .vue-slider {
+    padding: 0 !important;
+    .vue-slider-rail {
+      @apply bg-black;
+      border-radius: 0;
+      .vue-slider-process {
+          background-color: $lahma-pink;
+          border-radius: 0;
+      }
+      .vue-slider-dot {
+        opacity: 0;
+      }
+    }
+  }
+}
 </style>

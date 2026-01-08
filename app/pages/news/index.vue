@@ -25,32 +25,37 @@ export default {
       page: 1
     }
   },
+  head () {
+    return {
+      title: 'Lahmacun News',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Lahmacun News posts'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun News'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Lahmacun News posts'
+        }
+      ]
+    }
+  },
   computed: {
     newsUrl () {
       return `${newsBaseURL}&per_page=${this.numberOfItems}&page=${this.page}${this.searchText ? `&search=${this.searchText}` : ''}`
     }
   },
-  mounted () {
-    useHead({
-      title: 'Lahmacun News',
-      meta: [
-        {
-          name: 'description',
-          content: 'Lahmacun News posts'
-        },
-        {
-          property: 'og:title',
-          content: 'Lahmacun News'
-        },
-        {
-          property: 'og:description',
-          content: 'Lahmacun News posts'
-        }
-      ]
-    })
-    this.fetchNews()
+  async mounted () {
+    await this.fetchNews()
   },
-  beforeUnmount () {
+  beforeDestroy () {
     this.newsFilteredList = null
     this.totalCount = null
   },

@@ -10,7 +10,7 @@
                 <h4 class="block">
                   {{ day }}
                 </h4>
-                {{ $date(todayDate).add(dayIndex, 'days').format('MMM Do') }}
+                {{ $moment(todayDate).add(dayIndex, 'days').format('MMM Do') }}
               </div>
             </li>
           </ul>
@@ -33,14 +33,10 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { streamServer } from '~/constants'
-import { useArcsiStore } from '~/stores/arcsi'
 
 export default {
-  created() {
-    // initialize Pinia store
-    this.arcsi = useArcsiStore()
-  },
   data () {
     return {
       streamServer,
@@ -76,9 +72,11 @@ export default {
     }
   },
   computed: {
-    fullSchedule() { return this.arcsi.returnArcsiShows },
-    rareShows() { return this.arcsi.returnRareShows },
-    customSchedule() { return this.arcsi.returnCustomSchedule },
+    ...mapGetters({
+      fullSchedule: 'returnArcsiShows',
+      rareShows: 'returnRareShows',
+      customSchedule: 'returnCustomSchedule'
+    }),
     getToday (){
       return this.getTodayNumeric()
     },
@@ -127,10 +125,10 @@ export default {
       const dayIndex = daybyMonday - 1
       this.latestRareThursday = shows
         .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday?.archive_lahmastore_base_url)
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
       this.latestRareFriday = shows
         .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday?.archive_lahmastore_base_url)
+        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
       const filteredShows = shows
         .filter(val => !this.latestRareThursday.includes(val))
         .filter(val => !this.latestRareFriday.includes(val))

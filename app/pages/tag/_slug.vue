@@ -1,11 +1,11 @@
 <template>
   <div>
     <SubTitle :title="title" />
-    <div v-if="pending" class="flex flex-col items-center justify-center py-8">
+    <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
       <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
       <p>Loading...</p>
     </div>
-    <div v-if="error" class="py-8 text-center">
+    <div v-if="$fetchState.error" class="py-8 text-center">
       Error happened
     </div>
     <div v-else class="container">
@@ -52,7 +52,7 @@
                   {{ arcsi.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $date(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
               <div v-if="arcsi?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
                 <div v-for="(tag, index) in arcsi.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
                   <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">
@@ -83,28 +83,41 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
-import { useAsyncData, useNuxtApp, useRoute } from '#app'
+<script>
 import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
 
-const route = useRoute()
-const { $axios, $sentry } = useNuxtApp()
-
-const { data: tags, pending, error } = await useAsyncData(
-  () => `tag-${route.params.slug}`,
-  async () => {
-    try {
-      const res = await $axios.get(`${arcsiBaseURL}/tag/${route.params.slug}`, config)
-      return res.data
-    } catch (e) {
-      $sentry?.captureException(new Error('Arcsi server not available', { cause: e }))
-      throw e
+export default {
+  data() {
+    return {
+      mediaServerURL,
+      slug: this.$route.params.slug,
+      tags: null
     }
-  }
-)
+  },
+  async fetch() {
+    //Fetch show data
+    await this.$axios.get(arcsiBaseURL + '/tag/' + this.slug, config)
+      .then((res) => {
+        this.tags = res.data
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+      })
 
-const title = computed(() => (tags.value?.display_name ? 'TAGGED BY ' + tags.value.display_name : 'Tags'))
+  },
+  computed: {
+    title() {
+      if (this.tags?.display_name) {
+        return "TAGGED BY " + this.tags?.display_name
+      } else {
+        return "Tags"
+      }
+    },
+  }
+
+
+}
 </script>
 
 <style lang="scss" scoped></style>

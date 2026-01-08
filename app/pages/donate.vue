@@ -2,7 +2,9 @@
   <div>
     <SubTitle :title="donateContent?.acf?.page_title ?? 'Lahmacun Donate'" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="pending" class="center">Loading...</div>
+      <div v-if="$fetchState.pending" class="center">
+        Loading...
+      </div>
 
       <div v-if="donateContent" class="mx-auto">
         <div class="mb-4">
@@ -10,12 +12,11 @@
         </div>
         <div class="grid md:grid-cols-2 md:gap-16 gap-4">
           <div>
-            <div v-dompurify-html="{ html: donateContent.content.rendered, options: sanitizeOptions }" />
+            <div v-sanitize="[sanitizeOptions, donateContent.content.rendered]" />
           </div>
 
           <div>
-            <form :action="donateAction" method="GET">
-
+            <form :action="$config.donateStripeFormUrl" method="GET">
               <div>
                 <p class="mb-2">
                   <strong>
@@ -25,33 +26,33 @@
 
                 <div class="flex gap-4 mt-4 mb-6 radios">
                   <div class="flex items-center gap-2">
-                    <RadioButton id="one-time" name="is_recurring" option="no" v-model="is_recurring" />
+                    <RadioButton id="one-time" inputId="one-time" name="is_recurring" value="no"
+                      v-model="is_recurring" />
                     <label for="one-time">{{ donateContent?.acf?.one_time }}</label>
                   </div>
                   <div class="flex items-center gap-2">
-                    <RadioButton id="recurring" name="is_recurring" option="yes" v-model="is_recurring" />
+                    <RadioButton id="recurring" inputId="recurring" name="is_recurring" value="yes"
+                      v-model="is_recurring" />
                     <label for="recurring">{{ donateContent?.acf?.recurring }}</label>
                   </div>
                 </div>
 
                 <div class="flex gap-4 my-4 radios">
                   <div class="flex items-center gap-2">
-                    <RadioButton id="eur" name="currency" option="eur" v-model="currency" />
+                    <RadioButton id="eur" inputId="eur" name="currency" value="eur"
+                      v-model="currency" />
                     <label for="eur">{{ donateContent?.acf?.currency_main }}</label>
                   </div>
                   <div class="flex items-center gap-2">
-                    <RadioButton id="huf" name="currency" option="huf" v-model="currency" />
+                    <RadioButton id="huf" inputId="huf" name="currency" value="huf"
+                      v-model="currency" />
                     <label for="huf">{{ donateContent?.acf?.currency_huf }}</label>
                   </div>
                 </div>
 
               </div>
 
-              <button
-                type="submit"
-                id="checkout-button"
-                :disabled="!donateAction"
-              >{{ donateContent?.acf?.checkout }}</button>
+              <button type="submit" id="checkout-button">{{ donateContent?.acf?.checkout }}</button>
             </form>
             <p>{{ donateContent?.acf?.cancel_text }}
               <NuxtLink to="/donate-cancel">
@@ -66,64 +67,71 @@
   </div>
 </template>
 
-<script setup>
-import { useAsyncData, useNuxtApp, useRuntimeConfig } from '#app'
+<script>
 import { donateStripeURL } from '~/constants'
-import RadioButton from '~/components/RadioButton.vue'
-import { ref, computed } from 'vue'
-const is_recurring = ref('no')
-const currency = ref('eur')
-const sanitizeOptions = {
-  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
+
+export default {
+  data() {
+    return {
+      is_recurring: "no",
+      currency: "eur",
+      donateContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+        allowedAttributes: {
+          a: ['*'],
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          form: ['*'],
+          input: ['*']
+        }
+      }
+    }
+
+  },
+  async fetch() {
+    this.donateContent = await this.$axios.get(`${donateStripeURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Donate not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Donate not available' })
+      })
+  },
+
+  mounted() {
+    let stripeScript = document.createElement('script')
+    stripeScript.setAttribute('src', 'https://js.stripe.com/v3/')
+    document.head.appendChild(stripeScript)
+  },
+  head() {
+    return {
+      title: this.donateContent?.acf?.page_title ?? 'Lahmacun Donate',
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Donate'
+        },
+      ]
+    }
+  },
 }
-
-const { $axios, $sentry } = useNuxtApp()
-const runtimeConfig = useRuntimeConfig()
-const { data: donateContent, pending, error } = await useAsyncData('donate-content', async () => {
-  try {
-    const res = await $axios.get(donateStripeURL)
-    return res?.data
-  } catch (e) {
-    $sentry?.captureException(new Error('Donate not available', { cause: e }))
-    throw e
-  }
-})
-
-// Ensure we only attempt redirect when action exists
-const donateAction = computed(() => runtimeConfig.public?.donateStripeFormUrl || '')
-if (!donateAction.value) {
-  // Debug log for missing env var
-  console.warn('[donate] Missing DONATE_STRIPE_FORM_URL. Current runtimeConfig.public:', runtimeConfig.public)
-}
-
-useHead(() => ({
-  title: donateContent.value?.acf?.page_title ?? 'Lahmacun Donate',
-  meta: [
-    { hid: 'og:title', property: 'og:title', content: 'Lahmacun Donate' }
-  ]
-}))
 </script>
 
 <style scoped lang="scss">
-/* Replaced Tailwind @apply with explicit CSS to avoid build errors */
 #checkout-button {
-  background-color: #000; /* bg-black */
-  color: #fff; /* text-white */
-  font-weight: 700; /* font-bold */
-  padding: 0.5rem 1rem; /* py-2 px-4 */
-  border-radius: 0.125rem; /* rounded-sm */
-  margin: 1rem 0; /* my-4 */
+  @apply bg-black hover:bg-gray-800 text-white font-bold py-2 px-4 rounded-sm my-4;
+
+  &[disabled] {
+    @apply cursor-not-allowed bg-gray-800 text-gray-400;
+  }
 }
-#checkout-button:hover {
-  background-color: #1f2937; /* hover:bg-gray-800 */
-}
-#checkout-button[disabled] {
-  cursor: not-allowed; /* cursor-not-allowed */
-  background-color: #1f2937; /* bg-gray-800 */
-  color: #9ca3af; /* text-gray-400 */
-}
+
 p a {
-  text-decoration: underline; /* underline */
+  @apply underline;
 }
 </style>

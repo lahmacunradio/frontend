@@ -10,7 +10,7 @@
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}`">
       <h5 class="text-white">
-        {{ episode.shows?.[0]?.name || '' }}
+        {{ episode.shows[0].name }}
       </h5>
     </NuxtLink>
     <div v-if="episodeTags?.length" class="flex items-center mt-6 tags flex-wrap">
@@ -44,10 +44,7 @@ export default {
   },
   computed: {
     episodeImage() {
-      if (this.episode?.image_url && this.episode.image_url.length > 0) return this.episode.image_url
-      const showId = this.episode?.shows?.[0]?.id
-      const show = showId ? this.arcsilist.find(item => item.id === showId) : null
-      return show ? show.cover_image_url : ''
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
     },
     episodeLink() {
       if (!this.episode.name_slug) {
@@ -63,9 +60,7 @@ export default {
     }
   },
   created() {
-    const showId = this.episode?.shows?.[0]?.id
-    const show = showId ? this.arcsilist.find(item => item.id === showId) : null
-    this.showslug = show ? (show.archive_lahmastore_base_url || show.archive_lahmastore || '') : ''
+    this.showslug = this.arcsilist.find(item => item.id === this.episode.shows[0].id).archive_lahmastore_base_url
   }
 }
 </script>

@@ -24,7 +24,7 @@
             </NuxtLink>
             <div class="mb-2 text-sm onair-meta">
               {{ showFrequency(show.frequency, show.week) }} |
-              Language: <span v-dompurify-html.nothing="getLanguageGraph(show.language)" class="language" />
+              Language: <span v-sanitize.nothing="getLanguageGraph(show.language)" class="language" />
             </div>
             <div class="text-sm description">
               {{ latestEpisodeDescription }}
