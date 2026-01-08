@@ -59,8 +59,9 @@ const visibleEpisodes = ref(3)
 const sliderPosition = ref(0)
 const episodeWidth = ref(300)
 const arcsiEpisodes = ref([])
-let resizeTimeout
-let initTimeout // Track initialization timeout
+// Use refs instead of module-level let to prevent SSR memory leaks
+const resizeTimeout = ref(null)
+const initTimeout = ref(null)
 
 const slider = ref(null)
 const episodes = ref(null)
@@ -103,7 +104,7 @@ const arcsiList = computed(() => (arcsi ? arcsi.returnArcsiShows : []))
 
 function changeBreakpoint() {
   if (typeof window === 'undefined') return
-  clearTimeout(resizeTimeout)
+  clearTimeout(resizeTimeout.value)
   const windowWidth = window.innerWidth
   const viewport = slider.value
   if (!viewport) return
@@ -127,7 +128,7 @@ function changeBreakpoint() {
   }
 
   episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
-  resizeTimeout = setTimeout(() => reInitSlider(), 1)
+  resizeTimeout.value = setTimeout(() => reInitSlider(), 1)
 }
 
 function reInitSlider() {
@@ -161,7 +162,7 @@ onMounted(() => {
     const initializeLayout = () => {
       const viewport = slider.value
       if (viewport) episodeWidth.value = Math.round(viewport.clientWidth / visibleEpisodes.value)
-      initTimeout = setTimeout(() => {
+      initTimeout.value = setTimeout(() => {
         changeBreakpoint()
         numberOfEpisodes.value = arcsiEpisodesListSortedLatest.value?.length || numberOfEpisodes.value
       }, 3000)
@@ -177,8 +178,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  clearTimeout(resizeTimeout)
-  clearTimeout(initTimeout)
+  clearTimeout(resizeTimeout.value)
+  clearTimeout(initTimeout.value)
+  resizeTimeout.value = null
+  initTimeout.value = null
   if (typeof window !== 'undefined') {
     window.removeEventListener('resize', changeBreakpoint)
   }

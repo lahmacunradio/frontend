@@ -95,10 +95,7 @@ export default {
       return null
     }
   },
-  created() {
-    // initialize Pinia store
-    this.arcsi = useArcsiStore()
-  },
+  // Removed duplicate created() hook - using the one above
   mounted () {
     if (this.fullSchedule) {
       this.arcsiShows = [...this.fullSchedule]

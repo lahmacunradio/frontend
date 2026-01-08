@@ -65,11 +65,16 @@ export default {
   },
   data () {
     return {
-      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
-      isClient: typeof window !== 'undefined' && window.document,
+      currentHost: null, // Set in mounted() to avoid SSR issues
       streamServer,
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       interval: null,
+    }
+  },
+  mounted () {
+    // Set client-only values after mount to avoid SSR memory issues
+    if (typeof window !== 'undefined') {
+      this.currentHost = window.location.origin
     }
   },
   computed: {

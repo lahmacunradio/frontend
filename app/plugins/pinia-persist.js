@@ -30,6 +30,7 @@ export default defineNuxtPlugin(({ $pinia }) => {
 
     // Subscribe to store changes and persist them under the storageKey object
     // Only subscribe on client — server doesn't have window.localStorage
+    // IMPORTANT: Removed { detached: true } to prevent memory leaks in SSR
     if (typeof window !== 'undefined' && window.localStorage && store.$subscribe) {
       store.$subscribe((mutation, state) => {
         try {
@@ -44,7 +45,7 @@ export default defineNuxtPlugin(({ $pinia }) => {
           // eslint-disable-next-line no-console
           console.error('pinia-persist: failed to persist store', e)
         }
-      }, { detached: true })
+      })
     }
   })
 })

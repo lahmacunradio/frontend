@@ -31,8 +31,7 @@ export default {
     return {
       streamServer,
       timestamp: '',
-      interval: null,
-      isClient: typeof window !== 'undefined' && window.document
+      interval: null
     }
   },
   created () {
@@ -41,7 +40,8 @@ export default {
     this.getNow()
   },
   mounted () {
-    if (this.isClient) {
+    // Check for client-side in mounted() to avoid SSR issues
+    if (typeof window !== 'undefined') {
       this.interval = setInterval(this.getNow, 60 * 1000)
     }
   },

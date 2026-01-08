@@ -55,6 +55,8 @@ export default {
   },
   computed: {
     isTouchEnabled () {
+      // SSR guard - window/navigator don't exist on server
+      if (typeof window === 'undefined') return false
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
     latestEpisodeImage () {

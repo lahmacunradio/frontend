@@ -352,7 +352,8 @@ export default {
     this.player = usePlayerStore()
     this.arcsi = useArcsiStore()
     // Watch Pinia player's Arcsi play state and stop stream if Arcsi starts
-    if (this.player && this.$watch) {
+    // Only set up watchers on client to prevent SSR memory leaks
+    if (import.meta.client && this.player && this.$watch) {
       this._unwatchArcsiPlay = this.$watch(() => this.player.getArcsiPlayState, (val) => {
         if (val) {
           this.stop()
