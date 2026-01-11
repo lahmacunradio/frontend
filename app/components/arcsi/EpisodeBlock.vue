@@ -1,12 +1,18 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
-    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`" class="relative block w-full mb-2">
+    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`" class="episode-block relative block w-full mb-2 bg-white">
       <div class="absolute bottom-0 z-10 w-full p-2 text-center text-white bg-black">
-        <b>{{ episode.shows[0].name }}</b>
+        <b>{{ episode.shows?.[0]?.name || '' }}</b>
       </div>
       <div class="arcsi-img aspect-ratio-1/1">
-        <img class="block" :src="episodeImage" :alt="episode.name">
+        <img class="episode-img block" :src="episodeImage" :alt="episode.name">
       </div>
+      <div class="episode-desc p-6">
+        <div class="episode-description">
+          {{ episode.description && truncate(stripHTMLTags(episode.description), 200) }}
+        </div>
+      </div>
+
     </NuxtLink>
     <NuxtLink :to="`/shows/${showslug}/${episodeLink}`">
       <h5>{{ episode.name }}</h5>
@@ -82,6 +88,39 @@ export default {
       height: 100%;
       width: 100%;
       object-position: center;
+    }
+  }
+}
+
+.episode-block {
+  overflow: hidden;
+
+  .episode-desc {
+    display: none;
+    position: absolute;
+    top: 0;
+    overflow-wrap: break-word;
+    max-width: 100%;
+  }
+
+  .episode-img {
+    opacity: 1;
+    transition: opacity 0.3s;
+  }
+
+  img {
+    min-height: 100%;
+    min-width: 100%;
+    object-fit: cover;
+  }
+
+  &:hover {
+    .episode-img {
+      opacity: 0;
+    }
+
+    .episode-desc {
+      display: block;
     }
   }
 }
