@@ -39,14 +39,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 import { mediaServerURL } from '~/constants'
-import { useArcsiStore } from '~/stores/arcsi'
+
 
 export default {
-  created() {
-    // initialize Pinia store
-    this.arcsi = useArcsiStore()
-  },
   data () {
     return {
       mediaServerURL,
@@ -78,7 +76,9 @@ export default {
     }
   },
   computed: {
-    fullSchedule() { return this.arcsi.returnArcsiShows },
+    ...mapGetters({
+      fullSchedule: 'returnArcsiShows'
+    }),
     arcsiShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (

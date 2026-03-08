@@ -1,4 +1,10 @@
-# Deprecated Store (Nuxt 2)
+# STORE
 
-This legacy Vuex store has been removed in favor of Pinia under `app/stores/`.
-The files in this folder are intentionally left empty or removed. Do not add new Vuex files.
+**This directory is not required, you can delete it if you don't want to use it.**
+
+This directory contains your Vuex Store files.
+Vuex Store option is implemented in the Nuxt.js framework.
+
+Creating a file in this directory automatically activates the option in the framework.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/vuex-store).

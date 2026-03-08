@@ -2,13 +2,15 @@
   <div>
     <SubTitle title="Lahmacun membership" :maintitle="true" />
     <div class="container my-8">
-      <div v-if="pending" class="center">Loading...</div>
+      <div v-if="$fetchState.pending" class="center">
+        Loading...
+      </div>
 
       <div v-if="membershipContent" class="max-w-4xl">
         <div class="mb-4">
           <h2>{{ membershipContent.title.rendered }}</h2>
         </div>
-        <div v-dompurify-html="{ html: membershipContent.content.rendered, options: sanitizeOptions }" />
+        <div v-sanitize="[sanitizeOptions, membershipContent.content.rendered]" />
         <div class="mt-4">
           <p>Cancel your subscription <NuxtLink to="/membership-cancel">
               here
@@ -20,34 +22,54 @@
   </div>
 </template>
 
-<script setup>
-import { useAsyncData, useNuxtApp } from '#app'
+<script>
 import { membershipStripeThanksURL } from '~/constants'
 
-const sanitizeOptions = {
-  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
-  allowedAttributes: { a: ['*'], img: ['*'], div: ['style', 'class', 'id'], form: ['*'], input: ['*'] }
+export default {
+  data() {
+    return {
+      membershipContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a'],
+        allowedAttributes: {
+          a: ['*'],
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          form: ['*'],
+          input: ['*']
+        }
+      }
+    }
+  },
+  async fetch() {
+    this.membershipContent = await this.$axios.get(`${membershipStripeThanksURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Membership not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Membership not available' })
+      })
+  },
+  head() {
+    return {
+      title: 'Thank you for Lahmacun Membership',
+      meta: [
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Thank you for Lahmacun Membership'
+        },
+      ]
+    }
+  },
 }
-
-const { $axios, $sentry } = useNuxtApp()
-const { data: membershipContent, pending, error } = await useAsyncData('membership-thanks', async () => {
-  try {
-    const res = await $axios.get(membershipStripeThanksURL)
-    return res?.data
-  } catch (e) {
-    $sentry?.captureException(new Error('Membership not available', { cause: e }))
-    throw e
-  }
-})
-
-useHead(() => ({
-  title: 'Thank you for Lahmacun Membership',
-  meta: [
-    { hid: 'og:title', property: 'og:title', content: 'Thank you for Lahmacun Membership' }
-  ]
-}))
 </script>
 
 <style lang="scss" scoped>
-p a { text-decoration: underline; }
+p a {
+  @apply underline;
+}
 </style>

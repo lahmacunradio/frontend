@@ -1,27 +1,11 @@
 version: '3'
 
-services:
+services:  
   app:
-    build:
-      context: ./app
-      args:
-        # Pass build-time arguments for Nuxt build process
-        - ARCSI_TOKEN=${ARCSI_TOKEN}
-        - SENTRY_DSN=${SENTRY_DSN}
-        - DONATE_STRIPE_FORM_URL=${DONATE_STRIPE_FORM_URL}
-        - MEMBERSHIP_STRIPE_FORM_URL=${MEMBERSHIP_STRIPE_FORM_URL}
-        - SUBSCRIPTION_CANCEL_URL=${SUBSCRIPTION_CANCEL_URL}
+    build: ./app
     ports:
-      - 3333:3333
-    # Use the production command from Dockerfile (pnpm start)
-    # No volumes mounted - uses built app inside container
-    environment:
-      - HOST=0.0.0.0
-      - PORT=3333
-      - NODE_ENV=production
-    # Load runtime environment variables from app/.env
-    env_file:
-      - ./app/.env
+      - 3333:3333 
+  
   proxy:
     image: nginx:1.19
     restart: always

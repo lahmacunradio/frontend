@@ -1,36 +1,46 @@
 {
   "name": "lahmacun",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Lahmacun Radio Frontend",
   "author": "Lahma team",
   "private": true,
-  "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "nuxt dev",
+    "dev": "nuxt",
     "build": "nuxt build",
-    "start": "nuxt preview",
-    "preview": "nuxt preview",
+    "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint .",
-    "test": "vitest run"
+    "lint": "eslint --ext .ts,.js,.vue ."
   },
   "dependencies": {
-    "date-fns": "^2.30.0",
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+    "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/dotenv": "^1.4.2",
+    "@nuxtjs/sentry": "^7.5.0",
+    "@sentry/webpack-plugin": "^1.20.1",
+    "eslint": "^7.32.0",
     "html-entities": "^2.3.2",
-    "isomorphic-dompurify": "^2.31.0",
-    "nuxt": "^3.14.1592",
-    "pinia": "^2.2.4",
+    "nuxt": "^2.15.8",
+    "primeicons": "^6.0.1",
+    "primevue": "^2.10.1",
     "sass": "^1.43.3",
-  "store": "^2.0.12"
+    "sass-loader": "^10.2.0",
+    "store": "^2.0.12",
+    "v-sanitize": "^0.0.13",
+    "vue-marked": "^0.1.1",
+    "vue-sanitize-directive": "^0.1.0",
+    "vue-slider-component": "^3.2.15",
+    "vuex-persist": "^3.1.3",
+    "webpack": "^4.46.0"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.4.0",
-    "@pinia/nuxt": "^0.5.5",
-    "@nuxtjs/tailwindcss": "^5.3.5",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.27.0",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.14",
-    "vitest": "^2.0.0"
+    "@nuxtjs/eslint-config": "^6.0.1",
+    "@nuxtjs/moment": "^1.6.1",
+    "@nuxtjs/style-resources": "^1.2.1",
+    "@nuxtjs/tailwindcss": "^4.2.1",
+    "@tailwindcss/postcss7-compat": "npm:@tailwindcss/postcss7-compat",
+    "autoprefixer": "^9.8.8",
+    "postcss": "^7.0.39",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }

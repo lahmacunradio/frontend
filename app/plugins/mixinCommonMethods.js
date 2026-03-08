@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { decode } from 'html-entities'
 
 export function romanize (num) {
@@ -40,15 +41,15 @@ export function getCurrentTimeHourCET () {
 export function getTodayNumeric () {
   const d = new Date();
   const CETdayString = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", weekday:"long"});
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(CETdayString)
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(CETdayString)  
 }
 
 export function getTodayDateCET () {
   const d = new Date()
-  const year = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", year: "numeric"})
-  const month = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", month: "2-digit"})
+  const year = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", year: "numeric"}) 
+  const month = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", month: "2-digit"}) 
   const day = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", day: "2-digit"})
-  return `${year}-${month}-${day}`
+  return `${year}-${month}-${day}`    
 }
 
 export function truncate (text, limit = 200) {
@@ -87,20 +88,14 @@ export function slugify (str) {
 
 export function debounceFunction (func, delay = 300) {
   let debounceTimer
-  class debounced {
-    constructor() {
-      // console.log("debouncing call..");
-      const context = this
-      const args = arguments
-      clearTimeout(debounceTimer)
-      debounceTimer = setTimeout(() => func.apply(context, args), delay)
-      // console.log("..done");
-    }
-    static cancel() {
-      clearTimeout(debounceTimer)
-    }
+  return function () {
+    // console.log("debouncing call..");
+    const context = this
+    const args = arguments
+    clearTimeout(debounceTimer)
+    debounceTimer = setTimeout(() => func.apply(context, args), delay)
+    // console.log("..done");
   }
-  return debounced
 }
 
 export function convertHourMinuteSecond (value) {
@@ -118,7 +113,7 @@ export function convertHourMinuteSecond (value) {
 
 export function stripHTMLTags (htmlString) {
   if (!htmlString) { return false }
-  return decode(htmlString.replace(/(<([^>]+)>)/gi, ''))
+  return htmlString.replace(/(<([^>]+)>)/gi, '')
 }
 
 export function getLanguageGraph (type) {
@@ -131,7 +126,6 @@ export function getLanguageGraph (type) {
   if (type === 'en_uk') {
     return '🇬🇧'
   }
-  return '🌐'
 }
 
 // Input: all active arcsi shows
@@ -147,12 +141,12 @@ export function groupShowsByDay (dbshows, rare_thu, rare_fri, customSchedule) {
   const latestRareFriday = shows
     .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
     .filter(item => item?.archive_lahmastore_base_url !== rare_fri.archive_lahmastore_base_url)
-
+  
   const filteredShows = shows
     .filter(val => !latestRareThursday.includes(val))
     .filter(val => !latestRareFriday.includes(val))
-
-  let customScheduleDay = 0
+  
+  let customScheduleDay = 0 
   let customScheduleEntries = []
   // custom Schedule Day
   if (customSchedule?.is_active) {
@@ -203,30 +197,31 @@ export function getCorrectSlug (item) {
   return processedName.replace('.mp3', '')
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
-  if (!nuxtApp.vueApp.__lahma_mixin__) {
-    nuxtApp.vueApp.__lahma_mixin__ = true
-    nuxtApp.vueApp.mixin({
-      methods: {
-        romanize,
-        scrollToRef,
-        scrollToAnchor,
-        removeSeconds,
-        truncate,
-        htmlDecoder,
-        slugify,
-        debounceFunction,
-        convertHourMinuteSecond,
-        stripHTMLTags,
-        getLanguageGraph,
-        showFrequency,
-        getCorrectSlug,
-        getCurrentTimeHourCET,
-        getTodayDateCET,
-        getTodayNumeric,
-        groupShowsByDay,
-        removeMinutesAndSeconds
-      }
-    })
-  }
-})
+// Make sure to pick a unique name for the flag
+// so it won't conflict with any other mixin.
+if (!Vue.__my_mixin__) {
+  Vue.__my_mixin__ = true
+  // Set up your mixin then
+  Vue.mixin({
+    methods: {
+      romanize,
+      scrollToRef,
+      scrollToAnchor,
+      removeSeconds,
+      truncate,
+      htmlDecoder,
+      slugify,
+      debounceFunction,
+      convertHourMinuteSecond,
+      stripHTMLTags,
+      getLanguageGraph,
+      showFrequency,
+      getCorrectSlug,
+      getCurrentTimeHourCET,
+      getTodayDateCET,
+      getTodayNumeric,
+      groupShowsByDay,
+      removeMinutesAndSeconds
+    }
+  })
+}

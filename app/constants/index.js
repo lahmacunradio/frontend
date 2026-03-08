@@ -5,10 +5,10 @@ export const arcsiServerURL = arcsiBaseURL + '/show/all'
 export const arcsiItemBaseURL = arcsiBaseURL + '/item'
 
 export const config = {
-  headers: {
-    // In Nuxt 3, default auth header is attached by the $axios compatibility plugin using runtimeConfig.arcsiToken
-  }
-};
+headers: {
+        'Authentication-Token': process.env.ARCSI_TOKEN,
+    }
+  };
 
 // dev server 'https://devarcsi.lahmacun.hu' //
 // prod server 'https://arcsi.lahmacun.hu' //
@@ -16,6 +16,7 @@ export const config = {
 // local server 'http://localhost:40'; //
 // local server 'http://docker.for.mac.localhost:40'; //
 
+// export const mediaServerURL = 'https://media.lahmacun.hu/'
 export const mediaServerURL = 'https://media.lahmacun.hu/'
 
 export const streamServer = 'https://streaming.lahmacun.hu/api/nowplaying/1'

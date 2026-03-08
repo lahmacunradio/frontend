@@ -42,12 +42,12 @@
       <div class="supporters">
         <div class="mb-4">
           <h5 class="mb-4">{{ footerLogos?.supporters_block_title }}</h5>
-          <div v-dompurify-html="{ html: footerLogos?.supporters_block_content, options: sanitizeOptions }"
+          <div v-html="$sanitize(footerLogos?.supporters_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
         <div class="">
           <h5 class="mb-4">{{ footerLogos?.membership_block_title }}</h5>
-          <div v-dompurify-html="{ html: footerLogos?.membership_block_content, options: sanitizeOptions }"
+          <div v-html="$sanitize(footerLogos?.membership_block_content, sanitizeOptions)"
             class="supporters-content"></div>
         </div>
       </div>
@@ -55,31 +55,41 @@
   </footer>
 </template>
 
-<script setup>
-import { footerLogosUrl } from '~/constants'
-import { useAsyncData, useNuxtApp } from '#app'
+<script>
+import {
+  footerLogosUrl
+} from '~/constants'
 
-const sanitizeOptions = {
-  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
-  allowedAttributes: {
-    img: ['*'],
-    div: ['style', 'class', 'id'],
-    a: ['*']
+export default {
+  name: 'Bottom',
+  data() {
+    return {
+      footerLogos: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
+        }
+      }
+    }
+  },
+  async fetch() {
+    // logos
+    this.footerLogos = await this.$axios.get(`${footerLogosUrl}`)
+      .then((res) => {
+        if (res) {
+          return res.data?.acf
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Supporters content not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
+      })
   }
 }
 
-const { $axios, $sentry } = useNuxtApp()
-const { data } = await useAsyncData('footer-logos', async () => {
-  try {
-    const res = await $axios.get(`${footerLogosUrl}`)
-    return res.data?.acf
-  } catch (e) {
-    $sentry?.captureException(new Error('Supporters content not available ', { cause: e }))
-    return null
-  }
-})
-
-const footerLogos = computed(() => data.value || null)
 </script>
 
 <style lang="scss" scoped>
@@ -105,28 +115,19 @@ const footerLogos = computed(() => data.value || null)
 
 <style lang="scss">
 .lahma-footer .supporters {
-  color: white;
-  display: flex;
-  flex-direction: column;
-  gap: 0 3rem;
-}
+  @apply text-white flex flex-col md:flex-row gap-x-12;
 
-@media (min-width: 768px) {
-  .lahma-footer .supporters {
-    flex-direction: row;
+  .supporters-content {
+    margin-top: 0.5rem;
+
+    p {
+      display: flex;
+      align-items: center;
+      row-gap: 1.5rem;
+      column-gap: 1rem;
+      margin: 0.5rem 0;
+      flex-wrap: wrap;
+    }
   }
-}
-
-.lahma-footer .supporters .supporters-content {
-  margin-top: 0.5rem;
-}
-
-.lahma-footer .supporters .supporters-content p {
-  display: flex;
-  align-items: center;
-  row-gap: 1.5rem;
-  column-gap: 1rem;
-  margin: 0.5rem 0;
-  flex-wrap: wrap;
 }
 </style>

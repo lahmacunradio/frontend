@@ -56,100 +56,97 @@
       <div class="px-4 my-8 italic text-center">
         <h4>Lahmacun.hu is an online music & more radio from Budapest since 2018</h4>
       </div>
-      <div v-if="pendingAny" class="flex flex-col items-center justify-center py-8">
+      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-8">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
       <div id="community-content" class="container">
         <article id="call-page" ref="call">
           <div v-if="callForShows">
-            <h2>{{ htmlDecoder(callForShows?.title?.rendered) }}</h2>
-            <div v-dompurify-html="{ html: callForShowsResults, options: sanitizeOptions }" class="community-page-content" />
+            <h2>{{ htmlDecoder(callForShows.title.rendered) }}</h2>
+            <div v-sanitize="[sanitizeOptions, callForShowsResults]" class="community-page-content" />
           </div>
         </article>
         <article id="base-page" ref="base">
           <div v-if="lahmaBase">
-            <h2>{{ htmlDecoder(lahmaBase?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(lahmaBase.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="lahmaBaseFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="lahmaBaseFeaturedImage.source_url" :alt="htmlDecoder(lahmaBase?.title?.rendered)">
+                <img :src="lahmaBaseFeaturedImage.source_url" :alt="htmlDecoder(lahmaBase.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: lahmaBaseResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, lahmaBaseResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="community-page" ref="community">
           <div v-if="communitySection">
-            <h2>{{ htmlDecoder(communitySection?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(communitySection.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="communityFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="communityFeaturedImage.source_url" :alt="htmlDecoder(communitySection?.title?.rendered)">
+                <img :src="communityFeaturedImage.source_url" :alt="htmlDecoder(communitySection.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: communityResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, communityResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="events-page" ref="events">
           <div v-if="eventsSection">
-            <h2>{{ htmlDecoder(eventsSection?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(eventsSection.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="eventsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="eventsFeaturedImage.source_url" :alt="htmlDecoder(eventsSection?.title?.rendered)">
+                <img :src="eventsFeaturedImage.source_url" :alt="htmlDecoder(eventsSection.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: eventsSectionResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, eventsSectionResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="press-page" ref="press">
           <div v-if="pressSection">
-            <h2>{{ htmlDecoder(pressSection?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(pressSection.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="pressFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="pressFeaturedImage.source_url" :alt="htmlDecoder(pressSection?.title?.rendered)">
+                <img :src="pressFeaturedImage.source_url" :alt="htmlDecoder(pressSection.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: pressSectionResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, pressSectionResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="labs-page" ref="labs">
           <div v-if="labsSection">
-            <h2>{{ htmlDecoder(labsSection?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(labsSection.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="labsFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="labsFeaturedImage.source_url" :alt="htmlDecoder(labsSection?.title?.rendered)">
+                <img :src="labsFeaturedImage.source_url" :alt="htmlDecoder(labsSection.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: labsSectionResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, labsSectionResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="recipe-page" ref="recipe">
           <div v-if="recipeSection">
-            <h2>{{ htmlDecoder(recipeSection?.title?.rendered) }}</h2>
+            <h2>{{ htmlDecoder(recipeSection.title.rendered) }}</h2>
             <div class="md:flex">
               <div v-if="recipeFeaturedImage" class="mb-4 md:mr-8 md:mb-0 min-w-1/2 lg:min-w-1/3 md:w-1/2 lg:w-1/3">
-                <img :src="recipeFeaturedImage.source_url" :alt="htmlDecoder(recipeSection?.title?.rendered)">
+                <img :src="recipeFeaturedImage.source_url" :alt="htmlDecoder(recipeSection.title.rendered)">
               </div>
-              <div v-dompurify-html="{ html: recipeSectionResults, options: sanitizeOptions }" class="community-page-content" />
+              <div v-sanitize="[sanitizeOptions, recipeSectionResults]" class="community-page-content" />
             </div>
           </div>
         </article>
         <article id="favourite-page" ref="favourite">
           <h2>Favourite radio stations</h2>
-          <div v-dompurify-html="favouritesContentResults" class="community-page-content" />
+          <div v-sanitize="favouritesContentResults" class="community-page-content" />
         </article>
         <article id="supporters-page" ref="supporters">
-          <h2>{{ htmlDecoder(supportersContent?.title?.rendered) }}</h2>
-          <div v-dompurify-html="{ html: supportersContentResults, options: sanitizeOptions }" class="community-page-content" />
+          <h2>{{ htmlDecoder(supportersContent.title.rendered) }}</h2>
+          <div v-sanitize="[sanitizeOptions,supportersContentResults]" class="community-page-content" />
         </article>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { computed, onMounted, onBeforeUnmount, ref, nextTick } from 'vue'
-import { useHead } from '#app'
-import { useWpPage } from '@/composables/useWpPage'
+<script>
 import {
   callForShowsURL,
   lahmaBaseURL,
@@ -157,136 +154,321 @@ import {
   favouriteRadiosURL,
   eventsSectionURL,
   pressSectionURL,
-  labsSectionURL,
-  recipeSectionURL,
+  labsSectionURL, 
+  recipeSectionURL, 
+  mediaURL, 
   supportersURL
 } from '~/constants'
 
-useHead({
-  title: 'Lahmacun Community',
-  meta: [
-    { hid: 'description', name: 'description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' },
-    { hid: 'og:title', property: 'og:title', content: 'Lahmacun Community' },
-    { hid: 'og:description', name: 'og:description', content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018' }
-  ]
-})
+export default {
+  data () {
+    return {
+      callForShows: null,
+      lahmaBase: null,
+      lahmaBaseFeaturedImage: null,
+      communitySection: null,
+      communityFeaturedImage: null,
+      eventsSection: null,
+      eventsFeaturedImage: null,
+      pressSection: null,
+      pressFeaturedImage: null,
+      labsSection: null,
+      labsFeaturedImage: null,
+      recipeSection: null,
+      recipeFeaturedImage: null,
+      favouritesContent: null,
+      supportersContent: null,
+      sanitizeOptions: {
+        allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
+        allowedAttributes: {
+          img: ['*'],
+          div: ['style', 'class', 'id'],
+          a: ['*']
+        }
+      }
+    }
+  },
+  async fetch () {
+    // callForShows
+    this.callForShows = await this.$axios.get(`${callForShowsURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Call For Shows not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Call For Shows not available' })
+      })
+    // lahmaBaseURL
+    this.lahmaBase = await this.$axios.get(`${lahmaBaseURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Lahma Base not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Lahma Base not available' })
+      })
+    if (this.lahmaBase && this.lahmaBase.featured_media !== 0) {
+      this.lahmaBaseFeaturedImage = await this.$axios.get(mediaURL + `/${this.lahmaBase.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Lahma Base not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Lahma Base not available' })
+        })
+    }
+    // communitySection
+    this.communitySection = await this.$axios.get(`${communitySectionURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Community Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Community Section not available' })
+      })
+    if (this.communitySection && this.communitySection.featured_media !== 0) {
+      this.communityFeaturedImage = await this.$axios.get(mediaURL + `/${this.communitySection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Featured Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Featured Image not available' })
+        })
+    }
+    // eventsSection
+    this.eventsSection = await this.$axios.get(`${eventsSectionURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Events Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Events Section not available' })
+      })
+    if (this.eventsSection && this.eventsSection.featured_media !== 0) {
+      this.eventsFeaturedImage = await this.$axios.get(mediaURL + `/${this.eventsSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Press Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Press Image not available' })
+        })
+    }
+    // pressSection
+    this.pressSection = await this.$axios.get(`${pressSectionURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Press Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Press Section not available' })
+      })
+    if (this.pressSection && this.pressSection.featured_media !== 0) {
+      this.pressFeaturedImage = await this.$axios.get(mediaURL + `/${this.pressSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Press Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Press Image not available' })
+        })
+    }
+    // labsSection
+    this.labsSection = await this.$axios.get(`${labsSectionURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Labs Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Labs Section not available' })
+      })
+    if (this.labsSection && this.labsSection.featured_media !== 0) {
+      this.labsFeaturedImage = await this.$axios.get(mediaURL + `/${this.labsSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Labs Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Labs Image not available' })
+        })
+    }
 
-// sanitize options for DOMPurify
-const sanitizeOptions = {
-  allowedTags: ['div', 'p', 'h4', 'b', 'i', 'em', 'strong', 'img', 'form', 'input', 'figure', 'hr', 'br', 'a', 'sup', 'sub'],
-  allowedAttributes: {
-    img: ['*'],
-    div: ['style', 'class', 'id'],
-    a: ['*']
-  }
-}
+    // recipeSection
+    this.recipeSection = await this.$axios.get(`${recipeSectionURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Recipe Section not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Recipe Section not available' })
+      })
+    if (this.recipeSection && this.recipeSection.featured_media !== 0) {
+      this.recipeFeaturedImage = await this.$axios.get(mediaURL + `/${this.recipeSection.featured_media}`)
+        .then(res => res.data)
+        .catch((error) => {
+          this.$sentry.captureException(new Error('Recipe Image not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Recipe Image not available' })
+        })
+    }
+    // favourite radios
+    this.favouritesContent = await this.$axios.get(`${favouriteRadiosURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Favourites not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Favourites not available' })
+      })
+    // supporters
+    this.supportersContent = await this.$axios.get(`${supportersURL}`)
+      .then((res) => {
+        if (res) {
+          return res.data
+        }
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Supporters content not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Supporters not available' })
+      })
+  },
+  head () {
+    return {
+      title: 'Lahmacun Community',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018'
+        },
+        {
+          hid: 'og:title',
+          property: 'og:title',
+          content: 'Lahmacun Community'
+        },
+        {
+          hid: 'og:description',
+          name: 'og:description',
+          content: 'Lahmacun.hu is an online music & more radio from Budapest since 2018'
+        }
+      ]
+    }
+  },
+  computed: {
+    callForShowsResults () {
+      if (!this.callForShows) {
+        return 'No content'
+      }
+      return this.callForShows.content.rendered
+    },
+    lahmaBaseResults () {
+      if (!this.lahmaBase) {
+        return 'No content'
+      }
+      return this.lahmaBase.content.rendered
+    },
+    communityResults () {
+      if (!this.communitySection) {
+        return 'No content'
+      }
+      return this.communitySection.content.rendered
+    },
+    eventsSectionResults () {
+      if (!this.eventsSection) {
+        return 'No content'
+      }
+      return this.eventsSection.content.rendered
+    },
+    pressSectionResults () {
+      if (!this.pressSection) {
+        return 'No content'
+      }
+      return this.pressSection.content.rendered
+    },
+    labsSectionResults () {
+      if (!this.labsSection) {
+        return 'No content'
+      }
+      return this.labsSection.content.rendered
+    },
+    recipeSectionResults () {
+      if (!this.recipeSection) {
+        return 'No content'
+      }
+      return this.recipeSection.content.rendered
+    },
 
-// Sections via composable (page + featured image)
-const { data: callRes, pending: callPending } = await useWpPage(callForShowsURL)
-const { data: baseRes, pending: basePending } = await useWpPage(lahmaBaseURL)
-const { data: communityRes, pending: communityPending } = await useWpPage(communitySectionURL)
-const { data: eventsRes, pending: eventsPending } = await useWpPage(eventsSectionURL)
-const { data: pressRes, pending: pressPending } = await useWpPage(pressSectionURL)
-const { data: labsRes, pending: labsPending } = await useWpPage(labsSectionURL)
-const { data: recipeRes, pending: recipePending } = await useWpPage(recipeSectionURL)
-const { data: favouritesRes, pending: favouritesPending } = await useWpPage(favouriteRadiosURL)
-const { data: supportersRes, pending: supportersPending } = await useWpPage(supportersURL)
-
-const callForShows = computed(() => callRes.value?.page || null)
-const callForShowsResults = computed(() => callForShows.value ? callForShows.value.content?.rendered : 'No content')
-
-const lahmaBase = computed(() => baseRes.value?.page || null)
-const lahmaBaseFeaturedImage = computed(() => baseRes.value?.featuredImage || null)
-const lahmaBaseResults = computed(() => lahmaBase.value ? lahmaBase.value.content?.rendered : 'No content')
-
-const communitySection = computed(() => communityRes.value?.page || null)
-const communityFeaturedImage = computed(() => communityRes.value?.featuredImage || null)
-const communityResults = computed(() => communitySection.value ? communitySection.value.content?.rendered : 'No content')
-
-const eventsSection = computed(() => eventsRes.value?.page || null)
-const eventsFeaturedImage = computed(() => eventsRes.value?.featuredImage || null)
-const eventsSectionResults = computed(() => eventsSection.value ? eventsSection.value.content?.rendered : 'No content')
-
-const pressSection = computed(() => pressRes.value?.page || null)
-const pressFeaturedImage = computed(() => pressRes.value?.featuredImage || null)
-const pressSectionResults = computed(() => pressSection.value ? pressSection.value.content?.rendered : 'No content')
-
-const labsSection = computed(() => labsRes.value?.page || null)
-const labsFeaturedImage = computed(() => labsRes.value?.featuredImage || null)
-const labsSectionResults = computed(() => labsSection.value ? labsSection.value.content?.rendered : 'No content')
-
-const recipeSection = computed(() => recipeRes.value?.page || null)
-const recipeFeaturedImage = computed(() => recipeRes.value?.featuredImage || null)
-const recipeSectionResults = computed(() => recipeSection.value ? recipeSection.value.content?.rendered : 'No content')
-
-const favouritesContent = computed(() => favouritesRes.value?.page || null)
-const favouritesContentResults = computed(() => favouritesContent.value ? favouritesContent.value.content?.rendered : 'No content')
-
-const supportersContent = computed(() => supportersRes.value?.page || null)
-const supportersContentResults = computed(() => supportersContent.value ? supportersContent.value.content?.rendered : 'No content')
-
-const pendingAny = computed(() => callPending.value || basePending.value || communityPending.value || eventsPending.value || pressPending.value || labsPending.value || recipePending.value || favouritesPending.value || supportersPending.value)
-
-// In-page navigation refs and helper
-const call = ref(null)
-const base = ref(null)
-const events = ref(null)
-const community = ref(null)
-const press = ref(null)
-const labs = ref(null)
-const recipe = ref(null)
-const favourite = ref(null)
-const supporters = ref(null)
-
-function scrollToRef (name) {
-  const map = { call, base, events, community, press, labs, recipe, favourite, supporters }
-  const target = map[name]?.value
-  if (target && typeof target.scrollIntoView === 'function') {
-    target.scrollIntoView({ behavior: 'smooth' })
-  }
-}
-
-// Intercept in-content links to navigate via router instead of full reload
-const links = ref([])
-function navigate (event) {
-  const href = event.target.getAttribute('href')
-  const target = event.target.getAttribute('target')
-  const router = useRouter()
-  if (href && href[0] === '/' && target !== '_blank') {
-    event.preventDefault()
-    router.push(href)
-  }
-  if (href && href.startsWith('https://www.lahmacun.hu')) {
-    event.preventDefault()
-    const filteredHref = href.replace('https://www.lahmacun.hu', '')
-    router.push({ path: filteredHref })
-  }
-}
-
-function addListeners () {
-  const renderedContent = document.getElementById('community-content')
-  if (!renderedContent) { return }
-  links.value = renderedContent.getElementsByTagName('a')
-  for (let i = 0; i < links.value.length; i++) {
-    links.value[i].addEventListener('click', navigate, false)
-  }
-}
-function removeListeners () {
-  if (links.value && links.value.length) {
-    for (let i = 0; i < links.value.length; i++) {
-      links.value[i].removeEventListener('click', navigate, false)
+    favouritesContentResults () {
+      if (!this.favouritesContent) {
+        return 'No content'
+      }
+      return this.favouritesContent.content.rendered
+    },
+    supportersContentResults () {
+      if (!this.supportersContent) {
+        return 'No content'
+      }
+      return this.supportersContent.content.rendered
+    }
+  },
+  mounted () {
+    if (this.$router) {
+      this.addListeners()
+    }
+  },
+  beforeDestroy () {
+    if (this.$router) {
+      this.removeListeners()
+    }
+  },
+  updated () {
+    if (this.$router) {
+      this.removeListeners()
+      this.$nextTick(() => {
+        this.addListeners()
+      })
+    }
+  },
+  methods: {
+    /**
+     * Prevents default browser behavior (page reload) for in-page links.
+     */
+    navigate (event) {
+      const href = event.target.getAttribute('href')
+      const target = event.target.getAttribute('target')
+      // check if the root and not blank
+      if (href && href[0] === '/' && target !== '_blank') {
+        event.preventDefault()
+        this.$router && this.$router.push(href)
+      }
+      // check if it is a wp page
+      if (href && href.startsWith('https://www.lahmacun.hu')) {
+        event.preventDefault()
+        const filteredHref = href.replace('https://www.lahmacun.hu', '')
+        this.$router && this.$router.push({ path: filteredHref })
+      }
+    },
+    addListeners () {
+      const renderedContent = document.getElementById('community-content')
+      this.links = renderedContent.getElementsByTagName('a')
+      for (let i = 0; i < this.links.length; i++) {
+        this.links[i].addEventListener('click', this.navigate, false)
+      }
+    },
+    removeListeners () {
+      for (let i = 0; i < this.links.length; i++) {
+        this.links[i].removeEventListener('click', this.navigate, false)
+      }
+      this.links = []
     }
   }
-  links.value = []
 }
-
-onMounted(async () => {
-  await nextTick()
-  addListeners()
-})
-onBeforeUnmount(() => {
-  removeListeners()
-})
 </script>
 
 <style lang="scss" scoped>
@@ -316,10 +498,10 @@ article {
 #community-content {
   .community-page-content {
     a {
-      text-decoration: underline;
+      @apply underline;
     }
     p {
-      margin-bottom: 0.5rem;
+      @apply mb-2;
     }
   }
 }

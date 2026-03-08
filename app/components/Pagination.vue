@@ -31,7 +31,6 @@ export default {
       required: true
     }
   },
-  emits: ['click'],
   methods: {
     async onClick () {
       this.$emit('click')
