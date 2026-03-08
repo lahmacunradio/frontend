@@ -34,7 +34,6 @@ export default {
     return {
       startIndex: 1,
       preloadImages: false,
-      numberOfEpisodes: 12,
       startNumberofEpisodes: 12,
       arcsiEpisodes: null,
       defaultEpisodes: null,
@@ -102,7 +101,7 @@ export default {
   methods: {
     async fetchEpisodes() {
       this.isFetching = true
-      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/search?size=${this.startNumberofEpisodes}&page=${this.startIndex}&param=${this.term}`, config)
+      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/search?size=${this.startNumberofEpisodes}&page=${this.startIndex}&param=${encodeURIComponent(this.term)}`, config)
         .then(res => res.data)
         .catch((error) => {
           this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
@@ -124,6 +123,7 @@ export default {
   watch: {
     term() {
       this.arcsiEpisodes = []
+      this.startIndex = 1  // Add this line to reset the page index when the search term changes
       this.debouncedFetchEpisodes()
     }
   }
