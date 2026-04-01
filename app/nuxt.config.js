@@ -126,10 +126,8 @@ export default {
     back_to_home: "🗣 Back home! 🎅🧨👉",
     server_error_details: "Server errorrrrr or unreachable 🤯",
   },
-  privateRuntimeConfig: {
-    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
-  },
   publicRuntimeConfig: {
+    subscriptionCancelUrl: process.env.SUBSCRIPTION_CANCEL_URL,
     donateStripeFormUrl: process.env.DONATE_STRIPE_FORM_URL,
     membershipStripeFormUrl: process.env.MEMBERSHIP_STRIPE_FORM_URL,
   },
