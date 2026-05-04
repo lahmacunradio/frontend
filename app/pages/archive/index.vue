@@ -2,18 +2,8 @@
   <div>
     <SubTitle title="Lahmacun Archive" :maintitle="true" />
     <div class="container mt-8">
-      <!-- no search for now, is buggy
-      <div v-if="defaultEpisodes" class="flex justify-between">
-        <AutoCompleteSearch
-          :default-items="defaultEpisodes"
-          suggestion-attribute="name"
-          :search-fields="searchFields"
-          place-holder="Search"
-          @update="onUpdate"
-        />
-      </div>
-      -->
-      <div v-if="$fetchState.pending" class="flex flex-col items-center justify-center py-4">
+      <input v-model="term" class="input" type="search" placeholder="Search">
+      <div v-if="isFetching" class="flex flex-col items-center justify-center py-4">
         <img src="@/assets/img/preloader.svg" class="h-8 mb-2" alt="preload">
         <p>Loading...</p>
       </div>
@@ -21,7 +11,7 @@
         Error happened
       </div>
       <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+        <div v-for="(episode) in arcsiEpisodesListSortedLatest" :key="episode.id">
           <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
         </div>
       </article>
@@ -29,7 +19,7 @@
         <a href="#" @click.prevent="loadMoreEpisodes">
           <b>Load {{ startNumberofEpisodes }} more episodes</b>
           <br>
-          (showing {{ numberOfEpisodes }} episodes)
+          (showing {{ arcsiEpisodesListSortedLatest?.length }} episodes)
         </a>
       </div>
     </div>
@@ -40,27 +30,27 @@
 import { arcsiItemBaseURL, config } from '~/constants'
 
 export default {
-  data () {
+  data() {
     return {
       startIndex: 1,
       preloadImages: false,
-      numberOfEpisodes: 12,
       startNumberofEpisodes: 12,
       arcsiEpisodes: null,
       defaultEpisodes: null,
-      searchFields: ['name', 'description']
+      term: '',
+      debouncedFetchEpisodes: null,
+      isFetching: false
     }
   },
-  async fetch () {
-    this.defaultEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
-      .then(res => res.data)
-      .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
-      })
-    this.arcsiEpisodes = this.defaultEpisodes
+  created() {
+    this.debouncedFetchEpisodes = this.debounceFunction(this.fetchEpisodes, 300)
   },
-  head () {
+  async fetch() {
+    this.arcsiEpisodes = []
+    await this.fetchEpisodes()
+    this.defaultEpisodes = [...this.arcsiEpisodes]
+  },
+  head() {
     return {
       title: 'Lahmacun Archive',
       meta: [
@@ -83,14 +73,14 @@ export default {
     }
   },
   computed: {
-    getToday () {
+    getToday() {
       const d = new Date()
       const year = d.getFullYear()
       const month = (d.getMonth() + 1).toLocaleString('en-US', { minimumIntegerDigits: 2 })
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    arcsiEpisodesListSortedLatest () {
+    arcsiEpisodesListSortedLatest() {
       if (this.arcsiEpisodes) {
         const showslist = [...this.arcsiEpisodes]
         return showslist
@@ -100,33 +90,59 @@ export default {
       }
       return null
     },
-    arcsiList () {
+    arcsiList() {
       return [...this.$store.getters.returnArcsiShows]
     }
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.defaultEpisodes = null
     this.arcsiEpisodes = null
   },
   methods: {
-    async loadMoreEpisodes () {
-      this.startIndex++
-      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
+    async fetchEpisodes() {
+      this.isFetching = true
+      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/search?size=${this.startNumberofEpisodes}&page=${this.startIndex}&param=${encodeURIComponent(this.term)}`, config)
         .then(res => res.data)
         .catch((error) => {
           this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
           this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
         })
+        .finally(() => {
+          this.isFetching = false
+        })
       this.arcsiEpisodes = this.arcsiEpisodes.concat(newEpisodes)
-      this.numberOfEpisodes = this.numberOfEpisodes * 2
     },
-    onUpdate (result) {
+    onUpdate(result) {
       this.arcsiEpisodes = result
+    },
+    loadMoreEpisodes() {
+      this.startIndex += 1
+      this.fetchEpisodes()
+    }
+  },
+  watch: {
+    term() {
+      this.arcsiEpisodes = []
+      this.startIndex = 1  // Add this line to reset the page index when the search term changes
+      this.debouncedFetchEpisodes()
     }
   }
+
 }
 </script>
 
 <style lang="scss" scoped>
+.input {
+  position: relative;
+  width: 350px;
 
+  @media (max-width: $mobile-width) {
+    width: 100%;
+  }
+
+  height: 30px;
+  border-radius: 0.25rem;
+  outline: none;
+  padding: 0 10px;
+}
 </style>
