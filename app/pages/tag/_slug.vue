@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiTagBaseURL, mediaServerURL, config, arcsiTagBaseURL } from '~/constants'
 
 export default {
   data() {
@@ -96,7 +96,7 @@ export default {
   },
   async fetch() {
     //Fetch show data
-    await this.$axios.get(arcsiBaseURL + '/tag/' + this.slug, config)
+    await this.$axios.get(`${arcsiTagBaseURL}/${this.slug}`, config)
       .then((res) => {
         this.tags = res.data
       })

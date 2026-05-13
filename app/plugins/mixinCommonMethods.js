@@ -136,11 +136,11 @@ export function groupShowsByDay (dbshows, rare_thu, rare_fri, customSchedule) {
   const daybyMonday = getTodayNumeric() === 0 ? 7 : getTodayNumeric()
   const dayIndex = daybyMonday - 1
   const latestRareThursday = shows
-    .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
-    .filter(item => item?.archive_lahmastore_base_url !== rare_thu.archive_lahmastore_base_url)
+    .filter(show => show?.playlist_name?.startsWith('Ritka csut'))
+    .filter(show => show?.archive_lahmastore_base_url !== rare_thu.archive_lahmastore_base_url)
   const latestRareFriday = shows
-    .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
-    .filter(item => item?.archive_lahmastore_base_url !== rare_fri.archive_lahmastore_base_url)
+    .filter(show => show?.playlist_name?.startsWith('Ritka pentek'))
+    .filter(show => show?.archive_lahmastore_base_url !== rare_fri.archive_lahmastore_base_url)
 
   const filteredShows = shows
     .filter(val => !latestRareThursday.includes(val))

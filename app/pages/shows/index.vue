@@ -77,7 +77,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      fullSchedule: 'returnArcsiShows'
+      fullSchedule: 'returnArcsiShowsForTiles'
     }),
     arcsiShowsList () {
       if (this.arcsiShows) {

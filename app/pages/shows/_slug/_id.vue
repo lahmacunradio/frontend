@@ -103,7 +103,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
   data() {
@@ -152,7 +152,7 @@ export default {
         }
       })
     //Fetch show data
-    await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/${this.slug}/page?filter=archived`, config)
       .then((res) => {
         this.arcsiShow = res.data
       })
