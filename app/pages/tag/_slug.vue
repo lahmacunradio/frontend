@@ -9,12 +9,12 @@
       Error happened
     </div>
     <div v-else class="container">
-      <div v-if="tags?.shows?.length" class="pt-8 pb-12" :class="{
-        'border-b border-current mb-12': tags?.items?.length
+      <div v-if="shows?.length" class="pt-8 pb-12" :class="{
+        'border-b border-current mb-12': episodes?.length
       }">
         <h2 class="mb-4">Shows</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="show in tags?.shows" :key="show.id">
+          <div v-for="show in shows" :key="show.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${show.archive_lahmastore_base_url}` }">
@@ -26,10 +26,11 @@
                 </h5>
               </NuxtLink>
               <div v-if="show?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
-                <div v-for="(tag, index) in show.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
-                  <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">
-                    <NuxtLink :to="`/tag/${tag.clean_name}`">
-                      {{ tag.display_name }}
+                <div v-for="(show_tag, index) in show.tags" :key="index + show_tag.id + show_tag.clean_name"
+                  class="inline-block">
+                  <div v-if="show_tag.clean_name.length > 0 && show_tag.clean_name !== this.slug" class="tag-block">
+                    <NuxtLink :to="`/tag/${show_tag.clean_name}`">
+                      {{ show_tag.display_name }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -38,26 +39,27 @@
           </div>
         </div>
       </div>
-      <div v-if="tags?.items?.length" class="">
+      <div v-if="episodes?.length" class="">
         <h2 class="mb-4">Episodes</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in tags?.items" :key="arcsi.id">
+          <div v-for="episode in episodes" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${arcsi.shows?.[0]?.archive_lahmastore_base_url}/${arcsi.name_slug}` }">
-                <img :src="arcsi.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${episode.shows?.[0]?.archive_lahmastore_base_url}/${episode.name_slug}` }">
+                <img :src="episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${arcsi.shows?.[0]?.archive_lahmastore_base_url}/${arcsi.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${episode.shows?.[0]?.archive_lahmastore_base_url}/${episode.name_slug}` }">
                 <h5 class="mt-4">
-                  {{ arcsi.name }}
+                  {{ episode.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
-              <div v-if="arcsi?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
-                <div v-for="(tag, index) in arcsi.tags" :key="index + tag.id + tag.clean_name" class="inline-block">
-                  <div v-if="tag.clean_name.length > 0 && tag.clean_name !== tags?.clean_name" class="tag-block">
-                    <NuxtLink :to="`/tag/${tag.clean_name}`">
-                      {{ tag.display_name }}
+              <small>Play date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}</small>
+              <div v-if="episode?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
+                <div v-for="(episode_tag, index) in episode.tags" :key="index + episode_tag.id + episode_tag.clean_name"
+                  class="inline-block">
+                  <div v-if="episode_tag.clean_name.length > 0 && episode_tag.clean_name !== this.slug" class="tag-block">
+                    <NuxtLink :to="`/tag/${episode_tag.clean_name}`">
+                      {{ episode_tag.display_name }}
                     </NuxtLink>
                   </div>
                 </div>
@@ -66,9 +68,9 @@
           </div>
         </div>
       </div>
-      <div v-if="tags?.items?.length === 0 && tags?.shows?.length === 0" class="py-8">
+      <div v-if="episodes?.length === 0 && shows?.length === 0" class="py-8">
         <p class="italic text-lg">
-          No matching Shows or Episodes found for <b>{{ tags?.display_name }} </b> tag
+          No matching Shows or Episodes found for <b>{{ tag?.display_name }} </b> tag
         </p>
       </div>
       <div class="flex justify-end w-full">
@@ -84,21 +86,38 @@
 </template>
 
 <script>
-import { arcsiTagBaseURL, mediaServerURL, config, arcsiTagBaseURL } from '~/constants'
+import { arcsiItemBaseURL, arcsiShowsBaseURL, arcsiTagBaseURL, mediaServerURL, config, arcsiTagBaseURL } from '~/constants'
 
 export default {
   data() {
     return {
       mediaServerURL,
       slug: this.$route.params.slug,
-      tags: null
+      tag: null,
+      episodes: null,
+      shows: null
     }
   },
   async fetch() {
-    //Fetch show data
     await this.$axios.get(`${arcsiTagBaseURL}/${this.slug}`, config)
       .then((res) => {
-        this.tags = res.data
+        this.tag = res.data
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+      })
+    await this.$axios.get(`${arcsiItemBaseURL}/tag/${this.slug}`, config)
+      .then((res) => {
+        this.episodes = res.data
+      })
+      .catch((error) => {
+        this.$sentry.captureException(new Error('Arcsi server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+      })
+    await this.$axios.get(`${arcsiShowsBaseURL}/tag/${this.slug}`, config)
+      .then((res) => {
+        this.shows = res.data
       })
       .catch((error) => {
         this.$sentry.captureException(new Error('Arcsi server not available ', error))
@@ -108,8 +127,8 @@ export default {
   },
   computed: {
     title() {
-      if (this.tags?.display_name) {
-        return "TAGGED BY " + this.tags?.display_name
+      if (this.tag?.display_name) {
+        return "TAGGED BY " + this.tag?.display_name
       } else {
         return "Tags"
       }
