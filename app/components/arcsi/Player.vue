@@ -145,15 +145,15 @@ export default {
         data: this.episode
       }
     },
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowList () {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     },
     arcsiShow () {
-      if (!this.arcsiList) {
+      if (!this.arcsiShowList) {
         return false
       }
-      const showID = this.episode?.shows?.[0].id
-      return this.arcsiList?.find(show => show.id === showID)
+      const showIdFromEpisode = this.episode?.shows?.[0].id
+      return this.arcsiShowList?.find(show => show.id === showIdFromEpisode)
     },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)

@@ -53,9 +53,14 @@ export default {
 
       const minutes = today.getMinutes()
 
-      // refresh arcsiShows every 10 minutes
+      // refresh arcsiShowsForTiles every 10 minutes
       if (minutes % 10 === 0) {
-        this.refreshAllShows()
+        this.refreshArcsiShowsForTiles()
+      }
+
+      // refresh arcsiShowsForSchedule every 10 minutes
+      if (minutes % 10 === 0) {
+        this.refreshArcsiShowsForSchedule()
       }
 
       // refresh rareShows every 3 minutes
@@ -68,10 +73,20 @@ export default {
         this.refreshCustomSchedule()
       }
     },
-    async refreshAllShows () {
-      await this.$axios.get(`${arcsiShowsBaseURL}/all_without_items`, config)
+    async refreshArcsiShowsForTiles () {
+      await this.$axios.get(`${arcsiShowsBaseURL}/all_tiles`, config)
         .then((res) => {
-          this.$store.commit('refreshAllShowsList', res.data)
+          this.$store.commit('refreshArcsiShowsForTiles', res.data)
+        })
+        .catch((e) => {
+          this.$sentry.captureException(e)
+          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+        })
+    },
+    async refreshArcsiShowsForSchedule () {
+      await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
+        .then((res) => {
+          this.$store.commit('refreshArcsiShowsForSchedule', res.data)
         })
         .catch((e) => {
           this.$sentry.captureException(e)

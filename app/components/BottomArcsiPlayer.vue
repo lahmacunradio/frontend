@@ -42,8 +42,8 @@ import { mediaServerURL } from '~/constants'
 
 export default {
   validate ({ params, store }) {
-    // Check if arcsiShows exists
-    return store.state.arcsiShows.length
+    // Check if arcsiShowsForTiles exists
+    return store.state.arcsiShowsForTiles.length
   },
   data () {
     return {

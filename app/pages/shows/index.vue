@@ -15,8 +15,8 @@
       <div class="mt-8 mb-4 title">
         <h2>Active Shows</h2>
       </div>
-      <div v-if="arcsiShowsList && arcsiShowsList.length">
-        <ShowsLister :shows="arcsiShowsList" />
+      <div v-if="activeShowsList && activeShowsList.length">
+        <ShowsLister :shows="activeShowsList" />
       </div>
       <div v-else>
         <p class="italic">
@@ -79,7 +79,7 @@ export default {
     ...mapGetters({
       fullSchedule: 'returnArcsiShowsForTiles'
     }),
-    arcsiShowsList () {
+    activeShowsList () {
       if (this.arcsiShows) {
         return this.arcsiShows.filter(show => (
           !(show.archive_lahmastore_base_url === 'off-air' || !show.active)

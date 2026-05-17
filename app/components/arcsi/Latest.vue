@@ -10,7 +10,7 @@
         <div ref="episodes" class="relative arcsi-episodes">
           <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
             <div class="episode-wrap" :style="{ 'width': episodeWidth + 'px' }">
-              <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+              <ArcsiLatestBlock :episode="episode" :arcsiShowList="arcsiShowList" />
             </div>
           </div>
         </div>
@@ -97,8 +97,8 @@ export default {
       }
       return null
     },
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowList () {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     }
   },
   mounted () {

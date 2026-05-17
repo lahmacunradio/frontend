@@ -1,29 +1,21 @@
 import { arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
 
 export const state = () => ({
-  arcsiShows: {},
-  allShowsList: {},
+  arcsiShowsForTiles: {},
+  arcsiShowsForSchedule: {},
   rareShows: {},
   customSchedule: {}
 })
 
 export const actions = {
   async nuxtServerInit ({ state }, { $sentry, error }) {
-    await this.$axios.get(`${arcsiShowsBaseURL}/all_without_items`, config)
-      .then((res) => {
-        state.allShowsList = res.data
-      })
-      .catch((e) => {
-        $sentry.captureException(e)
-        error({ statusCode: 404, message: 'All Shows not found' })
-      })
     await this.$axios.get(`${arcsiShowsBaseURL}/all_tiles`, config)
       .then((res) => {
         state.arcsiShowsForTiles = res.data
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'All Shows not found' })
+        error({ statusCode: 404, message: 'All Shows for Tiles not found' })
       })
     await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
       .then((res) => {
@@ -31,7 +23,7 @@ export const actions = {
       })
       .catch((e) => {
         $sentry.captureException(e)
-        error({ statusCode: 404, message: 'All Shows not found' })
+        error({ statusCode: 404, message: 'All Shows for Schedule not found' })
       })
     await this.$axios.get(rareShowsURL)
       .then((res) => {
@@ -53,9 +45,6 @@ export const actions = {
 }
 
 export const mutations = {
-  refreshAllShowsList (state, payload) {
-    state.allShowsList = payload
-  },
   refreshArcsiShowsForTiles (state, payload) {
     state.arcsiShowsForTiles = payload
   },
@@ -71,9 +60,6 @@ export const mutations = {
 }
 
 export const getters = {
-  returnArcsiShows (state) {
-    return state.allShowsList
-  },
   returnArcsiShowsForTiles (state) {
     return state.arcsiShowsForTiles
   },

@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      fullSchedule: 'returnArcsiShowsForSchedule',
+      arcsiShows: 'returnArcsiShowsForSchedule',
       rareShows: 'returnRareShows',
       customSchedule: 'returnCustomSchedule'
     }),
@@ -92,11 +92,11 @@ export default {
       }
       return this.rareShows.rare_friday.find(item => item.active === true)
     },
-    sortShowsForSchedule () {
-      if (!this.fullSchedule) {
+    sortArcsiShowsForSchedule () {
+      if (!this.arcsiShows) {
         return false
       }
-      return [...this.fullSchedule]
+      return [...this.arcsiShows]
         .filter(show => (
           !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
         ))
@@ -114,7 +114,7 @@ export default {
     }
   },
   mounted () {
-    this.local_groupShowsByDay(this.sortShowsForSchedule)
+    this.local_groupShowsByDay(this.sortArcsiShowsForSchedule)
   },
   methods: {
     local_groupShowsByDay (shows) {

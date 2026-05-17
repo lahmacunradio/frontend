@@ -12,7 +12,7 @@
       </div>
       <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
         <div v-for="(episode) in arcsiEpisodesListSortedLatest" :key="episode.id">
-          <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
+          <ArcsiEpisodeBlock :episode="episode" :arcsiShowList="arcsiShowList" />
         </div>
       </article>
       <div id="loadmore" class="p-4 text-center">
@@ -90,8 +90,8 @@ export default {
       }
       return null
     },
-    arcsiList() {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowList() {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     }
   },
   beforeDestroy() {
