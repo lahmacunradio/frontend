@@ -88,18 +88,18 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
+          <div v-for="episode in arcsiEpisodesList" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
-                <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${slug}/${episode.name_slug}` }">
+                <img :src="mediaServerURL + slug + '/' + episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${slug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
-                  {{ arcsi.name }}
+                  {{ episode.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>

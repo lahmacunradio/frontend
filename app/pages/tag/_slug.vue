@@ -10,7 +10,7 @@
     </div>
     <div v-else class="container">
       <div v-if="shows?.length" class="pt-8 pb-12" :class="{
-        'border-b border-current mb-12': episodes?.length
+        'border-b border-current mb-12': shows?.length
       }">
         <h2 class="mb-4">Shows</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -28,7 +28,7 @@
               <div v-if="show?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
                 <div v-for="(show_tag, index) in show.tags" :key="index + show_tag.id + show_tag.clean_name"
                   class="inline-block">
-                  <div v-if="show_tag.clean_name.length > 0 && show_tag.clean_name !== this.slug" class="tag-block">
+                  <div v-if="show_tag.clean_name.length > 0 && show_tag.clean_name !== tag?.clean_name" class="tag-block">
                     <NuxtLink :to="`/tag/${show_tag.clean_name}`">
                       {{ show_tag.display_name }}
                     </NuxtLink>
@@ -39,7 +39,9 @@
           </div>
         </div>
       </div>
-      <div v-if="episodes?.length" class="">
+      <div v-if="episodes?.length" class="pt-8 pb-12" :class="{
+        'border-b border-current mb-12': episodes?.length
+      }">
         <h2 class="mb-4">Episodes</h2>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <div v-for="episode in episodes" :key="episode.id">
@@ -57,7 +59,7 @@
               <div v-if="episode?.tags?.length" class="flex items-center mt-6 tags flex-wrap">
                 <div v-for="(episode_tag, index) in episode.tags" :key="index + episode_tag.id + episode_tag.clean_name"
                   class="inline-block">
-                  <div v-if="episode_tag.clean_name.length > 0 && episode_tag.clean_name !== this.slug" class="tag-block">
+                  <div v-if="episode_tag.clean_name.length > 0 && episode_tag.clean_name !== tag?.clean_name" class="tag-block">
                     <NuxtLink :to="`/tag/${episode_tag.clean_name}`">
                       {{ episode_tag.display_name }}
                     </NuxtLink>
@@ -86,7 +88,7 @@
 </template>
 
 <script>
-import { arcsiItemBaseURL, arcsiShowsBaseURL, arcsiTagBaseURL, mediaServerURL, config, arcsiTagBaseURL } from '~/constants'
+import { arcsiItemBaseURL, arcsiShowsBaseURL, arcsiTagBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
   data() {
@@ -104,24 +106,24 @@ export default {
         this.tag = res.data
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi Tag server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Tag server not available' })
       })
     await this.$axios.get(`${arcsiItemBaseURL}/tag/${this.slug}`, config)
       .then((res) => {
         this.episodes = res.data
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
       })
     await this.$axios.get(`${arcsiShowsBaseURL}/tag/${this.slug}`, config)
       .then((res) => {
         this.shows = res.data
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi Show server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Show server not available' })
       })
 
   },

@@ -3,7 +3,7 @@
     <SubTitle title="Lahmacun Archive" url="/archive" />
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
-        <NuxtLink :to="`/shows/${slug}`" class="block">
+        <NuxtLink :to="`/shows/${this.showSlug}`" class="block">
           <div class="pb-6">
             <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
           </div>
@@ -38,12 +38,12 @@
               </p>
             </div>
 
-            <div v-if="arcsiShow" class="show-infos">
+            <div v-if="this.arcsiShow" class="show-infos">
               <p>
-                {{ arcsiShow.active ? 'Show is active.' : 'Show is not active.' }}
-                Airing time: {{ dayNames[arcsiShow.day - 1] }} {{
-                  removeSeconds(arcsiShow.start)
-                }}–{{ removeSeconds(arcsiShow.end) }}, {{ showFrequency(arcsiShow.frequency, arcsiShow.week) }}.
+                {{ this.arcsiShow.active ? 'Show is active.' : 'Show is not active.' }}
+                Airing time: {{ dayNames[this.arcsiShow.day - 1] }} {{
+                  removeSeconds(this.arcsiShow.start)
+                }}–{{ removeSeconds(this.arcsiShow.end) }}, {{ showFrequency(this.arcsiShow.frequency, this.arcsiShow.week) }}.
               </p>
             </div>
 
@@ -64,9 +64,9 @@
           </div>
         </div>
       </div>
-      <div v-if="arcsiShow && arcsiEpisodesList && arcsiEpisodesList.length" class="py-8">
+      <div v-if="this.arcsiShow && arcsiEpisodesList && arcsiEpisodesList.length" class="py-8">
         <h4 class="pb-1 mb-4 text-center border-b border-current">
-          Other Episodes from {{ arcsiShow.name }}
+          Other Episodes from {{ this.arcsiShow.name }}
         </h4>
         <div class="pt-4 pb-6 text-center change-order xsm:text-right">
           <a id="bydate" ref="bydate" href="#" class="mr-2 selected change-order-button" @click.prevent="sortAirtime">
@@ -81,18 +81,18 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
+          <div v-for="episode in arcsiEpisodesList" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
-                <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${this.showSlug}/${episode.name_slug}` }">
+                <img :src="mediaServerURL + this.showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${this.showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
-                  {{ arcsi.name }}
+                  {{ episode.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>
@@ -103,15 +103,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiShowsBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, arcsiItemBaseURL, mediaServerURL, config } from '~/constants'
 
 export default {
   data() {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       arcsiItemShadowbox: false,
-      slug: this.$route.params.slug,
-      id: this.$route.params.id,
+      showSlug: this.$route.params.slug,
+      episodeSlug: this.$route.params.id,
       arcsiEpisode: null,
       arcsiShow: null,
       playEpisode: false,
@@ -131,34 +131,24 @@ export default {
   },
   async fetch() {
     //Fetch episode data
-    await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`, config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/item/${this.episodeSlug}`, config)
       .then((res) => {
         this.arcsiEpisode = res.data
       })
       .catch((error) => {
         if (error.response.status === 404) {
-          //Use legacy API URL as fallback
-          this.$axios.get(`${arcsiBaseURL}/item/${this.id}`, config)
-            .then((res) => {
-              this.arcsiEpisode = res.data
-            })
-            .catch((error) => {
-              this.$sentry.captureException(new Error('Arcsi server not available ', error))
-              this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-            })
-        } else {
-          this.$sentry.captureException(new Error('Arcsi server not available ', error))
-          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+          this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
         }
       })
     //Fetch show data
-    await this.$axios.get(`${arcsiShowsBaseURL}/${this.slug}/page?filter=archived`, config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/page?filter=archived`, config)
       .then((res) => {
         this.arcsiShow = res.data
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi Show server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Show server not available' })
       })
   },
   head() {
