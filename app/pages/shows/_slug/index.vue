@@ -92,7 +92,7 @@
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
-                <img :src="showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
+                <img :src="episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
@@ -199,7 +199,7 @@ export default {
       return null
     },
     showImage() {
-      return this.showSlug + '/' + this.showObject?.cover_image_url
+      return this.showObject?.cover_image_url
     },
     metaDescription() {
       if (!this.showObject?.description) {

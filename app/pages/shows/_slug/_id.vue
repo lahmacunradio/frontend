@@ -85,7 +85,7 @@
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
                 :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
-                <img :src="showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
+                <img :src="episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
               <NuxtLink :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
@@ -214,24 +214,24 @@ export default {
     },
     arcsiEpisodesList() {
       if (this.arcsiShow && this.arcsiShow.items?.length) {
-        const itemsSorted = this.arcsiShow?.items
+        const episodesSorted = this.arcsiShow?.items
           .filter(item => item.id !== this.arcsiEpisode.id)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         } else if (!this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
         } else if (this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
         } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
         } else {
-          return itemsSorted
+          return episodesSorted
         }
       }
       return null
