@@ -23,12 +23,11 @@
 </template>
 
 <script>
-import { arcsiTagBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiTagBaseURL, config } from '~/constants'
 
 export default {
   data() {
     return {
-      mediaServerURL,
       tags: []
     }
   },

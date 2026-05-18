@@ -71,7 +71,7 @@
           <div v-sanitize="[sanitizeOptions, showObject.description]" class="description-text" />
         </div>
       </div>
-      <div v-if="arcsiEpisodesList && arcsiEpisodesList.length">
+      <div v-if="showEpisodesList && showEpisodesList.length">
         <h3 class="pb-1 mb-4 text-center border-b border-current">
           Archived Shows
         </h3>
@@ -88,13 +88,13 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="episode in arcsiEpisodesList" :key="episode.id">
+          <div v-for="episode in showEpisodesList" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${episode.name_slug}` }">
-                <img :src="mediaServerURL + slug + '/' + episode.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
+                <img :src="showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${episode.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
                   {{ episode.name }}
                 </h5>
@@ -109,15 +109,14 @@
 </template>
 
 <script>
-import { arcsiShowsBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   data() {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       shadowbox: false,
-      slug: this.$route.params.slug,
-      mediaServerURL,
+      showSlug: this.$route.params.slug,
       sanitizeOptions: {
         allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
@@ -134,7 +133,7 @@ export default {
     }
   },
   async fetch() {
-    this.showObject = await this.$axios.get(`${arcsiShowsBaseURL}/${this.slug}/page?filter=archived`, config)
+    this.showObject = await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/page?filter=archived`, config)
       .then(res => res.data)
       .catch((error) => {
         this.$nuxt.error({ statusCode: 404, message: 'Show page not found' + error })
@@ -176,32 +175,31 @@ export default {
       return `${year}-${month}-${day}`
     },
 
-    arcsiEpisodesList() {
+    showEpisodesList() {
       if (this.showObject?.items) {
-        const itemsSorted = this.showObject.items
+        const episodesSorted = this.showObject.items
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         } else if (!this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
         } else if (this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
         } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
         } else {
-          return itemsSorted
+          return episodesSorted
         }
       }
       return null
     },
     showImage() {
-      const rootLink = mediaServerURL + this.slug + '/'
-      return rootLink + this.showObject?.cover_image_url
+      return this.showSlug + '/' + this.showObject?.cover_image_url
     },
     metaDescription() {
       if (!this.showObject?.description) {

@@ -41,13 +41,10 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import { mediaServerURL } from '~/constants'
-
 
 export default {
   data () {
     return {
-      mediaServerURL,
       arcsiShows: null,
       defaultArcsiShows: null,
       searchFields: ['name', 'description']

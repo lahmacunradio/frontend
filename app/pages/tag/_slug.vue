@@ -88,12 +88,11 @@
 </template>
 
 <script>
-import { arcsiItemBaseURL, arcsiShowsBaseURL, arcsiTagBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiItemBaseURL, arcsiShowsBaseURL, arcsiTagBaseURL, config } from '~/constants'
 
 export default {
   data() {
     return {
-      mediaServerURL,
       slug: this.$route.params.slug,
       tag: null,
       episodes: null,

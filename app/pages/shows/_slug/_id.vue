@@ -3,7 +3,7 @@
     <SubTitle title="Lahmacun Archive" url="/archive" />
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
-        <NuxtLink :to="`/shows/${this.showSlug}`" class="block">
+        <NuxtLink :to="`/shows/${showSlug}`" class="block">
           <div class="pb-6">
             <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
           </div>
@@ -84,10 +84,10 @@
           <div v-for="episode in arcsiEpisodesList" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${this.showSlug}/${episode.name_slug}` }">
-                <img :src="mediaServerURL + this.showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
+                <img :src="showSlug + '/' + episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${this.showSlug}/${episode.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
                   {{ episode.name }}
                 </h5>
@@ -103,7 +103,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiShowsBaseURL, arcsiItemBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   data() {
@@ -115,7 +115,6 @@ export default {
       arcsiEpisode: null,
       arcsiShow: null,
       playEpisode: false,
-      mediaServerURL,
       sanitizeOptions: {
         allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
@@ -136,10 +135,8 @@ export default {
         this.arcsiEpisode = res.data
       })
       .catch((error) => {
-        if (error.response.status === 404) {
-          this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
-          this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
-        }
+        this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
       })
     //Fetch show data
     await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/page?filter=archived`, config)
