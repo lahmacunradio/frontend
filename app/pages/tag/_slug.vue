@@ -100,7 +100,7 @@ export default {
     }
   },
   async fetch() {
-    await this.$axios.get(`${arcsiTagBaseURL}/${this.slug}`, config)
+    await this.$axios.get(`${arcsiTagBaseURL}/${this.slug}/minimal`, config)
       .then((res) => {
         this.tag = res.data
       })
