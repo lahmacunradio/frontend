@@ -80,7 +80,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+          this.error({ statusCode: 404, message: 'Arcsi Shows Tiles endpoint not found' })
         })
     },
     async refreshArcsiShowsForSchedule () {
@@ -90,7 +90,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+          this.error({ statusCode: 404, message: 'Arcsi Shows Schedule endpoint not found' })
         })
     },
     async refreshRareShows () {
@@ -100,7 +100,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.error({ statusCode: 404, message: 'CMS Rare Shows not found' })
         })
     },
     async refreshCustomSchedule () {
@@ -110,7 +110,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Custom schedule not found' })
+          this.error({ statusCode: 404, message: 'CMS Custom schedule not found' })
         })
     }
 

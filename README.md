@@ -10,7 +10,7 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## Dev env
 #### Node
-Node version `=14.18.2`
+Node version `=14.21.3`
 
 Node Version Manager (.nvmrc) has 14.18.2 as recommended, run `nvm install` and `nvm use` in `app` folder
 #### Yarn

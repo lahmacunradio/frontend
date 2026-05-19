@@ -41,7 +41,7 @@ export default {
       type: Object,
       required: true
     },
-    arcsiShowList: {
+    showList: {
       type: Array,
       required: true
     }
@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     episodeImage() {
-      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsiShowList.find(show => show.id === this.episode.shows[0].id).cover_image_url
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.showList.find(show => show.id === this.episode.shows[0].id).cover_image_url
     },
     episodeSlug() {
       if (!this.episode.name_slug) {
@@ -69,7 +69,7 @@ export default {
     }
   },
   created() {
-    this.showSlug = this.arcsiShowList.find(show => show.id === this.episode.shows[0].id).archive_lahmastore_base_url
+    this.showSlug = this.showList.find(show => show.id === this.episode.shows[0].id).archive_lahmastore_base_url
   }
 }
 </script>
