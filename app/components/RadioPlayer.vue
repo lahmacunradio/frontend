@@ -198,13 +198,13 @@ export default {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_thursday.find(item => item.active === true)
+      return this.rareShows.rare_thursday.find(show => show.active === true)
     },
     rareShowFriday () {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_friday.find(item => item.active === true)
+      return this.rareShows.rare_friday.find(show => show.active === true)
     },
     getToday (){
       return this.getTodayNumeric()

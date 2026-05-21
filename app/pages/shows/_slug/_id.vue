@@ -215,7 +215,7 @@ export default {
     arcsiEpisodesList() {
       if (this.arcsiShow && this.arcsiShow.items?.length) {
         const episodesSorted = this.arcsiShow?.items
-          .filter(item => item.id !== this.arcsiEpisode.id)
+          .filter(episode => episode.id !== this.arcsiEpisode.id)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {

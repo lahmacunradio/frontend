@@ -84,13 +84,13 @@ export default {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_thursday.find(item => item.active === true)
+      return this.rareShows.rare_thursday.find(show => item.active === true)
     },
     rareShowFriday () {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_friday.find(item => item.active === true)
+      return this.rareShows.rare_friday.find(show => item.active === true)
     },
     sortArcsiShowsForSchedule () {
       if (!this.arcsiShows) {
@@ -124,11 +124,11 @@ export default {
       //Current day's index
       const dayIndex = daybyMonday - 1
       this.latestRareThursday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka csut'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
+        .filter(show => show?.playlist_name?.startsWith('Ritka csut'))
+        .filter(show => show?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
       this.latestRareFriday = shows
-        .filter(item => item?.playlist_name?.startsWith('Ritka pentek'))
-        .filter(item => item?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
+        .filter(show => show?.playlist_name?.startsWith('Ritka pentek'))
+        .filter(show => show?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
       const filteredShows = shows
         .filter(val => !this.latestRareThursday.includes(val))
         .filter(val => !this.latestRareFriday.includes(val))
