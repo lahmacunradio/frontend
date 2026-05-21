@@ -84,13 +84,13 @@ export default {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_thursday.find(show => item.active === true)
+      return this.rareShows.rare_thursday.find(show => show.active === true)
     },
     rareShowFriday () {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_friday.find(show => item.active === true)
+      return this.rareShows.rare_friday.find(show => show.active === true)
     },
     sortArcsiShowsForSchedule () {
       if (!this.arcsiShows) {
