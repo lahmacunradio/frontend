@@ -74,7 +74,7 @@ export default {
       }
     },
     async refreshArcsiShowsForTiles () {
-      await this.$axios.get(`${arcsiShowsBaseURL}/all_tiles`, config)
+      await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
         .then((res) => {
           this.$store.commit('refreshArcsiShowsForTiles', res.data)
         })

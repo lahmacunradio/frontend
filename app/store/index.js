@@ -9,7 +9,7 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit ({ state }, { $sentry, error }) {
-    await this.$axios.get(`${arcsiShowsBaseURL}/all_tiles`, config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/allall_details_tiles`, config)
       .then((res) => {
         state.arcsiShowsForTiles = res.data
       })

@@ -108,7 +108,7 @@ export default {
         this.$sentry.captureException(new Error('Arcsi Tag server not available ', error))
         this.$nuxt.error({ statusCode: 404, message: 'Arcsi Tag server not available' })
       })
-    await this.$axios.get(`${arcsiItemBaseURL}/tag/${this.slug}`, config)
+    await this.$axios.get(`${arcsiItemBaseURL}/search_by_tag/${this.slug}`, config)
       .then((res) => {
         this.episodes = res.data
       })
@@ -116,7 +116,7 @@ export default {
         this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
         this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
       })
-    await this.$axios.get(`${arcsiShowsBaseURL}/tag/${this.slug}`, config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/search_by_tag/${this.slug}`, config)
       .then((res) => {
         this.shows = res.data
       })
