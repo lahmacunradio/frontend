@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     episodeImage() {
-      return this.episode.image_url.length > 0 ? this.episode.image_url : this.showList.find(show => show.id === this.episode.shows[0].id).cover_image_url
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.showList.find(show => show.id === this.episode.shows[0].id)?.cover_image_url
     },
     episodeSlug() {
       if (!this.episode.name_slug) {

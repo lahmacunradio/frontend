@@ -4,7 +4,7 @@
     <div class="container mt-8">
       <div v-if="defaultArcsiShows" class="mb-8">
         <AutoCompleteSearch
-          :defaultShows="defaultArcsiShows"
+          :default-shows="defaultArcsiShows"
           suggestion-attribute="name"
           :search-fields="searchFields"
           place-holder="Search"

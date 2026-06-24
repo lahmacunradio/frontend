@@ -38,12 +38,12 @@
               </p>
             </div>
 
-            <div v-if="this.arcsiShow" class="show-infos">
+            <div v-if="arcsiShow" class="show-infos">
               <p>
-                {{ this.arcsiShow.active ? 'Show is active.' : 'Show is not active.' }}
-                Airing time: {{ dayNames[this.arcsiShow.day - 1] }} {{
-                  removeSeconds(this.arcsiShow.start)
-                }}–{{ removeSeconds(this.arcsiShow.end) }}, {{ showFrequency(this.arcsiShow.frequency, this.arcsiShow.week) }}.
+                {{ arcsiShow.active ? 'Show is active.' : 'Show is not active.' }}
+                Airing time: {{ dayNames[arcsiShow.day - 1] }} {{
+                  removeSeconds(arcsiShow.start)
+                }}–{{ removeSeconds(arcsiShow.end) }}, {{ showFrequency(arcsiShow.frequency, arcsiShow.week) }}.
               </p>
             </div>
 
@@ -64,9 +64,9 @@
           </div>
         </div>
       </div>
-      <div v-if="this.arcsiShow && arcsiEpisodesList && arcsiEpisodesList.length" class="py-8">
+      <div v-if="arcsiShow && arcsiEpisodesList && arcsiEpisodesList.length" class="py-8">
         <h4 class="pb-1 mb-4 text-center border-b border-current">
-          Other Episodes from {{ this.arcsiShow.name }}
+          Other Episodes from {{ arcsiShow.name }}
         </h4>
         <div class="pt-4 pb-6 text-center change-order xsm:text-right">
           <a id="bydate" ref="bydate" href="#" class="mr-2 selected change-order-button" @click.prevent="sortAirtime">

@@ -53,14 +53,10 @@ export default {
 
       const minutes = today.getMinutes()
 
-      // refresh arcsiShowsForTiles every 10 minutes
-      if (minutes % 10 === 0) {
-        this.refreshArcsiShowsForTiles()
-      }
-
-      // refresh arcsiShowsForSchedule every 10 minutes
+      // refresh arcsiShowsForSchedule and arcsiShowsForTiles every 10 minutes
       if (minutes % 10 === 0) {
         this.refreshArcsiShowsForSchedule()
+        this.refreshArcsiShowsForTiles()
       }
 
       // refresh rareShows every 3 minutes

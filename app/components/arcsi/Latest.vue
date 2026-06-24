@@ -86,7 +86,10 @@ export default {
       return `${year}-${month}-${day}`
     },
     arcsiEpisodesSliced () {
-      return this.arcsiEpisodes.slice(this.startIndex, this.numberOfEpisodes)
+      if (this.arcsiEpisodes) {
+        return this.arcsiEpisodes.slice(this.startIndex, this.numberOfEpisodes)
+      }
+      return null
     },
     arcsiShowsForTiles () {
       return [...this.$store.getters.returnArcsiShowsForTiles]
