@@ -130,40 +130,18 @@ export function getLanguageGraph (type) {
 
 // Input: all active arcsi shows
 // Output: shows grouped by days (every day is an array) and sorted tarting today's day (CET)
-export function groupShowsByDay (dbshows, rare_thu, rare_fri, customSchedule) {
+export function groupShowsByDay (dbshows) {
   const shows = [...dbshows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
   let list = []
   const daybyMonday = getTodayNumeric() === 0 ? 7 : getTodayNumeric()
   const dayIndex = daybyMonday - 1
-  const latestRareThursday = shows
-    .filter(show => show?.playlist_name?.startsWith('Ritka csut'))
-    .filter(show => show?.archive_lahmastore_base_url !== rare_thu.archive_lahmastore_base_url)
-  const latestRareFriday = shows
-    .filter(show => show?.playlist_name?.startsWith('Ritka pentek'))
-    .filter(show => show?.archive_lahmastore_base_url !== rare_fri.archive_lahmastore_base_url)
 
-  const filteredShows = shows
-    .filter(val => !latestRareThursday.includes(val))
-    .filter(val => !latestRareFriday.includes(val))
-
-  let customScheduleDay = 0
-  let customScheduleEntries = []
-  // custom Schedule Day
-  if (customSchedule?.is_active) {
-    customScheduleDay = parseInt(customSchedule.day_number, 10)
-    customScheduleEntries = customSchedule.schedule
-  }
   for (let i = 0; i < 7; i++) {
     list.push([])
-    if (customScheduleDay - 1 === i) {
-      customScheduleEntries.forEach((entry) => {
-        list[i].push(entry)
-      })
-    }
 
-    filteredShows.forEach((show) => {
+    shows.forEach((show) => {
       if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-      if (show.day - 1 === i && customScheduleDay - 1 !== i) {
+      if (show.day - 1 === i) {
         list[i].push(show)
       }
     })
@@ -171,12 +149,8 @@ export function groupShowsByDay (dbshows, rare_thu, rare_fri, customSchedule) {
   return [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
 }
 
-export function showFrequency (frequency, week, playlist) {
+export function showFrequency (frequency) {
   let showText = 'Not defined'
-  if (playlist === "Ritka csut" || playlist === "Ritka pentek"){
-    showText = 'New episode occasionally'
-    return showText
-  }
   if (frequency === 1) {
     showText = 'New episode monthly'
   }

@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { streamServer, rareShowsURL, customScheduleURL, arcsiShowsBaseURL, config } from '~/constants'
+import { streamServer, arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   data () {
@@ -58,16 +58,6 @@ export default {
         this.refreshArcsiShowsForSchedule()
         this.refreshArcsiShowsForTiles()
       }
-
-      // refresh rareShows every 3 minutes
-      if (minutes % 3 === 0) {
-        this.refreshRareShows()
-      }
-
-      // refresh customSchedule every 4 minutes
-      if (minutes % 4 === 0) {
-        this.refreshCustomSchedule()
-      }
     },
     async refreshArcsiShowsForTiles () {
       await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
@@ -88,28 +78,7 @@ export default {
           this.$sentry.captureException(e)
           this.error({ statusCode: 404, message: 'Arcsi Shows Schedule endpoint not found' })
         })
-    },
-    async refreshRareShows () {
-      await this.$axios.get(rareShowsURL)
-        .then((res) => {
-          this.$store.commit('refreshRareShows', res.data?.acf)
-        })
-        .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'CMS Rare Shows not found' })
-        })
-    },
-    async refreshCustomSchedule () {
-      await this.$axios.get(customScheduleURL)
-        .then((res) => {
-          this.$store.commit('refreshCustomSchedule', res.data?.acf)
-        })
-        .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'CMS Custom schedule not found' })
-        })
     }
-
   }
 }
 </script>

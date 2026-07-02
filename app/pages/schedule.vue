@@ -44,9 +44,7 @@ export default {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       selectedDay: 0,
       customPosition: null,
-      interval: null,
-      latestRareThursday: null,
-      latestRareFriday: null
+      interval: null
     }
   },
   head () {
@@ -73,24 +71,10 @@ export default {
   },
   computed: {
     ...mapGetters({
-      arcsiShows: 'returnArcsiShowsForSchedule',
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
+      arcsiShows: 'returnArcsiShowsForSchedule'
     }),
     getToday (){
       return this.getTodayNumeric()
-    },
-    rareShowThursday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_thursday.find(show => show.active === true)
-    },
-    rareShowFriday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_friday.find(show => show.active === true)
     },
     sortArcsiShowsForSchedule () {
       if (!this.arcsiShows) {
@@ -123,34 +107,11 @@ export default {
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       //Current day's index
       const dayIndex = daybyMonday - 1
-      this.latestRareThursday = shows
-        .filter(show => show?.playlist_name?.startsWith('Ritka csut'))
-        .filter(show => show?.archive_lahmastore_base_url !== this.rareShowThursday.archive_lahmastore_base_url)
-      this.latestRareFriday = shows
-        .filter(show => show?.playlist_name?.startsWith('Ritka pentek'))
-        .filter(show => show?.archive_lahmastore_base_url !== this.rareShowFriday.archive_lahmastore_base_url)
-      const filteredShows = shows
-        .filter(val => !this.latestRareThursday.includes(val))
-        .filter(val => !this.latestRareFriday.includes(val))
-      // custom Schedule Day
-      if (this.customSchedule?.is_active) {
-        this.customScheduleDay = parseInt(this.customSchedule.day_number, 10)
-        this.customScheduleEntries = this.customSchedule.schedule
-        // TODO fix the correct index
-        this.customPosition = this.customScheduleDay >= this.getToday ? this.customScheduleDay - this.getToday : (7 - this.getToday) + this.customScheduleDay
-      }
       for (let i = 0; i < 7; i++) {
         list.push([])
-        if (this.customScheduleDay - 1 === i) {
-          this.customScheduleEntries.forEach((entry) => {
-            list[i].push(entry)
-          })
-        }
-        filteredShows.forEach((show) => {
+
+        shows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-          if (show.day - 1 === i && this.customScheduleDay - 1 !== i) {
-            list[i].push(show)
-          }
         })
       }
       //2D array indexed by the week's days starting at current day; each array element is a 1D array listing the day's shows

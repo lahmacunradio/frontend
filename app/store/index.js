@@ -1,10 +1,8 @@
-import { arcsiShowsBaseURL, rareShowsURL, customScheduleURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 
 export const state = () => ({
   arcsiShowsForTiles: {},
-  arcsiShowsForSchedule: {},
-  rareShows: {},
-  customSchedule: {}
+  arcsiShowsForSchedule: {}
 })
 
 export const actions = {
@@ -25,22 +23,6 @@ export const actions = {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'All Shows for Schedule not found' })
       })
-    await this.$axios.get(rareShowsURL)
-      .then((res) => {
-        state.rareShows = res.data.acf
-      })
-      .catch((e) => {
-        $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Rare shows not found' })
-      })
-    await this.$axios.get(customScheduleURL)
-      .then((res) => {
-        state.customSchedule = res.data.acf
-      })
-      .catch((e) => {
-        $sentry.captureException(e)
-        error({ statusCode: 404, message: 'Custom Schedule not found' })
-      })
   }
 }
 
@@ -50,12 +32,6 @@ export const mutations = {
   },
   refreshArcsiShowsForSchedule (state, payload) {
     state.arcsiShowsForSchedule = payload
-  },
-  refreshRareShows (state, payload) {
-    state.rareShows = payload
-  },
-  refreshCustomSchedule (state, payload) {
-    state.customSchedule = payload
   }
 }
 
@@ -65,11 +41,5 @@ export const getters = {
   },
   returnArcsiShowsForSchedule (state) {
     return state.arcsiShowsForSchedule
-  },
-  returnRareShows (state) {
-    return state.rareShows
-  },
-  returnCustomSchedule (state) {
-    return state.customSchedule
   }
 }
