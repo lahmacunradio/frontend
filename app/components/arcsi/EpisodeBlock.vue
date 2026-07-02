@@ -69,7 +69,7 @@ export default {
     }
   },
   created() {
-    this.showSlug = this.showList.find(show => show.id === this.episode.shows[0].id).archive_lahmastore_base_url
+    this.showSlug = this.showList.find(show => show.id === this.episode.shows[0].id)?.archive_lahmastore_base_url
   }
 }
 </script>
