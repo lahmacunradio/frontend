@@ -33,12 +33,12 @@
             <i class="fa fa-play" aria-hidden="true" />
           </span>
         </button>
-        <h5 v-if="arcsiShow">
-          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}`">
+        <h5 v-if="show">
+          <NuxtLink :to="`/shows/${show.archive_lahmastore_base_url}`">
             {{ episode.shows[0].name }}
           </NuxtLink>
           <span> - </span>
-          <NuxtLink :to="`/shows/${arcsiShow.archive_lahmastore_base_url}/${episode.name_slug}`">
+          <NuxtLink :to="`/shows/${show.archive_lahmastore_base_url}/${episode.name_slug}`">
             {{ episode.name }}
           </NuxtLink>
         </h5>
@@ -145,15 +145,15 @@ export default {
         data: this.episode
       }
     },
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+    showList () {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     },
-    arcsiShow () {
-      if (!this.arcsiList) {
+    show () {
+      if (!this.showList) {
         return false
       }
-      const showID = this.episode?.shows?.[0].id
-      return this.arcsiList?.find(show => show.id === showID)
+      const showIdFromEpisode = this.episode?.shows?.[0].id
+      return this.showList?.find(show => show.id === showIdFromEpisode)
     },
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)

@@ -3,7 +3,7 @@
     <SubTitle title="Lahmacun Archive" url="/archive" />
     <div class="container mt-8">
       <div v-if="arcsiEpisode">
-        <NuxtLink :to="`/shows/${slug}`" class="block">
+        <NuxtLink :to="`/shows/${showSlug}`" class="block">
           <div class="pb-6">
             <i class="fa fa-toggle-left" aria-hidden="true" /> Back to <b>{{ showTitle }}</b>
           </div>
@@ -81,18 +81,18 @@
           </a>
         </div>
         <div class="grid gap-8 xsm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          <div v-for="arcsi in arcsiEpisodesList" :key="arcsi.id">
+          <div v-for="episode in arcsiEpisodesList" :key="episode.id">
             <div>
               <NuxtLink class="block overflow-hidden aspect-ratio-1/1"
-                :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
-                <img :src="mediaServerURL + slug + '/' + arcsi.image_url" alt="" class="my-2 image-fit">
+                :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
+                <img :src="episode.image_url" alt="" class="my-2 image-fit">
               </NuxtLink>
-              <NuxtLink :to="{ path: `/shows/${slug}/${arcsi.name_slug}` }">
+              <NuxtLink :to="{ path: `/shows/${showSlug}/${episode.name_slug}` }">
                 <h5 class="mt-4">
-                  {{ arcsi.name }}
+                  {{ episode.name }}
                 </h5>
               </NuxtLink>
-              <small>Play date: {{ $moment(arcsi.play_date).format('yyyy. MMMM Do.') }}</small>
+              <small>Play date: {{ $moment(episode.play_date).format('yyyy. MMMM Do.') }}</small>
             </div>
           </div>
         </div>
@@ -103,19 +103,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   data() {
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       arcsiItemShadowbox: false,
-      slug: this.$route.params.slug,
-      id: this.$route.params.id,
+      showSlug: this.$route.params.slug,
+      episodeSlug: this.$route.params.id,
       arcsiEpisode: null,
       arcsiShow: null,
       playEpisode: false,
-      mediaServerURL,
       sanitizeOptions: {
         allowedTags: ['p', 'h1', 'h2', 'h3', 'h4', 'b', 'i', 'em', 'strong', 'img', 'figure', 'hr', 'br', 'a', 'sup', 'sub', 'iframe'],
         allowedAttributes: {
@@ -131,34 +130,22 @@ export default {
   },
   async fetch() {
     //Fetch episode data
-    await this.$axios.get(`${arcsiBaseURL}/show/${this.slug}/item/${this.id}`, config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/item/${this.episodeSlug}`, config)
       .then((res) => {
         this.arcsiEpisode = res.data
       })
       .catch((error) => {
-        if (error.response.status === 404) {
-          //Use legacy API URL as fallback
-          this.$axios.get(`${arcsiBaseURL}/item/${this.id}`, config)
-            .then((res) => {
-              this.arcsiEpisode = res.data
-            })
-            .catch((error) => {
-              this.$sentry.captureException(new Error('Arcsi server not available ', error))
-              this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-            })
-        } else {
-          this.$sentry.captureException(new Error('Arcsi server not available ', error))
-          this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
-        }
+        this.$sentry.captureException(new Error('Arcsi Episode server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode server not available' })
       })
     //Fetch show data
-    await this.$axios.get(arcsiBaseURL + '/show/' + this.slug + '/page?filter=archived', config)
+    await this.$axios.get(`${arcsiShowsBaseURL}/${this.showSlug}/page?filter=archived`, config)
       .then((res) => {
         this.arcsiShow = res.data
       })
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi server not available ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi server not available' })
+        this.$sentry.captureException(new Error('Arcsi Show server not available ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Show server not available' })
       })
   },
   head() {
@@ -227,24 +214,24 @@ export default {
     },
     arcsiEpisodesList() {
       if (this.arcsiShow && this.arcsiShow.items?.length) {
-        const itemsSorted = this.arcsiShow?.items
-          .filter(item => item.id !== this.arcsiEpisode.id)
+        const episodesSorted = this.arcsiShow?.items
+          .filter(episode => episode.id !== this.arcsiEpisode.id)
           .sort((a, b) => b.number - a.number)
           .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         if (this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
         } else if (!this.airtimeAsc && this.sortingType === 'air') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => new Date(a.play_date) - new Date(b.play_date))
         } else if (this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }))
         } else if (!this.alphabeticAsc && this.sortingType === 'abc') {
-          return itemsSorted
+          return episodesSorted
             .sort((a, b) => b.name.localeCompare(a.name, 'en', { sensitivity: 'base' }))
         } else {
-          return itemsSorted
+          return episodesSorted
         }
       }
       return null

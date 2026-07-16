@@ -53,9 +53,10 @@ export default {
 
       const minutes = today.getMinutes()
 
-      // refresh arcsiShows every 10 minutes
+      // refresh arcsiShowsForSchedule and arcsiShowsForTiles every 10 minutes
       if (minutes % 10 === 0) {
-        this.refreshAllShows()
+        this.refreshArcsiShowsForSchedule()
+        this.refreshArcsiShowsForTiles()
       }
 
       // refresh rareShows every 3 minutes
@@ -68,14 +69,24 @@ export default {
         this.refreshCustomSchedule()
       }
     },
-    async refreshAllShows () {
-      await this.$axios.get(arcsiShowsBaseURL + '/all_without_items', config)
+    async refreshArcsiShowsForTiles () {
+      await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
         .then((res) => {
-          this.$store.commit('refreshAllShowsList', res.data)
+          this.$store.commit('refreshArcsiShowsForTiles', res.data)
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'All shows endpoint not found' })
+          this.error({ statusCode: 404, message: 'Arcsi Shows Tiles endpoint not found' })
+        })
+    },
+    async refreshArcsiShowsForSchedule () {
+      await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
+        .then((res) => {
+          this.$store.commit('refreshArcsiShowsForSchedule', res.data)
+        })
+        .catch((e) => {
+          this.$sentry.captureException(e)
+          this.error({ statusCode: 404, message: 'Arcsi Shows Schedule endpoint not found' })
         })
     },
     async refreshRareShows () {
@@ -85,7 +96,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Rare Shows not found' })
+          this.error({ statusCode: 404, message: 'CMS Rare Shows not found' })
         })
     },
     async refreshCustomSchedule () {
@@ -95,7 +106,7 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Custom schedule not found' })
+          this.error({ statusCode: 404, message: 'CMS Custom schedule not found' })
         })
     }
 

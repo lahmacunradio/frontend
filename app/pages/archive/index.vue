@@ -11,15 +11,15 @@
         Error happened
       </div>
       <article class="grid gap-8 py-8 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-        <div v-for="(episode) in arcsiEpisodesListSortedLatest" :key="episode.id">
-          <ArcsiEpisodeBlock :episode="episode" :arcsilist="arcsiList" />
+        <div v-for="(episode) in arcsiEpisodes" :key="episode.id">
+          <ArcsiEpisodeBlock :episode="episode" :showList="arcsiShowsForTiles" />
         </div>
       </article>
       <div id="loadmore" class="p-4 text-center">
         <a href="#" @click.prevent="loadMoreEpisodes">
           <b>Load {{ startNumberofEpisodes }} more episodes</b>
           <br>
-          (showing {{ arcsiEpisodesListSortedLatest?.length }} episodes)
+          (showing {{ arcsiEpisodes?.length }} episodes)
         </a>
       </div>
     </div>
@@ -80,18 +80,8 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    arcsiEpisodesListSortedLatest() {
-      if (this.arcsiEpisodes) {
-        const showslist = [...this.arcsiEpisodes]
-        return showslist
-          .filter(item => item.play_date < this.getToday)
-          .filter(item => item.archived === true)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-      }
-      return null
-    },
-    arcsiList() {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowsForTiles() {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     }
   },
   beforeDestroy() {
@@ -101,16 +91,16 @@ export default {
   methods: {
     async fetchEpisodes() {
       this.isFetching = true
-      const newEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/search?size=${this.startNumberofEpisodes}&page=${this.startIndex}&param=${encodeURIComponent(this.term)}`, config)
+      const searchedEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/search?size=${this.startNumberofEpisodes}&page=${this.startIndex}&param=${encodeURIComponent(this.term)}`, config)
         .then(res => res.data)
         .catch((error) => {
-          this.$sentry.captureException(new Error('Arcsi is not available at the moment ', error))
-          this.$nuxt.error({ statusCode: 404, message: 'Arcsi is not available at the moment' })
+          this.$sentry.captureException(new Error('Arcsi Episode Search is not available at the moment ', error))
+          this.$nuxt.error({ statusCode: 404, message: 'Arcsi Episode Search is not available at the moment' })
         })
         .finally(() => {
           this.isFetching = false
         })
-      this.arcsiEpisodes = this.arcsiEpisodes.concat(newEpisodes)
+      this.arcsiEpisodes = this.arcsiEpisodes.concat(searchedEpisodes)
     },
     onUpdate(result) {
       this.arcsiEpisodes = result

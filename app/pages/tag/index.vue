@@ -23,18 +23,17 @@
 </template>
 
 <script>
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiTagBaseURL, config } from '~/constants'
 
 export default {
   data() {
     return {
-      mediaServerURL,
       tags: []
     }
   },
   async fetch() {
     //Fetch Tag data
-    await this.$axios.get(arcsiBaseURL + '/tag/all', config)
+    await this.$axios.get(`${arcsiTagBaseURL}/all`, config)
       .then((res) => {
         this.tags = res.data.sort((a, b) => a?.clean_name.localeCompare(b?.clean_name))
       })

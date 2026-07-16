@@ -69,7 +69,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiBaseURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 
 export default {
   props: {
@@ -135,7 +135,7 @@ export default {
       }
     },
     getShowInfos () {
-      this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=archived,latest', config)
+      this.$axios.get(`${arcsiShowsBaseURL}/${this.slugify(this.show.name)}/page?filter=archived,latest`, config)
         .then((res) => {
           this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
         })

@@ -1,14 +1,14 @@
 <template>
   <div v-if="episode" class="latest-arcsi-blokk">
-    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`">
+    <NuxtLink :to="`/shows/${showSlug}/${episodeSlug}`">
       <div class="mb-4 arcsi-img aspect-ratio-1/1">
         <img class="block" :src="episodeImage">
       </div>
     </NuxtLink>
-    <NuxtLink :to="`/shows/${showslug}/${episodeLink}`">
+    <NuxtLink :to="`/shows/${showSlug}/${episodeSlug}`">
       <h5>{{ episode.name }}</h5>
     </NuxtLink>
-    <NuxtLink :to="`/shows/${showslug}`">
+    <NuxtLink :to="`/shows/${showSlug}`">
       <h5 class="text-white">
         {{ episode.shows[0].name }}
       </h5>
@@ -32,21 +32,21 @@ export default {
       type: Object,
       required: true
     },
-    arcsilist: {
+    showList: {
       type: Array,
       required: true
     }
   },
   data() {
     return {
-      showslug: ''
+      showSlug: ''
     }
   },
   computed: {
     episodeImage() {
-      return this.episode.image_url.length > 0 ? this.episode.image_url : this.arcsilist.find(item => item.id === this.episode.shows[0].id).cover_image_url
+      return this.episode.image_url.length > 0 ? this.episode.image_url : this.showList.find(show => show.id === this.episode.shows[0].id)?.cover_image_url
     },
-    episodeLink() {
+    episodeSlug() {
       if (!this.episode.name_slug) {
         return false
       }
@@ -60,7 +60,7 @@ export default {
     }
   },
   created() {
-    this.showslug = this.arcsilist.find(item => item.id === this.episode.shows[0].id).archive_lahmastore_base_url
+    this.showSlug = this.showList.find(show => show.id === this.episode.shows[0].id)?.archive_lahmastore_base_url
   }
 }
 </script>

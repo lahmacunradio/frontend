@@ -16,9 +16,9 @@
       <li
         v-for="(suggestion, i) in suggestions"
         :key="suggestionAttribute ? suggestion.id : suggestion + i"
-        :ref="i === itemCounter ? `focusItem` : null"
+        :ref="i === showCounter ? `focusShow` : null"
         class="suggestion"
-        :class="{ 'is-active': i === itemCounter }"
+        :class="{ 'is-active': i === showCounter }"
         @click="onClick(suggestion)"
       >
         {{ suggestionAttribute ? suggestion[suggestionAttribute] : suggestion }}
@@ -34,7 +34,7 @@ export default {
     event: 'change'
   },
   props: {
-    defaultItems: {
+    defaultShows: {
       required: true,
       type: Array
     },
@@ -55,7 +55,7 @@ export default {
   data () {
     return {
       value: '',
-      itemCounter: -1,
+      showCounter: -1,
       isOpen: false,
       suggestions: []
     }
@@ -68,73 +68,73 @@ export default {
     this.suggestions = []
   },
   updated () {
-    if (this.$refs.focusItem) {
-      if (this.$refs.focusItem.length) {
-        this.$refs.focusItem[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
+    if (this.$refs.focusShow) {
+      if (this.$refs.focusShow.length) {
+        this.$refs.focusShow[0].scrollIntoView({ behavior: 'smooth', block: 'end' })
       }
     }
   },
   methods: {
-    withAttribute (item) {
+    withAttribute (show) {
       return (
         this.searchFields.some(field => (
-          item[field].toLowerCase().includes(this.value.toLowerCase()))
+          show[field].toLowerCase().includes(this.value.toLowerCase()))
         )
       )
     },
-    withoutAttribute (item) {
-      return item.toLowerCase().includes(this.value.toLowerCase())
+    withoutAttribute (show) {
+      return show.toLowerCase().includes(this.value.toLowerCase())
     },
     getSuggestions () {
-      this.suggestions = this.defaultItems.filter(item => (
+      this.suggestions = this.defaultShows.filter(show => (
         this.suggestionAttribute
-          ? this.withAttribute(item)
-          : this.withoutAttribute(item)
+          ? this.withAttribute(show)
+          : this.withoutAttribute(show)
       ))
     },
     emitResult (result) {
       this.isOpen = false
       this.$emit('update', result)
     },
-    onClick (item) {
-      this.value = this.suggestionAttribute ? item[this.suggestionAttribute] : item
-      this.emitResult([item])
+    onClick (show) {
+      this.value = this.suggestionAttribute ? show[this.suggestionAttribute] : show
+      this.emitResult([show])
     },
     onEnter () {
-      if (this.itemCounter >= 0) {
+      if (this.showCounter >= 0) {
         this.value =
           this.suggestionAttribute
-            ? this.suggestions[this.itemCounter][this.suggestionAttribute]
+            ? this.suggestions[this.showCounter][this.suggestionAttribute]
             : this.suggestions
       }
-      this.emitResult(this.itemCounter >= 0
-        ? [this.suggestions[this.itemCounter]]
+      this.emitResult(this.showCounter >= 0
+        ? [this.suggestions[this.showCounter]]
         : this.suggestions)
     },
     onChange () {
       this.getSuggestions()
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
-      this.itemCounter = -1
+      this.showCounter = -1
     },
     listChange () {
       this.getSuggestions()
       this.isOpen = Boolean(this.value) && this.suggestions.length > 0
-      this.itemCounter = -1
+      this.showCounter = -1
 
-      if (this.itemCounter >= 0) {
+      if (this.showCounter >= 0) {
         this.value =
           this.suggestionAttribute
-            ? this.suggestions[this.itemCounter][this.suggestionAttribute]
+            ? this.suggestions[this.showCounter][this.suggestionAttribute]
             : this.suggestions
       }
-      this.emitResult(this.itemCounter >= 0
-        ? [this.suggestions[this.itemCounter]]
+      this.emitResult(this.showCounter >= 0
+        ? [this.suggestions[this.showCounter]]
         : this.suggestions)
     },
     handleClickOutside (event) {
       if (!this.$el.contains(event.target)) {
         this.isOpen = false
-        this.itemCounter = -1
+        this.showCounter = -1
       }
     }
   }

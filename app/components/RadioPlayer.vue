@@ -1,29 +1,29 @@
 <template>
   <div class="stations nowplaying altalanosinfok">
     <div class="radio-player-widget">
-      <template v-if="is_playing">
-        <audio id="lahmastream" ref="player" :title="np.now_playing.song.text" />
+      <template v-if="isPlaying">
+        <audio id="lahmastream" ref="player" :title="azura.now_playing.song.text" />
       </template>
 
       <div class="now-playing-details">
         <div class="radio-controls">
           <a class="bigplay-button" href="#" @click.prevent="toggle()">
-            <img v-if="is_playing" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
+            <img v-if="isPlaying" src="@/assets/img/pause-gomb.svg" alt="Pause Lahmacun radio" class="pause-button">
             <img v-else src="@/assets/img/play_gomb.svg" alt="Play Lahmacun radio" class="play-button">
           </a>
           <!-- old show image -->
-          <div v-if="showAlbumArt && np.now_playing.song.art" class="now-playing-art">
+          <div v-if="showAlbumArt && azura.now_playing.song.art" class="now-playing-art">
             <a class="cursor-pointer programimage" rel="playerimg" @click.stop="streamModal = !streamModal">
-              <div v-if="show_check === true" class="onair">On air</div>
-              <img class="progimg" :src="show_art_url" :alt="'album_art_alt'">
+              <div v-if="showCheck === true" class="onair">On air</div>
+              <img class="progimg" :src="nowPlayingArt" :alt="'album_art_alt'">
             </a>
-            <Modal :media="show_art_url" :title="show_title" :description="show_subtitle" :visibility="streamModal" @close="closeModal" />
+            <Modal :media="nowPlayingArt" :title="nowPlayingShow" :description="nowPlayingEpisode" :visibility="streamModal" @close="closeModal" />
           </div>
 
           <div class="play-volume-controls">
             <div v-if="false">
               <!-- old play button -->
-              <div v-if="is_playing" class="radio-control-play-button">
+              <div v-if="isPlaying" class="radio-control-play-button">
                 <a href="#" role="button" :title="'pause_btn'" :aria-label="'pause_btn'" @click.prevent="toggle()">
                   <i class="material-icons lg" aria-hidden="true">pause_circle_outline</i>
                 </a>
@@ -38,25 +38,25 @@
             <div class="now-playing-main" :class="{ 'player-no-volume-touch': isTouchEnabled }">
               <div class="media-body">
                 <div>
-                  <h4 :title="show_title" class="now-playing-title">
-                    <nuxt-link v-if="show_check === true" :to="show_url">
-                      <span>{{ show_title }}&nbsp;</span>
+                  <h4 :title="nowPlayingShow" class="now-playing-show">
+                    <nuxt-link v-if="showCheck === true" :to="showUrl">
+                      <span>{{ nowPlayingShow }}&nbsp;</span>
                       <i class="fa fa-link" aria-hidden="true" />
                     </nuxt-link>
 
                     <a
-                      v-if="check_offairlink === true"
-                      :href="np.now_playing.song.custom_fields.offairlink"
+                      v-if="checkOffAirLink === true"
+                      :href="azura.now_playing.song.custom_fields.offairlink"
                       target="_blank"
                     >
-                      <span>{{ show_title }}&nbsp;</span>
+                      <span>{{ nowPlayingShow }}&nbsp;</span>
                       <i class="fa fa-link" aria-hidden="true" />
                     </a>
 
-                    <span v-if="show_check === false && check_offairlink === false">{{ show_title }}</span>
+                    <span v-if="showCheck === false && checkOffAirLink === false">{{ nowPlayingShow }}</span>
                   </h4>
-                  <h5 :title="show_subtitle" class="now-playing-artist">
-                    {{ show_subtitle }}
+                  <h5 :title="nowPlayingEpisode" class="now-playing-episode">
+                    {{ nowPlayingEpisode }}
                   </h5>
                 </div>
               </div>
@@ -74,17 +74,17 @@
               </div>
             </div>
 
-            <div v-if="time_display_played" class="time-display" style="display:none;">
+            <div v-if="timeDisplayPlayed" class="time-display" style="display:none;">
               <div class="time-display-played text-secondary">
-                {{ time_display_played }}
+                {{ timeDisplayPlayed }}
               </div>
               <div class="time-display-progress">
                 <div class="progress">
-                  <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: time_percent+'%' }" />
+                  <div class="progress-bar bg-secondary" role="progressbar" :style="{ width: timePercent+'%' }" />
                 </div>
               </div>
               <div class="time-display-total text-secondary">
-                {{ time_display_total }}
+                {{ timeDisplayTotal }}
               </div>
             </div>
           </div>
@@ -100,7 +100,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              {{ current_stream.name }}
+              {{ currentStream.name }}
             </button>
             <div class="dropdown-menu" aria-labelledby="btn-select-stream">
               <a v-for="stream in streams" :key="stream.name" class="dropdown-item" href="javascript:;" @click="switchStream(stream)">
@@ -110,7 +110,7 @@
           </div>
         </div>
         <div v-if="false" class="hidden sand-clock sm:block">
-          <IconSandclock :progress="time_percent" :live="!!np.live.is_live.length" />
+          <IconSandclock :progress="timePercent" :live="!!azura.live.is_live.length" />
         </div>
       </div>
     </div>
@@ -122,7 +122,7 @@ import VueSlider from 'vue-slider-component/dist-css/vue-slider-component.umd.mi
 import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
-import { arcsiBaseURL, mediaServerURL, config } from '~/constants'
+import { arcsiShowsBaseURL, config } from '~/constants'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -144,7 +144,8 @@ export default {
       streamModal: false,
       show: null,
       latestEpisodeData: null,
-      np: {
+      // Azuracast now_playing API's representation
+      azura: {
         live: {
           is_live: 'Is Live',
           streamer_name: 'Streamer Name'
@@ -170,16 +171,16 @@ export default {
         },
         song_history: {}
       },
-      is_playing: false,
+      isPlaying: false,
       volume: 55,
-      current_stream: {
+      currentStream: {
         name: '',
         url: ''
       },
       audio: null,
-      np_timeout: null,
-      np_interval: null,
-      clock_interval: null,
+      nowPlayingTimeout: null,
+      nowPlayingInterval: null,
+      clockInterval: null,
       timeOutHelper: null,
 
       // rework the checks
@@ -197,26 +198,26 @@ export default {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_thursday.find(item => item.active === true)
+      return this.rareShows.rare_thursday.find(show => show.active === true)
     },
     rareShowFriday () {
       if (!this.rareShows) {
         return false
       }
-      return this.rareShows.rare_friday.find(item => item.active === true)
+      return this.rareShows.rare_friday.find(show => show.active === true)
     },
     getToday (){
       return this.getTodayNumeric()
     },
     streams () {
       const allStreams = []
-      this.np.station.mounts.forEach(function (mount) {
+      this.azura.station.mounts.forEach(function (mount) {
         allStreams.push({
           name: mount.name,
           url: mount.url
         })
       })
-      this.np.station.remotes.forEach(function (remote) {
+      this.azura.station.remotes.forEach(function (remote) {
         allStreams.push({
           name: remote.name,
           url: remote.url
@@ -224,16 +225,16 @@ export default {
       })
       return allStreams
     },
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowList () {
+      return [...this.$store.getters.returnArcsiShowsForSchedule]
     },
     currentShowArcsi () {
       // Legacy function used in building the page; this.show is computed elsewhere
       return this.show
     },
-    time_percent () {
-      const timePlayed = this.np.now_playing.elapsed
-      const timeTotal = this.np.now_playing.duration
+    timePercent () {
+      const timePlayed = this.azura.now_playing.elapsed
+      const timeTotal = this.azura.now_playing.duration
       if (!timeTotal) {
         return 0
       }
@@ -242,9 +243,9 @@ export default {
       }
       return (timePlayed / timeTotal) * 100
     },
-    time_display_played () {
-      let timePlayed = this.np.now_playing.elapsed
-      const timeTotal = this.np.now_playing.duration
+    timeDisplayPlayed () {
+      let timePlayed = this.azura.now_playing.elapsed
+      const timeTotal = this.azura.now_playing.duration
       if (!timeTotal) {
         return null
       }
@@ -253,75 +254,75 @@ export default {
       }
       return this.formatTime(timePlayed)
     },
-    time_display_total () {
-      const timeTotal = this.np.now_playing.duration
+    timeDisplayTotal () {
+      const timeTotal = this.azura.now_playing.duration
       return (timeTotal) ? this.formatTime(timeTotal) : null
     },
     nowPlayingInfoAvailable (){
-      return (this.np?.now_playing?.playlist != '' || this.np?.live?.is_live)
+      return (this.azura?.now_playing?.playlist != '' || this.azura?.live?.is_live)
     },
-    show_title () {
-      let title = ''
-      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
+    nowPlayingShow () {
+      let show = ''
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast now_playing API response
         {
-          if (this.np.live.is_live) 
-            {title = this.np.live.streamer_name} else 
-            {title = this.np.now_playing.song.artist}
+          if (this.azura.live.is_live) 
+            {show = this.azura.live.streamer_name} else 
+            {show = this.azura.now_playing.song.artist}
         } else // Fallback: show metadata needs to be served from arcsi
-        { title=this.show?.name } 
+        { show=this.show?.name } 
         // Update show name in stream in store for other components
-        this.$store.commit('player/setStreamShowTitle', title)
-        return title
+        this.$store.commit('player/setStreamShowTitle', show)
+        return show
     },
-    show_subtitle () {
-      let title = ''
-      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaying API response
+    nowPlayingEpisode () {
+      let episode = ''
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast now_playing API response
       {
-        if (this.np.live.is_live) { 
-          title = this.np.now_playing.song.title 
+        if (this.azura.live.is_live) { 
+          episode = this.azura.now_playing.song.title 
         } else 
         { 
-          title = this.np.now_playing.song.title 
+          episode = this.azura.now_playing.song.title 
         }
       } else // Use arcsi data as fallback
       {
-        title = this.latestEpisodeData?.name
+        episode = this.latestEpisodeData?.name
       }
-      this.$store.commit('player/setStreamEpisodeTitle', title)
-      return title
+      this.$store.commit('player/setStreamEpisodeTitle', episode)
+      return episode
     },
-    show_check () {
+    showCheck () {
       return !!(
-        this.np.live.is_live ||
-        this.np.now_playing.playlist !== 'OFF AIR' && 
-        this.np.now_playing.playlist !== 'Off Air Ambient' && 
-        this.np.now_playing.playlist !== 'Jingle Donate' && 
-        this.np.now_playing.playlist !== 'Jingle Station ID'
+        this.azura.live.is_live ||
+        this.azura.now_playing.playlist !== 'OFF AIR' && 
+        this.azura.now_playing.playlist !== 'Off Air Ambient' && 
+        this.azura.now_playing.playlist !== 'Jingle Donate' && 
+        this.azura.now_playing.playlist !== 'Jingle Station ID'
       )
     },
-    check_offairlink () {
-      return this.np.now_playing.song.custom_fields.offairlink !== null && this.np.now_playing.song.custom_fields.offairlink.length > 3
+    checkOffAirLink () {
+      return this.azura.now_playing.song.custom_fields.offairlink !== null && this.azura.now_playing.song.custom_fields.offairlink.length > 3
     },
-    show_url () {
+    showUrl () {
       const url = this.currentShowArcsi ? this.currentShowArcsi.archive_lahmastore_base_url : ''
       return '/shows/' + url
     },
-    show_art_url () {
+    nowPlayingArt () {
       let url = ''
-      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast nowplaing API response
+      if (this.nowPlayingInfoAvailable) // Show metadata can be served from Azuracast now_playing API response
       {
-        if (this.np.live.is_live) {
+        if (this.azura.live.is_live) {
           // check if this method is valid with streams
           url = this.currentShowArcsi ? this.currentShowArcsi.cover_image_url : this.default_art_url
         } else {
-          // const songTitleJSON = this.np.now_playing.song.title
-          const songArtistJSON = this.np.now_playing.song.artist
-          const artworkJSON = this.np.now_playing.song.art // art work url in json
+          // const songTitleJSON = this.azura.now_playing.song.title
+          const songArtistJSON = this.azura.now_playing.song.artist
+          const artworkJSON = this.azura.now_playing.song.art // art work url in json
 
           if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
             if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
               let artworkHistoryJSON = '';
-              (this.np.song_history).some((el) => { // check song in history one by one; check by artist not by title!
+              (this.azura.song_history).some((el) => { // check song in history one by one; check by artist not by title!
                 if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
                   artworkHistoryJSON = el.song.art
                   return true
@@ -367,7 +368,7 @@ export default {
   },
   created () {
     this.audio = document.createElement('audio')
-    this.clock_interval = setInterval(this.iterateTimer, 1000)
+    this.clockInterval = setInterval(this.iterateTimer, 1000)
     // Handle audio errors.
     this.audio.onerror = (e) => {
       if (e.target.error.code === e.target.error.MEDIA_ERR_NETWORK && this.audio.src !== '') {
@@ -376,7 +377,7 @@ export default {
       }
     }
     this.audio.onended = () => {
-      if (this.is_playing) {
+      if (this.isPlaying) {
         this.stop()
         this.$sentry.captureException(new Error('Stream interrupted '))
         this.timeOutHelper = setTimeout(this.play, 5000)
@@ -399,29 +400,29 @@ export default {
     this.checkNowPlaying()
   },
   beforeDestroy () {
-    clearInterval(this.np_interval)
-    clearInterval(this.clock_interval)
+    clearInterval(this.nowPlayingInterval)
+    clearInterval(this.clockInterval)
     clearInterval(this.docTitleSetter)
-    clearTimeout(this.np_timeout)
+    clearTimeout(this.nowPlayingTimeout)
     clearTimeout(this.timeOutHelper)
-    this.np_interval = null
-    this.np_timeout = null
-    this.clock_interval = null
+    this.nowPlayingInterval = null
+    this.nowPlayingTimeout = null
+    this.clockInterval = null
     this.timeOutHelper = null
   },
   methods: {
     play () {
-      this.audio.src = this.current_stream.url
-      if (!this.is_playing) {
+      this.audio.src = this.currentStream.url
+      if (!this.isPlaying) {
         this.audio.play()
       }
-      this.is_playing = true
+      this.isPlaying = true
       this.showCurrentMetadata()
 
-      document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+      document.title = `🔈 ${this.nowPlayingShow} - ${this.nowPlayingEpisode}`
       this.docTitleSetter = setInterval(() => {
-        if (this.is_playing) {
-          document.title = `🔈 ${this.show_title} - ${this.show_subtitle}`
+        if (this.isPlaying) {
+          document.title = `🔈 ${this.nowPlayingShow} - ${this.nowPlayingEpisode}`
         } else {
           clearInterval(this.docTitleSetter)
         }
@@ -432,11 +433,11 @@ export default {
 
       // Google Analytics 3 play
         gtag('event', 'Radio play', {
-          show_title: this.show_title,
-          episode_title: this.show_subtitle
+          show_title: this.nowPlayingShow,
+          episode_title: this.nowPlayingEpisode
         })
 
-      this.np_interval = setInterval(this.showCurrentMetadata, 15000)
+      this.nowPlayingInterval = setInterval(this.showCurrentMetadata, 15000)
       // Allow pausing from the mobile metadata update.
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('pause', () => {
@@ -446,19 +447,19 @@ export default {
     },
     showCurrentMetadata () {
       // Update the browser metadata for browsers that support it (i.e. Mobile Chrome)
-      if ('mediaSession' in navigator && this.is_playing) {
+      if ('mediaSession' in navigator && this.isPlaying) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: this.np.now_playing.song.title,
-          artist: this.np.now_playing.song.artist,
+          title: this.azura.now_playing.song.title,
+          artist: this.azura.now_playing.song.artist,
           artwork: [
-            { src: this.np.now_playing.song.art }
+            { src: this.azura.now_playing.song.art }
           ]
         })
       }
     },
     stop () {
-      this.is_playing = false
-      if (this.is_playing) {
+      this.isPlaying = false
+      if (this.isPlaying) {
         this.audio.pause()
       }
       this.audio.src = ''
@@ -468,49 +469,49 @@ export default {
       const ogTitle = document.querySelector("meta[property='og:title']")
       document.title = ogTitle ? ogTitle.getAttribute('content') : 'Lahmacun radio'
 
-      clearInterval(this.np_interval)
-      this.np_interval = null
+      clearInterval(this.nowPlayingInterval)
+      this.nowPlayingInterval = null
       // Allow pausing from the mobile metadata update.
       if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('pause', () => null)
       }
     },
     toggle () {
-      if (this.is_playing) {
+      if (this.isPlaying) {
         this.stop()
       } else {
         this.play()
       }
     },
     switchStream (newStream) {
-      this.current_stream = newStream
+      this.currentStream = newStream
       this.play()
     },
     checkNowPlaying () {
       this.$axios.get(this.nowPlayingUri).then((response) => {
         const npNew = response.data
-        this.np = npNew
-        // Set a "default" current stream if none exists.
-        if (this.current_stream.url === '' && npNew.station.listen_url !== '' && this.streams.length > 0) {
-          let currentStream = null
+        this.azura = npNew
+        // Set a "default" currentStream if none exists.
+        if (this.currentStream.url === '' && npNew.station.listen_url !== '' && this.streams.length > 0) {
+          let defaultStream = null
           this.streams.forEach(function (stream) {
             if (stream.url === npNew.station.listen_url) {
-              currentStream = stream
+              defaultStream = stream
             }
           })
-          this.current_stream = currentStream
+          this.currentStream = defaultStream
         }
       // Compute show grouping from arcsi for schedule (Home) and player fallback (if nowplaying is not available)
       // Call for optimisation: don't call it unconditionally; note: now it's necessary for various reasons: 
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
       // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
-      const groupedShows = this.groupShowsByDay(this.arcsiList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
+      const groupedShows = this.groupShowsByDay(this.arcsiShowList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
       this.$store.commit('player/setShowsByDate', groupedShows)
       //Compute current show      
       if (this.nowPlayingInfoAvailable){
         //Compute by name
-        this.show = this.arcsiList.find(show => this.slugify(show.name) === this.slugify(this.show_title))
+        this.show = this.arcsiShowList.find(show => this.slugify(show.name) === this.slugify(this.nowPlayingShow))
       } else {
         // Compute by time
         const todayShows = groupedShows[0]
@@ -521,7 +522,7 @@ export default {
           }
         }
       }  
-      if (this.show_check){
+      if (this.showCheck){
         this.getLatestEpisodeFromArcsi()
       } else {
         this.latestEpisodeData = null
@@ -529,17 +530,17 @@ export default {
       
       }).catch((error) => {
         this.$sentry.captureException(new Error('Stream interrupted ', error))
-        this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
+        this.nowPlayingTimeout = setTimeout(this.checkNowPlaying, 15000)
       }).then(() => {
-        clearTimeout(this.np_timeout)
-        this.np_timeout = setTimeout(this.checkNowPlaying, 15000)
+        clearTimeout(this.nowPlayingTimeout)
+        this.nowPlayingTimeout = setTimeout(this.checkNowPlaying, 15000)
       })
     },
     iterateTimer () {
-      const npElapsed = this.np.now_playing.elapsed
-      const npTotal = this.np.now_playing.duration
+      const npElapsed = this.azura.now_playing.elapsed
+      const npTotal = this.azura.now_playing.duration
       if (npElapsed < npTotal) {
-        this.np.now_playing.elapsed = npElapsed + 1
+        this.azura.now_playing.elapsed = npElapsed + 1
       }
     },
     formatTime (time) {
@@ -562,7 +563,7 @@ export default {
       this.streamModal = false
     },
     getLatestEpisodeFromArcsi() {
-    this.$axios.get(arcsiBaseURL + '/show/' + this.slugify(this.show.name) + '/page?filter=latest', config)
+    this.$axios.get(`${arcsiShowsBaseURL}/${this.slugify(this.show.name)}/page?filter=latest`, config)
       .then((res) => {
         this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
       })
@@ -608,7 +609,7 @@ export default {
           &.player-no-volume-touch {
             @media (max-width: $mobile-width) {
               max-width: 60vw;
-              .now-playing-title, .now-playing-artist {
+              .now-playing-show, .now-playing-episode {
                   white-space: normal;
               }
             }
@@ -624,8 +625,8 @@ export default {
             font-size: 0.8rem;
             font-weight: normal;
         }
-        .now-playing-title,
-        .now-playing-artist {
+        .now-playing-show,
+        .now-playing-episode {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
@@ -801,7 +802,7 @@ a.programimage {
     display:none;
 }
 
-.now-playing-title {
+.now-playing-show {
   font-weight: 500;
   margin-bottom: 0.2rem;
   a i {

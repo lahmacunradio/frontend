@@ -8,9 +8,9 @@
     <div class="container relative pt-12 latest-container" :class="{'opacity-0': $fetchState.pending} ">
       <div ref="slider" class="arcsi-slider-wrapper">
         <div ref="episodes" class="relative arcsi-episodes">
-          <div v-for="(episode, i) in arcsiEpisodesListSortedLatest" :key="episode + i">
+          <div v-for="(episode, i) in arcsiEpisodesSliced" :key="episode + i">
             <div class="episode-wrap" :style="{ 'width': episodeWidth + 'px' }">
-              <ArcsiLatestBlock :episode="episode" :arcsilist="arcsiList" />
+              <ArcsiLatestBlock :episode="episode" :showList="arcsiShowsForTiles" />
             </div>
           </div>
         </div>
@@ -70,8 +70,8 @@ export default {
     this.arcsiEpisodes = await this.$axios.get(`${arcsiItemBaseURL}/latest?size=${this.startNumberofEpisodes}&page=${this.startIndex}`, config)
       .then(res => res.data)
       .catch((error) => {
-        this.$sentry.captureException(new Error('Arcsi latest not found ', error))
-        this.$nuxt.error({ statusCode: 404, message: 'Arcsi latest not found' })
+        this.$sentry.captureException(new Error('Arcsi Latest Episodes are not found ', error))
+        this.$nuxt.error({ statusCode: 404, message: 'Arcsi Latest Episodes are not found' })
       })
     if (typeof window !== 'undefined') {
       this.changeBreakpoint()
@@ -85,20 +85,14 @@ export default {
       const day = d.getDate().toLocaleString('en-US', { minimumIntegerDigits: 2 })
       return `${year}-${month}-${day}`
     },
-    arcsiEpisodesListSortedLatest () {
+    arcsiEpisodesSliced () {
       if (this.arcsiEpisodes) {
-        const showslist = [...this.arcsiEpisodes]
-        return showslist
-          .filter(item => item.play_date < this.getToday)
-          .filter(item => item.archived === true)
-          .filter(item => item.name_slug !== null)
-          .sort((a, b) => new Date(b.play_date) - new Date(a.play_date))
-          .slice(this.startIndex, this.numberOfEpisodes)
+        return this.arcsiEpisodes.slice(this.startIndex, this.numberOfEpisodes)
       }
       return null
     },
-    arcsiList () {
-      return [...this.$store.getters.returnArcsiShows]
+    arcsiShowsForTiles () {
+      return [...this.$store.getters.returnArcsiShowsForTiles]
     }
   },
   mounted () {
@@ -108,7 +102,7 @@ export default {
       this.episodeWidth = Math.round(viewport.clientWidth / this.visibleEpisodes)
       setTimeout(() => {
         this.changeBreakpoint()
-        this.numberOfEpisodes = this.arcsiEpisodesListSortedLatest?.length
+        this.numberOfEpisodes = this.arcsiEpisodesSliced?.length
       }, 3000)
     }
   },

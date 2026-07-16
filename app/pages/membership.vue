@@ -19,7 +19,7 @@
             <form :action="$config.membershipStripeFormUrl" method="GET">
               <div class="selector mb-6">
                 <label class="text-sm mb-1">{{ membershipContent?.acf?.select_show }}</label>
-                <Dropdown v-model="show_name" :options="arcsiShowsList"
+                <Dropdown v-model="show_name" :options="activeShowsList"
                   :placeholder="membershipContent?.acf?.choose_select || 'Choose from list'" scrollHeight="300px" />
               </div>
               <input type="hidden" name="show_name" :value="show_name">
@@ -119,11 +119,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      allShows: 'returnArcsiShows'
+      arcsiShows: 'returnArcsiShowsForTiles'
     }),
-    arcsiShowsList() {
-      if (this.allShows) {
-        return this.allShows.filter(show => (
+    activeShowsList() {
+      if (this.arcsiShows) {
+        return this.arcsiShows.filter(show => (
           !(show.archive_lahmastore_base_url === 'off-air' || !show.active)
         )).sort((a, b) => a.name.localeCompare(b.name)).map(show => show.name)
       }
