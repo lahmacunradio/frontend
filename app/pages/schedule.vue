@@ -103,19 +103,22 @@ export default {
   methods: {
     local_groupShowsByDay (shows) {
       if (!shows) { return false }
-      const list = []
+      const showListForGivenDay = []
       const daybyMonday = this.getToday === 0 ? 7 : this.getToday
       //Current day's index
       const dayIndex = daybyMonday - 1
       for (let i = 0; i < 7; i++) {
-        list.push([])
+        showListForGivenDay.push([])
 
         shows.forEach((show) => {
           if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
+          if (show.day - 1 === i) {
+            showListForGivenDay[i].push(show)
+          }
         })
       }
       //2D array indexed by the week's days starting at current day; each array element is a 1D array listing the day's shows
-      this.showsByDate = [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
+      this.showsByDate = [...showListForGivenDay.slice(dayIndex), ...showListForGivenDay.slice(0, dayIndex)]
       this.dayNames = [...this.dayNames.slice(dayIndex), ...this.dayNames.slice(0, dayIndex)]
     },
     changeDay (dayindex) {
