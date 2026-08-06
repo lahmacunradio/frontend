@@ -37,9 +37,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      fullSchedule: 'returnArcsiShowsForSchedule',
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule'
+      fullSchedule: 'returnArcsiShowsForSchedule'
     }),
     sortShowsForSchedule () {
       return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))

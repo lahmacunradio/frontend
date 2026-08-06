@@ -190,22 +190,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      rareShows: 'returnRareShows',
-      customSchedule: 'returnCustomSchedule',
-    }),
-    rareShowThursday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_thursday.find(show => show.active === true)
-    },
-    rareShowFriday () {
-      if (!this.rareShows) {
-        return false
-      }
-      return this.rareShows.rare_friday.find(show => show.active === true)
-    },
     getToday (){
       return this.getTodayNumeric()
     },
@@ -506,7 +490,7 @@ export default {
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
       // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
-      const groupedShows = this.groupShowsByDay(this.arcsiShowList, this.rareShowThursday, this.rareShowFriday, this.customSchedule)
+      const groupedShows = this.groupShowsByDay(this.arcsiShowList)
       this.$store.commit('player/setShowsByDate', groupedShows)
       //Compute current show      
       if (this.nowPlayingInfoAvailable){
