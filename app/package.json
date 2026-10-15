@@ -9,7 +9,8 @@
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
-    "lint": "eslint --ext .ts,.js,.vue ."
+    "lint": "eslint --ext .ts,.js,.vue .",
+    "test": "node --experimental-detect-module --test"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-0",

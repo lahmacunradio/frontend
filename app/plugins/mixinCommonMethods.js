@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { decode } from 'html-entities'
+import { getBudapestDate, getBudapestWeekday } from './budapestTime.js'
 
 export function romanize (num) {
   if (isNaN(num)) { return NaN }
@@ -39,17 +40,11 @@ export function getCurrentTimeHourCET () {
 }
 
 export function getTodayNumeric () {
-  const d = new Date();
-  const CETdayString = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", weekday:"long"});
-  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(CETdayString)
+  return getBudapestWeekday()
 }
 
 export function getTodayDateCET () {
-  const d = new Date()
-  const year = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", year: "numeric"})
-  const month = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", month: "2-digit"})
-  const day = d.toLocaleString("en-EN", {timeZone: "Europe/Budapest", day: "2-digit"})
-  return `${year}-${month}-${day}`
+  return getBudapestDate()
 }
 
 export function truncate (text, limit = 200) {
