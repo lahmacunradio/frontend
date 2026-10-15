@@ -1,7 +1,7 @@
 // Shaped like GET {arcsiShowsBaseURL}/all_schedule (DEV, verified 2026-10-13):
 // - `day` is 1 (Monday) .. 7 (Sunday)
 // - `week` is 0-indexed: 0..3 = A..D of the 4-week cycle
-// - `items` is a single embedded episode object, not an array
+// - `items` is a single embedded episode object, or `[]` when the show has no episode (verified 2026-10-14)
 // DEV seeds every show with week [0,1,2,3], so this fixture is the only data
 // that exercises per-week filtering until real data diversifies.
 
@@ -107,7 +107,7 @@ export const scheduleWeeks = [
     items: makeItem({ id: 90071, name: 'Monday Morning Episode', number: 9 })
   }),
 
-  // `items` null: shape for zero episodes is unconfirmed (null / omitted / {})
+  // `items` null: the server sends `[]` for zero episodes; null is kept to test defensive handling
   makeShow({
     id: 9008,
     name: 'No Episode Null Show',

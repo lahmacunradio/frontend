@@ -42,7 +42,7 @@
             </NuxtLink>
             <div class="text-sm description">
               <div v-sanitize="[ sanitizeOptions, show.description ]" class="description-text" />
-              <p v-if="latestEpisodeData" class="mt-2">
+              <p v-if="latestEpisode" class="mt-2">
                 Last in archive:
                 <NuxtLink :to="latestEpisodeLink">
                   <b>{{ latestEpisodeTitle }}</b>
@@ -69,7 +69,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { arcsiShowsBaseURL, config } from '~/constants'
+import {
+  getLatestEpisode,
+  latestEpisodeDescription,
+  latestEpisodeLink,
+  latestEpisodeTitle
+} from '~/plugins/latestEpisode'
 
 export default {
   props: {
@@ -81,7 +86,6 @@ export default {
   data () {
     return {
       opened: false,
-      latestEpisodeData: null,
       sanitizeOptions: {
         allowedTags: ['b', 'i', 'em', 'strong', 'br', 'a', 'sup', 'sub'],
         allowedAttributes: {
@@ -99,28 +103,18 @@ export default {
     isTouchEnabled () {
       return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
     },
+    latestEpisode () {
+      return getLatestEpisode(this.show)
+    },
     onAirDescription () {
-      const descriptionFromArcsi = this.latestEpisodeData?.description
-      return descriptionFromArcsi || this.show.description
+      return latestEpisodeDescription(this.show)
     },
     latestEpisodeTitle () {
-      if (!this.latestEpisodeData) {
-        return this.show.name
-      }
-      const episodeTitleFromArcsi = this.latestEpisodeData?.name
-      return episodeTitleFromArcsi ? `${episodeTitleFromArcsi}` : this.show.name
+      return latestEpisodeTitle(this.show)
     },
     latestEpisodeLink () {
-      const baseLink = '/shows/' + this.show.archive_lahmastore_base_url
-      if (!this.latestEpisodeData) {
-        return baseLink
-      }
-      const episodeIdFromArcsi = this.latestEpisodeData?.name_slug
-      return episodeIdFromArcsi ? `/shows/${this.show.archive_lahmastore_base_url}/${episodeIdFromArcsi}` : baseLink
+      return latestEpisodeLink(this.show)
     }
-  },
-  mounted () {
-    this.getShowInfos()
   },
   methods: {
     showAirCheck (showname) {
@@ -130,20 +124,7 @@ export default {
     },
     openShowDetails () {
       this.opened = !this.opened
-      if (this.opened && !this.showAirCheck(this.show.name)) {
-        this.getShowInfos()
-      }
-    },
-    getShowInfos () {
-      this.$axios.get(`${arcsiShowsBaseURL}/${this.slugify(this.show.name)}/page?filter=archived,latest`, config)
-        .then((res) => {
-          this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
-        })
-        .catch((error) => {
-          console.log(error)
-          //this.$nuxt.error({ statusCode: error.response.status, message: "Show's latest episode could not be fetched: " + error.message })
-        })
-    },
+    }
   }
 }
 </script>
