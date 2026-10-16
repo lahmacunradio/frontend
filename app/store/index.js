@@ -1,4 +1,5 @@
 import { arcsiShowsBaseURL, config } from '~/constants'
+import { WEEK_INDEXES, mergeWeeklySchedules } from '~/plugins/fourWeekRotation'
 
 export const state = () => ({
   arcsiShowsForTiles: {},
@@ -6,7 +7,7 @@ export const state = () => ({
 })
 
 export const actions = {
-  async nuxtServerInit ({ state }, { $sentry, error }) {
+  async nuxtServerInit ({ state, dispatch }, { $sentry, error }) {
     await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
       .then((res) => {
         state.arcsiShowsForTiles = res.data
@@ -15,14 +16,19 @@ export const actions = {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'All Shows for Tiles not found' })
       })
-    await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
-      .then((res) => {
-        state.arcsiShowsForSchedule = res.data
-      })
+    await dispatch('fetchArcsiShowsForSchedule')
       .catch((e) => {
         $sentry.captureException(e)
         error({ statusCode: 404, message: 'All Shows for Schedule not found' })
       })
+  },
+  // all_schedule filters by ?week (default 1), so ask for every week and merge.
+  // Rejects if any week fails: callers decide how to report it.
+  async fetchArcsiShowsForSchedule ({ commit }) {
+    const responses = await Promise.all(WEEK_INDEXES.map(week =>
+      this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, { ...config, params: { week } })
+    ))
+    commit('refreshArcsiShowsForSchedule', mergeWeeklySchedules(responses.map(res => res.data)))
   }
 }
 

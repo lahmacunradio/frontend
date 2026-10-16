@@ -69,14 +69,11 @@ export default {
           this.error({ statusCode: 404, message: 'Arcsi Shows Tiles endpoint not found' })
         })
     },
+    // On failure the previous schedule stays on screen
     async refreshArcsiShowsForSchedule () {
-      await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
-        .then((res) => {
-          this.$store.commit('refreshArcsiShowsForSchedule', res.data)
-        })
+      await this.$store.dispatch('fetchArcsiShowsForSchedule')
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Arcsi Shows Schedule endpoint not found' })
         })
     }
   }
