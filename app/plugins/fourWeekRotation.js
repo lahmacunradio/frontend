@@ -30,3 +30,18 @@ export function getCurrentWeekIndex (date = new Date(), anchor = WEEK_A_ANCHOR) 
 export function filterShowsForWeek (shows, weekIndex) {
   return shows.filter(show => show.week?.includes(weekIndex))
 }
+
+// Week indexes to request from GET {arcsiShowsBaseURL}/all_schedule?week=N
+export const WEEK_INDEXES = [0, 1, 2, 3]
+
+// One list from the per-week responses. A show airing in several weeks comes back
+// in each of those responses: keep its first occurrence.
+export function mergeWeeklySchedules (responses) {
+  const showsById = new Map()
+  for (const show of responses.flat()) {
+    if (!showsById.has(show.id)) {
+      showsById.set(show.id, show)
+    }
+  }
+  return [...showsById.values()]
+}

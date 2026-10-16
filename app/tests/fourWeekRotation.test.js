@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { WEEK_A_ANCHOR, filterShowsForWeek, getCurrentWeekIndex } from '../plugins/fourWeekRotation.js'
+import { WEEK_A_ANCHOR, WEEK_INDEXES, filterShowsForWeek, getCurrentWeekIndex, mergeWeeklySchedules } from '../plugins/fourWeekRotation.js'
 import { groupShowsByDay } from '../plugins/mixinCommonMethods.js'
 import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
 import { scheduleWeeks } from './fixtures/scheduleWeeks.js'
@@ -101,5 +101,44 @@ describe('old vs new: shows airing every week', () => {
         assert.deepEqual(groupedIds(groupShowsByDay(filterShowsForWeek(everyWeek, week))), before, `week ${week}`)
       }
     })
+  })
+})
+
+describe('mergeWeeklySchedules', () => {
+  // What GET all_schedule?week=N answers, per arcsi source
+  const responses = WEEK_INDEXES.map(week => filterShowsForWeek(scheduleWeeks, week))
+
+  test('keeps each show once, in order of first appearance', () => {
+    assert.deepEqual(
+      ids(mergeWeeklySchedules(responses)),
+      [9001, 9002, 9005, 9008, 9010, 9003, 9004, 9006, 9009, 9007]
+    )
+  })
+
+  // Order differs from the response; grouping sorts by day and start anyway
+  test('filtering the merged list gives back each week\'s shows', () => {
+    const sortedIds = shows => ids(shows).sort()
+    const merged = mergeWeeklySchedules(responses)
+    for (const week of WEEK_INDEXES) {
+      assert.deepEqual(sortedIds(filterShowsForWeek(merged, week)), sortedIds(responses[week]), `week ${week}`)
+    }
+  })
+
+  test('4 identical responses (DEV today) merge into one copy', () => {
+    const everyWeek = scheduleBaseline.map(show => ({ ...show, week: [0, 1, 2, 3] }))
+
+    assert.deepEqual(ids(mergeWeeklySchedules([everyWeek, everyWeek, everyWeek, everyWeek])), ids(everyWeek))
+  })
+
+  test('handles empty responses', () => {
+    assert.deepEqual(mergeWeeklySchedules([]), [])
+    assert.deepEqual(mergeWeeklySchedules([[], [], [], []]), [])
+  })
+
+  test('does not mutate its input', () => {
+    const before = responses.map(ids)
+    mergeWeeklySchedules(responses)
+
+    assert.deepEqual(responses.map(ids), before)
   })
 })
