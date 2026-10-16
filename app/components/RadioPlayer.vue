@@ -123,6 +123,8 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
 import { arcsiShowsBaseURL, config } from '~/constants'
+import { filterShowsForWeek, getCurrentWeekIndex } from '~/plugins/fourWeekRotation'
+import { findShowOnAir } from '~/plugins/showOnAir'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -490,7 +492,8 @@ export default {
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
       // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
-      const groupedShows = this.groupShowsByDay(this.arcsiShowList)
+      // Current rotation week only. Re-evaluated on every poll, so the week rolls over without a reload
+      const groupedShows = this.groupShowsByDay(filterShowsForWeek(this.arcsiShowList, getCurrentWeekIndex()))
       this.$store.commit('player/setShowsByDate', groupedShows)
       //Compute current show      
       if (this.nowPlayingInfoAvailable){
@@ -498,12 +501,10 @@ export default {
         this.show = this.arcsiShowList.find(show => this.slugify(show.name) === this.slugify(this.nowPlayingShow))
       } else {
         // Compute by time
-        const todayShows = groupedShows[0]
-        for (let i = 0; i < todayShows.length; i++) {
-          this.show = todayShows[i]
-          if (this.removeMinutesAndSeconds(this.show.start)<=this.getCurrentTimeHourCET() && this.removeMinutesAndSeconds(this.show.end) >= this.getCurrentTimeHourCET() ) { //as shows are timely ordered in input array, the first hit will be the currently running show
-            break
-          }
+        const showByTime = findShowOnAir(groupedShows[0], this.getCurrentTimeHourCET())
+        // Empty day: keep the previous show, as the inline loop did
+        if (showByTime) {
+          this.show = showByTime
         }
       }  
       if (this.showCheck){
