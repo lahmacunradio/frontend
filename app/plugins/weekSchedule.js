@@ -19,12 +19,10 @@ function isListed (show) {
   return show.active && show.archive_lahmastore_base_url !== 'off-air'
 }
 
-// Listed shows of one weekday (1 = Monday .. 7 = Sunday) in one rotation week, by start time.
+// Shows of one weekday (1 = Monday .. 7 = Sunday), by start time.
 // Shows with any other `day` value (e.g. PROD's `day: 0`) are never listed.
-export function listShowsForDay (shows, weekIndex, day) {
-  return filterShowsForWeek(shows, weekIndex)
-    .filter(show => isListed(show) && show.day === day)
-    .sort(byStart)
+function showsOnDay (shows, day) {
+  return shows.filter(show => show.day === day).sort(byStart)
 }
 
 // The Monday..Sunday week containing `isoDate` (YYYY-MM-DD, any day of the week).
@@ -33,6 +31,7 @@ export function buildWeekSchedule (shows, isoDate) {
   const monday = getMonday(isoDate)
   const { year, week } = getIsoWeek(monday)
   const weekIndex = getWeekIndex(monday)
+  const weekShows = filterShowsForWeek(shows, weekIndex).filter(isListed)
   return {
     monday,
     isoYear: year,
@@ -41,7 +40,7 @@ export function buildWeekSchedule (shows, isoDate) {
     days: Array.from({ length: 7 }, (_, offset) => ({
       date: addDays(monday, offset),
       day: offset + 1,
-      shows: listShowsForDay(shows, weekIndex, offset + 1)
+      shows: showsOnDay(weekShows, offset + 1)
     }))
   }
 }

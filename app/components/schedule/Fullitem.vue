@@ -81,6 +81,12 @@ export default {
     show: {
       type: Object,
       required: true
+    },
+    // Only today's tab can show the live show as on air: the name match alone
+    // would also flag it on the same weekday in every other week.
+    isToday: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -118,7 +124,7 @@ export default {
   },
   methods: {
     showAirCheck (showname) {
-      if (this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
+      if (this.isToday && this.streamShowTitle && this.slugify(this.streamShowTitle) === this.slugify(showname)) {
         return true
       }
     },

@@ -34,7 +34,7 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in week.days" :key="day.date" class="dayschedule" :class="index === selectedDay ? 'block' : 'hidden'">
-          <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" />
+          <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" :is-today="day.date === week.today" />
         </div>
       </div>
     </client-only>

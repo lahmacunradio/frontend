@@ -34,7 +34,9 @@ export const actions = {
   async fetchArcsiShowsForSchedule ({ commit }) {
     if (loadScheduleFixture && process.env.USE_SCHEDULE_FIXTURE === 'true') {
       const { scheduleWeeks } = await loadScheduleFixture()
-      commit('refreshArcsiShowsForSchedule', scheduleWeeks)
+      // A fresh deep copy each time, like a real response: the same reference would be a no-op for Vue
+      // (nothing re-runs on refresh), and shared objects would become reactive state shared across SSR requests
+      commit('refreshArcsiShowsForSchedule', JSON.parse(JSON.stringify(scheduleWeeks)))
       return
     }
     const responses = await Promise.all(WEEK_INDEXES.map(week =>
