@@ -6,9 +6,9 @@ import { getBudapestDate } from './budapestTime.js'
 import { addDays, getIsoWeek, getMonday } from './calendarDate.js'
 import { filterShowsForWeek, getWeekIndex } from './fourWeekRotation.js'
 
-// Paging window around the current week (decided 2026-10-20)
-export const WEEKS_BACK = 26
-export const WEEKS_AHEAD = 26
+// Paging window around the current week: a year in both directions (decided 2026-10-20)
+export const WEEKS_BACK = 52
+export const WEEKS_AHEAD = 52
 
 // Same order as the old grouping: '18:00:00' -> 1800
 function byStart (a, b) {

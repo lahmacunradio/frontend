@@ -106,16 +106,16 @@ describe('getWeekPage', () => {
     assert.equal(getWeekPage(11, now).monday, '2027-01-04') // 2027-W01
   })
 
-  test('stops 26 weeks back and 26 weeks ahead', () => {
-    assert.equal(WEEKS_BACK, 26)
-    assert.equal(WEEKS_AHEAD, 26)
-    assert.deepEqual(getWeekPage(26, now), { offset: 26, monday: '2027-04-19', hasPrevious: true, hasNext: false })
-    assert.deepEqual(getWeekPage(-26, now), { offset: -26, monday: '2026-04-20', hasPrevious: false, hasNext: true })
+  test('stops 52 weeks back and 52 weeks ahead', () => {
+    assert.equal(WEEKS_BACK, 52)
+    assert.equal(WEEKS_AHEAD, 52)
+    assert.deepEqual(getWeekPage(52, now), { offset: 52, monday: '2027-10-18', hasPrevious: true, hasNext: false }) // 2027-W42
+    assert.deepEqual(getWeekPage(-52, now), { offset: -52, monday: '2025-10-20', hasPrevious: false, hasNext: true }) // 2025-W43
   })
 
   test('clamps offsets outside the window', () => {
-    assert.deepEqual(getWeekPage(27, now), getWeekPage(26, now))
-    assert.deepEqual(getWeekPage(-100, now), getWeekPage(-26, now))
+    assert.deepEqual(getWeekPage(53, now), getWeekPage(52, now))
+    assert.deepEqual(getWeekPage(-100, now), getWeekPage(-52, now))
   })
 
   test('the current week rolls over at Budapest midnight, not UTC', () => {
