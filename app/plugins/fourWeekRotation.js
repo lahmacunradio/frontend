@@ -14,6 +14,13 @@ export function getWeekIndex (isoDate) {
   return getIsoWeek(isoDate).week % WEEKS_IN_CYCLE
 }
 
+const WEEK_LETTERS = ['A', 'B', 'C', 'D']
+
+// Letter shown for a week index: 0 -> 'A' .. 3 -> 'D'
+export function getWeekLetter (weekIndex) {
+  return WEEK_LETTERS[weekIndex]
+}
+
 // Week index of `date` in Budapest: rolls over at Budapest midnight Sunday -> Monday.
 export function getCurrentWeekIndex (date = new Date()) {
   return getWeekIndex(getBudapestDate(date))

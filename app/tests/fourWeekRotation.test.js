@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { WEEK_INDEXES, filterShowsForWeek, getCurrentWeekIndex, getWeekIndex, mergeWeeklySchedules } from '../plugins/fourWeekRotation.js'
+import { WEEK_INDEXES, filterShowsForWeek, getCurrentWeekIndex, getWeekIndex, getWeekLetter, mergeWeeklySchedules } from '../plugins/fourWeekRotation.js'
 import { groupShowsByDay } from '../plugins/mixinCommonMethods.js'
 import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
 import { scheduleWeeks } from './fixtures/scheduleWeeks.js'
@@ -11,6 +11,16 @@ import { withFixedNow } from './helpers/fixedClock.js'
 const weekAt = iso => getCurrentWeekIndex(new Date(iso))
 const ids = shows => shows.map(show => show.id)
 const groupedIds = groups => groups.map(ids)
+
+describe('getWeekLetter', () => {
+  test('maps week index 0..3 to A..D', () => {
+    assert.deepEqual(WEEK_INDEXES.map(getWeekLetter), ['A', 'B', 'C', 'D'])
+  })
+
+  test('W43 2026 is D', () => {
+    assert.equal(getWeekLetter(getWeekIndex('2026-10-19')), 'D')
+  })
+})
 
 describe('getWeekIndex', () => {
   test('is the ISO week number % 4', () => {
