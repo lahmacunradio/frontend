@@ -3,7 +3,8 @@
 // Plain module, not a Nuxt plugin: import it directly, don't register it in nuxt.config.js.
 
 import { getBudapestDate, getBudapestWeekday } from './budapestTime.js'
-import { filterShowsForWeek, getCurrentWeekIndex } from './fourWeekRotation.js'
+import { getCurrentWeekIndex } from './fourWeekRotation.js'
+import { listShowsForDay } from './weekSchedule.js'
 
 const DAYS_SHOWN = 7
 
@@ -12,15 +13,6 @@ const DAYS_SHOWN = 7
 function noonUtc (isoDate, offset) {
   const [year, month, day] = isoDate.split('-').map(Number)
   return new Date(Date.UTC(year, month - 1, day + offset, 12))
-}
-
-// Same order as the old grouping: '18:00:00' -> 1800
-function byStart (a, b) {
-  return parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10)
-}
-
-function isListed (show) {
-  return show.active && show.archive_lahmastore_base_url !== 'off-air'
 }
 
 // [{ date: 'YYYY-MM-DD', day: 1 (Monday) .. 7 (Sunday), weekIndex: 0..3, shows }] x 7, today first.
@@ -35,9 +27,7 @@ export function buildRollingSchedule (shows, now = new Date()) {
       date: getBudapestDate(date),
       day,
       weekIndex,
-      shows: filterShowsForWeek(shows, weekIndex)
-        .filter(show => isListed(show) && show.day === day)
-        .sort(byStart)
+      shows: listShowsForDay(shows, weekIndex, day)
     }
   })
 }
