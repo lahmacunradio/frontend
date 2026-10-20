@@ -34,14 +34,7 @@
       </div>
       <div class="col-span-2 selectday">
         <div v-for="(day, index) in week.days" :key="day.date" class="dayschedule" :class="index === selectedDay ? 'block' : 'hidden'">
-          <div v-for="(show, showindex) in day.shows" :key="index + showindex">
-            <div v-if="customPosition === index">
-              <ScheduleCustom :show="show" />
-            </div>
-            <div v-else>
-              <ScheduleFullitem :show="show" />
-            </div>
-          </div>
+          <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" />
         </div>
       </div>
     </client-only>
@@ -50,19 +43,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { streamServer } from '~/constants'
 import { getBudapestDate } from '~/plugins/budapestTime'
 import { buildWeekSchedule, getDefaultDayIndex, getWeekPage } from '~/plugins/weekSchedule'
 
 export default {
   data () {
     return {
-      streamServer,
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekOffset: 0,
-      selectedDay: 0,
-      customPosition: null,
-      interval: null
+      selectedDay: 0
     }
   },
   head () {

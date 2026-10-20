@@ -50,40 +50,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { streamServer } from '~/constants'
 
 export default {
-  props: {
-    shows: {
-      required: true,
-      type: Array
-    }
-  },
   data () {
     return {
-      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
-      isClient: typeof window !== 'undefined' && window.document,
-      streamServer,
-      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      interval: null,
+      currentHost: typeof window !== 'undefined' ? window.location.origin : null
     }
   },
   computed: {
     ...mapGetters({
       streamShowTitle: 'player/getStreamShowTitle'
     }),
-    getToday (){
-      return this.getTodayNumeric()
-    },
-    todayDate () {
-      return new Date()
-    },
-    tommorrow () {
-      return new Date(new Date())
-    },
-    todayName () {
-      return this.dayNames[this.getToday - 1]
-    },
     showsByDate () {
       return this.$store.getters['player/getShowsByDate']
     }

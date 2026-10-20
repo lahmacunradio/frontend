@@ -59,6 +59,7 @@ export default {
         this.refreshArcsiShowsForTiles()
       }
     },
+    // On failure the previous tiles stay on screen
     async refreshArcsiShowsForTiles () {
       await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
         .then((res) => {
@@ -66,7 +67,6 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Arcsi Shows Tiles endpoint not found' })
         })
     },
     // On failure the previous schedule stays on screen
