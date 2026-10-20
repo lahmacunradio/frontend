@@ -95,9 +95,9 @@ export default {
     changeDay (dayindex) {
       this.selectedDay = dayindex
     },
+    // Keeps the selected weekday: Thursday stays Thursday in the next week
     changeWeek (step) {
       this.weekOffset = getWeekPage(this.weekOffset + step).offset
-      this.selectedDay = getDefaultDayIndex(this.week)
     }
   }
 }
