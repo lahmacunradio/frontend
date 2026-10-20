@@ -7,13 +7,11 @@ import { makeShow } from './fixtures/factories.js'
 import { scheduleWeeks } from './fixtures/scheduleWeeks.js'
 import { withFixedNow } from './helpers/fixedClock.js'
 
-// Week A starts Monday 2026-10-05: 10-05 A, 10-12 B, 10-19 C, 10-26 D
-// Budapest is UTC+2 until 2026-10-25 03:00, UTC+1 after
-const TEST_ANCHOR = '2026-10-05'
+// Index = ISO week % 4: W40 (09-28) A, W41 (10-05) B
 
 // Same steps as RadioPlayer.vue's checkNowPlaying time fallback
 const showOnAirAt = (iso, shows = scheduleWeeks) => withFixedNow(iso, () => {
-  const weekShows = filterShowsForWeek(shows, getCurrentWeekIndex(new Date(), TEST_ANCHOR))
+  const weekShows = filterShowsForWeek(shows, getCurrentWeekIndex())
   return findShowOnAir(groupShowsByDay(weekShows)[0], getCurrentTimeHourCET())
 })
 
@@ -21,19 +19,19 @@ const day = (...slots) => slots.map(([start, end], i) => makeShow({ id: i + 1, s
 
 describe('findShowOnAir with the week filter', () => {
   test('two shows in the same slot: only the current week\'s one is on air', () => {
-    assert.equal(showOnAirAt('2026-10-06T18:30:00Z').id, 9002) // Tue 20:30, week A
-    assert.equal(showOnAirAt('2026-10-13T18:30:00Z').id, 9003) // Tue 20:30, week B
+    assert.equal(showOnAirAt('2026-09-29T18:30:00Z').id, 9002) // Tue 20:30, week A
+    assert.equal(showOnAirAt('2026-10-06T18:30:00Z').id, 9003) // Tue 20:30, week B
   })
 
   test('without the week filter, the slot always resolves to the same show (the bug step 5 fixes)', () => {
     const unfiltered = iso => withFixedNow(iso, () => findShowOnAir(groupShowsByDay(scheduleWeeks)[0], getCurrentTimeHourCET()))
-    assert.equal(unfiltered('2026-10-06T18:30:00Z').id, 9002) // week A
-    assert.equal(unfiltered('2026-10-13T18:30:00Z').id, 9002) // week B, still 9002
+    assert.equal(unfiltered('2026-09-29T18:30:00Z').id, 9002) // week A
+    assert.equal(unfiltered('2026-10-06T18:30:00Z').id, 9002) // week B, still 9002
   })
 
   test('complementary biweekly pair alternates by week', () => {
-    assert.equal(showOnAirAt('2026-10-07T17:30:00Z').id, 9005) // Wed 19:30, week A
-    assert.equal(showOnAirAt('2026-10-14T17:30:00Z').id, 9004) // Wed 19:30, week B
+    assert.equal(showOnAirAt('2026-09-30T17:30:00Z').id, 9005) // Wed 19:30, week A
+    assert.equal(showOnAirAt('2026-10-07T17:30:00Z').id, 9004) // Wed 19:30, week B
   })
 })
 

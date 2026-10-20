@@ -84,6 +84,7 @@ export const scheduleWeeks = [
   }),
 
   // 9006 (Sunday, week C) -> 9007 (Monday, week D): week rollover boundary
+  // (index = ISO week % 4: Sun 2026-10-18 is W42 = C, Mon 2026-10-19 is W43 = D)
   makeShow({
     id: 9006,
     name: 'Sunday Night Week C Show',

@@ -1,62 +1,66 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { WEEK_A_ANCHOR, WEEK_INDEXES, filterShowsForWeek, getCurrentWeekIndex, mergeWeeklySchedules } from '../plugins/fourWeekRotation.js'
+import { WEEK_INDEXES, filterShowsForWeek, getCurrentWeekIndex, getWeekIndex, mergeWeeklySchedules } from '../plugins/fourWeekRotation.js'
 import { groupShowsByDay } from '../plugins/mixinCommonMethods.js'
 import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
 import { scheduleWeeks } from './fixtures/scheduleWeeks.js'
 import { withFixedNow } from './helpers/fixedClock.js'
 
-// Week A starts Monday 2026-10-05: 10-05 A, 10-12 B, 10-19 C, 10-26 D
+// Index = ISO week % 4: W41 (10-05) B, W42 (10-12) C, W43 (10-19) D, W44 (10-26) A
 // Budapest is UTC+2 until 2026-10-25 03:00, UTC+1 after
-const TEST_ANCHOR = '2026-10-05'
-const weekAt = iso => getCurrentWeekIndex(new Date(iso), TEST_ANCHOR)
+const weekAt = iso => getCurrentWeekIndex(new Date(iso))
 const ids = shows => shows.map(show => show.id)
 const groupedIds = groups => groups.map(ids)
 
-describe('getCurrentWeekIndex', () => {
-  test('counts whole weeks from the anchor Monday', () => {
-    assert.equal(weekAt('2026-10-05T10:00:00Z'), 0) // Mon A
-    assert.equal(weekAt('2026-10-11T10:00:00Z'), 0) // Sun A
-    assert.equal(weekAt('2026-10-12T10:00:00Z'), 1) // Mon B
-    assert.equal(weekAt('2026-10-21T10:00:00Z'), 2) // Wed C
-    assert.equal(weekAt('2026-10-28T10:00:00Z'), 3) // Wed D
-    assert.equal(weekAt('2026-11-02T10:00:00Z'), 0) // Mon A again
+describe('getWeekIndex', () => {
+  test('is the ISO week number % 4', () => {
+    assert.equal(getWeekIndex('2026-09-28'), 0) // W40
+    assert.equal(getWeekIndex('2026-10-05'), 1) // W41
+    assert.equal(getWeekIndex('2026-10-14'), 2) // W42
+    assert.equal(getWeekIndex('2026-10-19'), 3) // W43, Monday
+    assert.equal(getWeekIndex('2026-10-25'), 3) // W43, Sunday
+    assert.equal(getWeekIndex('2026-10-26'), 0) // W44
   })
 
+  test('53-week year: W53 and the next W01 are both B, like arcsi', () => {
+    assert.equal(getWeekIndex('2026-12-21'), 0) // W52
+    assert.equal(getWeekIndex('2026-12-28'), 1) // W53
+    assert.equal(getWeekIndex('2027-01-03'), 1) // W53, Sunday
+    assert.equal(getWeekIndex('2027-01-04'), 1) // 2027-W01
+    assert.equal(getWeekIndex('2027-01-11'), 2) // 2027-W02
+  })
+
+  test('52-week year: W52 -> W01 continues the cycle', () => {
+    assert.equal(getWeekIndex('2027-12-27'), 0) // W52
+    assert.equal(getWeekIndex('2028-01-03'), 1) // 2028-W01
+  })
+})
+
+describe('getCurrentWeekIndex', () => {
   test('rolls over at Budapest midnight, not UTC midnight (summer time)', () => {
-    assert.equal(weekAt('2026-10-18T21:30:00Z'), 1) // Sun 23:30 Budapest
-    assert.equal(weekAt('2026-10-18T22:30:00Z'), 2) // Mon 00:30 Budapest, still Sunday in UTC
+    assert.equal(weekAt('2026-10-18T21:30:00Z'), 2) // Sun 23:30 Budapest, W42
+    assert.equal(weekAt('2026-10-18T22:30:00Z'), 3) // Mon 00:30 Budapest, still Sunday in UTC
   })
 
   test('rolls over at Budapest midnight after the DST change', () => {
-    assert.equal(weekAt('2026-10-25T22:30:00Z'), 2) // Sun 23:30 Budapest
-    assert.equal(weekAt('2026-10-25T23:30:00Z'), 3) // Mon 00:30 Budapest, still Sunday in UTC
+    assert.equal(weekAt('2026-10-25T22:30:00Z'), 3) // Sun 23:30 Budapest, W43
+    assert.equal(weekAt('2026-10-25T23:30:00Z'), 0) // Mon 00:30 Budapest, still Sunday in UTC
   })
 
-  test('stays aligned a year later, across two DST changes', () => {
-    assert.equal(weekAt('2027-10-04T10:00:00Z'), 0) // 52 weeks after the anchor
-    assert.equal(weekAt('2027-10-03T21:30:00Z'), 3) // Sun 23:30 Budapest the night before
+  test('rolls over at Budapest midnight into W53', () => {
+    assert.equal(weekAt('2026-12-27T22:30:00Z'), 0) // Sun 23:30 Budapest, W52
+    assert.equal(weekAt('2026-12-27T23:30:00Z'), 1) // Mon 00:30 Budapest, W53
   })
 
-  test('works for dates before the anchor', () => {
-    assert.equal(weekAt('2026-09-28T10:00:00Z'), 3) // Mon, one week before
-    assert.equal(weekAt('2026-09-27T10:00:00Z'), 2) // Sun, the week before that
-
-    for (let day = 1; day <= 400; day++) {
-      const index = weekAt(new Date(Date.UTC(2026, 9, 5 - day, 10)).toISOString())
-      assert.ok(index >= 0 && index <= 3, `day -${day} gave ${index}`)
+  test('always 0..3, also for past dates', () => {
+    for (let day = 0; day <= 800; day++) {
+      const index = weekAt(new Date(Date.UTC(2025, 0, 1 + day, 10)).toISOString())
+      assert.ok(index >= 0 && index <= 3, `day ${day} gave ${index}`)
     }
   })
 
-  test('defaults to now and the configured anchor', () => {
-    const now = '2026-10-14T10:00:00Z'
-    const expected = getCurrentWeekIndex(new Date(now), WEEK_A_ANCHOR)
-
-    assert.equal(withFixedNow(now, () => getCurrentWeekIndex()), expected)
-  })
-
-  test('configured anchor is a Monday', () => {
-    assert.equal(new Date(`${WEEK_A_ANCHOR}T12:00:00Z`).getUTCDay(), 1)
+  test('defaults to now', () => {
+    assert.equal(withFixedNow('2026-10-14T10:00:00Z', () => getCurrentWeekIndex()), 2)
   })
 })
 
@@ -83,8 +87,8 @@ describe('filterShowsForWeek', () => {
   })
 
   test('Sunday -> Monday rollover swaps week C for week D shows', () => {
-    const sunday = ids(filterShowsForWeek(scheduleWeeks, weekAt('2026-10-25T22:30:00Z')))
-    const monday = ids(filterShowsForWeek(scheduleWeeks, weekAt('2026-10-25T23:30:00Z')))
+    const sunday = ids(filterShowsForWeek(scheduleWeeks, weekAt('2026-10-18T21:30:00Z')))
+    const monday = ids(filterShowsForWeek(scheduleWeeks, weekAt('2026-10-18T22:30:00Z')))
 
     assert.ok(sunday.includes(9006) && !sunday.includes(9007))
     assert.ok(monday.includes(9007) && !monday.includes(9006))

@@ -7,42 +7,40 @@ import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
 import { scheduleWeeks } from './fixtures/scheduleWeeks.js'
 import { withFixedNow } from './helpers/fixedClock.js'
 
-// Same test anchor as fourWeekRotation.test.js: A = 10-05, B = 10-12, C = 10-19, D = 10-26
-const ANCHOR = '2026-10-05'
-
-const build = (iso, shows = scheduleWeeks) => buildRollingSchedule(shows, new Date(iso), ANCHOR)
+// Index = ISO week % 4: W40 (09-28) A, W41 (10-05) B, W42 (10-12) C, W43 (10-19) D
+const build = (iso, shows = scheduleWeeks) => buildRollingSchedule(shows, new Date(iso))
 const ids = day => day.shows.map(show => show.id)
 const byDate = (schedule, date) => schedule.find(day => day.date === date)
 
 describe('buildRollingSchedule', () => {
   test('7 days starting today, each with its own date, weekday and week', () => {
-    const schedule = build('2026-10-16T10:00:00Z') // Friday, week B
+    const schedule = build('2026-10-09T10:00:00Z') // Friday, week B
 
     assert.deepEqual(schedule.map(day => day.date), [
-      '2026-10-16', '2026-10-17', '2026-10-18', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22'
+      '2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15'
     ])
     assert.deepEqual(schedule.map(day => day.day), [5, 6, 7, 1, 2, 3, 4])
     assert.deepEqual(schedule.map(day => day.weekIndex), [1, 1, 1, 2, 2, 2, 2])
   })
 
   test('days after Sunday use the next week, not today\'s', () => {
-    const schedule = build('2026-10-09T10:00:00Z') // Friday, week A
-    const tuesday = byDate(schedule, '2026-10-13') // week B
+    const schedule = build('2026-10-02T10:00:00Z') // Friday, week A
+    const tuesday = byDate(schedule, '2026-10-06') // week B
 
     assert.deepEqual(ids(tuesday), [9003])
   })
 
-  test('Sunday week C -> Monday week D, across the DST change', () => {
-    const schedule = build('2026-10-24T10:00:00Z') // Saturday, week C
+  test('Sunday week C -> Monday week D', () => {
+    const schedule = build('2026-10-17T10:00:00Z') // Saturday, week C
 
-    assert.deepEqual(ids(byDate(schedule, '2026-10-25')), [9006])
-    assert.deepEqual(ids(byDate(schedule, '2026-10-26')), [9007, 9001])
+    assert.deepEqual(ids(byDate(schedule, '2026-10-18')), [9006])
+    assert.deepEqual(ids(byDate(schedule, '2026-10-19')), [9007, 9001])
   })
 
   test('today rolls over at Budapest midnight, not UTC', () => {
-    const [today] = build('2026-10-25T23:30:00Z') // UTC Sunday, Budapest Monday 00:30
+    const [today] = build('2026-10-18T22:30:00Z') // UTC Sunday, Budapest Monday 00:30
 
-    assert.equal(today.date, '2026-10-26')
+    assert.equal(today.date, '2026-10-19')
     assert.equal(today.day, 1)
     assert.equal(today.weekIndex, 3)
   })
@@ -53,25 +51,25 @@ describe('buildRollingSchedule', () => {
       makeShow({ id: 2, day: 1, start: '08:00:00', week: [0] }),
       makeShow({ id: 3, day: 1, start: '12:30:00', week: [0] })
     ]
-    const [monday] = build('2026-10-05T10:00:00Z', shows)
+    const [monday] = build('2026-09-28T10:00:00Z', shows)
 
     assert.deepEqual(ids(monday), [2, 3, 1])
   })
 
   test('hides inactive, off-air and never-scheduled shows', () => {
-    const listed = build('2026-10-05T10:00:00Z').flatMap(ids) // Monday, week A
+    const listed = build('2026-09-28T10:00:00Z').flatMap(ids) // Monday, week A
 
     assert.ok(!listed.includes(9010), 'inactive')
     assert.ok(!listed.includes(9011), 'week: []')
 
     const offAir = makeShow({ id: 1, archive_lahmastore_base_url: 'off-air', week: [0] })
-    assert.deepEqual(build('2026-10-05T10:00:00Z', [offAir]).flatMap(ids), [])
+    assert.deepEqual(build('2026-09-28T10:00:00Z', [offAir]).flatMap(ids), [])
   })
 
   test('current behaviour: a show with day 0 is not listed', () => {
     const dayZero = makeShow({ id: 1, day: 0, week: [0, 1, 2, 3] })
 
-    assert.deepEqual(build('2026-10-05T10:00:00Z', [dayZero]).flatMap(ids), [])
+    assert.deepEqual(build('2026-09-28T10:00:00Z', [dayZero]).flatMap(ids), [])
   })
 
   test('does not mutate the input', () => {
@@ -82,7 +80,7 @@ describe('buildRollingSchedule', () => {
   })
 
   test('defaults to the current time', () => {
-    const [today] = withFixedNow('2026-10-16T10:00:00Z', () => buildRollingSchedule(scheduleWeeks, undefined, ANCHOR))
+    const [today] = withFixedNow('2026-10-16T10:00:00Z', () => buildRollingSchedule(scheduleWeeks))
 
     assert.equal(today.date, '2026-10-16')
   })
