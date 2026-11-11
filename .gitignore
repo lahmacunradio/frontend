@@ -91,3 +91,6 @@ sw.*
 
 # Sentry config file
 .sentryclirc
+
+# Local-only docs/notes
+docs/
