@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { WEEKS_AHEAD, WEEKS_BACK, buildWeekSchedule, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '../plugins/weekSchedule.js'
+import { WEEKS_AHEAD, WEEKS_BACK, buildWeekSchedule, canBeOnAir, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '../plugins/weekSchedule.js'
 import { groupShowsByDay } from '../plugins/mixinCommonMethods.js'
 import { makeShow } from './fixtures/factories.js'
 import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
@@ -191,5 +191,38 @@ describe('followToday', () => {
   test('no previous today: unchanged', () => {
     const page = { monday: '2026-10-19', selectedDay: 2 }
     assert.deepEqual(followToday(page, '', '2026-10-21'), page)
+  })
+})
+
+describe('canBeOnAir', () => {
+  const evening = makeShow({ start: '18:00:00', end: '19:00:00' })
+  const lateNight = makeShow({ start: '23:00:00', end: '01:00:00' })
+  const untilMidnight = makeShow({ start: '23:00:00', end: '00:00:00' }) // PROD show 220
+
+  test('any show on today\'s tab', () => {
+    assert.equal(canBeOnAir(evening, '2026-10-20', '2026-10-20'), true)
+    assert.equal(canBeOnAir(lateNight, '2026-10-20', '2026-10-20'), true)
+  })
+
+  test('yesterday\'s tab only for a show running past midnight', () => {
+    assert.equal(canBeOnAir(lateNight, '2026-10-19', '2026-10-20'), true)
+    assert.equal(canBeOnAir(untilMidnight, '2026-10-19', '2026-10-20'), true)
+    assert.equal(canBeOnAir(evening, '2026-10-19', '2026-10-20'), false)
+  })
+
+  // e.g. a 24-hour takeover, 12:00 to 12:00 the next day
+  test('end equal to start counts as running past midnight', () => {
+    assert.equal(canBeOnAir(makeShow({ start: '12:00:00', end: '12:00:00' }), '2026-10-19', '2026-10-20'), true)
+  })
+
+  test('never two days back or on a future day', () => {
+    assert.equal(canBeOnAir(lateNight, '2026-10-18', '2026-10-20'), false)
+    assert.equal(canBeOnAir(lateNight, '2026-10-21', '2026-10-20'), false)
+  })
+
+  // Sunday's show sits in the previous week (and here, the previous year) once Monday starts
+  test('across the week boundary and New Year', () => {
+    assert.equal(canBeOnAir(lateNight, '2026-10-25', '2026-10-26'), true)
+    assert.equal(canBeOnAir(lateNight, '2026-12-31', '2027-01-01'), true)
   })
 })

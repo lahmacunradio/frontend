@@ -63,6 +63,16 @@ export function stepWeek (monday, step, today) {
   return addDays(getMonday(today), clamped * 7)
 }
 
+// Can `show`, listed on `date`, be the one on air (by name match) when it's `today`? On its own day, or on
+// the day before if it runs past midnight (end <= start, e.g. 23:00-01:00 or 23:00-00:00).
+// Dates are YYYY-MM-DD; the time of day isn't checked.
+export function canBeOnAir (show, date, today) {
+  if (date === today) {
+    return true
+  }
+  return addDays(date, 1) === today && show.end <= show.start
+}
+
 // Day tab to open: `today` if it's in `week`, else Monday.
 export function getDefaultDayIndex (week, today) {
   return Math.max(0, week.days.findIndex(day => day.date === today))

@@ -51,7 +51,7 @@
         </p>
         <template v-else>
           <div v-for="(day, index) in week.days" :key="day.date" class="dayschedule" :class="index === selectedDay ? 'block' : 'hidden'">
-            <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" :is-today="day.date === week.today" />
+            <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" :can-be-on-air="canBeOnAir(show, day.date, week.today)" />
           </div>
         </template>
       </div>
@@ -64,7 +64,7 @@ import { mapGetters } from 'vuex'
 import { getIsoWeekday, getMonday } from '~/plugins/calendarDate'
 import { getWeekIndex, getWeekLetter } from '~/plugins/fourWeekRotation'
 import { ERROR } from '~/plugins/scheduleCache'
-import { buildWeekSchedule, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '~/plugins/weekSchedule'
+import { buildWeekSchedule, canBeOnAir, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '~/plugins/weekSchedule'
 
 export default {
   data () {
@@ -143,6 +143,7 @@ export default {
     this.$store.dispatch('ensureScheduleWeek', this.weekIndex)
   },
   methods: {
+    canBeOnAir,
     changeDay (dayindex) {
       this.selectedDay = dayindex
     },
