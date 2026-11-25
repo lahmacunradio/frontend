@@ -60,7 +60,7 @@ export default {
 
       // refresh the schedule and arcsiShowsForTiles every 10 minutes
       if (new Date().getMinutes() % 10 === 0) {
-        this.refreshArcsiShowsForSchedule()
+        this.refreshSchedule()
         this.refreshArcsiShowsForTiles()
       }
     },
@@ -80,17 +80,9 @@ export default {
           this.$sentry.captureException(e)
         })
     },
-    // On failure the previous schedule stays on screen
-    // Interim until 10d: the old 4-week list (still read by the components) + the per-week cache.
-    // refreshScheduleWeeks never rejects, it reports to Sentry itself.
-    async refreshArcsiShowsForSchedule () {
-      await Promise.all([
-        this.$store.dispatch('fetchArcsiShowsForSchedule')
-          .catch((e) => {
-            this.$sentry.captureException(e)
-          }),
-        this.$store.dispatch('refreshScheduleWeeks')
-      ])
+    // Today's week + every loaded one. Never rejects: failures go to Sentry, stale data stays on screen
+    refreshSchedule () {
+      return this.$store.dispatch('refreshScheduleWeeks')
     }
   }
 }
