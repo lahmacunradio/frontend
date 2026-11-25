@@ -30,33 +30,44 @@ export default {
     return {
       streamServer,
       timestamp: '',
-      interval: null,
-      isClient: typeof window !== 'undefined' && window.document
+      interval: null
     }
   },
   created () {
     this.getNow()
   },
+  // The site's one clock, client only (HeaderBlock is in the default layout, so on every page)
   mounted () {
-    if (this.isClient) {
-      this.interval = setInterval(this.getNow, 60 * 1000)
-    }
+    this.onClockTick()
+    this.interval = setInterval(this.onClockTick, 60 * 1000)
+    // Background tabs throttle timers: catch up (e.g. a midnight rollover) when the tab is shown again
+    document.addEventListener('visibilitychange', this.onVisibilityChange)
   },
   beforeDestroy () {
     clearInterval(this.interval)
     this.interval = null
+    document.removeEventListener('visibilitychange', this.onVisibilityChange)
   },
   methods: {
+    // Header clock text; also runs on SSR (created)
     getNow () {
-      const today = new Date()
-      this.timestamp = today.toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric", minute:"numeric", hour12: false})
+      this.timestamp = new Date().toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric", minute:"numeric", hour12: false})
+    },
+    // Store `today` + loading today's week; on SSR failure this is the client's retry
+    onClockTick () {
+      this.getNow()
+      this.$store.dispatch('tick')
 
-      const minutes = today.getMinutes()
-
-      // refresh arcsiShowsForSchedule and arcsiShowsForTiles every 10 minutes
-      if (minutes % 10 === 0) {
+      // refresh the schedule and arcsiShowsForTiles every 10 minutes
+      if (new Date().getMinutes() % 10 === 0) {
         this.refreshArcsiShowsForSchedule()
         this.refreshArcsiShowsForTiles()
+      }
+    },
+    onVisibilityChange () {
+      if (document.visibilityState === 'visible') {
+        this.getNow()
+        this.$store.dispatch('tick')
       }
     },
     // On failure the previous tiles stay on screen
@@ -70,11 +81,16 @@ export default {
         })
     },
     // On failure the previous schedule stays on screen
+    // Interim until 10d: the old 4-week list (still read by the components) + the per-week cache.
+    // refreshScheduleWeeks never rejects, it reports to Sentry itself.
     async refreshArcsiShowsForSchedule () {
-      await this.$store.dispatch('fetchArcsiShowsForSchedule')
-        .catch((e) => {
-          this.$sentry.captureException(e)
-        })
+      await Promise.all([
+        this.$store.dispatch('fetchArcsiShowsForSchedule')
+          .catch((e) => {
+            this.$sentry.captureException(e)
+          }),
+        this.$store.dispatch('refreshScheduleWeeks')
+      ])
     }
   }
 }
