@@ -4,7 +4,7 @@
     <client-only>
       <div class="container mt-8">
         <div class="mb-4 weeknav">
-          <button v-if="weekOffset !== 0" type="button" class="today-button" @click="goToToday">
+          <button v-if="week.offset !== 0" type="button" class="today-button" @click="goToToday">
             Today
           </button>
           <div class="flex items-center justify-center weeknav-pager">
@@ -40,9 +40,20 @@
         </div>
       </div>
       <div class="col-span-2 selectday">
-        <div v-for="(day, index) in week.days" :key="day.date" class="dayschedule" :class="index === selectedDay ? 'block' : 'hidden'">
-          <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" :is-today="day.date === week.today" />
+        <div v-if="loadState === 'error'" class="container py-8" role="alert">
+          <p>Couldn't load this week's schedule.</p>
+          <button type="button" class="underline" @click="retryWeek">
+            Try again
+          </button>
         </div>
+        <p v-else-if="loadState === 'loading'" class="container py-8" role="status">
+          Loading schedule…
+        </p>
+        <template v-else>
+          <div v-for="(day, index) in week.days" :key="day.date" class="dayschedule" :class="index === selectedDay ? 'block' : 'hidden'">
+            <ScheduleFullitem v-for="show in day.shows" :key="show.id" :show="show" :is-today="day.date === week.today" />
+          </div>
+        </template>
       </div>
     </client-only>
   </div>
@@ -50,16 +61,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getBudapestDate } from '~/plugins/budapestTime'
-import { getWeekLetter } from '~/plugins/fourWeekRotation'
-import { buildWeekSchedule, getDefaultDayIndex, getWeekPage } from '~/plugins/weekSchedule'
+import { getIsoWeekday, getMonday } from '~/plugins/calendarDate'
+import { getWeekIndex, getWeekLetter } from '~/plugins/fourWeekRotation'
+import { ERROR } from '~/plugins/scheduleCache'
+import { buildWeekSchedule, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '~/plugins/weekSchedule'
 
 export default {
   data () {
+    const today = this.$store.getters.today
     return {
       dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      weekOffset: 0,
-      selectedDay: 0
+      // The page is the week starting this Monday, not an offset: an offset would silently point
+      // to another week once `today` rolls over
+      shownMonday: getMonday(today),
+      // Today's tab
+      selectedDay: getIsoWeekday(today) - 1
     }
   },
   head () {
@@ -85,22 +101,46 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({
-      arcsiShows: 'returnArcsiShowsForSchedule'
-    }),
-    // Reads the clock, so it also re-runs on every store refresh (10 min): after Sunday midnight,
-    // offset 0 moves on to the new week then.
+    ...mapGetters(['today', 'scheduleForWeekIndex', 'scheduleStatusForWeekIndex']),
+    weekIndex () {
+      return getWeekIndex(this.shownMonday)
+    },
+    // null while the week isn't loaded
+    weekShows () {
+      return this.scheduleForWeekIndex(this.weekIndex)
+    },
+    // Stale data beats an error: a failed refresh keeps showing the last good schedule
+    loadState () {
+      if (this.weekShows) {
+        return 'ready'
+      }
+      return this.scheduleStatusForWeekIndex(this.weekIndex) === ERROR ? 'error' : 'loading'
+    },
     week () {
-      const { monday, hasPrevious, hasNext } = getWeekPage(this.weekOffset)
-      const shows = Array.isArray(this.arcsiShows) ? this.arcsiShows : []
-      return { ...buildWeekSchedule(shows, monday), hasPrevious, hasNext, today: getBudapestDate() }
+      return {
+        ...buildWeekSchedule(this.weekShows || [], this.shownMonday),
+        ...getWeekPage(this.shownMonday, this.today),
+        today: this.today
+      }
     },
     weekLetter () {
       return getWeekLetter(this.week.weekIndex)
     }
   },
-  created () {
-    this.selectedDay = getDefaultDayIndex(this.week)
+  watch: {
+    // Client only (watchers don't run on SSR): load the week when paging to an index not loaded yet
+    weekIndex (weekIndex) {
+      this.$store.dispatch('ensureScheduleWeek', weekIndex)
+    },
+    // Midnight, or a tab shown again later: the current week follows today, a paged week stays
+    today (newToday, oldToday) {
+      const page = followToday({ monday: this.shownMonday, selectedDay: this.selectedDay }, oldToday, newToday)
+      this.shownMonday = page.monday
+      this.selectedDay = page.selectedDay
+    }
+  },
+  mounted () {
+    this.$store.dispatch('ensureScheduleWeek', this.weekIndex)
   },
   methods: {
     changeDay (dayindex) {
@@ -108,11 +148,14 @@ export default {
     },
     // Keeps the selected weekday: Thursday stays Thursday in the next week
     changeWeek (step) {
-      this.weekOffset = getWeekPage(this.weekOffset + step).offset
+      this.shownMonday = stepWeek(this.shownMonday, step, this.today)
     },
     goToToday () {
-      this.weekOffset = 0
-      this.selectedDay = getDefaultDayIndex(this.week)
+      this.shownMonday = getMonday(this.today)
+      this.selectedDay = getDefaultDayIndex(this.week, this.today)
+    },
+    retryWeek () {
+      this.$store.dispatch('fetchScheduleWeek', this.weekIndex)
     }
   }
 }

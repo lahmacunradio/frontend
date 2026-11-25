@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { WEEKS_AHEAD, WEEKS_BACK, buildWeekSchedule, getDefaultDayIndex, getWeekPage } from '../plugins/weekSchedule.js'
+import { WEEKS_AHEAD, WEEKS_BACK, buildWeekSchedule, followToday, getDefaultDayIndex, getWeekPage, stepWeek } from '../plugins/weekSchedule.js'
 import { groupShowsByDay } from '../plugins/mixinCommonMethods.js'
 import { makeShow } from './fixtures/factories.js'
 import { scheduleBaseline } from './fixtures/scheduleBaseline.js'
@@ -93,38 +93,49 @@ describe('buildWeekSchedule', () => {
 })
 
 describe('getWeekPage', () => {
-  const now = new Date('2026-10-20T10:00:00Z') // Tuesday, W43
+  const today = '2026-10-20' // Tuesday, W43
 
-  test('offset 0 is the current week', () => {
-    assert.deepEqual(getWeekPage(0, now), { offset: 0, monday: '2026-10-19', hasPrevious: true, hasNext: true })
+  test('today\'s week is offset 0', () => {
+    assert.deepEqual(getWeekPage('2026-10-19', today), { monday: '2026-10-19', offset: 0, hasPrevious: true, hasNext: true })
   })
 
-  test('pages week by week, across New Year', () => {
-    assert.equal(getWeekPage(1, now).monday, '2026-10-26')
-    assert.equal(getWeekPage(-1, now).monday, '2026-10-12')
-    assert.equal(getWeekPage(10, now).monday, '2026-12-28') // W53
-    assert.equal(getWeekPage(11, now).monday, '2027-01-04') // 2027-W01
+  test('offset counts weeks, across New Year', () => {
+    assert.equal(getWeekPage('2026-10-26', today).offset, 1)
+    assert.equal(getWeekPage('2026-10-12', today).offset, -1)
+    assert.equal(getWeekPage('2026-12-28', today).offset, 10) // W53
+    assert.equal(getWeekPage('2027-01-04', today).offset, 11) // 2027-W01
   })
 
-  test('stops 52 weeks back and 52 weeks ahead', () => {
+  test('the window ends 52 weeks back and 52 weeks ahead', () => {
     assert.equal(WEEKS_BACK, 52)
     assert.equal(WEEKS_AHEAD, 52)
-    assert.deepEqual(getWeekPage(52, now), { offset: 52, monday: '2027-10-18', hasPrevious: true, hasNext: false }) // 2027-W42
-    assert.deepEqual(getWeekPage(-52, now), { offset: -52, monday: '2025-10-20', hasPrevious: false, hasNext: true }) // 2025-W43
+    assert.deepEqual(getWeekPage('2027-10-18', today), { monday: '2027-10-18', offset: 52, hasPrevious: true, hasNext: false }) // 2027-W42
+    assert.deepEqual(getWeekPage('2025-10-20', today), { monday: '2025-10-20', offset: -52, hasPrevious: false, hasNext: true }) // 2025-W43
   })
 
-  test('clamps offsets outside the window', () => {
-    assert.deepEqual(getWeekPage(53, now), getWeekPage(52, now))
-    assert.deepEqual(getWeekPage(-100, now), getWeekPage(-52, now))
+  // A user on the oldest week when the week rolls over
+  test('a week that fell out of the window can only page back in', () => {
+    assert.deepEqual(getWeekPage('2025-10-20', '2026-10-26'), { monday: '2025-10-20', offset: -53, hasPrevious: false, hasNext: true })
+  })
+})
+
+describe('stepWeek', () => {
+  const today = '2026-10-20'
+
+  test('one week forward and back, across New Year', () => {
+    assert.equal(stepWeek('2026-10-19', 1, today), '2026-10-26')
+    assert.equal(stepWeek('2026-10-19', -1, today), '2026-10-12')
+    assert.equal(stepWeek('2026-12-28', 1, today), '2027-01-04') // W53 -> 2027-W01
   })
 
-  test('the current week rolls over at Budapest midnight, not UTC', () => {
-    assert.equal(getWeekPage(0, new Date('2026-10-18T21:30:00Z')).monday, '2026-10-12') // Sun 23:30 Budapest
-    assert.equal(getWeekPage(0, new Date('2026-10-18T22:30:00Z')).monday, '2026-10-19') // Mon 00:30, UTC Sunday
+  test('stays inside the window', () => {
+    assert.equal(stepWeek('2027-10-18', 1, today), '2027-10-18')
+    assert.equal(stepWeek('2025-10-20', -1, today), '2025-10-20')
+    assert.equal(stepWeek('2026-10-19', 100, today), '2027-10-18')
   })
 
-  test('defaults to the current week and the current time', () => {
-    assert.equal(withFixedNow('2026-10-20T10:00:00Z', () => getWeekPage()).monday, '2026-10-19')
+  test('from outside the window, the next step lands back on its edge', () => {
+    assert.equal(stepWeek('2025-10-20', 1, '2026-10-26'), '2025-10-27') // offset -53 -> -52
   })
 })
 
@@ -132,22 +143,53 @@ describe('getDefaultDayIndex', () => {
   const week = build('2026-10-19')
 
   test('today if the week contains it', () => {
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-19T10:00:00Z')), 0) // Monday
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-22T10:00:00Z')), 3) // Thursday
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-25T21:30:00Z')), 6) // Sun 22:30 Budapest
+    assert.equal(getDefaultDayIndex(week, '2026-10-19'), 0)
+    assert.equal(getDefaultDayIndex(week, '2026-10-22'), 3)
+    assert.equal(getDefaultDayIndex(week, '2026-10-25'), 6)
   })
 
   test('Monday for any other week', () => {
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-28T10:00:00Z')), 0)
-    assert.equal(getDefaultDayIndex(build('2026-10-26'), new Date('2026-10-22T10:00:00Z')), 0)
+    assert.equal(getDefaultDayIndex(week, '2026-10-28'), 0)
+    assert.equal(getDefaultDayIndex(build('2026-10-26'), '2026-10-22'), 0)
+  })
+})
+
+describe('followToday', () => {
+  // W43: Mon 2026-10-19 .. Sun 10-25. W44 starts 10-26.
+  test('nothing changes when today doesn\'t move', () => {
+    const page = { monday: '2026-10-19', selectedDay: 3 }
+    assert.deepEqual(followToday(page, '2026-10-21', '2026-10-21'), page)
   })
 
-  test('uses the Budapest date', () => {
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-25T23:30:00Z')), 0) // Mon 00:30 Budapest = next week; UTC Sunday would give 6
-    assert.equal(getDefaultDayIndex(week, new Date('2026-10-20T22:30:00Z')), 2) // Wed 00:30 Budapest, UTC Tuesday
+  test('current week, today\'s tab open: the tab moves to the new today', () => {
+    assert.deepEqual(followToday({ monday: '2026-10-19', selectedDay: 1 }, '2026-10-20', '2026-10-21'), { monday: '2026-10-19', selectedDay: 2 })
   })
 
-  test('defaults to now', () => {
-    assert.equal(withFixedNow('2026-10-21T10:00:00Z', () => getDefaultDayIndex(week)), 2)
+  test('current week, another tab open: the tab stays', () => {
+    assert.deepEqual(followToday({ monday: '2026-10-19', selectedDay: 4 }, '2026-10-20', '2026-10-21'), { monday: '2026-10-19', selectedDay: 4 })
+  })
+
+  test('Sunday -> Monday on Sunday\'s tab: next week, Monday\'s tab', () => {
+    assert.deepEqual(followToday({ monday: '2026-10-19', selectedDay: 6 }, '2026-10-25', '2026-10-26'), { monday: '2026-10-26', selectedDay: 0 })
+  })
+
+  test('Sunday -> Monday on another tab: next week, same weekday', () => {
+    assert.deepEqual(followToday({ monday: '2026-10-19', selectedDay: 3 }, '2026-10-25', '2026-10-26'), { monday: '2026-10-26', selectedDay: 3 })
+  })
+
+  test('a paged week stays put, also across the rollover', () => {
+    const page = { monday: '2026-11-02', selectedDay: 6 }
+    assert.deepEqual(followToday(page, '2026-10-25', '2026-10-26'), page)
+    assert.deepEqual(followToday(page, '2026-10-20', '2026-10-21'), page)
+  })
+
+  // Tab hidden over several days: lands on the real today, not one day later
+  test('a jump of several days lands on the new today', () => {
+    assert.deepEqual(followToday({ monday: '2026-10-19', selectedDay: 4 }, '2026-10-23', '2026-10-28'), { monday: '2026-10-26', selectedDay: 2 })
+  })
+
+  test('no previous today: unchanged', () => {
+    const page = { monday: '2026-10-19', selectedDay: 2 }
+    assert.deepEqual(followToday(page, '', '2026-10-21'), page)
   })
 })

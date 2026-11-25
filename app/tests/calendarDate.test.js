@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test'
 import assert from 'node:assert/strict'
-import { addDays, getIsoWeek, getIsoWeekday, getMonday } from '../plugins/calendarDate.js'
+import { addDays, daysBetween, getIsoWeek, getIsoWeekday, getMonday } from '../plugins/calendarDate.js'
 
 // Expected ISO weeks taken from Python's date.isocalendar()
 
@@ -15,6 +15,24 @@ describe('addDays', () => {
   test('is not affected by the DST change', () => {
     assert.equal(addDays('2026-10-25', 1), '2026-10-26')
     assert.equal(addDays('2026-03-29', 1), '2026-03-30')
+  })
+})
+
+describe('daysBetween', () => {
+  test('counts calendar days, negative backwards', () => {
+    assert.equal(daysBetween('2026-10-19', '2026-10-26'), 7)
+    assert.equal(daysBetween('2026-10-26', '2026-10-19'), -7)
+    assert.equal(daysBetween('2026-10-19', '2026-10-19'), 0)
+  })
+
+  test('across DST, leap day and New Year', () => {
+    assert.equal(daysBetween('2026-10-24', '2026-10-26'), 2) // 2026-10-25 is 25 hours long in Budapest
+    assert.equal(daysBetween('2028-02-28', '2028-03-01'), 2)
+    assert.equal(daysBetween('2026-12-28', '2027-01-04'), 7)
+  })
+
+  test('inverse of addDays', () => {
+    assert.equal(daysBetween('2026-10-19', addDays('2026-10-19', -365)), -365)
   })
 })
 

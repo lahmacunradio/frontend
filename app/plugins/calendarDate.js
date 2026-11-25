@@ -18,6 +18,11 @@ export function addDays (isoDate, days) {
   return fromDayNumber(dayNumber(isoDate) + days)
 }
 
+// Days from `from` to `to`: negative if `to` is earlier
+export function daysBetween (from, to) {
+  return dayNumber(to) - dayNumber(from)
+}
+
 // ISO weekday: 1 = Monday .. 7 = Sunday (same numbering as show.day)
 export function getIsoWeekday (isoDate) {
   return ((dayNumber(isoDate) + 3) % 7 + 7) % 7 + 1

@@ -2,8 +2,7 @@
 // A Monday..Sunday week has a single rotation week index (ISO week % 4).
 // Plain module, not a Nuxt plugin: import it directly, don't register it in nuxt.config.js.
 
-import { getBudapestDate } from './budapestTime.js'
-import { addDays, getIsoWeek, getMonday } from './calendarDate.js'
+import { addDays, daysBetween, getIsoWeek, getIsoWeekday, getMonday } from './calendarDate.js'
 import { filterShowsForWeek, getWeekIndex } from './fourWeekRotation.js'
 
 // Paging window around the current week: a year in both directions (decided 2026-10-20)
@@ -45,18 +44,40 @@ export function buildWeekSchedule (shows, isoDate) {
   }
 }
 
-// Week `offset` weeks from the current one (Budapest), clamped to the paging window.
-export function getWeekPage (offset = 0, now = new Date()) {
-  const clamped = Math.min(WEEKS_AHEAD, Math.max(-WEEKS_BACK, offset))
+// Paging state of the week starting `monday`, relative to the week containing `today` (both YYYY-MM-DD).
+// `offset` can fall outside the window after a midnight rollover; the arrows then only lead back in.
+export function getWeekPage (monday, today) {
+  const offset = daysBetween(getMonday(today), monday) / 7
   return {
-    offset: clamped,
-    monday: addDays(getMonday(getBudapestDate(now)), clamped * 7),
-    hasPrevious: clamped > -WEEKS_BACK,
-    hasNext: clamped < WEEKS_AHEAD
+    monday,
+    offset,
+    hasPrevious: offset > -WEEKS_BACK,
+    hasNext: offset < WEEKS_AHEAD
   }
 }
 
-// Day tab to open: today if it's in `week`, else Monday.
-export function getDefaultDayIndex (week, now = new Date()) {
-  return Math.max(0, week.days.findIndex(day => day.date === getBudapestDate(now)))
+// Monday `step` weeks away from `monday`, clamped to the paging window around `today`'s week.
+export function stepWeek (monday, step, today) {
+  const offset = getWeekPage(monday, today).offset + step
+  const clamped = Math.min(WEEKS_AHEAD, Math.max(-WEEKS_BACK, offset))
+  return addDays(getMonday(today), clamped * 7)
+}
+
+// Day tab to open: `today` if it's in `week`, else Monday.
+export function getDefaultDayIndex (week, today) {
+  return Math.max(0, week.days.findIndex(day => day.date === today))
+}
+
+// Where the page goes when `today` changes (midnight, or a tab woken up later). `page` = { monday, selectedDay }.
+// On the current week: follow it into the new week, and if today's tab was open, move to the new today.
+// On a paged week: stay put.
+export function followToday (page, oldToday, newToday) {
+  if (!oldToday || page.monday !== getMonday(oldToday)) {
+    return page
+  }
+  const wasOnToday = page.selectedDay === getIsoWeekday(oldToday) - 1
+  return {
+    monday: getMonday(newToday),
+    selectedDay: wasOnToday ? getIsoWeekday(newToday) - 1 : page.selectedDay
+  }
 }
