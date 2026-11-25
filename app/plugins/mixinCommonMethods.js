@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { decode } from 'html-entities'
 import { getBudapestDate, getBudapestWeekday } from './budapestTime.js'
+import { byStart, isListed } from './showListing.js'
 
 export function romanize (num) {
   if (isNaN(num)) { return NaN }
@@ -126,21 +127,12 @@ export function getLanguageGraph (type) {
 // Input: all active arcsi shows
 // Output: shows grouped by days (every day is an array) and sorted tarting today's day (CET)
 export function groupShowsByDay (dbshows) {
-  const shows = [...dbshows].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
-  let list = []
+  // filter() copies, so sort() doesn't touch the input
+  const shows = dbshows.filter(isListed).sort(byStart)
   const daybyMonday = getTodayNumeric() === 0 ? 7 : getTodayNumeric()
   const dayIndex = daybyMonday - 1
-
-  for (let i = 0; i < 7; i++) {
-    list.push([])
-
-    shows.forEach((show) => {
-      if (show.archive_lahmastore_base_url === 'off-air' || !show.active) { return false }
-      if (show.day - 1 === i) {
-        list[i].push(show)
-      }
-    })
-  }
+  // Monday..Sunday; any other `day` value (e.g. 0) is never listed
+  const list = Array.from({ length: 7 }, (_, i) => shows.filter(show => show.day - 1 === i))
   return [...list.slice(dayIndex), ...list.slice(0, dayIndex)]
 }
 

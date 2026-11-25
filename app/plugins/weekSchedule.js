@@ -4,19 +4,11 @@
 
 import { addDays, daysBetween, getIsoWeek, getIsoWeekday, getMonday } from './calendarDate.js'
 import { filterShowsForWeek, getWeekIndex } from './fourWeekRotation.js'
+import { byStart, isListed } from './showListing.js'
 
 // Paging window around the current week: a year in both directions (decided 2026-10-20)
 export const WEEKS_BACK = 52
 export const WEEKS_AHEAD = 52
-
-// Same order as the old grouping: '18:00:00' -> 1800
-function byStart (a, b) {
-  return parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10)
-}
-
-function isListed (show) {
-  return show.active && show.archive_lahmastore_base_url !== 'off-air'
-}
 
 // Shows of one weekday (1 = Monday .. 7 = Sunday), by start time.
 // Shows with any other `day` value (e.g. PROD's `day: 0`) are never listed.
