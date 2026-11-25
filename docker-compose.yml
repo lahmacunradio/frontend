@@ -18,6 +18,7 @@ services:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - app
+    entrypoint: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
     depends_on:
