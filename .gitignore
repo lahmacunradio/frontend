@@ -91,3 +91,7 @@ sw.*
 
 # Sentry config file
 .sentryclirc
+
+# Local-only docs/notes, except the known-issues list (referenced from code comments)
+docs/*
+!docs/KNOWN_ISSUES.md

@@ -9,7 +9,7 @@
     </div>
     <div class="flex items-center scheduleblock">
       <div class="w-full pt-4 pb-8 m-auto">
-        <div v-for="(show, index) in showsByDate[0]" :key="show.id * (index + index) * index" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
+        <div v-for="show in showsByDate[0]" :key="show.id" :class="showAirCheck(0, show.name) ? 'dayblock onair' : 'dayblock'">
           <div class="onairshow">
             <span class="text-red-600">●</span>
             On Air
@@ -50,40 +50,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { streamServer } from '~/constants'
 
 export default {
-  props: {
-    shows: {
-      required: true,
-      type: Array
-    }
-  },
   data () {
     return {
-      currentHost: typeof window !== 'undefined' ? window.location.origin : null,
-      isClient: typeof window !== 'undefined' && window.document,
-      streamServer,
-      dayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      interval: null,
+      currentHost: typeof window !== 'undefined' ? window.location.origin : null
     }
   },
   computed: {
     ...mapGetters({
       streamShowTitle: 'player/getStreamShowTitle'
     }),
-    getToday (){
-      return this.getTodayNumeric()
-    },
-    todayDate () {
-      return new Date()
-    },
-    tommorrow () {
-      return new Date(new Date())
-    },
-    todayName () {
-      return this.dayNames[this.getToday - 1]
-    },
     showsByDate () {
       return this.$store.getters['player/getShowsByDate']
     }

@@ -6,7 +6,7 @@
       </div>
       <div>
         <client-only>
-          <ScheduleHome :shows="sortShowsForSchedule" />
+          <ScheduleHome />
         </client-only>
       </div>
     </section>
@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import { newsURL } from '~/constants'
 
 export default {
@@ -36,12 +35,6 @@ export default {
       })
   },
   computed: {
-    ...mapGetters({
-      fullSchedule: 'returnArcsiShowsForSchedule'
-    }),
-    sortShowsForSchedule () {
-      return [...this.fullSchedule].sort((a, b) => a.day - b.day).sort((a, b) => parseInt(a.start.replace(':', ''), 10) - parseInt(b.start.replace(':', ''), 10))
-    },
     newsListState () {
       if (!this.newsList) {
         return false

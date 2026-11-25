@@ -30,35 +30,47 @@ export default {
     return {
       streamServer,
       timestamp: '',
-      interval: null,
-      isClient: typeof window !== 'undefined' && window.document
+      interval: null
     }
   },
   created () {
     this.getNow()
   },
+  // The site's one clock, client only (HeaderBlock is in the default layout, so on every page)
   mounted () {
-    if (this.isClient) {
-      this.interval = setInterval(this.getNow, 60 * 1000)
-    }
+    this.onClockTick()
+    this.interval = setInterval(this.onClockTick, 60 * 1000)
+    // Background tabs throttle timers: catch up (e.g. a midnight rollover) when the tab is shown again
+    document.addEventListener('visibilitychange', this.onVisibilityChange)
   },
   beforeDestroy () {
     clearInterval(this.interval)
     this.interval = null
+    document.removeEventListener('visibilitychange', this.onVisibilityChange)
   },
   methods: {
+    // Header clock text; also runs on SSR (created)
     getNow () {
-      const today = new Date()
-      this.timestamp = today.toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric", minute:"numeric", hour12: false})
+      this.timestamp = new Date().toLocaleString("en-EN", {timeZone: "Europe/Budapest", hour:"numeric", minute:"numeric", hour12: false})
+    },
+    // Store `today` + loading today's week; on SSR failure this is the client's retry
+    onClockTick () {
+      this.getNow()
+      this.$store.dispatch('tick')
 
-      const minutes = today.getMinutes()
-
-      // refresh arcsiShowsForSchedule and arcsiShowsForTiles every 10 minutes
-      if (minutes % 10 === 0) {
-        this.refreshArcsiShowsForSchedule()
+      // refresh the schedule and arcsiShowsForTiles every 10 minutes
+      if (new Date().getMinutes() % 10 === 0) {
+        this.refreshSchedule()
         this.refreshArcsiShowsForTiles()
       }
     },
+    onVisibilityChange () {
+      if (document.visibilityState === 'visible') {
+        this.getNow()
+        this.$store.dispatch('tick')
+      }
+    },
+    // On failure the previous tiles stay on screen
     async refreshArcsiShowsForTiles () {
       await this.$axios.get(`${arcsiShowsBaseURL}/all_details`, config)
         .then((res) => {
@@ -66,18 +78,11 @@ export default {
         })
         .catch((e) => {
           this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Arcsi Shows Tiles endpoint not found' })
         })
     },
-    async refreshArcsiShowsForSchedule () {
-      await this.$axios.get(`${arcsiShowsBaseURL}/all_schedule`, config)
-        .then((res) => {
-          this.$store.commit('refreshArcsiShowsForSchedule', res.data)
-        })
-        .catch((e) => {
-          this.$sentry.captureException(e)
-          this.error({ statusCode: 404, message: 'Arcsi Shows Schedule endpoint not found' })
-        })
+    // Today's week + every loaded one. Never rejects: failures go to Sentry, stale data stays on screen
+    refreshSchedule () {
+      return this.$store.dispatch('refreshScheduleWeeks')
     }
   }
 }

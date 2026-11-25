@@ -123,6 +123,8 @@ import 'vue-slider-component/dist-css/vue-slider-component.css'
 // import theme
 import 'vue-slider-component/theme/default.css'
 import { arcsiShowsBaseURL, config } from '~/constants'
+import { filterShowsForWeek } from '~/plugins/fourWeekRotation'
+import { findShowOnAir } from '~/plugins/showOnAir'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -209,8 +211,9 @@ export default {
       })
       return allStreams
     },
+    // Today's rotation week only (store cache, loaded on SSR and by the clock tick); empty until loaded
     arcsiShowList () {
-      return [...this.$store.getters.returnArcsiShowsForSchedule]
+      return [...(this.$store.getters.scheduleForWeekIndex(this.$store.getters.currentWeekIndex) || [])]
     },
     currentShowArcsi () {
       // Legacy function used in building the page; this.show is computed elsewhere
@@ -304,7 +307,7 @@ export default {
           const artworkJSON = this.azura.now_playing.song.art // art work url in json
 
           if (artworkJSON === this.default_azuracast_art_url) { // default url by azuracast (must be returning off air music with art work)
-            if (this.currentShowArcsi.cover_image_url === undefined) { // show not found
+            if (!this.currentShowArcsi || this.currentShowArcsi.cover_image_url === undefined) { // show not found
               let artworkHistoryJSON = '';
               (this.azura.song_history).some((el) => { // check song in history one by one; check by artist not by title!
                 if (el.song.artist === songArtistJSON && el.song.art !== this.default_azuracast_art_url) {
@@ -490,20 +493,21 @@ export default {
       // 1. It needs to be computed for schedule at home -> computation cannot be bound to a state where nowplaying is not available
       // 2. We may need some recurring calculation logic if we want day changes not to need site reload
       // 3. Reflect arcsi changes on the fly (note that currently arcsi for the shows list is polled once when the site is loaded (see nuxtServerInit)) 
-      const groupedShows = this.groupShowsByDay(this.arcsiShowList)
+      // Current rotation week only. Re-evaluated on every poll, so the week rolls over without a reload.
+      // arcsi already filters by ?week; filtering again guards against the ?week=1 default
+      const groupedShows = this.groupShowsByDay(filterShowsForWeek(this.arcsiShowList, this.$store.getters.currentWeekIndex))
       this.$store.commit('player/setShowsByDate', groupedShows)
       //Compute current show      
       if (this.nowPlayingInfoAvailable){
-        //Compute by name
+        //Compute by name, today's week only. A miss leaves this.show undefined (see docs/KNOWN_ISSUES.md):
+        //a show playing outside its week, or any show while today's week isn't loaded yet
         this.show = this.arcsiShowList.find(show => this.slugify(show.name) === this.slugify(this.nowPlayingShow))
       } else {
         // Compute by time
-        const todayShows = groupedShows[0]
-        for (let i = 0; i < todayShows.length; i++) {
-          this.show = todayShows[i]
-          if (this.removeMinutesAndSeconds(this.show.start)<=this.getCurrentTimeHourCET() && this.removeMinutesAndSeconds(this.show.end) >= this.getCurrentTimeHourCET() ) { //as shows are timely ordered in input array, the first hit will be the currently running show
-            break
-          }
+        const showByTime = findShowOnAir(groupedShows[0], this.getCurrentTimeHourCET())
+        // Empty day: keep the previous show, as the inline loop did
+        if (showByTime) {
+          this.show = showByTime
         }
       }  
       if (this.showCheck){
@@ -547,6 +551,11 @@ export default {
       this.streamModal = false
     },
     getLatestEpisodeFromArcsi() {
+    // Name match missed (show outside today's week, or today's week not loaded yet): no show, no episode
+    if (!this.show) {
+      this.latestEpisodeData = null
+      return
+    }
     this.$axios.get(`${arcsiShowsBaseURL}/${this.slugify(this.show.name)}/page?filter=latest`, config)
       .then((res) => {
         this.latestEpisodeData = res.data.items //note that it's a sinlge item with filter latest, plural in var name is misleading
