@@ -499,7 +499,7 @@ export default {
       this.$store.commit('player/setShowsByDate', groupedShows)
       //Compute current show      
       if (this.nowPlayingInfoAvailable){
-        //Compute by name, today's week only. A miss leaves this.show undefined (see KNOWN_ISSUES.md):
+        //Compute by name, today's week only. A miss leaves this.show undefined (see docs/KNOWN_ISSUES.md):
         //a show playing outside its week, or any show while today's week isn't loaded yet
         this.show = this.arcsiShowList.find(show => this.slugify(show.name) === this.slugify(this.nowPlayingShow))
       } else {
